@@ -1,0 +1,97 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECTS: Create New Project</h1>
+
+<form action="home.pl" method="post">
+<input type="hidden" name="mode" value="add_project" />
+<table cellpadding="0" cellspacing="0" class="pmtform">
+<tr>
+<th class="firstcell" nowrap="nowrap">Project Name:</th>
+<td>
+<input class="textform" type="text" size="40" name="name" />
+</td>
+<td>NOTE: all
+fields can be edited later</td>
+</tr>
+<tr>
+<th class="firstcell">description:</th>
+<td>
+<div class="resizer" id="descriptionbox">
+<textarea class="textform" wrap="virtual" cols="40" rows="10"
+name="description">
+</textarea>
+<img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
+height="20" alt="" />
+</div>
+</td>
+<td>
+<p>A brief description of the project. Accepts HTML for
+formatting. Good things to include in the description are:</p>
+<ul>
+<li>links to the project itself (assuming it's web-based).</li>
+<li>links to any project documentation (eg, requirements docs,
+functional specs, etc).</li>
+<li>guidelines for entering bugs and action items (eg, suggested
+meanings for keywords and priorities, who to assign different types of
+items to, etc).</li>
+</ul>
+</td>
+</tr>
+<tr>
+<th class="firstcell">view:</th>
+<td>
+<input type="radio" name="pub_view" value="public" /> Public<br />
+<input type="radio" name="pub_view" value="private" /> Private
+</td>
+<td>If a project is marked 'public', anyone may view items in it
+and add items to it. 'private' projects are only accessible to people
+explicitly assigned to it (managers, developers, and guests).</td>
+</tr>
+<tr>
+<th class="firstcell">Final Release Date:<br />(YYYY-MM-DD)</th>
+<td>
+<input id="datebox" class="textform" type="text" name="target_date" value=""
+onclick="javascript:NewCal('datebox','yyyymmdd')" size="20" />
+<a href="javascript:NewCal('datebox','yyyymmdd')"><i>select date</i></a>
+</td>
+<td>The
+projected completion date of the project. Can be changed later.</td>
+</tr>
+<tr>
+<th class="firstcell">Wiki Category Name:</th>
+<td>
+<input class="textform" type="text" name="wiki_category" size="20" /></td>
+<td>The name for the project's
+category. this is difficult to change later on so make sure you're happy
+with it. if you don't fill this in, it will use the project's name as the
+wiki category.</td>
+</tr>
+<tr>
+
+<tr>
+<!-- ## Submit button --><td colspan="3" class="firstcell" align="center"><input type="submit" class="button" value="CREATE PROJECT" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">
+SET_DHTML("descriptionbox"+RESIZABLE)
+</script>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

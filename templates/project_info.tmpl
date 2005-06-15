@@ -1,0 +1,203 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECT: <a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
+<span class="hide">PROJECT:</span> &#62; Project Information
+<tmpl_if name="manager"><br />
+<span class="hide">PROJECT: &#62; </span>
+<a href="update_project.pl?pid=<tmpl_var name="pid" escape="url">" class="actionbutton">edit information</a>
+<tmpl_else>
+<tmpl_if name="developer"><br />
+<span class="hide">PROJECT: &#62; </span>
+<a href="update_project.pl?pid=<tmpl_var name="pid" escape="url">" class="actionbutton">edit information</a>
+<tmpl_else>
+</tmpl_if>
+</tmpl_if>
+</h1>
+
+
+<h2 class="projectinfo">Description:</h2>
+
+<table cellspacing="0" cellpadding="0" class="default">
+	<tr>
+		<th>Title:</th>
+		<td><tmpl_var name="name" escape="html"></td>
+	</tr>
+	<tmpl_if name="projnum">
+	<tr>
+		<th>Project Number:</th>
+		<td><tmpl_var name="projnum" escape="html"></td>
+	</tr>
+	</tmpl_if>
+	<tr>
+		<th>Status:</th>
+		<td><tmpl_var name="status" escape="html"></td>
+	</tr>
+</table>
+
+<tmpl_if name="description">
+<h2>Description:</h2>
+
+<p>
+<tmpl_var name="description">
+</p>
+
+</tmpl_if>
+
+<table cellspacing="0" cellpadding="0" class="default">
+	<tmpl_if name="keywords">
+	<tr>
+		<th>Keywords:</th>
+		<td>
+		<tmpl_loop name="keywords">
+		<a href="keyword.pl?keyword=<tmpl_var name="keyword" escape="url">"><tmpl_var name="keyword"></a><tmpl_unless __LAST__>,</tmpl_unless>
+		</tmpl_loop>
+		</td>
+	</tr>
+	</tmpl_if>
+</table>
+
+<br />
+
+<h2 class="projectinfo">Details:</h2>
+
+<table cellspacing="0" cellpadding="0" class="default">
+	<tmpl_if name="scale">
+	<tr>
+		<th>Scale:</th><td><tmpl_var name="scale" escape="html"></td>
+	</tr>
+	</tmpl_if>
+	<tmpl_if name="restricted">
+	<tr>
+		<th>Restricted:</th><td><tmpl_var name="restricted" escape="html"></td>
+	</tr>
+	</tmpl_if>
+	<tmpl_if name="distrib">
+	<tr>
+		<th>Distribution:</th><td><tmpl_var name="distrib" escape="html"></td>
+	</tr>
+	</tmpl_if>
+	<tmpl_if name="type">
+	<tr>
+		<th>Type:</th><td><tmpl_var name="type" escape="html"></td>
+	</tr>
+	</tmpl_if>
+	<tmpl_if name="area">
+	<tr>
+		<th>Discipline:</th><td><tmpl_var name="area" escape="html"></td>
+	</tr>
+	</tmpl_if>
+	<tmpl_if name="approach">
+	<tr>
+		<th>Approach:</th><td><tmpl_var name="approach" escape="html"></td>
+	</tr>
+	</tmpl_if>
+	<tmpl_if name="entry_rel">
+	<tr>
+		<th>Released?:</th><td><tmpl_if name="entry_rel">Yes<tmpl_else>No</tmpl_if></td>
+	</tr>
+	</tmpl_if>
+</table>
+
+<br />
+
+<h2 class="projectinfo">Personnel:</h2>
+
+<table cellspacing="0" cellpadding="0" class="default">
+	<tr>
+		<th>Caretaker:</th>
+		<td>
+		<a href="user.pl?username=<tmpl_var name="caretaker">"><tmpl_var name="caretaker_fullname"></a>
+		</td>
+	</tr>
+	<tr>
+		<th>Managers:</th>
+		<td>
+		<tmpl_loop name="managers">
+		<a href="user.pl?username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><tmpl_unless __LAST__>, </tmpl_unless></tmpl_loop>
+		</td>
+	</tr>
+	<tmpl_if name="developers">
+	<tr>
+		<th>Developers:</th>
+		<td>
+		<tmpl_loop name="developers">
+		<a href="user.pl?username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><tmpl_unless __LAST__>, </tmpl_unless>
+		</tmpl_loop>
+		</td>
+	</tr>
+	</tmpl_if>
+	<tmpl_if name="guests">
+	<tr>
+		<th>Guests:</th>
+		<td>
+		<tmpl_loop name="guests">
+		<a href="user.pl?username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><tmpl_unless __LAST__>, </tmpl_unless>
+		</tmpl_loop>
+		</td>
+	</tr>
+	</tmpl_if>
+</table>
+
+
+<br />
+
+<h2 class="projectinfo">Documents:</h2>
+
+<table cellspacing="0" cellpadding="0" class="default">
+	<tmpl_if name="url">
+	<tr>
+		<th>Project URL:</th>
+		<td><a href="<tmpl_var name="url" escape="html">"><tmpl_var name="url" escape="html"></a></td>
+	</tr>
+	</tmpl_if>
+	<tmpl_if name="info_url">
+	<tr>
+		<th>Information URL:</th>
+		<td><a href="<tmpl_var name="info_url" escape="html">"><tmpl_var name="info_url" escape="html"></a></td>
+	</tr>
+	</tmpl_if>
+	<tmpl_if name="eval_url">
+	<tr>
+		<th>Evaluation URL:</th>
+		<td><a href="<tmpl_var name="eval_url" escape="html">"><tmpl_var name="eval_url" escape="html"></a></td>
+	</tr>
+	</tmpl_if>
+</table>
+
+<p>
+<a href="home.pl?mode=project_documents;pid=<tmpl_var name="pid">">Project Documents</a> &#62;
+</p>
+
+<br />
+
+<tmpl_if name="clients">
+<h2 class="projectinfo">Client Information:</h2>
+
+<table cellspacing="0" cellpadding="0" class="default">
+	<tr>
+		<th>Client name:</th>
+		<td><tmpl_loop name="clients"><a href="client.pl?client_id=<tmpl_var
+name="client_id">"><tmpl_var name="firstname" escape="html"> <tmpl_var
+name="lastname" escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
+</tmpl_loop></td>
+	</tr>
+</table>
+<p>
+<a href="client.pl?client_id=<tmpl_var name="client_id">">More on client's information...</a> &#62;
+</p>
+</tmpl_if>
+
+<br />
+<br />
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

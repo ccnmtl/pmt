@@ -1,0 +1,46 @@
+<tmpl_include name="header_usergroup.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_usergroup.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>USERS/GROUPS: All Groups</h1>
+
+<ul>
+<tmpl_loop name="groups">
+<li><a href="group.pl?group=<tmpl_var name="group"
+escape="url">"><tmpl_var name='group_name'></a></li>
+</tmpl_loop>
+</ul>
+
+<br />
+<a name="add"></a>
+<h2>create a new group:</h2>
+<form action="home.pl" method="post">
+<input type="hidden" name="mode" value="add_group" />
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 400px;">
+<tr>
+<th class="firstcell">Group:</th>
+<td>
+<input class="textform" type="text" size="25" name='group' />
+</td>
+</tr>
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="ADD GROUP" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

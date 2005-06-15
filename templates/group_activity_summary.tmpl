@@ -1,0 +1,94 @@
+<tmpl_include name="header_usergroup.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_usergroup.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>USERS/GROUPS: <!--<a href="user.pl?username=<tmpl_var name="group" escape="url">">--><tmpl_var name="group_name"></h1>
+
+<h2>activity summary for <b><tmpl_var name="group_fullname"></b></h2>
+
+
+<form action="home.pl" method="get">
+<p><input type="hidden" name="mode" value="group_activity_summary" />
+<input type="hidden" name='group_name' value="<tmpl_var name="group_name"
+escape="html">"/>
+<input type="text" class="textform" name="start_date" size="15" value="<tmpl_var name="start_year">-<tmpl_var name="start_month">-<tmpl_var
+name="start_day">" /> through <input class="textform" type="text" name="end_date" size="15" value="<tmpl_var name="end_year">-<tmpl_var
+name="end_month">-<tmpl_var name="end_day">" />
+<input type="submit" value="update" class="button" />
+</p>
+</form>
+
+<br />
+
+<h2>total time for this group: <b><tmpl_var name="total_time"></b> hours</h2>
+<br />
+
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr><th class="firstcell">user:</th><th style="width:80px;">total time:</th><th>items:</th></tr>
+<tmpl_loop name="users">
+<tr><td class="firstcell" nowrap="nowrap"><tmpl_var name="fullname"></td>
+<td style="width:80px;"><tmpl_var name="total_time"></td>
+<td>
+<tmpl_if name="individual_times">
+<table cellpadding="0" cellspacing="0" class="timescompleted">
+<tr><th class="firstcell">item:</th><th>time:</th><th>completed at:</th><th>project:</th></tr>
+<tmpl_loop name="individual_times">
+<tr><td class="firstcell" style="width:150px;"><a href="item.pl?iid=<tmpl_var name="iid" escape="url">"><tmpl_var
+name="item" escape="html"></a></td>
+<td><tmpl_var name="actual_time" escape="html"></td>
+<td><nobr><tmpl_var name="completed" escape="html"></nobr></td>
+<td style="width:150px;"><a href="project.pl?pid=<tmpl_var name="pid"
+escape="url">"><tmpl_var name="project" escape="html"></a></td>
+</tr>
+</tmpl_loop>
+
+</table>
+</tmpl_if>
+</td>
+</tr>
+</tmpl_loop>
+<tr>
+<!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
+</tr>
+<tr>
+<!-- ##  DIVIDER --><td colspan="9" class="divider">&nbsp;</td>
+</tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+	<tr>
+		<th colspan="2" class="milestone">Forum Posts</th>
+	</tr>
+
+<tmpl_loop name="users">
+<tmpl_if name="posts"><tr><td class="firstcell" nowrap="nowrap"><tmpl_var name="fullname"></th>
+<td colspan="2">
+<tmpl_loop name="posts">
+<div class="post">
+<h2 class="nodesubject"><tmpl_var name="subject"></h2>
+<p class="byline"><tmpl_if name="project"><a
+href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></tmpl_if> @ <tmpl_var name="added_informal"></p>
+<div class="nodebody">
+<tmpl_Var name="body">
+</div>
+</div>
+</tmpl_loop>
+</td></tr></tmpl_if>
+</tmpl_loop>
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

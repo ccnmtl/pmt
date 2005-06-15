@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<?cocoon-process type="xslt"?>
+<?xml-stylesheet href="/xsl/docbook/ccnmtl/docbook.xsl" type="text/xsl"?>
+
+<book>
+<bookinfo>
+<title>Design and Architecture for PMT 2.0</title>
+<authorgroup>
+<author><firstname>Anders</firstname> <surname>Pearson</surname>
+</author>
+</authorgroup>
+
+<revhistory>
+<revision>
+    <revnumber>1.1</revnumber>
+    <date>2001-06-27</date>
+    <authorinitials>anders@columbia.edu</authorinitials>
+    <revremark>started writing</revremark>
+</revision>
+</revhistory>
+</bookinfo>
+
+<chapter id="introduction">
+<title>Introduction</title>
+<para>This document describes the design and architecture for version 2 of the project management tool (PMT2).</para>
+</chapter>
+
+<chapter id="database-schema">
+<title>Database Schema</title>
+<para>See the <a href="pmt_er.png">Entity-relationship diagram</a>.</para>
+</chapter>
+
+<chapter id="users">
+<title>Users</title>
+<para>The PMT2 seperates user authentication into a seperate module. This will hopefully allow us to reuse username/password info across multiple projects. It will also potentially allow us to replace our authentication module with a module that interfaces with ACIS' campus-wide kerberos authentication with minimal hassle.</para>
+
+</chapter>
+
+</book>

@@ -1,0 +1,233 @@
+<tmpl_include name="header_reports.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_reports.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>REPORTS: What's on <tmpl_var name="group_name">'s Plate</h1>
+
+
+<p>
+<b>Total Estimated Time:</b> <tmpl_var name="total_time"> hrs.<br />
+</p>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+	<tr>
+		<th class="firstcell" colspan="2">by priority:</th>
+		<th colspan="2">by status:</th>
+	</tr>
+	<tr>
+		<td class="firstcell pr4 numcell" style="border-right: 0px;">Critical:</td>
+		<td><tmpl_if name="priority_4">
+		<tmpl_var name="priority_4">
+		<tmpl_else>0
+		</tmpl_if>
+		hours
+		</td>
+		<td class="overdue numcell" style="border-right: 0px; text-align:left;">Overdue:</td>
+		<td><tmpl_var name="overdue"> hours </td>
+	</tr>
+	<tr>
+		<td class="firstcell pr3 numcell" style="border-right: 0px;">High:</td>
+		<td><tmpl_if name="priority_3">
+		<tmpl_var name="priority_3">
+		<tmpl_else>0
+		</tmpl_if>
+		hours
+</td>
+		<td class="late numcell" style="border-right: 0px; text-align:left;">Late:</td>
+		<td><tmpl_var name="late"> hours </td>
+	</tr>
+	<tr>
+		<td class="firstcell pr2 numcell" style="border-right: 0px;">Medium:</td>
+		<td>
+		<tmpl_if name="priority_2">
+		<tmpl_var name="priority_2">
+		<tmpl_else>0
+		</tmpl_if>
+		hours
+		</td>
+		<td class="due numcell" style="border-right: 0px; text-align:left;">Due:</td>
+		<td><tmpl_var name="due"> hours </td>
+	</tr>
+	<tr>
+		<td class="firstcell pr1 numcell" style="border-right: 0px;">Low:</td>
+		<td>
+		<tmpl_if name="priority_1">
+		<tmpl_var name="priority_1">
+		<tmpl_else>0
+		</tmpl_if>
+		hours
+		</td>
+		<td class="upcoming numcell" style="border-right: 0px; text-align:left;">Upcoming:</td>
+		<td><tmpl_var name="upcoming"> hours </td>
+	</tr>
+	<tr>
+		<td class="firstcell pr0 numcell" style="border-right: 0px;">Icing:</td>
+		<td>
+		<tmpl_if name="priority_0">
+		<tmpl_var name="priority_0">
+		<tmpl_else>0
+		</tmpl_if>
+		hours
+		</td>
+		<td class="ok numcell" style="border-right: 0px; text-align:left;">On Schedule:</td>
+		<td><tmpl_var name="ok"> hours </td>
+	</tr>
+	<tr>
+		<!-- ## Closing row --><td colspan="4" class="end">&nbsp;</td>
+	</tr>
+</table>
+
+
+
+
+
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="projectstable" onclick="sortColumn(event)">
+<thead><tr><th class="firstcell">project:</th><th class="Number">time: (hours)</th></tr></thead>
+<tbody>
+<tmpl_loop name="group_projects">
+<tr>
+<td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td>
+<td class="numcell"><tmpl_var name="time"></td></tr>
+</tr>
+</tmpl_loop>
+</tbody>
+<tfoot>
+<tr>
+	<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</tfoot>
+</table>
+
+
+
+
+
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr><th class="firstcell">user:</th><th colspan="2">items:</th></tr>
+<tmpl_loop name="users">
+<tr><td rowspan="3" class="firstcell" nowrap="nowrap"><a href="user.pl?username=<tmpl_var name="username">"><tmpl_var name="fullname"></a></td>
+<td colspan="2" style="border-right:0px; border-bottom:0px;">
+<b>Total estimated time:</b> <tmpl_var name="total_time">
+</td>
+</tr>
+<tr>
+<td style="border-right:0px; border-bottom:0px;">
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+	<tr>
+		<th class="firstcell" colspan="2">by priority:</th>
+		<th colspan="2">by status:</th>
+	</tr>
+	<tr>
+		<td class="firstcell pr4 numcell" style="border-right: 0px;">Critical:</td>
+		<td><tmpl_if name="priority_4">
+		<tmpl_var name="priority_4">
+		<tmpl_else>0
+		</tmpl_if>
+		hours
+		</td>
+		<td class="overdue numcell" style="border-right: 0px; text-align:left;">Overdue:</td>
+		<td><tmpl_var name="overdue"> hours </td>
+	</tr>
+	<tr>
+		<td class="firstcell pr3 numcell" style="border-right: 0px;">High:</td>
+		<td><tmpl_if name="priority_3">
+		<tmpl_var name="priority_3">
+		<tmpl_else>0
+		</tmpl_if>
+		hours
+</td>
+		<td class="late numcell" style="border-right: 0px; text-align:left;">Late:</td>
+		<td><tmpl_var name="late"> hours </td>
+	</tr>
+	<tr>
+		<td class="firstcell pr2 numcell" style="border-right: 0px;">Medium:</td>
+		<td>
+		<tmpl_if name="priority_2">
+		<tmpl_var name="priority_2">
+		<tmpl_else>0
+		</tmpl_if>
+		hours
+		</td>
+		<td class="due numcell" style="border-right: 0px; text-align:left;">Due:</td>
+		<td><tmpl_var name="due"> hours </td>
+	</tr>
+	<tr>
+		<td class="firstcell pr1 numcell" style="border-right: 0px;">Low:</td>
+		<td>
+		<tmpl_if name="priority_1">
+		<tmpl_var name="priority_1">
+		<tmpl_else>0
+		</tmpl_if>
+		hours
+		</td>
+		<td class="upcoming numcell" style="border-right: 0px; text-align:left;">Upcoming:</td>
+		<td><tmpl_var name="upcoming"> hours </td>
+	</tr>
+	<tr>
+		<td class="firstcell pr0 numcell" style="border-right: 0px;">Icing:</td>
+		<td>
+		<tmpl_if name="priority_0">
+		<tmpl_var name="priority_0">
+		<tmpl_else>0
+		</tmpl_if>
+		hours
+		</td>
+		<td class="ok numcell" style="border-right: 0px; text-align:left;">On Schedule:</td>
+		<td><tmpl_var name="ok"> hours </td>
+	</tr>
+	<tr>
+		<!-- ## Closing row --><td colspan="4" class="end">&nbsp;</td>
+	</tr>
+</table>
+</td>
+<td style="border-bottom:0px;">
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="projectstable" onclick="sortColumn(event)">
+<thead><tr><th class="firstcell">project:</th><th class="Number">time:</th></tr></thead>
+<tbody>
+<tmpl_loop name="projects">
+<tr>
+<td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var
+name="project"></a></td>
+<td class="numcell"><tmpl_var name="time"></td></tr>
+</tr>
+</tmpl_loop>
+</tbody>
+</table>
+</tr>
+<tr>
+<td colspan="2">
+<table cellpadding="0" cellspacing="0" class="timescompleted" id="itemstable<tmpl_var name="username">" onclick="sortColumn(event)">
+<thead><tr><th class="firstcell">item:</th><th class="Number">priority:</th><th>status:</th><th>project:</th><th>target
+date:</th><th class="Number">estimated time:</th></tr></thead>
+<tbody><tmpl_loop name="items">
+<tr>
+<td class="firstcell"><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="item.pl?iid=<tmpl_var
+name="iid">">#<tmpl_var name="iid"> <tmpl_var name="title" escape="html"></a></td>
+<td class="pr<tmpl_var name="priority">"><tmpl_var name="priority"></td>
+<td class="<tmpl_var name="status">"><tmpl_var name="status"><tmpl_if
+name="r_status"> (<tmpl_var name="r_status">)</tmpl_if></td>
+<td><a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var
+name="project"></a></td>
+<td class="<tmpl_var name="schedule_status">"><tmpl_var name="target_date"></td>
+<td class="numcell"><tmpl_var name="estimated_time"></td>
+</tr>
+</tmpl_loop></tbody>
+</table></td></tr>
+</tmpl_loop>
+<tr>
+<!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
+</tr>
+</table>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

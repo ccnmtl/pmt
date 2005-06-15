@@ -1,0 +1,731 @@
+<?xml version="1.0"?>
+<?cocoon-process type="xslt"?>
+<?xml-stylesheet href="/xsl/docbook/ccnmtl/docbook.xsl" type="text/xsl"?>
+
+<book>
+<bookinfo>
+<title>PMT2 Tutorial</title>
+<authorgroup>
+<author><firstname>Anders</firstname> <surname>Pearson</surname>
+</author>
+</authorgroup>
+
+<revhistory>
+<revision>
+    <revnumber>1.2</revnumber>
+    <date>2002-11-21</date>
+    <authorinitials>anders@columbia.edu</authorinitials>
+    <revremark>fixed typo pointed out by Sherry Mayo</revremark>
+</revision>
+
+<revision>
+    <revnumber>1.1</revnumber>
+    <date>2001-07-17</date>
+    <authorinitials>anders@columbia.edu</authorinitials>
+    <revremark>started writing</revremark>
+</revision>
+</revhistory>
+</bookinfo>
+
+<chapter id="introduction">
+<title>Introduction</title>
+
+<para>The PMT2 is a web-based collaborative tool for project
+management and bug-tracking. Its purpose is to facilitate the
+management of CCNMTL projects across multiple physically seperate
+offices, enforcing basic bug lifecycles and providing managers with a
+convenient overview of the progress of their projects.  </para>
+
+<sect1>
+<title>What's New: changes and new features</title>
+<para>This section contains a brief overview of the new features in the PMT2. The changes themselves are discussed in more detail later on in the tutorial.</para>
+ <sect2>
+ <title>Architectural Changes</title>
+ <para>
+ Rather than the hierarchy of project/division/milestone/bug|action
+item that version 1 of the PMT used, the PMT2 removes the "division"
+level, replacing it with a more flexible and powerful "keyword" system
+for grouping tasks. The new hierarchy has projects each
+consisting of a set of milestones. Each item (an action item or bug) is 
+associated with a single milestone. In addition, an item may have
+one or more keywords. These can be things like "video", "content",
+or any other grouping. This facilitates the sorting or searching
+of the items. Eg, a manager can easily have the PMT2 display only
+items tagged with a "graphics" keyword. The advantage of this new
+architecture is that it requires fewer levels of navigation than the
+old divisions, allows items to be classified with multiple keywords
+rather than being assigned to a single division, and it allows for a
+more chronological, milestone based approach to project management.
+ </para>
+ </sect2>
+
+  <sect2>
+  <title>Interface Changes</title>
+
+ <para> The PMT2 features a radically changed interface paradigm. It
+is focused on the user and strives to provide the user with only the
+information and options that are relevant to the user at any given
+point in time. When entering the PMT2, the user logs in and is
+presented with a "homepage" listing tasks that require their
+attention, either open tasks that have been assigned to them, or
+resolved tasks that they need to verify. From their homepage, they can
+go to the pages for the tasks, or for projects that they work on (or
+publicly view-able projects).  In either case, they are only presented
+with relevant information and options for their situation. Eg, a user
+who works on a project as a developer is not shown the forms for
+editing project information or adding milestones when visiting the
+project page; they see only the lists of existing milestones and tasks
+and forms relevant to their position. Similarly, a manager for the
+project will see additional forms on task pages for deleting,
+converting or reassigning to different milestones. For each project
+that a user is associated with, they are considered either a manager,
+a developer, or a guest. If the user is not associated with a given
+project and that project is publicly view-able, they will be considered
+a guest and given read-only access to the project. Guests can still
+submit bug reports on a project, but the ownership of the bug is
+transferred to the project caretaker.</para>
+
+</sect2>
+
+<sect2>
+<title>Miscellaneous Changes</title>
+<para>
+Many additional small changes have also be made. 
+</para>
+
+<para>Tasks will are allowed to have their own target dates. If none is
+specified, the target date is inherited from the milestone that the
+task is attached to.</para>
+
+<para>Tasks have priorities; There are 5 levels of priorities, 0 - 4,
+where 4 is the highest priority. The tasks can then be sorted by the
+priority in addition to their other fields.</para>
+
+<para>Tasks also have dependencies. A task may have zero or
+more other tasks as dependencies. When a task is marked as a
+dependency by another, it inherits the priority (if higher than it
+currently is) and target date (if sooner than the current) from the
+dependent task. Eg, if bug A is entered with a "4" priority,
+target date of July 1st and depends on bug B being fixed, B's priority
+may be bumped up to "4", even though it may have previously
+only been "2", and its target date will be moved to July 1st even
+though it may have previously been August 1st. A task with a
+dependency won't be able to be marked RESOLVED until the dependency
+has been resolved.</para>
+
+<para>Tasks have a "url" field that allows the person entering the
+task to include a relevant url if applicable and helpful.</para>
+
+<para>Projects and Milestones have additional description fields
+that allow the project manager(s) to provide more detailed
+information about the project/milestone. The description fields 
+accept HTML, allowing the manager(s) to include relevant links or
+graphics.</para>
+
+<para>An Experimental calendar mode has been added that allows project
+target dates to be viewed in a calendar layout. </para>
+
+<para>Time tracking has been added. Each task has an estimated time
+that is assigned when the item is created (and can be edited later).
+When an item is resolved, the developer resolving the task is provided with
+a field to enter the actual time that it took to resolve the task. These
+fields are then used to calculate various metrics for users and projects. Eg, 
+on a user's page the total estimated time for open tasks assigned to them is listed, 
+for milestones, the estimated remaining time and the total time already
+put into the milestone is listed.</para>
+
+<para>There is now a concept of "groups" of users. Eg, "part-timers"
+can be treated as a group. Entire groups can easily be added to projects and,
+if it isn't very important who completes a task, it can be assigned to a group
+rather than an individual. Then, someone in the group can claim the task.</para>
+
+<para>The PMT also now includes project forums and personal logs. This is a 
+basic threaded discussion board. For each project in the PMT, there is a project
+forum where developers can discuss the project. The forums are tied into
+email so that if a post is made to the forum, all members of the project team 
+are emailed. There are also individual personal logs which can serve as a sort
+of professional diary. The individual logs are an excellent place to talk
+about things you are working on that aren't directly covered by the PMT.</para>
+
+</sect2>
+
+
+</sect1>
+</chapter>
+
+<chapter id="quickstart">
+<title>PMT2 Quickstart</title>
+<procedure>
+
+<step> <para>First, you must create a user account for yourself. Go to
+<ulink
+href="http://www2.ccnmtl.columbia.edu/pmt2/">http://www2.ccnmtl.columbia.edu/pmt2/</ulink>. </para>
+</step>
+
+<step><para> Follow the <ulink
+href="http://www2.ccnmtl.columbia.edu/pmt2/add_user.pl">create a new
+user account</ulink> link. </para></step> <step><para>You will be
+presented with a form asking for your desired username, password (and
+verification), full name, and email address. Enter the information
+that it asks for. Your username is a short identifier that you will
+use to login to the system. Your email address will be used to notify
+you when items are assigned to you, or otherwise require your
+attention. Please enter your full email address, not just your CUNI
+(eg, enter <userinput>abc1@columbia.edu</userinput> and not just
+<userinput>abc1</userinput>. it is important that you enter a valid
+email address. if it is invalid, anders will be forced to hunt you
+down and make you fix it.<caution>Username and password fields are
+case sensitive. <userinput>foo</userinput> is not equivalent to
+<userinput>FoO</userinput>.</caution></para></step>
+
+<step><para>Once the system has accepted your information, it will
+present you with a <ulink
+href="http://www2.ccnmtl.columbia.edu/pmt2/login.pl">login
+screen</ulink>. Use the username and password that you just created to
+log in.</para></step>
+
+<step><para>At this point, you should be presented with your <ulink
+href="http://www2.ccnmtl.columbia.edu/pmt2/home.pl">homepage</ulink>. Your
+homepage shows a list of all items which require your attention sorted
+by priority by default (you can sort on any other attribute as
+well). Since your account has just been created, you probably haven't
+been added to any projects yet and don't have any items assigned to
+you, so this page will be mostly blank except for a small form for
+changing your user info (enjoy it while it lasts. once you get added to projects and people
+start assigning things to you, you'll long for a nice blank homepage). 
+Since only managers for projects can add users
+to their projects, one of the first things you should do is contact
+any managers for projects you work on letting them know that you
+should be added to their project entries.</para>
+
+<para>At the top of the homepage, (and every other page as long as you're logged in) is the menubar. The menubar allows you to quickly navigate the PMT and access its functionality. Here is a description of the parts of the menubar:</para>
+
+<para><graphic width='700' depth='103' fileref='menubar.png'/></para>
+<orderedlist>
+<listitem><para>This is a link back to your homepage.</para></listitem>
+<listitem><para>Logout button. Click when you're done using the PMT. If you are on your own private machine, there is probably no reason to logout, but if you are on a lab, or other public machine, you probably don't want to leave your account logged in.</para></listitem>
+<listitem><para>This is a link to this tutorial</para></listitem>
+<listitem><para>Link to the searching and filtering interface. </para></listitem>
+<listitem><para>This menu item allows you to add a bug or action item to any project that you are associated with or is publicly viewable. Select the type (bug or action item) and the project with the two menus and hit 'go'.</para></listitem>
+<listitem><para>This pulldown menu will take you to any project that you are associated with (IE, you are a manager, developer, or guest on the project). It will also allow you to go to the page for creating a new project.</para></listitem>
+<listitem><para>This pulldown allows you to jump directly to any of the publicly viewable projects that you are not associated with. </para></listitem>
+<listitem><para>Visit the projects forum or post to the forum.</para></listitem>
+</orderedlist>
+
+</step>
+
+
+
+<step><para>You can also, if you wish, create your own projects. The
+menu at the top of your user page (and every other page in the PMT)
+contains a pulldown labeled "goto project:". The last entry in this
+pulldown is "create new project". When you select this one, it will
+take you to a form for creating a new project entry. The form asks for
+project name, description, final release date, and whether the project
+is public or private. The description field will accept HTML, so you
+can include things like links to the project itself and/or
+documentation. The final release date is the date that you expect the
+project to be completed by; This can be changed at any point in the
+future, so don't worry if you haven't yet figured out the project
+schedule in that great of detail. The view field determines whether
+the project is viewable by people not explicitly associated with it
+(managers, developers, and guests). You can, for example, create your
+own private project to use as a web-based todo list and no one else
+will be able to view it. Again, all of these fields can be changed at
+any point, so there's no need to agonize over them. When you create a
+project, it automatically creates a "Final Release" milestone with the
+target date specified, and identifies you as a manager for the project
+(and as the project 'caretaker').</para></step>
+
+<step><para>Once you've been added to (or created your own) a project,
+it will appear in the "goto project:" and "add bug/action item to
+project" pulldowns in the menu so that you can either jump directly to
+or add an item to any project you are affiliated with at any point. On
+the left of the menu, next to the CCNMTL logo, will be your username
+with a link to your homepage. Next to that is a link for logging
+out. It is advised that you log out after using the PMT from a public,
+or lab, machine.</para></step>
+
+<step><para>Now, you should acquaint yourself with the rest of the PMT
+by reading the rest of the tutorial as you explore its
+functionality. It is advised that you create a private test project now to
+experiment on and get a feel for how the system works.</para></step>
+
+</procedure>
+</chapter>
+
+<chapter id="theory">
+<title>Theory: A Method to the Madness</title>
+<sect1><title>Lifecycles</title>
+
+<para>Strict bug-tracking is vital to a large project. Most people
+have a very limited short term memory when it comes to remembering
+what bugs they have that need to be fixed. Bugs also have a way of
+resurfacing in software projects in particular. New code may
+inadvertently re-break old bugs which were previously thought to be
+fixed.</para>
+
+<procedure>
+
+<step><para>If a bug or action item is entered into the PMT by a user
+who is affiliated with the project (either as a manager, developer, or
+guest), it is assigned to the designated user and given a status of
+'OPEN'. The user who entered the item is considered its "owner". If
+the item is entered by someone outside the project, it is created with
+a status of 'UNASSIGNED' and is both assigned to (temporarily) and
+owned by the project's 'caretaker', whose responsibility it is to
+assign the item to the proper user.</para></step>
+
+<step><para>The user to whom the item has been assigned fixes the bug,
+completes the action item, or otherwise deals with the item and sets
+the status to "RESOLVED" with a resolved-status of
+"FIXED","INVALID","WONTFIX","DUPLICATE", or "WORKSFORME" as explained
+below.</para></step>
+
+<step><para>Optionally, the item may be marked as 'IN PROGRESS',
+signifying that the item is currently being worked on but has not been
+completed yet.</para></step>
+
+<step><para>After it is resolved, the item is passed back to the owner
+who checks to see if the item has been satisfactorily resolved. If it
+is now fixed or completed, the owner sets the status to
+"VERIFIED". Otherwise, the owner reopens the item by setting the
+status to "REOPENED", providing a brief explanation of why it is being
+reopened, and, if necessary, reassigns the item to another user. The
+process then returns to step 2.  </para></step>
+
+<step><para>When a milestone is reached, all items assigned to it that
+were marked as 'VERIFIED' are changed to 'CLOSED'.</para></step>
+</procedure>
+
+<para>The following diagram shows the possible state transitions for items in the PMT2:</para>
+
+<para><graphic width='495' depth='529' fileref='pmt2_bug_lifecycle.png'/></para>
+
+</sect1>
+</chapter>
+
+<chapter id="accounts">
+<title>User Accounts</title>
+<sect1><title>Creating a new user account</title></sect1>
+<para>See the "Quickstart" section.</para>
+<sect1><title>Your "home" page</title></sect1>
+
+<para>Your homepage is an attempt to aggregate the most information
+most relevant to a particular user in one place. It focuses on a list
+of items that, in one way or another, are of interest to that
+user. This includes items that have been assigned to the user and are
+in an OPEN state (meaning that the user must either complete this
+action item or fix this bug), and items that are owned by the user
+that have been resolved (meaning that they must be verified by the
+user). The items are arranged in a table and may be sorted by title,
+priority, target date, status, project, or last modified time (they
+are sorted in descending order of priority by default) by clicking on
+the corresponding header. For users who are developers in particular,
+this page will be the primary (and most useful) interface to the PMT
+and can be a very useful aide in scheduling ones time.</para>
+
+<sect1><title>Editing user info</title>
+
+<para>At the bottom of your homepage is a form allowing you to change
+your user info (full name, email) or change your password.</para>
+
+</sect1>
+<sect1><title>Forget your password?</title>
+
+<para>There is a form at the bottom of the login page that will allow
+you to receive an email reminder of your password. Just enter your
+username in the form and hit the submit button. Your password will be
+mailed to the email address that you specified when your account was
+created.</para>
+
+</sect1>
+</chapter>
+
+<chapter id="items">
+<title>Bugs and Action Items</title>
+<sect1><title>What's the difference?</title></sect1>
+
+<para>A bug is simply a problem with a product. Either something is
+there that shouldn't be there or something that should be there
+isn't. Action items are merely tasks assigned to a developer.</para>
+
+<sect1><title>Locating and viewing</title>
+
+<para>You can view a bug/action item by entering its ID number into
+the box on the very right of the menu and hitting "go". Alternatively,
+you can reach the bug by going to the appropriate project page and
+following the link to it, or by following a link from your homepage,
+etc.</para>
+
+<sect2><title>Parts of an Item</title>
+<variablelist>
+<varlistentry><term>Title</term>
+<listitem>
+<para>
+The title of the item. Should be concise and meaningful.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Type</term>
+<listitem>
+<para>
+Bug or Action Item. Only managers can convert between the types.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>ID</term>
+<listitem>
+<para>
+A unique ID. Every item in the PMT has its own. You can quickly reach
+any item whose ID you know with the form on the right of the menubar.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Project</term>
+<listitem>
+<para>
+The project which the item is associated with. This field cannot be changed.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Milestone</term>
+<listitem>
+<para>
+The milestone to which the item is assigned. Only the managers of the project can reassign bugs to different milestones.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>STATUS</term>
+<listitem>
+<para>
+The current status of the item. May be UNASSIGNED, OPEN, RESOLVED, VERIFIED, or CLOSED. See the lifecycle section for more information on this field.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Priority</term>
+<listitem>
+<para>
+The urgency with which the item must be handled. Ranges from 0-4 with 4 being the highest priority. Numbers were used for priority instead of text designations such as "blocker", "critical", "important", etc. to avoid ambiguity and to allow project managers to use whatever system they like on a project by project basis.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Target Date</term>
+<listitem>
+<para>
+The date by which the item should be completed. If this date isn't specified when the item is created, it is inherited from the milestone that it is assigned to.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Assigned To</term>
+<listitem>
+<para>
+The user responsible for the item. One way or another, this user is expected to resolve the item, either by fixing the bug, completing the action item, or resolving with some other appropriate conditional such as "WONTFIX", "DUPLICATE", "INVALID", etc. 
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Owner</term>
+<listitem>
+<para>
+The user who entered the item (usually) and who is responsible for verifying the item once it has been marked as resolved.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>last modified</term>
+<listitem>
+<para>
+The date and time of the last modification to the item. Includes actions such as status changes, edits, or comments being attached.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Keywords</term>
+<listitem>
+<para>
+A fairly free-form way of classifying and grouping items. Any item can have zero or more keywords associated with it. A user can then filter the list of items in a project by keyword, showing only items that have been tagged with that keyword.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Dependencies</term>
+<listitem>
+<para>
+Any other items that must be resolved before this item can be resolved. Eg, perhaps an item related to project integration cannot be completed until all of the components such as content, design, and video, have been completed. All dependencies inherit the priority and target date from the item (if it is higher or closer, respectively).
+</para>
+</listitem>
+</varlistentry>
+
+
+<varlistentry><term>Dependents</term>
+<listitem>
+<para>
+The inverse of Dependencies. These are the items which depend on this item being completed.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Description</term>
+<listitem>
+<para>
+A clear description of the bug or action item. Normally one or two paragraphs. For a bug report, it should cover steps for the developer to reproduce the bug and include any relevant information such as platform or release version.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Estimated Time</term>
+<listitem>
+<para>
+The amount of time it will take to complete the bug or action item.
+Ideally, this should be discussed and agreed upon before the action item
+is entered. However, this often doesn't happen, so the estimated time can
+be editted after the item is added. 
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</sect2>
+
+</sect1>
+<sect1><title>updating/editing</title>
+
+<para>If you have the appropriate access (IE, you are a manager or
+developer on a project) there will be a link at the top of an item
+page that will take you to a form for editing the attributes of the
+item. Managers and developers are presented with slightly different
+forms; managers have the ability to delete the item, change its type
+(bug to action item and vice versa), and change the milestone that
+it's attached to. Any number of the editable fields may be changed at
+one time. The system will detect which fields have been changed and
+add the appropriate event to the item's history (see below).</para>
+
+</sect1>
+<sect1><title>email notification</title>
+
+<para>One of the new features in the PMT2 is increased control over
+email notification. For any item, a user may opt to be notified by
+email whenever that item is updated. When an item is created, the user
+it is assigned to, the item's owner and all managers in the project
+are added to the list of users to be notified on updates for that
+item. </para>
+
+<para>Anyone may add themselves to this list, or remove themselves
+from the list. When visiting the item page, there will be a link at
+the top that says either "notify me when this [bug/action item] is
+updated" or "do not notify me when this [bug/action item] is updated"
+depending on whether you are on the notify list or not. clicking on
+this link will change your status in the expected manner.</para>
+
+</sect1>
+<sect1><title>history</title>
+
+<para> A chronological list of changes made to the item. Begins with
+the creation of the item. Includes the status and a description of the
+changes made for each event along with any comments added by the user
+making the change.  </para>
+
+</sect1>
+<sect1><title>comments</title>
+
+<para> Any comments made by users about the item. Serves as a minimal
+discussion, whiteboard area allowing for basic conversation about the
+item.  </para>
+
+</sect1>
+
+<sect1><title>actual times</title>
+<para>When an task is resolved (specifically, when it is resolved as FIXED), 
+the developer resolving the task should enter the actual time that it took
+to complete the task. This helps the Center get a better idea of how
+resources are being allocated on projects and make better predictions
+for the future. Since a task may potentially be re-opened and re-resolved multiple
+times, potentially by multiple people, the PMT keeps track of the individual
+resolution times and who entered them.</para>
+</sect1>
+
+</chapter>
+
+<chapter id="projects">
+<title>Projects and Project Management</title>
+<sect1><title>Creating a new project entry</title>
+
+<para>Select the "create new project" entry from the projects pulldown
+menu. See the quickstart section for more info.</para>
+
+</sect1>
+
+<sect1><title>Classes of users</title>
+
+<para>There are 3 groups of users in any given project: managers,
+developers, and guests. </para>
+
+<para> Guests are primarily useful if you have a project entry that is
+marked as private; then you can add people who aren't actually working
+on the project but that you'd like to have access to it as
+'guests'. They can view the project, add comments, and assign things
+to other people but you can't assign anything to them. If a project
+entry is marked as 'public', essentially everyone else with a pmt
+account is considered a guest of the project (kindof).</para>
+
+<para>Developers are the "normal" class of people on a project. It
+would include programmers, testers, content people, etc. They're the
+ones who do the work. You can assign things to them and they can
+assign things to other people.</para>
+
+<para>Managers are basically like the developers but they also have
+some more power over the administrative stuff: they can add and remove
+users from the project and change milestone stuff. Also, managers are
+by default included on all of the email; the idea is that managers
+like to always know what's going on with a project. So if developer A
+assigns something to developer B, all the managers also get the email
+notification. If a milestone is missed, the developer(s) holding up
+the milestone and the managers all get the email reminders.</para>
+
+<para>The "caretaker" is one special user who's primary responsibility
+as caretaker is to assign items that come in from the outside. Eg, if
+there are 5 developers working on a project and a user wants to report
+a bug but has no idea who's working on what part and who they should
+assign it to, they assign it to "caretaker". The caretaker user then
+should look at it, figure out who it belongs to and reassign it to
+them. By default, the user who creates the project entry in the PMT is
+made the caretaker.</para>
+
+
+</sect1>
+
+<sect1><title>Editing a project entry</title>
+
+<para>Only managers of a project may edit the project data. Clicking
+the "edit project data" link at the top of the project page will allow
+managers to edit the title of the project, the description, the
+caretaker, add and remove managers, developers, and guests, add
+milestones and delete the project entry.</para>
+
+</sect1>
+<sect1><title>Milestones</title></sect1>
+
+<para>A milestone is simply a progress marker for a project. They
+allow the manager(s) to accurately gauge the progress and help make
+decisions about scheduling and feature inclusion/removal.</para>
+
+<para>Each milestone for a project has a name, a target date to meet,
+ and a status. Action items and
+bugs are assigned to a milestone and must be resolved before that
+milestone is considered met (or reassigned to a later milestone).
+</para>
+<sect2><title>Milestone Lifecycle</title>
+<procedure>
+
+<step><para>When a milestone is added to a project, its status is
+'OPEN'. As long as any of the items assigned to the milestone are in
+the 'OPEN', 'UNASSIGNED', or 'IN PROGRESS', the milestone will remain
+'OPEN'.</para></step>
+
+<step><para>Whenever the status of an item is changed, its milestone
+is re-evaluated. If it no longer has any open items, the milestone
+will become 'CLOSED'.</para></step>
+
+<step><para>If a new (and OPEN) item is added to the milestone or an
+item on the milestone is reopened, the milestone will also become
+reopened.</para></step>
+
+<step><para>The system provides email reminders about open
+milestones. One week before the milestone's target date, one day
+before and every day afterwords that the milestone remains open, all
+managers and developers on the project will receive email reminders of
+its open status. These reminders will stop as soon as the milestone is
+closed.</para></step>
+
+</procedure>
+</sect2>
+</chapter>
+
+<chapter id="forums">
+<title>Forums</title>
+<para>The PMT now includes a basic, easy to use threaded discussion board
+for internal project related discussion.</para>
+
+<para>In the menubar at the top of every page is a link to the 
+forums page. This general page shows an overview of all the forums
+that are active for the projects along with log entries and a quick
+listing of the most recently modified items. Posts are displayed in
+descending order of when they were posted or when a reply was posted.
+This page provides a 
+starting point for getting an idea of what's going on Center-wide.
+</para>
+
+<para>
+Clicking on the project title of any of the posts in the forum will
+take you to the project specific forum for that project. This page
+is layed out similarly to the generic forum page but only includes posts
+specific to that project, log entries of developers in that project,
+and the most recently modified items for that project.
+</para>
+
+<para>Log entries are developer specific. They may be used to just
+quickly write down what you're working on at the moment, mention
+any problems that you're encountering or to just jot down ideas
+floating around your head that aren't necessarily project specific.
+</para>
+
+</chapter>
+
+<chapter id="tips">
+<title>Tips and Tricks: How to make the most of the PMT2</title>
+
+<para>USE IT! And make sure that everyone else on your project uses it
+as well. The PMT won't do much good if you don't use it to keep track
+of *ALL* bugs and action items for a project. If you're having trouble
+getting the other developers/managers on a project to use it, simply
+stop accepting bug reports through other means and, instead of telling
+them about bugs or action items through other means, just put it in
+the PMT; they'll learn. If you encounter a bug and fix it before you
+have a chance to put it into the PMT, it's a good idea to put in an
+entry anyway (and just resolve it immediately after you enter
+it). This will help document the progress of your project. Plus,
+having the bug entry in there already may save you time when
+(inevitably, it pops up again later on).</para>
+
+<para>You may find it helpful to bookmark your user page and visit it
+frequently. For convenience, any page in the PMT may be
+bookmarked.</para>
+
+<para>Honor the distinction between bugs and action items. The
+distinction is there for a reason. Bugs should only be problems with
+the product itself (site/page/program/etc); either something is there
+that shouldn't be or something that should be there isn't. An action
+item is a task that needs to be completed. Typically, once an action
+item is completed and verified, it will be done with; bugs sometimes
+exist in quasi-finished states and have the annoying habit of
+reappearing when someone changes a seemingly unrelated part of the
+project.</para>
+
+<para>Feel free to create test projects to try out different features
+of the PMT if you are unsure of how things work and don't want to
+screw up a working project. Just delete it when you're done so it
+doesn't clutter things up.</para>
+
+<para>Use the individual logs on a regular basis. Get yourself in the
+habit of spending 15 minutes at the end of each day writing a 
+quick summary of what you've been up to. This little bit of self-reflection
+i've found to be an amazing opportunity for personal growth. Try to 
+do it every day for a month. If you keep it up, i can pretty much guarantee
+that you'll conclude that it is an invaluable exercise. Furthermore,
+when it comes time to write your personal self-performance review (every six months)
+for full-time employees, having an archive of log entries makes it
+much simpler to remember in great detail what you've actually 
+accomplished.</para>
+
+</chapter>
+
+</book>

@@ -1,0 +1,129 @@
+<tmpl_include name="header_reports.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_reports.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>REPORTS:  Weekly Report for: <a href="project.pl?pid=<tmpl_var
+name="pid" escape="url">"><tmpl_var name="name" escape="html"></a><br />
+<span class="hide">REPORTS:</span> &#62; for the week from
+<strong><tmpl_var name="mon_year" escape="html">-<tmpl_var name="mon_month" escape="html">-<tmpl_var name="mon_day" escape="html"></strong>
+to
+<strong><tmpl_var name="sun_year" escape="html">-<tmpl_var name="sun_month"
+escape="html">-<tmpl_var name="sun_day" escape="html"></strong>
+</h1>
+
+<p>&#60;&#60; <a href="project_weekly_report.pl?year=<tmpl_var name="pm_year"
+escape="url">;month=<tmpl_var name="pm_month"
+escape="url">;day=<tmpl_var name="pm_day" escape="url">;pid=<tmpl_var
+name="pid" escape="url">">Previous week</a> -- <a href="project_weekly_report.pl?year=<tmpl_var name="nm_year"
+escape="url">;month=<tmpl_var name="nm_month"
+escape="url">;day=<tmpl_var name="nm_day" escape="url">;pid=<tmpl_var
+name="pid" escape="url">">Next week</a> &#62;&#62;</p>
+
+<p><b>Total time spent on this project for this week:</b> <tmpl_var
+name="total_time" escape="html"> hours.</p>
+
+<tmpl_if name="active_users">
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+        <tr>
+                <th colspan="4" class="milestone">Breakdown:</th>
+        </tr>
+<tr><th class="firstcell" colspan="2">staff:</th>
+<th colspan="2">time spent on project</th></tr>
+<tmpl_loop name="active_users">
+<tr><td class="firstcell" colspan="2"><a href="user.pl?username=<tmpl_var name="username"
+ escape="url">"><tmpl_var name="fullname" escape="html"></a></td>
+<td colspan="2"><tmpl_var name="hours"
+escape="html"></td></tr>
+</tmpl_loop>
+<tr>
+<!-- ## Closing row --><td colspan="4" class="end">&nbsp;</td>
+</tr>
+
+
+<tr>
+<!-- ##  DIVIDER --><td colspan="4" class="divider">&nbsp;</td>
+</tr>
+
+
+        <tr>
+                <th colspan="4" class="milestone">Individual Times:</th>
+        </tr>
+
+<tr><th class="firstcell">time:</th>
+<th>item:</th>
+<th>completed at:</th>
+<th>by:</th></tr>
+<tmpl_loop name="individual_times">
+<tr><td class="firstcell"><tmpl_var name="actual_time" escape="html"></td>
+<td><a href="item.pl?iid=<tmpl_var name="iid" escape="url">"><tmpl_var
+name="item" escape="html"></a></td>
+<td><nobr><tmpl_var name="completed" escape="html"></nobr></td>
+<td><a href="user.pl?username=<tmpl_var name="username"
+escape="url">"><tmpl_var name="fullname" escape="html"></a></td>
+</tr>
+</tmpl_loop>
+
+<tr>
+<!-- ## Closing row --><td colspan="4" class="end">&nbsp;</td>
+</tr>
+
+
+<tr>
+<!-- ## DIVIDER --><td colspan="4" class="divider">&nbsp;</td>
+</tr>
+
+        <tr>
+		<th colspan="4" class="milestone">Forum Posts:</th>
+	</tr>
+
+<tr><th class="firstcell" colspan="2">title:</th>
+<th>posted by:</th>
+<th>date posted:</th>
+</tr>
+<tmpl_if name="posts">
+<tmpl_loop name="posts">
+<tr><td class="firstcell" colspan="2"><a href="node.pl?nid=<tmpl_var name="nid">"><tmpl_var name="subject"></a></td>
+<td><tmpl_var name="author_fullname"></nobr></td>
+<td><tmpl_var name="added"></td>
+</tr>
+</tmpl_loop>
+</tmpl_if>
+
+<tr>
+<!-- ## Closing row --><td colspan="4" class="end">&nbsp;</td>
+</tr>
+
+
+<tr>
+<!-- ## DIVIDER --><td colspan="4" class="divider">&nbsp;</td>
+</tr>
+
+
+
+</table>
+
+<br />
+
+
+
+<h2>piegraph:</h2>
+<img
+src="http://www2.ccnmtl.columbia.edu/graph/piegraph.pl?pie_height=20;start_angle=270;<tmpl_loop name="active_users">l=<tmpl_var name="fullname" escape="url">;</tmpl_loop><tmpl_loop name="active_users">s1=<tmpl_var name="hours" escape="url">;</tmpl_loop>color=%23ffcccc"
+width="400" height="300" alt="" />
+
+<tmpl_else>
+<p>No work was done on this project for the specified week.</p>
+</tmpl_if>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

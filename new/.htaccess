@@ -1,0 +1,6 @@
+AuthUserFile /home/httpd/htpasswd
+AuthGroupFile /dev/null
+AuthName "CCNMTL Key"
+AuthType Basic
+require user ccnmtl
+

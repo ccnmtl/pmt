@@ -1,0 +1,158 @@
+<tmpl_include name="header_clients.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_clients.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>CLIENTS: Add New Client<br />
+
+<tmpl_unless name="client_email">
+<!-- form to enter email address -->
+
+<span class="hide">CLIENTS:</span> &#62; Client's E-mail</h1>
+
+<form action="home.pl" method="GET">
+<input type="hidden" name="mode" value="add_client_form"/>
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 500px;">
+<tr>
+<th class="firstcell"><label for="email">client email address:</label></th>
+<td>
+<input class="textform" type="text" name="client_email" size="25" id="email" /><br /><br />
+<i>(Don't know the client's e-mail address? Go to <a href="http://www.columbia.edu/cgi-bin/lookup.pl" target="_blank">Columbia
+Directory Search</a>.)</i>
+</td>
+</tr>
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="CONTINUE" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+
+
+<tmpl_else>
+<span class="hide">CLIENTS:</span> &#62; Client's Information</h1>
+<!-- form filled in with data from LDAP -->
+<tmpl_if name="existing_clients">
+<p><b>WARNING!</b> the following client(s) were found that have a
+similar name or uni. please make sure that you are not entering a
+duplicate.</p>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting" style="width: 700px;">
+<thead><tr>
+<th class="firstcell">client:</th>
+<th>email:</th>
+<th>school:</th>
+<th>department:</th>
+<th>contact:</th>
+</tr>
+</thead>
+<tbody>
+<tmpl_loop name="existing_clients">
+<tr>
+<td class="firstcell"><a href="client.pl?client_id=<tmpl_var name="client_id"
+escape="url">"><tmpl_var name="firstname" escape="html"> <tmpl_var
+name="lastname" escape="html"></a></td>
+<td><tmpl_var name="email" escape="html"></td>
+<td><tmpl_Var name="school" escape="html"></td>
+<td><tmpl_var name="department" escape="html"></td>
+<td><tmpl_Var name="contact_fullname" escape="html"></td>
+</tr>
+</tmpl_loop>
+</tbody>
+	<tfoot>
+<tr>
+<!-- ## Closing row --><td colspan="5" class="end">&nbsp;</td>
+</tr>
+	</tfoot>
+</table>
+<br />
+</tmpl_if>
+
+<form action="home.pl" method="POST">
+<input type="hidden" name="mode" value="add_client" />
+
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 650px;">
+
+<tr>
+<th class="firstcell">last name:</th>
+<td><input class="textform" size="30" type="text" name="lastname" value="<tmpl_var name="lastname" escape="html">" /></td></tr>
+<tr>
+<th class="firstcell">first name:</th>
+<td><input class="textform" size="30" type="text" name="firstname" value="<tmpl_var name="firstname" escape="html">" /></td></tr>
+<tr>
+<th class="firstcell">title:</th>
+<td><input class="textform" size="30" type="text" name="title" value="<tmpl_var name="title" escape="html">" /></td></tr>
+<tr>
+<th class="firstcell">department:</th>
+<td>
+(LDAP returned: <tmpl_var name="department" escape="html">)<br /><br />
+<select class="big" name="department">
+<tmpl_loop name='departments_select'><tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+</select>
+</td></tr>
+<tr>
+<th class="firstcell">school:</th>
+<td>
+(LDAP returned: <tmpl_var name="school" escape="html">)<br /><br />
+<select class="big" name="school">
+<tmpl_loop name='schools_select'><tmpl_include
+name="options_loop.tmpl"></tmpl_loop></select>
+</td></tr>
+
+<tr>
+<th class="firstcell">additional affiliations:</th>
+<td><input class="textform" size="40" type="text" name="add_affiliates" /></td></tr>
+<tr>
+<th class="firstcell">client since:</th>
+<td>
+<input class="textform" type="text" name="registration_date" value="<tmpl_var
+name="year" escape="html">-<tmpl_var name="month"
+escape="html">-<tmpl_var name="day" escape="html">"
+onclick="getCalN(this,2)" size="15" />
+</td></tr>
+<tr>
+<th class="firstcell">phone:</th>
+<td><input class="textform" size="30" type="text" name="phone" value="<tmpl_var name="phone" escape="html">" /></td></tr>
+<tr>
+<th class="firstcell">email:</th>
+<td><input class="textform" size="30" type="text" name="client_email" value="<tmpl_var name="client_email" escape="html">" /></td></tr>
+<tr>
+<th class="firstcell">CCNMTL contact:</th>
+<td><select class="xmedium" name="contact">
+<tmpl_loop name="users_select"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
+</select></td></tr>
+<tr>
+<th class="firstcell">comments:</th>
+<td><div class="resizer" id="commentbox"><textarea class="textform" name="comments" cols="40" rows="10"
+wrap="virtual"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
+height="20" alt="" /></div></td></tr>
+
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="ADD CLIENT" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+</tmpl_unless>
+<script type="text/javascript">
+SET_DHTML("commentbox"+RESIZABLE)
+</script>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

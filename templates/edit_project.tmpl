@@ -1,0 +1,359 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECTS: <a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
+<span class="hide">PROJECTS:</span> &#62; Project Information<br />
+<span class="hide">PROJECTS: &#62; </span> 
+<a href="home.pl?mode=project_info;pid=<tmpl_var name="pid" escape="url">" class="actionbutton">view information</a>
+<a href="home.pl?mode=delete_project;pid=<tmpl_var name="pid">" class="actionbutton">delete project</a>
+</h1>
+
+
+<form action="update_project.pl" method="POST" onsubmit="select_all(this.managers);select_all(this.developers);select_all(this.guests);select_all(this.clients)">
+<input type="hidden" name="pid" value="<tmpl_var name="pid">" />
+
+<table cellpadding="0" cellspacing="0" class="pmtform">
+<tr>
+<th colspan="3" class="formcategory">Description
+<!--
+&#160;&#160;&#160;
+<a href="#" class="actionbutton">help</a>
+-->
+</th>
+</tr>
+
+<tr>
+<th class="firstcell">Title:</th>
+<th>Project ID.:</th>
+<th>PMT View</th>
+</tr>
+
+<tr>
+<td class="firstcell"><input class="textform" type="text" name="name" size="40" value="<tmpl_var name="name">" /></td>
+<td nowrap="nowrap"><input class="textform" type="text" name="projnum" size="15" value="<tmpl_var name="projnum" escape="html">" /></td>
+<td><input type="radio" name="pub_view" value="public" <tmpl_if name="pub_view">checked="checked"</tmpl_if>/> public
+<input type="radio" name="pub_view" value="private" <tmpl_unless name="pub_view">checked="checked"</tmpl_unless>/> private
+ </td>
+</tr>
+
+<tr>
+<th class="firstcell" colspan="3">Description: (accepts HTML)</th>
+</tr>
+
+<tr>
+<td class="firstcell" colspan="3">
+<div class="resizer" id="descriptionbox">
+<textarea class="textform" name="description" cols="40" rows="8">
+<tmpl_var name="description">
+</textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20" height="20" alt="" />
+</div>
+</td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
+</tr>
+
+</table>
+
+
+<br />
+
+
+<table cellpadding="0" cellspacing="0" class="pmtform">
+<tr>
+<th colspan="4" class="formcategory">Details</th>
+</tr>
+
+<tr>
+<th class="firstcell">Status:</th>
+<th>Scale:</th>
+<th>Restriction:</th>
+<th>Distribution:</th>
+</tr>
+
+<tr>
+<td class="firstcell">
+<select name="status" class="medium">
+<tmpl_loop name="statuses">
+<option value="<tmpl_Var name="value" escape="html">"<tmpl_if name="selected"> selected="selected"</tmpl_if>><tmpl_var name="label" escape="html"></option>
+</tmpl_loop>
+</select>
+</td>
+<td>
+<select name="scale" class="medium">
+<tmpl_loop name="scales"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
+</select>
+</td>
+<td>
+<select name="restricted" class="medium">
+<tmpl_loop name="restricteds"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
+</select>
+</td>
+<td>
+<select name="distrib" class="medium">
+<tmpl_loop name="distribs"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
+</select>
+</td>
+</tr>
+
+<tr>
+<th class="firstcell">Type:</th>
+<th>Approach:</th>
+<th colspan="2">Discipline:</th>
+</tr>
+
+<tr>
+<td class="firstcell">
+<select name="type" class="medium">
+<tmpl_loop name="types"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
+</select>
+</td>
+
+<td>
+<select name="approach" class="medium">
+<tmpl_loop name="approaches"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
+</select>
+</td>
+
+<td colspan="2">
+<select name="area" class="big">
+<tmpl_loop name="areas"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
+</select>
+</td>
+</tr>
+
+<tr>
+<th class="firstcell">&nbsp;</th>
+<th>Released?:</th>
+<th colspan="2">Poster Project?:</th>
+</tr>
+
+<tr>
+<td class="firstcell" nowrap="nowrap">&nbsp;</td>
+<td nowrap="nowrap">
+<input type="radio" name="entry_rel" value="t" 
+<tmpl_if name="entry_rel"> checked="checked"</tmpl_if> /> Yes
+<input type="radio" name="entry_rel" value="f"
+<tmpl_unless name="entry_rel"> checked="checked"</tmpl_unless> /> No</td>
+
+<td colspan="2">
+<input type="radio" name="poster" value="t" 
+<tmpl_if name="poster"> checked="checked"</tmpl_if> /> Yes
+<input type="radio" name="poster" value="f"
+<tmpl_unless name="poster"> checked="checked"</tmpl_unless> /> No
+</td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="4" class="end">&nbsp;</td>
+</tr>
+</table>
+
+
+<br />
+
+
+<table cellpadding="0" cellspacing="0" class="pmtform">
+<tr>
+<th colspan="3" class="formcategory">Personnel</th>
+</tr>
+
+<tr>
+<th class="firstcell" colspan="3">Caretaker:</th>
+</tr>
+
+<tr>
+<td class="firstcell" colspan="3">
+<select name="caretaker" class="big">
+<tmpl_loop name="caretaker_select">
+<option value="<tmpl_var name="value" escape="html">"<tmpl_if
+name="selected"> selected="selected"</tmpl_if>><tmpl_var
+name="label" escape="html"></option></tmpl_loop>
+</select>
+</td>
+</tr>
+
+<tr>
+<th class="firstcell" width="35%">Available staff:</th>
+<th width="15%">&#160;</th>
+<th width="50%">Current Managers:</th>
+</tr>
+
+<tr>
+<td class="firstcell" rowspan="5"><!-- list of all available staff -->
+<select class="available" name="personnel_select" size="20" multiple="multiple">
+<tmpl_loop name="all_non_personnel">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+</select>
+</td>
+<td align="center" valign="middle"><!-- arrows for managers -->
+<input class="button" onclick="move(this.form.personnel_select, this.form.managers)" type="button" value="&gt;&gt;"/>
+<br />
+<br />
+<input class="button" onclick="move(this.form.managers, this.form.personnel_select)" type="button" value="&lt;&lt;"/>
+</td>
+<td><!-- list of current managers -->
+<select class="activated" name="managers" size="5" multiple="multiple">
+<tmpl_loop name="managers">
+<option value="<tmpl_var name="username" escape="html">"><tmpl_var name="fullname" escape="html"></option>
+</tmpl_loop>
+</select>
+</td>
+</tr>
+
+<tr>
+<th>&#160;</th>
+<th>Current Developers:</th>
+</tr>
+
+<tr>
+<td align="center" valign="middle"><!-- arrows for developers -->
+<input onclick="move(this.form.personnel_select, this.form.developers)" type="button" value="&gt;&gt;"/>
+<br />
+<br />
+<input onclick="move(this.form.developers, this.form.personnel_select)" type="button" value="&lt;&lt;"/>
+</td>
+<td><!-- list of current developers -->
+<select class="activated" name="developers" size="5" multiple="multiple">
+<tmpl_loop name="developers">
+<option value="<tmpl_var name="username" escape="html">"><tmpl_var name="fullname" escape="html"></option>
+</tmpl_loop>
+</select>
+</td>
+</tr>
+
+<tr>
+<th>&#160;</th>
+<th>Current Guests:</th>
+</tr>
+
+<tr>
+<td align="center" valign="middle"><!-- arrows for guests -->
+<input onclick="move(this.form.personnel_select, this.form.guests)" type="button" value="&gt;&gt;"/>
+<br />
+<br />
+<input onclick="move(this.form.guests, this.form.personnel_select)" type="button" value="&lt;&lt;"/>
+</td>
+<td><!-- list of current guests -->
+<select class="activated" name="guests" size="5" multiple="multiple">
+<tmpl_loop name="guests">
+<option value="<tmpl_var name="username" escape="html">"><tmpl_var name="fullname" escape="html"></option>
+</tmpl_loop>
+</select>
+</td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
+</tr>
+
+</table>
+
+
+<br />
+
+
+<table cellpadding="0" cellspacing="0" class="pmtform">
+<tr>
+<th colspan="2" class="formcategory">Documents</th>
+</tr>
+
+<tr>
+<th class="firstcell" class="firstcell">Project URL:</th>
+<th>Information URL:</th>
+</tr>
+
+<tr>
+<td class="firstcell" nowrap="nowrap"><input class="textform" type="text" name="url" value="<tmpl_var name="url" escape="html">" size="40" /></td>
+<td nowrap="nowrap"><input class="textform" type="text" name="info_url" value="<tmpl_var name="info_url" escape="html">" size="40" /></td>
+</tr>
+
+<tr>
+<th class="firstcell" colspan="2">Evaluation URL:</th>
+</tr>
+
+<tr>
+<td class="firstcell" nowrap="nowrap"><input class="textform" type="text" name="eval_url" value="<tmpl_var name="eval_url" escape="html">" size="40" /></td>
+<td nowrap="nowrap"><a href="home.pl?mode=project_documents;pid=<tmpl_var name="pid">">Project Documents &#62;</a></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+
+</table>
+
+
+<br />
+
+
+<table cellpadding="0" cellspacing="0" class="pmtform">
+<tr>
+<th colspan="3" class="formcategory">Client Information</th>
+</tr>
+
+<tr>
+<th class="firstcell" width="35%">Client list:</th>
+<th width="15%">&#160;</th>
+<th width="50%">Project's Client:</th>
+</tr>
+
+<tr>
+<td class="firstcell" nowrap="nowrap"><!-- list of available clients -->
+<select class="available" name="clients_select" size="5" multiple="multiple">
+<tmpl_loop name="all_non_clients">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+</select></td>
+<td align="center" valign="middle"><!-- arrow for clients -->
+<input onclick="move(this.form.clients_select, this.form.clients)" type="button" value="&gt;&gt;"/>
+<br />
+<br />
+<input onclick="move(this.form.clients, this.form.clients_select)" type="button" value="&lt;&lt;"/>
+</td>
+<td><!-- list of current clients -->
+<select class="activated" name="clients" size="5" multiple="multiple">
+<tmpl_loop name="clients">
+<option value="<tmpl_var name="client_id" escape="html">"><tmpl_var name="lastname" escape="html">, <tmpl_var name="firstname" escape="html"></option>
+</tmpl_loop>
+</select>
+
+<p>
+<a href="home.pl?mode=add_client_form">Add new client &#62;</a>
+</p>
+</td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
+</tr>
+
+</table>
+
+
+<div style="width:710px; text-align:center;">
+<input type="submit" value="UPDATE PROJECT INFORMATION" class="button" />
+</div>
+
+
+</form>
+
+
+
+<br />
+
+
+
+<script type="text/javascript">
+SET_DHTML("descriptionbox"+RESIZABLE)
+</script>
+
+
+</div>
+<tmpl_include name="footer.tmpl">

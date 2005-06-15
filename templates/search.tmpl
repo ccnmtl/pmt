@@ -1,0 +1,274 @@
+<tmpl_include name="header_items.tmpl">
+<tmpl_unless name="hide_menu">
+	<tmpl_include name="menu_global.tmpl">
+	<tmpl_include name="menu_local_items.tmpl">
+</tmpl_unless>
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>ITEMS: Search Items
+<tmpl_if name="results">
+<!-- === Begin displaying search results === -->
+<tmpl_if name="found_items">
+<tmpl_if name="results_title"><br />
+<span class="hide">ITEMS:</span> &#62; <tmpl_var name="results_title" escape="html">
+</tmpl_if>
+</h1>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr>
+<tmpl_if name="show_title"><th class="firstcell">item:</th></tmpl_if>
+<tmpl_if name="show_description"><th>description:</th></tmpl_if>
+<tmpl_if name="show_priority"><th>priority:</th></tmpl_if>
+<tmpl_if name="show_target_date"><th>target date:</th></tmpl_if>
+<tmpl_if name="show_owner"><th>owner:</th></tmpl_if>
+<tmpl_if name="show_assigned"><th>assigned to:</th></tmpl_if>
+<tmpl_if name="show_url"><th>url:</th></tmpl_if>
+<tmpl_if name="show_keywords"><th>keywords:</th></tmpl_if>
+<tmpl_if name="show_dependencies"><th>dependencies:</th></tmpl_if>
+<tmpl_if name="show_dependents"><th>dependents:</th></tmpl_if>
+<tmpl_if name="show_comments"><th>comments:</th></tmpl_if>
+<tmpl_if name="show_history"><th>history:</th></tmpl_if>
+<tmpl_if name="show_project"><th>project:</th></tmpl_if>
+<tmpl_if name="show_milestone"><th>milestone:</th></tmpl_if>
+<tmpl_if name="show_status"><th>status:</th></tmpl_if>
+<tmpl_if name="show_last_mod"><th>last modified:</th></tmpl_if>
+</tr>
+
+<tmpl_loop name="items">
+<tr><tmpl_if name="show_title"><td class="firstcell"><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /> <a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid">: <tmpl_var name="title"></a></td></tmpl_if>
+<tmpl_if name="show_description"><td><tmpl_var name="description"></td></tmpl_if>
+<tmpl_if name="show_priority"><td class="pr<tmpl_var
+name="priority">"><tmpl_var name="priority_label"></td></tmpl_if>
+<tmpl_if name="show_target_date"><td><tmpl_var name="target_date"></td></tmpl_if>
+<tmpl_if name="show_owner"><td><a href="user.pl?username=<tmpl_var name="owner">"><tmpl_var name="owner_fullname"></a></td></tmpl_if>
+<tmpl_if name="show_assigned"><td><a href="user.pl?username=<tmpl_var name="assigned_to">"><tmpl_var name="assigned_to_fullname"></a></td></tmpl_if>
+<tmpl_if name="show_url"><td><tmpl_if name="url"><a target="_blank" href="<tmpl_var name="url">"><tmpl_var name="url"></a><tmpl_else>&nbsp;</tmpl_if></td></tmpl_if>
+<tmpl_if name="show_keywords"><td><tmpl_loop name="keywords"><tmpl_var name="keyword">, </tmpl_loop></td></tmpl_if>
+<tmpl_if name="show_dependencies"><td><tmpl_loop name="dependencies">
+<a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid">
+<tmpl_var name="title"> [<tmpl_if name="r_status"><tmpl_var
+name="r_status"><tmpl_else><tmpl_var name="status"></tmpl_if>]<br />
+</tmpl_loop></td></tmpl_if>
+<tmpl_if name="show_dependents"><td><tmpl_loop name="dependents">
+<a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid">
+<tmpl_var name="title"> [<tmpl_if
+name="r_status"><tmpl_var name="r_status"><tmpl_else><tmpl_Var
+name="status"></tmpl_if>]<br />
+</tmpl_loop></td></tmpl_if>
+<tmpl_if name="show_comments"><td><tmpl_loop name="comments">
+<b>-- <tmpl_var name="fullname"> @ <tmpl_var name="add_date_time"></b><br />
+<br /><tmpl_var name="comment"><br /><br />
+</tmpl_loop>
+</td></tmpl_if>
+<tmpl_if name="show_history"><td><table>
+<tmpl_loop name="history">
+<tr>
+<td class="<tmpl_var name="status">"><tmpl_var name="status"></td>
+<td><tmpl_var name="comment"><hr />by <a href="user.pl?username=<tmpl_var name="username">"><tmpl_var name="fullname"></a> 
+at <tmpl_var name="event_date_time"></td>
+</tr>
+</tmpl_loop>
+</table>
+</td></tmpl_if>
+<tmpl_if name="show_project"><td><a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td></tmpl_if>
+<tmpl_if name="show_milestone"><td><a href="milestone.pl?mid=<tmpl_var name="mid">"><tmpl_var name="milestone"></a></td></tmpl_if>
+<tmpl_if name="show_status"><td class="<tmpl_var name="status">"><tmpl_if
+name="r_status"><tmpl_var name="r_status"><tmpl_else><tmpl_var
+name="status"></tmpl_if></td></tmpl_if>
+<tmpl_if name="show_last_mod"><td><tmpl_var name="last_mod"></td></tmpl_if>
+</tr>
+</tmpl_loop>
+</table>
+<hr align="left" noshade size="1">
+<br />
+<br />
+<tmpl_else>
+<p><b>There are no items found matching your query.</b></p>
+</tmpl_if>
+<!-- === End displaying search results === -->
+
+
+
+
+<!-- === Begin displaying search form === -->
+<tmpl_else>
+</h1>
+
+<form action="search.pl" method="GET">
+<table cellpadding="0" cellspacing="0" class="pmtform">
+
+<tr>
+<th class="firstcell">include:</th>
+<td>
+<input type="radio" checked="true" name="type" value="%"> both bugs and action items<br />
+<input type="radio" name="type" value="bug"> just bugs<br />
+<input type="radio" name="type" value="action item"> just action items
+</td>
+</tr>
+<tr>
+<th class="firstcell">
+project:</th><td> <select name="pid" class="big">
+         <option value="%">- All projects -</option>
+<tmpl_loop name="projects">
+<option value="<tmpl_var name="pid">">
+<tmpl_var name="name"></option>
+</tmpl_loop>
+<tmpl_loop name="pub_projects">
+<option value="<tmpl_var name="pid">">
+<tmpl_Var name="name"></option>
+</tmpl_loop>
+</select></td></tr>
+<tr>
+<th class="firstcell">owned by:</th><td> <select name="owner" class="big">
+<option value="%">- Any user -</option>
+<tmpl_loop name="users">
+<option value="<tmpl_var name="username">"><tmpl_var name="fullname"></option>
+</tmpl_loop>
+</select></td></tr>
+<tr>
+<th class="firstcell">assigned to: </th><td><select name="assigned_to" class="big">
+<option value="%">- Any user -</option>
+<tmpl_loop name="users">
+<option value="<tmpl_var name="username">"><tmpl_var name="fullname"></option>
+</tmpl_loop>
+</select></td></tr>
+<tr>
+<th class="firstcell">status:</th><td> 
+<table cellspacing="0" cellpadding="0">
+<tr><td style="border: 0px; padding: 0 10px 0 0;">
+<nobr><input type="checkbox" name="status" value="OPEN">
+OPEN</nobr><br />
+<nobr><input type="checkbox" name="status" value="UNASSIGNED">
+UNASSIGNED</nobr><br />
+<nobr><input type="checkbox" name="status" value="INPROGRESS">
+IN PROGRESS</nobr><br />
+<nobr><input type="checkbox" name="status" value="RESOLVED_%">
+RESOLVED (ANY)</nobr><br />
+</td>
+<td style="border: 0px; padding: 0 10px 0 0;">
+<nobr><input type="checkbox" name="status" value="RESOLVED_FIXED">
+RESOLVED (FIXED)</nobr><br />
+
+        <input type="checkbox" name="status" value="RESOLVED_INVALID">
+        RESOLVED (INVALID)<br />
+        <input type="checkbox" name="status" value="RESOLVED_WONTFIX">
+        RESOLVED (WONTFIX)<br />
+        <input type="checkbox" name="status" value="RESOLVED_DUPLICATE">
+        RESOLVED (DUPLICATE)<br />
+</td>
+<td style="border: 0px; padding: 0 10px 0 0;">
+        <input type="checkbox" name="status" value="RESOLVED_NEEDINFO"/>
+        RESOLVED (NEEDINFO)<br />
+        <input type="checkbox" name="status" value="RESOLVED_WORKSFORME">
+        RESOLVED (WORKSFORME)<br />
+
+        <input type="checkbox" name="status" value="VERIFIED">
+        VERIFIED<br />
+        <input type="checkbox" name="status" value="CLOSED"> CLOSED
+</td></tr></table>
+</td></tr>
+<tr>
+<th class="firstcell">show first </th><td><input class="textform" size="15" type="text" name="limit" value="100" />
+(type '0' to display them all)</td></tr>
+<tr>
+<th class="firstcell">sort by: </th><td><select name='sortby' class="medium">
+<option value="priority">priority</option>
+<option value="target_date">target date</option>
+<option value="project">project</option>
+<option value="milestone">milestone</option>
+<option value="owner">owner</option>
+<option value="assigned_to">assigned to</option>
+<option value="status">status</option>
+<option value="last_mod">last modified time</option>
+<option value="created">date added</option>
+</select> <input type="radio" name="order" checked="true" value="ASC" /> ascending
+<input type="radio" name="order" value="DESC" /> descending
+</td></tr>
+<tr>
+<th class="firstcell">mentioning:</th><td><input class="textform" size="20" type="text" name="q" /></td></tr>
+<tr>
+<th class="firstcell">with target date:</th>
+<td>
+<table cellspacing="0" cellpadding="0">
+<tr valign="middle">
+<td style="border: 0px; padding: 0 10px 4px 0; vertical-align: middle;">before:</td><td style="border: 0px; padding: 0 10px 4px 0;"><input class="textform" size="20" type="text" name="max_date" onclick="getCalN(this,2)" /></td>
+</tr>
+<tr valign="middle">
+<td style="border: 0px; padding: 0 10px 0 0; vertical-align: middle;">after:</td><td style="border: 0px; padding: 0 10px 0 0;"><input class="textform" size="20" type="text" name="min_date" onclick="getCalN(this,2)" />
+</td>
+</tr>
+</table>
+</td></tr>
+<tr>
+<th class="firstcell">result page title:</th><td><input class="textform" size="20" type="text" name="results_title"
+        value="Search Results" /></td></tr>
+<tr>
+<th class="firstcell">display:</th><td>
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td style="border: 0px; padding: 0 10px 0 0;">
+<input type="checkbox" name="show" checked="true" value="title">
+title<br />
+<input type="checkbox" name="show" value="description"> description<br />
+<input type="checkbox" name="show" value="priority"> priority<br />
+<input type="checkbox" name="show" value="target_date"> target date<br />
+</td>
+<td style="border: 0px; padding: 0 10px 0 0;">
+<input type="checkbox" name="show" value="owner"> owner <br />
+<input type="checkbox" name="show" value="assigned"> assigned to <br />
+<input type="checkbox" name="show" value="url"> url<br />
+<input type="checkbox" name="show" value="keywords"> keywords<br />
+</td>
+<td style="border: 0px; padding: 0 10px 0 0;">
+<input type="checkbox" name="show" value="dependencies">
+dependencies<br />
+<input type="checkbox" name="show" value="dependents"> dependents<br />
+<input type="checkbox" name="show" value="comments"> comments<br />
+<input type="checkbox" name="show" value="history"> history<br />
+</td>
+<td style="border: 0px; padding: 0 10px 0 0;">
+<input type="checkbox" name="show" value="project"> project <br />
+<input type="checkbox" name="show" value="milestone">milestone <br />
+<input type="checkbox" name="show"  checked="true"
+value="status">status <br />
+<input type="checkbox" name="show" value="last_mod">last modified date
+<br />
+</td></tr>
+</table>
+</td></tr>
+<tr>
+<th class="firstcell">tab delimited:</th>
+<td><input type="checkbox" name="csv" /> for importing into a
+spreadsheet (not all attributes can be
+displayed when results are tab delimited)</td></tr>
+<tr>
+<th class="firstcell">RSS:</th>
+<td><input type="checkbox" name="rss" /> (only title and description
+        will be included in feed)</td></tr>
+<tr>
+<th class="firstcell">hide PMT menu:</th>
+<td><input type="checkbox" name="hide_menu" /> useful for generating
+        nice reports</td></tr>
+<tr><td colspan="2" class="firstcell" align="center">
+<input type="submit" class="button" value="SEARCH/FILTER NOW" />
+</td></tr>
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+<!-- === Begin displaying search form === -->
+
+
+</tmpl_if>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+<tmpl_include name="footer.tmpl">

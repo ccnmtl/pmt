@@ -1,0 +1,112 @@
+<!-- ===== GLOBAL NAVIGATION ===== -->
+<div id="globalnav">
+
+
+<!-- === pmt logo === -->
+<div id="pmtlogo"><img src="images/pmt_logo.gif" alt="CCNMTL: PMT" width="168" height="53" /></div>
+<!-- === end pmt logo === -->
+
+
+<!-- === primary navigation location === -->
+<div id="primenavposition">
+
+
+<!-- = primary navigation: user navigation location = -->
+<div id="usernavigation">
+
+<div class="username">
+User: <a href="home.pl"><tmpl_var name="username"></a> |  
+<a href="logout.pl">LOGOUT</a>  |  
+<a href="home.pl?mode=user_settings_form">PROFILE</a>
+</div>
+<!--  primary navigation: user navigation: quickjump to projects  -->
+<div class="quickjump">
+<form action="project.pl" method="get">
+	<select class="dropdown" size="1" onchange="sendIt(this.options[selectedIndex].value);reset()">
+		<option selected="selected" value="">QUICK ACCESS TO PROJECT:</option>
+		<option value="">---------------------------</option>
+		<tmpl_loop name="projects">
+		<option value="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></option>
+		</tmpl_loop>
+	</select>
+</form>
+</div>
+<!--  end primary navigation: user navigation: quickjump to projects  -->
+
+</div>
+<!-- = end primary navigation: user navigation location = -->
+
+<!-- = primary navigation: pmt css-dropdown navigation location = -->
+<div id="pmtnavigation">
+<ul id="nav" class="navigationlist"> 
+  <li id="items"><a href="home.pl">Items <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+    <ul class="item_list"> 
+      <li class="alignfirst"><a href="home.pl">My Items</a></li> 
+      <li class="subitem"><a href="home.pl?mode=add_trackers_form"><img class="dropdown_arrow" src="images/subitem.gif" alt="" /> Add Tracker</a></li> 
+      <li><a href="search.pl?type=%25&pid=%25&owner=<tmpl_var name="username" escape="url">&assigned_to=%25&status=OPEN&status=UNASSIGNED&status=INPROGRESS&status=RESOLVED_%25&limit=100&sortby=priority&order=DESC&show=title&show=priority&show=target_date&show=assigned&show=project&show=status&results_title=Owned+Items">Owned Items</a></li> 
+      <li><a href="home.pl?mode=watched_items">Watched Items</a></li> 
+      <li><a href="search.pl">Search Items</a></li> 
+    </ul> 
+
+</li> 
+  <li id="projects"><a href="home.pl?mode=my_projects">Projects <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+    <ul class="project_list"> 
+      <li class="alignfirst"><a href="home.pl?mode=my_projects">My Projects</a></li> 
+      <li><a href="home.pl?mode=all_projects">All Projects</a></li> 
+      <li><a href="home.pl?mode=add_project_form">Create New Project</a></li> 
+      <li><a href="home.pl?mode=project_search_form">Search Projects</a></li> 
+    </ul> 
+  </li>  
+  <li id="clients"><a href="client_search.pl?contact=<tmpl_var name="username" escape="url">;status=active">Clients <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+    <ul class="client_list"> 
+      <li class="alignfirst"><a href="client_search.pl?contact=<tmpl_var name="username" escape="url">;status=active">My Clients</a></li> 
+      <li><a href="clients.pl">All Clients</a></li> 
+      <li class="subitem"><a href="home.pl?mode=add_client_form"><img class="dropdown_arrow" src="images/subitem.gif" alt="" /> Add Clients</a></li> 
+      <li class="subitem"><a href="client_search.pl"><img class="dropdown_arrow" src="images/subitem.gif" alt="" /> Search Clients</a></li> 
+      <li><a href="new_clients.pl">New Clients</a></li> 
+    </ul> 
+  </li> 
+  <li id="usergroup"><a href="home.pl?mode=my_groups">Users/Groups <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+    <ul class="group_list"> 
+      <li class="alignfirst"><a href="home.pl?mode=my_groups">My Groups</a></li> 
+      <li><a href="group.pl">All Groups</a></li> 
+      <li><a href="users.pl">All Users</a></li> 
+    </ul> 
+  </li>  
+  <li id="reports"><a href="home.pl?mode=my_reports">Reports <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+    <ul class="report_list"> 
+      <li class="alignfirst"><a href="home.pl?mode=my_reports">My Reports</a></li> 
+      <li><a href="home.pl?mode=global_reports">Global Reports</a></li> 
+    </ul> 
+  </li> 
+  <li><a href="http://wiki.ccnmtl.columbia.edu/index.php/PMT_Tutorial">Help</a></li> 
+  <li id="forum"><a href="forum.pl">Forums <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+    <ul class="forum_list"> 
+      <li class="alignfirst"><a href="forum.pl">View Forums</a></li> 
+      <li><a href="home.pl?mode=post_form">Post Forum</a></li> 
+    </ul> 
+  </li> 
+  <li><a href="http://wiki.ccnmtl.columbia.edu/">Wiki</a></li> 
+
+</ul> 
+</div>
+<!-- = primary navigation: pmt css-dropdown navigation location = -->
+
+
+</div>
+<!-- === end primary navigation location === -->
+
+
+</div>
+<!-- ===== END GLOBAL NAVIGATION ===== -->
+
+
+<!-- ===== PRINT HEADER ===== -->
+<div id="print_header">CCNMTL Project Management Tool</div>
+<!-- ===== END PRINT HEADER ===== -->
+
+
+
+
+
+

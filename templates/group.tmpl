@@ -1,0 +1,49 @@
+<tmpl_include name="header_usergroup.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_usergroup.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>USERS/GROUPS: <!--<a href="user.pl?username=<tmpl_var name="group" escape="url">">--><tmpl_var name="group_name"><br />
+<span class="hide">USERS/GROUPS:  </span> 
+<a class="actionbutton" href="home.pl?mode=group_activity_summary;group_name=<tmpl_var
+name="group" escape="url">">group activity summary</a>
+</h1>
+
+<tmpl_if name="users">
+<ul>
+<tmpl_loop name="users">
+<li><a href="user.pl?username=<tmpl_var name="username"
+escape="url">"><tmpl_var name="fullname"></a></li>
+</tmpl_loop>
+</ul>
+</tmpl_if>
+
+<br />
+
+<h2>update group:</h2>
+<form action="update_group.pl" method="post">
+<input type="hidden" name="group" value="<tmpl_var name="group">" />
+<select class="available" style="width: 290px;" name="users" multiple="multiple" size="10">
+<tmpl_loop name="group_select_list">
+<option value="<tmpl_var name="value" escape="html">" 
+<tmpl_if name="selected">selected="selected"</tmpl_if>><tmpl_var
+name="label" escape="html"></option>
+</tmpl_loop>
+</select>
+<br />
+<br />
+<input type="submit" value="UPDATE GROUP" class="button">
+
+</form>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

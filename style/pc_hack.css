@@ -1,0 +1,62 @@
+#pmtnavigation
+{
+	position: absolute;
+	top: 32px;
+	/* border-bottom: solid 1px #fff; */
+}
+
+
+#usernavigation
+{
+	height: 31px; 
+}
+
+ul.item_list {
+	top: 21px;
+	left: -39px;
+	}
+
+ul.project_list {
+	top: 21px;
+	left: 42px;
+	}
+
+ul.client_list {
+	top: 21px;
+	left: 124px;
+	}
+
+ul.group_list {
+	top: 21px;
+	left: 206px;
+	}
+
+ul.report_list {
+	top: 21px;
+	left: 312px;
+	}
+
+ul.forum_list {
+	top: 21px;
+	left: 476px;
+	}
+
+ul.navigationlist li
+{
+	font: normal 12px "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+}
+
+ul.navigationlist li a {
+	padding-top: 1px;
+	padding-bottom: 1px;
+	}
+
+ul.navigationlist li#items
+{
+	border-left: solid 1px #40536A;
+}
+
+form.pclayer
+{
+z-index: -1;
+}

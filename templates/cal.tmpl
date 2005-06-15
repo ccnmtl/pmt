@@ -1,0 +1,39 @@
+<html>
+<head><title>date picker</title>
+<script type="text/javascript" language="javascript">
+
+function setDate(someDate) {
+    var elementName = window.opener.calvar;
+    var formnum = window.opener.formnum;
+    eval ("window.opener.document.forms[" + formnum + "]." + elementName + ".value = someDate");
+    window.close();
+}
+
+</script>
+
+<style type="text/css">
+body {margin: 0px; padding: 0px;}
+th {color: #666; background-color: #ccc; text-align: center;
+border-bottom: #000 solid 1px;
+}
+td {color: #000; background-color: #fff; text-align: right;
+border-bottom: #eee solid 1px;
+border-right: #eee solid 1px;
+}
+a {text-decoration: none;}
+td a {display: block;}
+a:link {color: #f00;}
+a:visited {color: #f00;}
+a:hover {color: #fff; background-color: #f00;}
+a:active {}
+.startday {background-color: #ddd;}
+</style>
+
+</head>
+
+<body>
+<tmpl_var name="cal">
+</body>
+</html>
+
+

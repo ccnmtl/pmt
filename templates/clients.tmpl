@@ -1,0 +1,67 @@
+<tmpl_include name="header_clients.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_clients.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>CLIENTS: All Clients<br />
+<span class="hide">CLIENTS:</span> &#62;
+<tmpl_loop name="letters"><tmpl_unless name="current"><a
+href="clients.pl?letter=<tmpl_var name="letter"
+escape="url">"><tmpl_else><span style="font-size: 19px;"></tmpl_unless><tmpl_var name="letter"
+escape="html"><tmpl_unless name="current"></a><tmpl_else></span></tmpl_unless> </tmpl_loop>
+</h1>
+ 
+ 
+ 
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<thead>
+<tr>
+<th class="firstcell">name:</th>
+<th>school:</th>
+<th>department:</th>
+<th>registered:</th>
+<th>contact:</th>
+<th>status:</th>
+<th>latest activity:</th>
+</tr>
+</thead>
+
+<tbody>
+<tmpl_loop name="clients">
+<tr><td class="firstcell"><a href="client.pl?client_id=<tmpl_var name="client_id"
+escape="url">"><tmpl_var name="lastname" escape="html">, <tmpl_var
+name="firstname" escape="html"></a></td>
+<td><tmpl_if name="school"><a
+href="client_search.pl?school=<tmpl_var name="school" escape="url">"><tmpl_var name="school" escape="html"></a></tmpl_if></td>
+<td><a href="client_search.pl?department=<tmpl_var name="department" escape="url">"><tmpl_var name="department" escape="html"></a></td>
+<td><tmpl_var name="registration_date" escape="html"></td>
+<td><a href="user.pl?username=<tmpl_var name="contact"
+escape="url">"><tmpl_var name="contact_fullname" escape="html"></td>
+<td><tmpl_if name="inactive">Inactive<tmpl_else>Active</tmpl_if></td>
+<td nowrap="nowrap"><tmpl_if name="last_mod"><tmpl_var name="last_mod"><tmpl_else>&#160;</tmpl_if></td>
+</tr>
+</tmpl_loop>
+</tbody>
+
+<tfoot>
+<tr>
+<!-- ## Closing row --><td colspan="7" class="end">&nbsp;</td>
+</tr>
+</tfoot>
+</table>
+
+<p><tmpl_loop name="letters"><tmpl_unless name="current"><a
+href="clients.pl?letter=<tmpl_var name="letter"
+escape="url">"><tmpl_else><span style="font-size: larger; font-weight:bold;"></tmpl_unless><tmpl_var name="letter"
+escape="html"><tmpl_unless name="current"></a><tmpl_else></span></tmpl_unless> </tmpl_loop></p>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

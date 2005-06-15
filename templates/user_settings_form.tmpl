@@ -1,0 +1,26 @@
+<tmpl_include name="header.tmpl">
+<tmpl_include name="menu.tmpl">
+<div class="pagecontent">
+<tmpl_if name="message">
+<p class="message"><tmpl_var name="message"></p>
+</tmpl_if>
+
+<form action="home.pl" method="POST">
+<fieldset><legend>update user information</legend>
+<input type="hidden" name="mode" value="update_user" />
+<table>
+<tr><th>full name</th><td><input type="text" name="fullname"
+value="<tmpl_var name="fullname" escape="html">" /></td></tr>
+<tr><th>email</th><td><input type="text" name="email"
+value="<tmpl_var name="email" escape="html">" /></td></tr>
+<tr><th>change password to</th>
+<td><input type="password" name="new_pass" /></td></tr>
+<tr><th>verify</th><td><input type="password" name="new_pass2" /></td></tr>
+<tr><td colspan="2"><input type="submit" class="button" value="update"
+/></td></tr>
+</table>
+</fieldset>
+</form>
+</div>
+<tmpl_include name="footer.tmpl">
+

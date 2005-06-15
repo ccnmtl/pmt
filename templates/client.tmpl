@@ -1,0 +1,114 @@
+<tmpl_include name="header_clients.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_clients.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>CLIENTS: Client Information<br />
+<span class="hide">CLIENTS:</span> &#62; <tmpl_var name="firstname" escape="html"> <tmpl_var name="lastname" escape="html"><br />
+<span class="hide">CLIENTS: &#62; </span> 
+<a class="actionbutton" href="edit_client.pl?client_id=<tmpl_var name="client_id" escape="url">">edit client info</a>
+<a class="actionbutton" href="http://www.columbia.edu/cgi-bin/lookup.pl?fullname=<tmpl_var
+name="firstname" escape="url">%20<tmpl_var name="lastname"
+escape="url">">perform directory lookup</a>
+</h1>
+
+<form action="add_services_item.pl" method="get">
+<input type="hidden" name="client_id" value="<tmpl_var name="client_id" escape="html">"/>
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width:600px;">
+<tr><th class="firstcell" width="120">lastname:</th><td width="200"><tmpl_var name="lastname"
+escape="html"></td></tr>
+<tr><th class="firstcell">firstname:</th><td><tmpl_var name="firstname"
+escape="html"></td></tr>
+<tr><th class="firstcell">title:</th><td><tmpl_var name="title"
+escape="html"></td></tr>
+<tr><th class="firstcell">status:</th><td><tmpl_var name="status" escape="html"></td></tr>
+<tr><th class="firstcell">department:</th><td><tmpl_var name="department"
+escape="html"></td></tr>
+<tr><th class="firstcell">school:</th><td><tmpl_var name="school"
+escape="html"></td></tr>
+<tmpl_if name="add_affiliation">
+<tr><th class="firstcell">additional affiliations:</th><td><tmpl_var name="add_affiliation"
+escape="html"></td></tr>
+</tmpl_if>
+<tr><th class="firstcell">client since:</th><td><tmpl_var name="registration_date" escape="html"></td></tr>
+<tr><th class="firstcell">phone:</th><td><tmpl_var name="phone"
+escape="html"></td></tr>
+<tr><th class="firstcell">email:</th><td><tmpl_var name="client_email"
+escape="html"></td></tr>
+<tr><th class="firstcell">CCNMTL contact:</th><td><a href="user.pl?username=<tmpl_var
+name="contact" escape="url">"><tmpl_var name="contact_fullname"
+escape="html"></a></td></tr>
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+<tr><th class="firstcell">add service item:</th><td nowrap="nowrap">
+To project:<br />
+<select class="xmedium" name="pid">
+<option value="132">Courseworks &amp; Services</option>
+<option value="235">204 traffic</option>
+<option value="95">NMA Work Requests</option>
+<option value="188">Outreach Strategy</option>
+<option value="177">General Video Requests</option>
+<option value="119">General Meetings</option>
+<tmpl_loop name="client_projects">
+<option value="<tmpl_var name="pid" escape="html">"><tmpl_var name="name" escape="html"></option>
+</tmpl_loop>
+</select>
+<input type="submit" name="type" value="TRACKER" class="button" />
+<input type="submit" name="type" value="ACTION ITEM" class="button"/>
+<input type="submit" name="type" value="BUG" class="button" />
+</td></tr>
+<tmpl_if name="comments">
+<tr><th class="firstcell">comments:</th><td><tmpl_var name="comments"
+escape="html"></td></tr>
+</tmpl_if>
+<tfoot>
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</tfoot>
+</table>
+</form>
+
+
+<tmpl_if name="client_projects">
+<h2>Projects:</h2>
+<tmpl_loop name="client_projects"><a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var
+name="name" escape="html"></a><br /></tmpl_loop>
+</tmpl_if>
+<br />
+<br/>
+<tmpl_if name="recent_items">
+<h2>Recent Items:</h2>
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr>
+<th class="firstcell">item:</th>
+<th>status:</th>
+<th>last modified:</th>
+<th>project:</th>
+</tr>
+<tmpl_loop name="recent_items">
+<tr><td class="firstcell"><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class">" /><a href="item.pl?iid=<tmpl_var
+name="iid">"><tmpl_unless name="title">[<tmpl_Var name="iid">]</tmpl_unless><tmpl_var
+name="title"></a></td><td class="<tmpl_var name="status">"><tmpl_var
+name="status"></td><td><nobr><tmpl_var name="last_mod"></nobr></td><td><nobr><a href="project.pl?pid=<tmpl_var
+name="pid">"><tmpl_var name="project"></a></nobr></td></tr>
+</tmpl_loop>
+<tfoot>
+<tr>
+<!-- ## Closing row --><td colspan="4" class="end">&nbsp;</td>
+</tr>
+</tfoot>
+</table>
+</tmpl_if>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

@@ -1,0 +1,55 @@
+<tmpl_include name="header_clients.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_clients.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>CLIENTS: All Clients<br />
+<span class="hide">CLIENTS:</span> &#62;
+New Clients for <tmpl_var name="month" escape="html"> <tmpl_var name="year" escape="html"></h1>
+
+<p>&#60;&#60; <a
+href="new_clients.pl?year=<tmpl_var name="pm_year"
+escape="url">;month=<tmpl_Var name="pm_month"
+escape="url">;day=<tmpl_var name="pm_day" escape="url">"><tmpl_var
+name="pm_mon" escape="html"></a> -- <a
+href="new_clients.pl?year=<tmpl_Var name="nm_year"
+escape="url">;month=<tmpl_var name="nm_month"
+escape="url">;day=<tmpl_var name="nm_day" escape="url">"><tmpl_var
+name="nm_mon" escape="html"></a> &#62;&#62;</p>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr>
+<th class="firstcell">name:</th>
+<th>school:</th>
+<th>department:</th>
+<th>registered:</th>
+<th>contact:</th>
+</tr>
+<tmpl_loop name="clients">
+<tr><td class="firstcell"><a href="client.pl?client_id=<tmpl_var name="client_id"
+escape="url">"><tmpl_var name="lastname" escape="html">, <tmpl_var
+name="firstname" escape="html"></a></td>
+<td><a href="client_search.pl?school=<tmpl_var name="school" escape="url">"><tmpl_var name="school" escape="html"></a></td>
+<td><a href="client_search.pl?department=<tmpl_var name="department" escape="url">"><tmpl_var name="department" escape="html"></a></td>
+<td><tmpl_var name="registration_date" escape="html"></td>
+<td><a href="user.pl?username=<tmpl_var name="contact"
+escape="url">"><tmpl_var name="contact_fullname" escape="html"></td></tr>
+</tmpl_loop>
+
+<tfoot>
+<tr>
+<!-- ## Closing row --><td colspan="5" class="end">&nbsp;</td>
+</tr>
+</tfoot>
+</table>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<?cocoon-process type="xslt"?>
+<?xml-stylesheet href="/xsl/docbook/ccnmtl/docbook.xsl" type="text/xsl"?>
+
+<book>
+<bookinfo>
+<title>Requirements for Project Management Tool 2</title>
+<authorgroup>
+<author><firstname>Anders</firstname> <surname>Pearson</surname>
+</author>
+</authorgroup>
+
+<revhistory>
+<revision>
+    <revnumber>1.2</revnumber>
+    <date>2001-06-26</date>
+    <authorinitials>anders@columbia.edu</authorinitials>
+    <revremark>continued writing</revremark>
+</revision>
+
+
+<revision>
+    <revnumber>1.1</revnumber>
+    <date>2001-06-22</date>
+    <authorinitials>anders@columbia.edu</authorinitials>
+    <revremark>started writing</revremark>
+</revision>
+</revhistory>
+</bookinfo>
+<chapter id="introduction">
+<title>Introduction</title>
+<para>This document describes the functional specifications for version 2 of the
+Project. Management Tool</para>
+
+<para><emphasis>This document is not, by any stretch of the imagination,
+complete.</emphasis> All of the wording will need to be revised several times
+before it is finalized. </para>
+
+<para>This document does not discuss the design of the Project
+Management Tool, which will be discussed elsewhere. </para>
+
+<sect1 id="background">
+<title>Background</title>
+
+<para>A preliminary bug-tracking tool was implemented in the summer of
+2000 to aide in work on the DuBois MMT. It was extremely basic but was
+soon adopted for other projects. As its popularity grew, the center
+expanded, and the scope of center projects widened, the need became
+clear for a more scalable tool to aide the center for managing
+projects across multiple offices and tracking bugs. Version 1 of the
+PMT was written to address this need. User testing and feedback of
+version 1 has indicated that there are enough architectural and
+interface changes to warrant a complete overhaul of the PMT to create
+a new version.</para> 
+</sect1>
+
+
+</chapter>
+
+
+<chapter id="physical-requirements">
+<title>Physical Requirements</title>
+
+<para>The PMT2 must function primarily on a single server; initially
+the linux server located in 605 butler and potentially on an ACIS
+administered solaris or linux box in one of ACIS' server
+rooms. </para>
+
+</chapter>
+
+<chapter id="interfaces">
+<title>Interfaces</title>
+
+<para>As web-based software, the PMT2 will have to produce valid HTML
+compliant output that displays properly in standard web-browsers
+(specifically IE 4+ and Mozilla .8+, although most likely, older
+browsers will also be supported in functionality at least if not
+aesthetics). In the future it may be desirable to produce output in a
+format that may be transfered to a PDA for remote use; either as WML
+for web-enabled PDAs or as a CSV file for portable database
+software. Additionally, to facilitate integration with other future
+software, XML output would be desirable.</para>
+
+<para>Data will be input primarily through the web forms. So the
+system should be able to handle standard ascii text as input. For some
+fields, HTML input is allowable and should be handled
+appropriately.</para>
+
+</chapter>
+
+<chapter id="human-factors">
+<title>Users and Human Factors</title>
+
+<para> Users of the system will fall into one or more categories:
+developers, managers, guests, or admins. Users may be developers, managers, or guests on a project by project basis.</para>
+
+<para>Admins are responsible for maintaining the PMT2, making the
+occasional manual correction in the database, and fixing bugs in the
+PMT2. Admins will need to have an intimate knowledge of the PMT2's
+architecture and design as well as proficiency in perl, SQL, and CGI
+programming.</para>
+
+<para>Managers for a project are responsible for creating and
+maintaining their individual project databases. They should be
+familiar with the philosophical underpinnings of the PMT2, bug
+lifecycles, etc. No additional technical knowledge beyond how to
+operate a browser is required although a basic familiarity with HTML
+would allow them to make better use of the system.</para>
+
+<para>Developers for a project are only directly responsible for tasks
+that are assigned to them or that they assigned to other
+users. Understanding of basic bug lifecycles is necessary and
+understanding of the rest of the PMT2's functionality would be
+useful. No additional technical knowledge is necessary.</para>
+
+<para>Guests are users who are not directly associated with a
+project. They have read-only access to the components of the project
+(aside from bug reporting and adding comments to existing tasks). No
+deep understanding of the PMT2 or any technical knowledge is necessary
+or assumed.</para>
+
+<para>The interface of the PMT2 will strive to provide users with only
+relevant information and options, making it easy to use and difficult
+to misuse. However, the PMT2 can only enforce the "syntax" of project
+management and bug-tracking; it cannot enforce the "semantics". IE, it
+can ensure that only the owner of a bug may verify it but it cannot,
+through technical means, determine if a bug is reported with
+sufficient information for its reproduction and fixing or not.</para>
+
+</chapter>
+
+<chapter id="functionality">
+<title>Functionality</title>
+
+<para>See the <a href="/pmt/doc/arch.xml">Functional and Architectural Description for version 1</a> and the <a href="spec.xml">Functional Specification</a> for more detailed information on required functionality.</para>
+</chapter>
+
+<chapter id="documentation">
+<title>Documentation</title>
+
+<para>The PMT2 should have the user's guide and tutorial available online for users to consult. It should also have the design documents online for Admins or programmers modifying the code to consult.</para>
+</chapter>
+
+<chapter id="resources">
+<title>Resources</title>
+
+<para>The PMT2 will be built primarily by Anders. He will need help with user testing and quality assurance. </para>
+
+<para>The hope is to complete development of the major components of the PMT2 by the end of the summer (2001), working on the PMT2 in between other center projects, with continued feedback based adjustments being made after that.</para>
+ 
+<para>Any porting of the PMT2 to other languages (eg, java), databases (DB2, Oracle, etc), or moving of the PMT2 to an ACIS administered machine will require additional time and possibly personnel.</para>
+</chapter>
+
+<chapter id="security">
+<title>Security</title>
+
+<para>The user-focused interface of the system will handle control and
+security of most of the information (ie, only managers have the
+ability to delete tasks, etc). User authentication will be provided by
+a seperate module accessible to all scripts on www2. Ideally, a
+solution allowing integration of CCNMTL tools with ACIS' campus-wide
+kerberos authentication will be developed at some point in the near
+future. The module providing authentication for the PMT2 can then be
+swapped out for a kerberos module relatively painlessly.</para>
+
+<para>The database backing the PMT2 (along with the rest of the linux
+server) will be backed up automatically on a nightly basis to a
+different machine (the windows 2000 server) and should be archived to
+CD on a monthly basis.</para>
+
+</chapter>
+
+<chapter id="quality-assurance">
+<title>Quality Assurance</title>
+
+<para>Temporary system failure of the PMT2 would not be catastrophic
+from a center standpoint (ie, it would most likely not prevent other
+projects from being available or worked on) but would be a severe
+inconvenience to the managers and developers using it. Therefore, it
+is expected to have a relatively high availability rate.</para>
+
+<para>The PMT2 should be available 24/7 from on or off campus. Any
+problems arising that make the tool unavailable should be able to be
+fixed in under 24 hours. No more than 24 hours of downtime in a single
+month should be tolerated from the system.</para>
+
+</chapter>
+</book>

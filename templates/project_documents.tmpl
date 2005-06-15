@@ -1,0 +1,125 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECT: <a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
+<span class="hide">PROJECT:</span> &#62; Project Documents
+</h1>
+
+<!--
+<br />
+
+<tmpl_if name="documents">
+<ul>
+<tmpl_loop name="documents">
+<li>
+<a href="document.pl?did=<tmpl_var name="did" escape="url">"><tmpl_var
+name="title" escape="html"></a> <tmpl_if name="version">(version
+<tmpl_var name="version" escape="html">)</tmpl_if> <i>[<tmpl_var name="last_mod" escape="html">]</i>
+</li>
+</tmpl_loop>
+</ul>
+</tmpl_if>
+-->
+
+
+<br />
+
+
+<tmpl_if name="documents">
+<form action="home.pl" method="post">
+<input type="hidden" name="mode" value="delete_documents" />
+<input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
+
+<table cellpadding="0" cellspacing="0" class="itemlisting" style="width: 650px;">
+<tr><th class="firstcell">&#160;</th>
+<th>document:</th>
+<th>description:</th>
+</tr>
+<tmpl_loop name="documents">
+<tr><td class="firstcell"><input type="checkbox" name="del_<tmpl_var name="did" escape="html">" /></td>
+<td><a href="document.pl?did=<tmpl_var name="did" escape="url">"><tmpl_var
+name="title" escape="html"></a> <tmpl_if name="version">(version
+<tmpl_var name="version" escape="html">)</tmpl_if> <i>[<tmpl_var name="last_mod" escape="html">]</i>
+</td>
+<td><tmpl_if name="description"><tmpl_var name="description" escape="html"></tmpl_if>
+</td>
+</tr>
+</tmpl_loop>
+<tr><td colspan="3" class="firstcell" align="center"><input type="submit" value="DELETE SELECTED DOCUMENTS" /></td></tr>
+<tr>
+<!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+</tmpl_if>
+
+
+<br />
+
+<h2>Related Websites:</h2>
+
+<ul>
+	<tmpl_if name="url">
+	<li>Project URL: <a href="<tmpl_var name="url" escape="html">"><tmpl_var name="url" escape="html"></a></li>
+	<tmpl_else>
+		<li>There is no project URL</li>
+	</tmpl_if>
+	<tmpl_if name="info_url">
+	<li>Information URL: <a href="<tmpl_var name="info_url" escape="html">"><tmpl_var name="info_url" escape="html"></a></li>
+	<tmpl_else>
+		<li>There is no information URL</li>
+	</tmpl_if>
+	<tmpl_if name="eval_url">
+	<li>Evaluation URL: <a href="<tmpl_var name="eval_url" escape="html">"><tmpl_var name="eval_url" escape="html"></a></li>
+	<tmpl_else>
+		<li>There is no evaluation URL</li>
+	</tmpl_if>
+</ul>
+
+<br />
+
+
+<h2>add document:</h2>
+
+<form action="home.pl" method="post" enctype="multipart/form-data">
+<input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
+<input type="hidden" name="mode" value="add_document" />
+
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 650px;">
+<tr><th class="firstcell">select file:</th><td><input type="file" name="document"
+/></td></tr>
+<tr><th class="firstcell">or enter url:</th><td><input type="text" class="textform" name="url"
+value="http://" size="30" /></td></tr>
+<tr><th class="firstcell">title:</th><td><input type="text" class="textform" name="title" size="30" /></td></tr>
+<tr><th class="firstcell">version:</th><td><input type="text" class="textform" name="version" size="15" /></td></tr>
+<tr><th class="firstcell">description:</th><td><div class="resizer"
+id="documentdescriptionbox"><textarea wrap="virtual" class="textform" cols="40" rows="8"
+name="description"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
+height="20" alt="" /></div></td>
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" value="ADD DOCUMENT" class="button" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+
+</table>
+</form>
+
+<script type="text/javascript">
+SET_DHTML("documentdescriptionbox"+RESIZABLE)
+</script>
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

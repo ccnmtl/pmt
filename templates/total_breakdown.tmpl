@@ -1,0 +1,49 @@
+<tmpl_include name="header_reports.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_reports.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>REPORTS: Total Project Breakdown<br />
+<span class="hide">REPORTS: </span>
+&#62; A complete history of <a href="user.pl?username=<tmpl_var
+name="username" escape="url">"><tmpl_var name="fullname"></a>'s projects</h1>
+
+<p><b>Total Hours Logged:</b> <tmpl_var name="total_time"></p>
+
+<tmpl_if name="total_time">
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr><th class="firstcell">project:</th><th nowrap="nowrap">total time logged:</th></tr>
+<tmpl_loop name="projects">
+<tr><td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var
+name="name" escape="html"></a></td><td class="numcell"><tmpl_var name="time"></td></tr>
+</tmpl_loop>
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+
+</table>
+
+<br />
+
+<h2>piegraph:</h2>
+<p>
+<img
+src="http://www2.ccnmtl.columbia.edu/graph/piegraph.pl?pie_height=20;start_angle=270;<tmpl_loop
+name="projects">l=<tmpl_var name="name"
+escape="url">;</tmpl_loop><tmpl_loop name="projects">s1=<tmpl_var
+name="time" escape="url">;</tmpl_loop>color=%23ffcccc;width=600;height=500"
+width="600" height="500" />
+</p>
+</tmpl_if>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

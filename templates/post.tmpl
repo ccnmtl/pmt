@@ -1,0 +1,70 @@
+<tmpl_include name="header_forums.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_forums.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<tmpl_if name="pid">
+<h1>FORUMS/LOGS: Post to Project's Forum</h1>
+<tmpl_else>
+<h1>FORUMS/LOGS: Post to Forums/Logs</h1>
+</tmpl_if>
+
+<form action="home.pl" method="post">
+<input type="hidden" name="mode" value="post" />
+<!-- 
+
+
+onclick="subj = document.getElementById('subject'); 
+subj.disabled = false;
+pid = document.getElementById('pid');
+pid.disabled = false;"
+
+-->
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 600px;">
+<tr><th class="firstcell">Post to:</th>
+<td><input type="radio" name="type" value="log"  id="log"
+checked="checked"
+onclick="subj = document.getElementById('subject'); subj.value = '';" />
+<label for="log">personal log</label><br />
+<input type="radio" name="type" value="post" id="post" 
+/> <label for="post">post to project: </label>
+&nbsp;
+<select class="big" name="pid" id="pid">
+<tmpl_loop name="projects"><option value="<tmpl_var
+name="pid">"><tmpl_var name="name"></option>
+</tmpl_loop></select></td></tr>
+
+<tr><th class="firstcell">Subject:</th>
+<td><input class="textform" size="40" type="text" name="subject" id="subject"></td></tr>
+
+<tr><th class="firstcell">text:</th><td>(formatting can be done using <a
+href="http://search.cpan.org/~tima/Text-Tiki-0.73/Tiki.pm#TikiText_NOTATION">Tiki
+notation</a>)<br />
+<div class="resizer" id="bodybox"><textarea class="textform" name="body" cols="40" rows="15"
+wrap="virtual"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
+height="20" alt="" /></div></td></tr>
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input class="button" type="submit" name="preview" value="preview" /> <input class="button" type="submit" value="post"></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+
+<script type="text/javascript">
+SET_DHTML("bodybox"+RESIZABLE)
+</script>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

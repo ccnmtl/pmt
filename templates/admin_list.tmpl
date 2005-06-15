@@ -1,0 +1,17 @@
+<tmpl_include name="header.tmpl">
+
+<div style="float:left;width:50%;">
+<h2>projects</h2>
+<tmpl_loop name="projects">
+<a href="admin_view?pid=<tmpl_var name="pid">"><tmpl_var name="name"></a>
+(<tmpl_var name="fullname">)<br />
+</tmpl_loop>
+</div>
+
+<div style="float:left;width:50%;">
+<h2>users</h2>
+<tmpl_loop name="users">
+<a href="admin_view.pl?username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><br />
+</tmpl_loop>
+</div>
+<tmpl_include name="footer.tmpl">

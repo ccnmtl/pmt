@@ -1,0 +1,142 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECTS: Search Projects</h1>
+
+<form action="project_search.pl" method="GET">
+<input type="hidden" name="search" value="true"/>
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 450px;">
+<tr>
+<th class="firstcell">type:</th>
+<td>
+<select class="medium" name="type">
+<option value="">-- any --</option>
+<tmpl_loop name="types_select">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+</select>
+</td>
+</tr>
+<tr>
+<th class="firstcell">area:</th>
+<td>
+<select class="big" name="area">
+<option value="">-- any --</option>
+<tmpl_loop name="areas_select">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+</select>
+</td>
+</tr>
+<tr>
+<th class="firstcell">approach:</th>
+<td>
+<select class="medium" name="approach">
+<option value="">-- any --</option>
+<tmpl_loop name="approaches_select">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+</select>
+</td>
+</tr>
+<tr>
+<th class="firstcell">scale:</th>
+<td>
+<select class="medium" name="scale">
+<option value="">-- any --</option>
+<tmpl_loop name="scales_select">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+
+</select>
+</td>
+</tr>
+<tr>
+<th class="firstcell">distribution:</th>
+<td>
+<select class="medium" name="distrib">
+<option value="">-- any --</option>
+<tmpl_loop name="distributions_select">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+
+</select>
+</td>
+</tr>
+
+<tr>
+<th class="firstcell">status:</th>
+<td>
+<select class="medium" name="status">
+<option value="">-- any --</option>
+<tmpl_loop name="status_select">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+
+</select>
+</td>
+</tr>
+
+<tr>
+<th class="firstcell">manager:</th>
+<td>
+<select class="big" name="manager">
+<option value="" selected="selected">-- any --</option>
+<tmpl_loop name="managers_select">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+
+</select>
+</td>
+</tr>
+
+<tr>
+<th class="firstcell">developer:</th>
+<td>
+<select class="big" name="developer" >
+<option value="" selected="selected">-- any --</option>
+<tmpl_loop name="developers_select">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+
+</select>
+</td>
+</tr>
+
+<tr>
+<th class="firstcell">guest:</th>
+<td>
+<select class="big" name="guest">
+<option value="" selected="selected">-- any --</option>
+<tmpl_loop name="guests_select">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+</select>
+</td>
+</tr>
+
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="SEARCH" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+
+
+</form>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

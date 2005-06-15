@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<?cocoon-process type="xslt"?>
+<?xml-stylesheet href="/xsl/docbook/ccnmtl/docbook.xsl" type="text/xsl"?>
+
+<book>
+<bookinfo>
+<title>Functional Specification for the PMT2</title>
+<authorgroup>
+<author><firstname>Anders</firstname> <surname>Pearson</surname>
+</author>
+</authorgroup>
+
+<revhistory>
+<revision>
+    <revnumber>1.1</revnumber>
+    <date>2001-06-26</date>
+    <authorinitials>anders@columbia.edu</authorinitials>
+    <revremark>started writing</revremark>
+</revision>
+</revhistory>
+</bookinfo>
+<chapter id="introduction">
+<title>Introduction</title>
+
+<para>This document describes the functional specifications for
+version 2 of the Project Management Tool.</para>
+
+<para><emphasis>This spec is not, by any stretch of the imagination,
+complete.</emphasis> All of the wording will need to be revised several times
+before it is finalized. The graphics and layout of the screens is
+shown here merely to illustrate the underlying functionality. The
+actual look and feel will be developed over time with the input of
+graphics designers and iterative user feedback.</para>
+
+<para>This spec does not discuss the algorithms used by the PMT2, which
+will be discussed elsewhere. It simply discusses what the user sees
+when they interact with the PMT2.
+</para>
+
+<para>This spec is primarily concerned with <emphasis>new</emphasis>
+functionality. For specifications for the basic functionality of the
+PMT2, please see the documentation for version 1 of the PMT.</para>
+
+</chapter>
+
+<chapter id="overview">
+<title>Overview</title>
+
+<para>The PMT2 is a web-based collaborative tool for project
+management and bug-tracking. Its purpose is to facilitate the
+management of CCNMTL projects across multiple physically seperate
+offices, enforcing basic bug lifecycles and providing managers with a
+convenient overview of the progress of their projects.
+ </para>
+
+ <para>Version 1 of the PMT (and, to a certain extent, the original
+bug-tracking database) implemented the vast majority of the features
+necessary for this purpose. However, with testing and user feedback,
+it was determined that there were enough requested interface and
+architectural changes to warrant a redesign from the ground
+up. </para>
+
+ <para>Changes to the PMT for version 2 include a simplified
+architecture that removes the concept of "divisions" in the
+heierarchy, replacing it with more flexable "keyword" based
+categorization, a "user-centric" modal interface and numerous
+additions to the fields available for bugs, action items, milestones,
+and projects.</para>
+
+ </chapter>
+
+ <chapter id="architecture">
+ <title>Architectural Changes</title>
+ <para>
+ Rather than the heirarchy of project/division/milestone/bug|action
+item that version 1 of the PMT used, the PMT2 removes the "division"
+level, replacing it with a more flexable and powerful "keyword" system
+for grouping tasks. The new heierarchy will have projects each
+consisting of a set of milestones. Each task (action item or bug) will
+be associated with a single milestone. In addition, a task may have
+one or more keywords. These could be things like "video", "content",
+or any other grouping. This will then facilitate sorting or searching
+of the tasks. Eg, a manager could easily have the PMT2 display only
+tasks tagged with a "graphics" keyword. The advantage of this new
+architecture is that it requires fewer levels of navigation than the
+old divisions, allows tasks to be classified with multiple keywords
+rather than being assigned to a single division, and it allows for a
+more chronological, milestone based approach to project management.
+ </para>
+ </chapter>
+
+  <chapter id="interface">
+  <title>Interface Changes</title>
+ <para> The PMT2 will feature a radically changed interface
+paradigm. It will be focused on the user and strive to provide the
+user with only the information and options that are relevant to the
+user. When entering the PMT2, the user will login and be presented
+with a "homepage" listing tasks that require their attention, either
+open tasks that have been assigned to them, or resolved tasks that
+they need to verify. From their homepage, they can go to the pages for
+the tasks, or for projects that they work on. In either case, they are
+only presented with relevant information and options for their
+situation. Eg, a user who works on a project as a developer is not
+shown the forms for editting project information or adding milestones
+when visiting the project page; they see only the lists of existing
+milestones and tasks and forms relevant to their position. Similarly,
+a manager for the project will see additional forms on task pages for
+deleting, converting or reassigning to different milestones. For each
+project that a user is associated with, they are considered either a
+manager or a developer. If the user is not associated with a given
+project, they will be considered a guest and given read-only access to
+the project.</para>
+</chapter>
+
+<chapter id="misc">
+<title>Miscellaneous Changes</title>
+
+<para>
+Many additional small changes will also be made. 
+</para>
+
+<para>Tasks will be allowed to have their own target dates. If none is
+specified, the target date is inherited from the milestone that the
+task is attached to.</para>
+
+<para>Tasks will have priorities; they can be marked as "Critical",
+"Major", "Normal", "Minor", or "Trivial". The tasks can then be sorted
+by the priority in addition to their other fields.</para>
+
+<para>Tasks will be able to have dependencies. A task may have zero or
+more other tasks as dependencies. When a task is marked as a
+dependency by another, it inherits the priority (if higher than it
+currently is) and target date (if sooner than the current) from the
+dependant task. Eg, if bug A is entered with a "Critical" priority,
+target date of July 1st and depends on bug B being fixed, B's priority
+may be bumped up to "Critical", even though it may have previously
+only been "Normal", and its target date will be moved to July 1st even
+though it may have previously been August 1st. A task with a
+dependency won't be able to be marked RESOLVED until the dependency
+has been resolved.</para>
+
+<para>Tasks will have a "url" field that will allow the person
+entering the task to include a relevant url if applicable and
+helpful.</para>
+
+<para>Projects and Milestones will have additional description fields
+that will allow the project manager(s) to provide more detailed
+information about the project/milestone. The description fields will
+accept HTML allowing the manager(s) to include relevant links or
+graphics.</para>
+
+</chapter>
+
+<chapter id="non-goals">
+<title>Non Goals</title>
+
+<para>The PMT2 is intended as a tool for managing ongoing projects and aiding collaboration; it is not intended as a planning tool. As such, there will be no attempt to add project planning features such as Gantt charts anytime in the near future.</para>
+
+<para>
+Requests have been made for the handling of file attachments to tasks. This may come about in a future version but not soon. To implement this properly, an asset management system is needed. Gordie is currently working on an asset management tool and integration is likely once that is completed but not before.
+</para>
+
+</chapter>
+</book>

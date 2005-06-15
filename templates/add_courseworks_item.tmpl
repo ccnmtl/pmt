@@ -1,0 +1,267 @@
+<tmpl_include name="header_clients.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_clients.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>CLIENTS: <a href="client.pl?client_id=<tmpl_var name="client_id"
+escape="url">"><tmpl_var name="client_firstname" escape="html"> <tmpl_var name="client_lastname" escape="html"></a><br />
+<span class="hide">CLIENTS:</span> &#62; Project: <a href="project.pl?pid=<tmpl_Var name="pid" escape="url">">
+<tmpl_var name="name">
+</a>
+<br />
+
+<!-- === Begin todo === -->
+<tmpl_if name="todo">
+<span class="hide">CLIENTS:</span> &#62; Add To Do
+</h1>
+
+<form action="add_item.pl" method="POST">
+<input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
+<tmpl_loop name="milestone_select"><tmpl_if name="selected"><input type="hidden" name="mid" value="<tmpl_var
+name="value" escape="html">" /></tmpl_if></tmpl_loop>
+<input type="hidden" name="type" value="todo" />
+<table>
+<tr><th>title</th><td><input type="text" name="title" size="50" /></td></tr>
+<tr><td colspan="2"><input type="submit" value="add todo"
+/></td></tr>
+</table>
+</form>
+
+<p>a TODO item is just a shorthand way of entering an action item
+that is assigned to yourself, automatically attached to the next
+upcoming milestone in the project, has a default priority, no
+description, and no time estimate. these should be very brief tasks;
+the kind of thing that you would normally just write on a TODO list
+for yourself.</p>
+
+
+<!-- === End todo === -->
+
+
+<tmpl_else>
+
+
+
+<!-- === Begin tracker === -->
+<tmpl_if name="tracker">
+<span class="hide">CLIENTS:</span> &#62; Add Tracker</h1>
+
+<form action="add_item.pl" method="POST">
+<input type="hidden" name="pid" value="<tmpl_var name="pid"
+escape="html">" />
+<tmpl_loop name="milestone_select"><tmpl_if name="selected"><input type="hidden" name="mid" value="<tmpl_var
+name="value" escape="html">" /></tmpl_if></tmpl_loop>
+<input type="hidden" name="type" value="tracker" />
+
+
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width:600px;">
+<tr>
+<th class="firstcell">title:</th>
+<td>
+<input class="textform" type="text" name="title" size="50" />
+</td>
+</tr>
+<tr>
+<th class="firstcell">time:</th>
+<td>
+<input class="textform" type="text" name="time" size="15" />
+</td>
+</tr>
+<tr>
+<th class="firstcell">completed at:</th>
+<td>
+<select class="xmedium" name="completed">
+<option value="" selected="selected">this week</option>
+<option value="<tmpl_var name="p_week" escape="html">">last
+week</option>
+<option value="<tmpl_var name="pp_week" escape="html">">week before last</option>
+</select>
+</td></tr>
+<tr><th class="firstcell">client</th>
+<td>
+<input type="hidden" name="clients" value="<tmpl_Var name="client_id" escape="html">"/>
+<tmpl_var name="client_firstname" escape="html"> <tmpl_var name="client_lastname" escape="html">
+</td></tr>
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="ADD TRACKER" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+
+</table>
+</form>
+
+<p>
+A 'tracker' is used to track misc. time spent on a project but not
+necessarily associated with an action item or bug. Eg, trackers are a
+good way to track time spent in meetings. They should usually be
+entered post-facto. Behind the scenes, a tracker is really just an
+action item that is assigned to you, automatically set to VERIFIED and
+the time entered is recorded.
+</p>
+
+<p>times should be entered as a number followed by the proper
+units. eg, to enter a time of one hour, you would enter '1 hour'. to
+enter an hour and a half you would enter '1 hour 30 minutes' or '90 minutes'. you can
+also use several shorthand formats. eg, 'h' is short for 'hour' and
+'m' is short for 'minutes', so '1 h' and '1 h 30 m' are valid. you may
+also enter times in HH:MM format, so '01:00' or '01:30' are valid
+times. if you just enter a number with no units, it defaults to
+hours. other formats for times are also understood but you probably
+don't want to experiment too much with that.</p>
+
+<p>if you've added a tracker to the wrong project, or with the wrong
+time, you can delete it yourself. go to your weekly report (linked
+from your homepage), find the item at the bottom of that page and
+delete it like you would any other action item or bug.</p>
+
+<!-- === End tracker === -->
+
+<tmpl_else>
+
+
+<!-- === Begin bug or action item === -->
+<span class="hide">CLIENTS:</span> &#62; <tmpl_if name="bug">Add A Bug <tmpl_else>Add An Action Item </tmpl_if>
+</h1>
+
+<form action="add_item.pl" method="POST">
+<input type="hidden" name="pid" value="<tmpl_var name="pid">" />
+
+<input type="hidden" name="type" <tmpl_if name="bug">value="bug"<tmpl_else>value="action item" </tmpl_if> />
+
+<table cellpadding="0" cellspacing="0" class="pmtform">
+<tr>
+<th class="firstcell">title:</th>
+<td>
+<input class="textform" type="text" size="40" name="title" /></td></tr>
+<tr>
+<th class="firstcell">milestone:</th>
+<td>
+<select class="big" name="mid"><tmpl_loop
+name="milestone_select"><tmpl_include name="options_loop.tmpl"></tmpl_loop></select>
+</td></tr>
+
+<tmpl_if name="on_project">
+<tr>
+<th class="firstcell">assign to:</th>
+<td>
+<select class="available" style="width: 290px;" name="assigned_to" multiple size="6">
+<tmpl_loop name="developers">
+<option value="<tmpl_var name="username">"<tmpl_if name="caretaker">
+selected="selected"</tmpl_if>><tmpl_var name="fullname"></option>
+</tmpl_loop></select>
+</td></tr>
+<tr>
+<th class="firstcell">owner:</th>
+<td>
+<select class="big" name="owner">
+<tmpl_loop name="owner_select"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
+</select></td></tr>
+<tmpl_else>
+  <input type="hidden" name="assigned_to" value="<tmpl_var   name="caretaker" escape="html">" />
+  <input type="hidden" name="owner" value="<tmpl_var name="caretaker" escape="html">" />
+</tmpl_if>
+
+<tr>
+<th class="firstcell">priority:</th>
+<td>
+<select class="small" name="priority">
+<option value="4">CRITICAL</option>
+<option value="3">HIGH</option>
+<option value="2">MEDIUM</option>
+<option value="1" selected="true">LOW</option>
+<option value="0">ICING</option></select>
+  </td></tr>
+<tr>
+<th class="firstcell">target date:<br />(YYYY-MM-DD)</th>
+<td>
+<!-- <input class="textform" type="text" name="target_date" value="" onclick="getCalN(this,2)" size="15" /><br /> -->
+<input id="datebox" class="textform" type="text" name="target_date" value="" onclick="javascript:NewCal('datebox','yyyymmdd')" size="15" />
+<a href="javascript:NewCal('datebox','yyyymmdd')"><i>select date</i></a>
+<br />
+(leave blank to inherit target date from milestone)</td>
+</tr>
+<tr>
+<th class="firstcell">estimated time:</th>
+<td>
+<input class="textform" type="text" name="estimated_time" value="1 hour" size="15" />
+</td>
+</tr>
+<tr>
+<th class="firstcell">related url:</th>
+<td>
+<input class="textform" type="text" name="url" size="40"
+maxlength="254" /></td></tr>
+<tr>
+<th class="firstcell">description:</th>
+<td>
+<div class="resizer" id="descriptionbox">
+<textarea class="textform" name="description" wrap="virtual" cols="40" rows="10"></textarea>
+<img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20" height="20" alt="" />
+</div>
+</td>
+</tr>
+<tr><th class="firstcell">client:</th>
+<td>
+<input type="hidden" name="clients" value="<tmpl_Var name="client_id" escape="html">"/>
+<tmpl_var name="client_firstname" escape="html"> <tmpl_var name="client_lastname" escape="html">
+</td></tr>
+
+<tr>
+<th class="firstcell">keywords:</th>
+<td>
+<tmpl_if name="keywords">
+<select class="activated" name="keywords" multiple size="5">
+<option value="">no keywords</option>
+<tmpl_loop name="keywords">
+<option value="<tmpl_var name="keyword">"><tmpl_var name="keyword"></option>
+</tmpl_loop></select>
+</tmpl_if>
+ <br />
+ <br />
+ new keywords (one per line): <br />
+<textarea class="textform" name="new_keywords" cols="5" rows="5" style="width: 50%;"></textarea>
+  </td>
+</tr>
+<tmpl_if name="dependencies">
+<tr>
+<th class="firstcell">dependencies:</th>
+<td>
+<select class="available" style="width: 520px;" name="depends" multiple size="5">
+<option value="">no dependencies</option>
+<tmpl_loop name="dependencies">
+<option value="<tmpl_var name="iid">"><tmpl_var name="type">
+#<tmpl_var name="iid"> <tmpl_var name="title"></option>
+</tmpl_loop>
+</select>
+  </td></tr></tmpl_if>
+
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="ADD <tmpl_if name="bug">BUG<tmpl_else>ACTION ITEM</tmpl_if>"" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+</tmpl_if>
+</tmpl_if>
+<script type="text/javascript">
+SET_DHTML("descriptionbox"+RESIZABLE)
+</script>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

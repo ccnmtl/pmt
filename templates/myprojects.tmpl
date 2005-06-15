@@ -1,0 +1,133 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECTS: My Projects</h1>
+<h1 class="print">Projects for <tmpl_var name="username"></h1>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<thead>
+<tr>
+<th class="firstcell">project:</th>
+<th>role:</th>
+<th width="120">latest activity:</th>
+<th>action:</th>
+<th>&#160;</th>
+</tr>
+</thead>
+<tbody>
+<tmpl_loop name="manager_projects">
+<tr>
+<td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="name" escape="html"></a></td>
+<td>manager</td>
+<td><tmpl_if name="last_mod"><tmpl_var name="last_mod"><tmpl_else>&#160;</tmpl_if></td>
+<td><b>add:</b>
+<a href="home.pl?mode=add_item_form;type=action;pid=<tmpl_var name="pid"
+escape="html">">action item</a>  |
+<a href="home.pl?mode=add_item_form;type=bug;pid=<tmpl_var name="pid"
+escape="html">">bug</a>  |
+<a href="home.pl?mode=add_item_form;type=todo;pid=<tmpl_var name="pid"
+escape="html">">TODO</a>  |
+<a href="home.pl?mode=add_item_form;type=tracker;pid=<tmpl_var name="pid"
+escape="html">">tracker</a>
+<br />
+<br />
+<span class="hide"><b>add:</b></span>
+<a href="forum.pl?pid=<tmpl_var name="pid" escape="url">">visit forum</a> |
+<a href="project_weekly_report.pl?pid=<tmpl_var name="pid" escape="url">">weekly report</a> |
+<a href="http://wiki.ccnmtl.columbia.edu/index.php/Category:<tmpl_var name="wiki_category" escape="url">">wiki</a>
+</td>
+<td>
+<tmpl_if name="proj_cc">
+<img src="images/email.gif" alt="" width="14" height="11" alt="E-mail notification" />
+<tmpl_else>
+<img src="images/noemail.gif" alt="" width="14" height="11" alt="E-mail notification" />
+</tmpl_if>
+</td>
+</tr>
+</tmpl_loop>
+
+<tmpl_loop name="developer_projects">
+<tr><td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var
+name="name" escape="html"></a></td>
+<td>developer</td>
+<td><tmpl_if name="last_mod"><tmpl_var name="last_mod"><tmpl_else>&#160;</tmpl_if></td>
+<td><b>add:</b>
+<a href="home.pl?mode=add_item_form;type=action;pid=<tmpl_var name="pid"
+escape="html">">action item</a> |
+<a href="home.pl?mode=add_item_form;type=bug;pid=<tmpl_var name="pid"
+escape="html">">bug</a>  |
+<a href="home.pl?mode=add_item_form;type=todo;pid=<tmpl_var name="pid"
+escape="html">">TODO</a>  |
+<a href="home.pl?mode=add_item_form;type=tracker;pid=<tmpl_var name="pid"
+escape="html">">tracker</a>
+<br />
+<br />
+<span class="hide"><b>add:</b></span>
+<a href="forum.pl?pid=<tmpl_var name="pid" escape="url">">visit forum</a> |
+<a href="project_weekly_report.pl?pid=<tmpl_var name="pid"
+escape="url">">weekly report</a> |
+<a href="http://www2.ccnmtl.columbia.edu/pmt_wiki/<tmpl_var name="pid" escape="url">/">wiki</a>
+</td>
+<td>
+<tmpl_if name="proj_cc">
+<img src="images/email.gif" alt="" width="14" height="11" alt="E-mail notification" />
+<tmpl_else>
+<img src="images/noemail.gif" alt="" width="14" height="11" alt="No E-mail notification" />
+</tmpl_if>
+</td>
+</tr>
+</tmpl_loop>
+
+<tmpl_loop name="guest_projects">
+
+<tr><td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var
+name="name" escape="html"></a></td>
+<td>guest</td>
+<td><tmpl_if name="last_mod"><tmpl_var name="last_mod"><tmpl_else>&#160;</tmpl_if></td>
+<td><b>add:</b>
+<a href="home.pl?mode=add_item_form;type=action;pid=<tmpl_var name="pid"
+escape="html">">action item</a>  |
+<a href="home.pl?mode=add_item_form;type=bug;pid=<tmpl_var name="pid"
+escape="html">">bug</a>  |
+<a href="home.pl?mode=add_item_form;type=todo;pid=<tmpl_var name="pid"
+escape="html">">TODO</a>  |
+<a href="home.pl?mode=add_item_form;type=tracker;pid=<tmpl_var name="pid"
+escape="html">">tracker</a>
+<br />
+<br />
+<span class="hide"><b>add:</b></span>
+<a href="forum.pl?pid=<tmpl_var name="pid" escape="url">">visit forum</a> |
+<a href="project_weekly_report.pl?pid=<tmpl_var name="pid"
+escape="url">">weekly report</a> |
+<a href="http://www2.ccnmtl.columbia.edu/pmt_wiki/<tmpl_var name="pid" escape="url">/">wiki</a>
+</td>
+<td>
+<tmpl_if name="proj_cc">
+<img src="images/email.gif" alt="" width="14" height="11" alt="E-mail notification" />
+<tmpl_else>
+<img src="images/noemail.gif" alt="" width="14" height="11" alt="No E-mail notification" />
+</tmpl_if>
+</td>
+</tr>
+</tmpl_loop>
+</tbody>
+
+<tfoot>
+<tr>
+<!-- ## Closing row --><td colspan="5" class="end">&nbsp;</td>
+</tr>
+</tfoot>
+</table>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

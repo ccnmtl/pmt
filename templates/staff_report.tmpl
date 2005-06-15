@@ -1,0 +1,90 @@
+<tmpl_include name="header_reports.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_reports.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+
+<h1>REPORTS:  Staff Report <a href="user.pl?username=<tmpl_var
+name="user_username" escape="url">"><tmpl_var name="user_fullname" escape="html"></a><br />
+<span class="hide">REPORTS:</span> &#62; for the week from 
+<strong><tmpl_var name="mon_year" escape="html">-<tmpl_var name="mon_month" escape="html">-<tmpl_var name="mon_day" escape="html"></strong>
+to
+<strong><tmpl_var name="sun_year" escape="html">-<tmpl_var name="sun_month"
+escape="html">-<tmpl_var name="sun_day" escape="html"></strong>
+</h1>
+
+
+
+<p>&#60;&#60; <a href="staff_report.pl?year=<tmpl_var name="pm_year"
+escape="url">;month=<tmpl_var name="pm_month"
+escape="url">;day=<tmpl_var name="pm_day" escape="url">">Previous week</a> -- <a href="staff_report.pl?year=<tmpl_var name="nm_year"
+escape="url">;month=<tmpl_var name="nm_month"
+escape="url">;day=<tmpl_var name="nm_day" escape="url">">Next week</a> &#62;&#62;</p>
+
+
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tmpl_loop name="groups">
+	<tr>
+		<th colspan="9" class="milestone">GROUP: <tmpl_var name="group" escape="html"></th>
+	</tr>
+
+
+	<tr>
+		<th colspan="9" class="milestoneinfo" style="text-align:left;">Total time: <tmpl_var name="total_time" escape="html"></th>
+	</tr>
+
+	<tr>
+		<th class="firstcell">Staff:</th>
+		<th>Piegraph:</th>
+	</tr>
+
+	<tr>
+		<td class="firstcell">
+<table cellpadding="0" cellspacing="0" class="default" style="border: 0px;">
+<tmpl_loop name="user_times">
+<tr>
+<td style="border: 0px;"><a href="user.pl?username=<tmpl_var name="username" escape="url">"><tmpl_var name="fullname" escape="html"></a></td>
+<td style="border: 0px;"><tmpl_var name="user_time" escape="html"></td>
+</tr>
+</tmpl_loop>
+</table>
+		</td>
+		<td><tmpl_if name="total_time">
+		<img src="http://www2.ccnmtl.columbia.edu/graph/piegraph.pl?pie_height=20;start_angle=270;<tmpl_loop name="user_times">l=<tmpl_var name="fullname" escape="url">;</tmpl_loop><tmpl_loop name="user_times">s1=<tmpl_var name="user_time" escape="url">;</tmpl_loop>color=%23ffcccc;width=200;height=150" width="200" height="150" alt="" />
+		</tmpl_if>
+		</td>
+	</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+
+<tr>
+<!-- ##  DIVIDER --><td colspan="2" class="divider">&nbsp;</td>
+</tr>
+
+</tmpl_loop>
+
+</table>
+
+
+
+<h2>Comprehensive Piegraph:</h2>
+
+<p>
+<img
+src="http://www2.ccnmtl.columbia.edu/graph/piegraph.pl?pie_height=20;start_angle=270;<tmpl_loop name="groups">l=<tmpl_var name="group" escape="url">;</tmpl_loop><tmpl_loop name="groups">s1=<tmpl_var name="total_time" escape="url">;</tmpl_loop>color=%23ffcccc"
+width="400" height="300" alt="" />
+</p>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

@@ -1,0 +1,97 @@
+<!-- ===== LOCAL NAVIGATION ===== -->
+<div id="localnavpos">
+<div id="localnav">
+
+<h1 id="category">projects</h1>
+<ul>
+	<li><a href="home.pl?mode=my_projects">my projects</a></li>
+	<li><a href="home.pl?mode=all_projects">all projects</a></li>
+	<li><a href="home.pl?mode=add_project_form">create new project</a></li>
+</ul>
+
+<tmpl_if name="pid">
+<h1>manage project</h1>
+<ul>
+	<li><a href="project.pl?pid=<tmpl_var name="pid">">main page</a></li>
+	<li>add: <a
+        href="home.pl?mode=add_item_form;type=action;pid=<tmpl_var
+        name="pid" escape="html">">action item</a></li>
+	<li><span class="hide">add:</span> <a href="home.pl?mode=add_item_form;type=bug;pid=<tmpl_var name="pid" escape="html">">bugs</a></li>
+	<li><span class="hide">add:</span> <a href="home.pl?mode=add_item_form;type=tracker;pid=<tmpl_var name="pid" escape="html">">tracker</a></li>
+	<li class="last"><span class="hide">add:</span> <a href="home.pl?mode=add_item_form;type=todo;pid=<tmpl_var name="pid" escape="html">">to do</a></li>
+	<li><a href="home.pl?mode=project_info;pid=<tmpl_var name="pid">">project information</a></li>
+	<li><a href="home.pl?mode=project_milestones;pid=<tmpl_var
+        name="pid">">milestones</a></li>
+	<li><a href="home.pl?mode=project_documents;pid=<tmpl_var
+        name="pid">">documents</a></li>
+	<li class="last"><a href="forum.pl?pid=<tmpl_var name="pid" escape="html">">forum</a> | <a
+        href="http://wiki.ccnmtl.columbia.edu/index.php/Category:<tmpl_var
+        name="wiki_category" escape="url">">wiki</a></li>
+	<!-- <li class="last"><a
+        href="home.pl?mode=project_notification_form;pid=<tmpl_var
+        name="pid">">e-mail notification</a></li>
+	-->
+	<tmpl_if name="url">
+	<li><a href="<tmpl_var name="url" escape="html">">final URL</a></li>
+	</tmpl_if>
+</ul>
+</tmpl_if>
+
+<form>
+<h1>utilities</h1>
+<ul>
+<tmpl_if name="pid">
+	<li><a
+        href="webcal://pmt.ccnmtl.columbia.edu/project_ical.pl?pid=<tmpl_var
+        name="pid">;file=<tmpl_var name="name" escape="url">.ics">sync calendar</a></li>
+</tmpl_if>
+	<li><input id="calbox" type="hidden" /><a href="javascript:ViewNewCal('calbox','yyyymmdd')">calendar</a></li>
+
+	<li>search: <a href="search.pl">items</a></li>
+	<li><span class="hide">search:</span> <a href="home.pl?mode=project_search_form">projects</a></li>
+	<li><span class="hide">search:</span> <a href="client_search.pl">clients</a></li>
+</ul>
+</form>
+<h1>reports</h1>
+
+<ul>
+<tmpl_if name="pid">
+	<li>periodic: <a href="project_weekly_report.pl?pid=<tmpl_var name="pid">">weekly</a></li>
+	<li><span class="hide">periodic: </span><a href="project_months_report.pl?pid=<tmpl_var name="pid">&amp;num_months=1">monthly</a></li>
+	<li><span class="hide">periodic: </span><a href="project_months_report.pl?pid=<tmpl_var name="pid">&amp;num_months=3">quarterly</a></li>
+	<li><span class="hide">periodic: </span><a href="project_months_report.pl?pid=<tmpl_var name="pid">&amp;num_months=6">semestral</a></li>
+	<li><span class="hide">periodic: </span><a href="project_months_report.pl?pid=<tmpl_var name="pid">&amp;num_months=12">annual</a></li>
+	<li>calendar: <a href="project_cal.pl?pid=<tmpl_var name="pid">&amp;month=<tmpl_var name="month">&amp;year=<tmpl_var name="year">">target dates</a></li>
+	<li class="last"><span class="hide">calendar:</span> <a
+        href="project_history.pl?pid=<tmpl_var name="pid">&amp;month=<tmpl_var name="month">&amp;year=<tmpl_var name="year">">history</a></li>
+<li><table id="progressbar" cellpadding="0" cellspacing="0">
+<tr>
+<td width="<tmpl_var name="done">" class="done"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"
+height="10" width="<tmpl_var name="done">" alt=""/></td>
+<td width="<tmpl_var name="todo">" class="todo"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"
+height="10" width="<tmpl_var name="todo">" alt=""/></td>
+<td width="<tmpl_var name="free">" class="free"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"
+height="10" width="<tmpl_var name="free">" alt=""/></td>
+<td width="<tmpl_var name="completed_behind">" class="completedbehind"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"
+height="10" width="<tmpl_var name="completed_behind">" alt=""/></td>
+<td width="<tmpl_var name="behind">" class="behind"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"
+height="10" width="<tmpl_var name="behind">" alt=""/></td>
+</tr>
+</table></li>
+	<li>total estimated time: <tmpl_var name="total_estimated_time"> hours</li>
+	<li>total completed time: <tmpl_var name="total_completed_time"> hours</li>
+
+	<li class="last">total remaining time: <tmpl_var name="total_remaining_time"> hours</li>
+</tmpl_if>
+	<li><a href="user_feed.pl?username=<tmpl_var name="username" escape="url">"><img src="images/xml.gif" width="36" height="14" alt="" border="0" /></a></li>
+</ul>
+
+</div>
+</div>
+<!-- ===== END LOCAL NAVIGATION ===== -->
+
+
+
+
+
+

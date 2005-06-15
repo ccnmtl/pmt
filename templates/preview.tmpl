@@ -1,0 +1,68 @@
+<tmpl_include name="header_forums.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_forums.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>FORUMS/LOGS: Preview <span style="text-transform: capitalize;"><tmpl_var name="type" escape="html"></span></h1>
+
+<div class="post">
+<h2 class="nodesubject"><tmpl_var name="subject" escape="html"></h2>
+<div class="nodebody">
+<tmpl_var name="formatted_body">
+</div>
+</div>
+
+
+
+
+<br />
+<hr align="left" noshade size="1">
+
+<h2>Edit Post:</h2>
+
+<br />
+
+<form action="home.pl" method="post">
+<input type="hidden" name="mode" value="post"/>
+<input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
+<input type="hidden" name="reply_to" value="<tmpl_var name="reply_to" escape="html">" />
+<input type="hidden" name="type" value="<tmpl_var name="type" escape="html">" />
+
+
+
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 600px;">
+<tr><th class="firstcell"><label for="subject">subject:</label></th>
+<td><input class="textform" type="text" name="subject" id="subject" value="<tmpl_var name="subject" escape="html">" /></td></tr>
+
+<tr><th class="firstcell">text:</th><td>(formatting can be done using <a
+href="http://search.cpan.org/~tima/Text-Tiki-0.73/Tiki.pm#TikiText_NOTATION">Tiki
+notation</a>)<br />
+<div class="resizer" id="bodybox"><textarea class="textform" name="body" cols="40" rows="20" wrap="virtual"><tmpl_var
+name="body" escape="html"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
+height="20" alt="" /></div>
+</td></tr>
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input class="button" type="submit" name="preview" value="preview" /> <input class="button" type="submit" value="post"></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+
+<script type="text/javascript">
+SET_DHTML("bodybox"+RESIZABLE)
+</script>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

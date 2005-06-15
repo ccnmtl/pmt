@@ -1,0 +1,70 @@
+<tmpl_include name="header_reports.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_reports.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>REPORTS:  Global Reports<br />
+<span class="hide">REPORTS:</span> &#62; Clients Summary Report
+</h1>
+
+
+
+<h2>New Clients:</h2>
+<table cellpadding="0" cellspacing="0" class="default">
+<tr><th>Current Month (<tmpl_var
+name="current_month_name">):</th><td><tmpl_var
+name="current_month_clients_total"></td></tr>
+<tr><th>Last Month (<tmpl_var name="last_month_name">):</th>
+<td class="numcell"><tmpl_var name="last_month_clients_total"></td></tr>
+<tr><th>Since Start of Year (<tmpl_var name="year">):</th>
+<td class="numcell"><tmpl_var name="year_clients_total"></td></tr>
+</table>
+
+<h2>Total Unique Clients:</h2>
+<p>Since inception 3/99: <b><tmpl_var name="total_clients"></b></p>
+
+<br />
+<br />
+
+<h2>Clients By School</h2>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<thead>
+<tr><th class="firstcell">school</th><th class="Number">Current Month</th><th
+class="Number">Last Month</th><th class="Number">This
+Year</th><th class="Number">Total</th></tr>
+</thead>
+<tbody>
+<tmpl_loop name="schools">
+<tr><td class="firstcell"><tmpl_var name="school"></td>
+<td class="numcell"><tmpl_var name="current_month_clients"></td>
+<td class="numcell"><tmpl_var name="last_month_clients"></td>
+<td class="numcell"><tmpl_var name="year_clients"></td>
+<td class="numcell"><tmpl_var name="total"></td></tr>
+</tmpl_loop>
+</tbody>
+<tfoot>
+<tr class="footer">
+<th class="firstcell">total:</th><td class="numcell"><tmpl_var name="current_month_clients_total"></td>
+<td class="numcell"><tmpl_var name="last_month_clients_total"></td>
+<td class="numcell"><tmpl_var name="year_clients_total"></td>
+<td class="numcell"><tmpl_var name="total_clients"></td>
+</tr>
+<tr>
+<!-- ## Closing row --><td colspan="5" class="end">&nbsp;</td>
+</tr>
+</tfoot>
+
+</table>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

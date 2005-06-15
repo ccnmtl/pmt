@@ -1,0 +1,202 @@
+<tmpl_include name="header_items.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_items.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>ITEMS: My Items<br />
+<span class="hide">ITEMS:</span> &#62; Add Trackers</h1>
+
+
+<form action="home.pl" method="post">
+<input type="hidden" name="mode" value="add_trackers" />
+
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr>
+<th class="firstcell">Project:</th>
+<th>Task:</th>
+<th>Time:</th>
+</tr>
+
+<tr>
+<td class="firstcell"><!-- List of projects -->
+<select class="big" size="1" name="pid1">
+<tmpl_loop name="projects">
+<option value="<tmpl_var name="pid">"><tmpl_var name="name"></option>
+</tmpl_loop>
+</select>
+</td>
+<td>
+<input type="text" class="textform" name="title1" size="35" /><!-- Task -->
+</td>
+<td>
+<input type="text" class="textform" name="time1" size="15" /><!-- Time -->
+</td>
+</tr>
+
+<tr>
+<td class="firstcell"><!-- List of projects -->
+<select class="big" size="1" name="pid2">
+<tmpl_loop name="projects">
+<option value="<tmpl_var name="pid">"><tmpl_var name="name"></option>
+</tmpl_loop>
+</select>
+</td>
+<td>
+<input type="text" class="textform" name="title2" size="35" /><!-- Task -->
+</td>
+<td>
+<input type="text" class="textform" name="time2" size="15" /><!-- Time -->
+</td>
+</tr>
+
+<tr>
+<td class="firstcell"><!-- List of projects -->
+<select class="big" size="1" name="pid3">
+<tmpl_loop name="projects">
+<option value="<tmpl_var name="pid">"><tmpl_var name="name"></option>
+</tmpl_loop>
+</select>
+</td>
+<td>
+<input type="text" class="textform" name="title3" size="35" /><!-- Task -->
+</td>
+<td>
+<input type="text" class="textform" name="time3" size="15" /><!-- Time -->
+</td>
+</tr>
+
+<tr>
+<td class="firstcell"><!-- List of projects -->
+<select class="big" size="1" name="pid4">
+<tmpl_loop name="projects">
+<option value="<tmpl_var name="pid">"><tmpl_var name="name"></option>
+</tmpl_loop>
+</select>
+</td>
+<td>
+<input type="text" class="textform" name="title4" size="35" /><!-- Task -->
+</td>
+<td>
+<input type="text" class="textform" name="time4" size="15" /><!-- Time -->
+</td>
+</tr>
+
+<tr>
+<td class="firstcell"><!-- List of projects -->
+<select class="big" size="1" name="pid5">
+<tmpl_loop name="projects">
+<option value="<tmpl_var name="pid">"><tmpl_var name="name"></option>
+</tmpl_loop>
+</select>
+</td>
+<td>
+<input type="text" class="textform" name="title5" size="35" /><!-- Task -->
+</td>
+<td>
+<input type="text" class="textform" name="time5" size="15" /><!-- Time -->
+</td>
+</tr>
+
+<tr>
+<td class="firstcell"><!-- List of projects -->
+<select class="big" size="1" name="pid6">
+<tmpl_loop name="projects">
+<option value="<tmpl_var name="pid">"><tmpl_var name="name"></option>
+</tmpl_loop>
+</select>
+</td>
+<td>
+<input type="text" class="textform" name="title6" size="35" /><!-- Task -->
+</td>
+<td>
+<input type="text" class="textform" name="time6" size="15" /><!-- Time -->
+</td>
+</tr>
+
+<tr>
+<td class="firstcell"><!-- List of projects -->
+<select class="big" size="1" name="pid7">
+<tmpl_loop name="projects">
+<option value="<tmpl_var name="pid">"><tmpl_var name="name"></option>
+</tmpl_loop>
+</select>
+</td>
+<td>
+<input type="text" class="textform" name="title7" size="35" /><!-- Task -->
+</td>
+<td>
+<input type="text" class="textform" name="time7" size="15" /><!-- Time -->
+</td>
+</tr>
+
+<tr>
+<td class="firstcell"><!-- List of projects -->
+<select class="big" size="1" name="pid8">
+<tmpl_loop name="projects">
+<option value="<tmpl_var name="pid">"><tmpl_var name="name"></option>
+</tmpl_loop>
+</select>
+</td>
+<td>
+<input type="text" class="textform" name="title8" size="35" /><!-- Task -->
+</td>
+<td>
+<input type="text" class="textform" name="time8" size="15" /><!-- Time -->
+</td>
+</tr>
+
+<tr>
+<td class="firstcell"><!-- List of projects -->
+<select class="big" size="1" name="pid9">
+<tmpl_loop name="projects">
+<option value="<tmpl_var name="pid">"><tmpl_var name="name"></option>
+</tmpl_loop>
+</select>
+</td>
+<td>
+<input type="text" class="textform" name="title9" size="35" /><!-- Task -->
+</td>
+<td>
+<input type="text" class="textform" name="time9" size="15" /><!-- Time -->
+</td>
+</tr>
+
+<tr>
+<td class="firstcell"><!-- List of projects -->
+<select class="big" size="1" name="pid10">
+<tmpl_loop name="projects">
+<option value="<tmpl_var name="pid">"><tmpl_var name="name"></option>
+</tmpl_loop>
+</select>
+</td>
+<td>
+<input type="text" class="textform" name="title10" size="35" /><!-- Task -->
+</td>
+<td>
+<input type="text" class="textform" name="time10" size="15" /><!-- Time -->
+</td>
+</tr>
+
+
+<tr>
+<!-- ## Submit button --><td colspan="3" class="firstcell" align="center"><input type="submit" class="button" value="ADD TRACKERS" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
+</tr>
+
+</table>
+
+</form>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+<tmpl_include name="footer.tmpl">

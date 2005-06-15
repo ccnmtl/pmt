@@ -1,0 +1,113 @@
+<tmpl_include name="header_forums.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_forums.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<tmpl_if name="pid">
+<h1>FORUMS/LOGS: View Project's <span style="text-transform: capitalize;"><tmpl_var name="type" escape="html"></span></h1>
+<tmpl_else>
+<h1>FORUMS/LOGS: View <span style="text-transform: capitalize;"><tmpl_var name="type" escape="html"></span></h1>
+</tmpl_if>
+
+<p>Total posts: <tmpl_var name="total" escape="html"> <tmpl_var name="type" escape="html">.</p>
+<p>
+<tmpl_unless name="first">
+&lt;&lt; <a href="forum_archive.pl?type=<tmpl_var name="type">;limit=<tmpl_var
+name="limit">;offset=<tmpl_var name="prev_offset">;pid=<tmpl_var
+name="pid" escape="url">;user=<tmpl_var name="user" escape="url">">Previous <tmpl_var name="limit" escape="html"> <tmpl_var name="type" escape="html"></a>
+| </tmpl_unless>
+<tmpl_var name="offset" escape="html">-<tmpl_var name="next_offset" escape="html">
+<tmpl_unless name="last">
+ | <a href="forum_archive.pl?type=<tmpl_var name="type">;limit=<tmpl_var name="next_limit">;offset=<tmpl_var name="next_offset">;pid=<tmpl_var
+name="pid" escape="url">;user=<tmpl_var name="user" escape="url">">Next <tmpl_var name="next_limit" escape="html"> <tmpl_var name="type" escape="html"></a> &gt;&gt;
+</tmpl_unless>
+</p>
+
+
+<tmpl_if name="posts">
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr>                            
+<th class="firstcell">title:</th>
+<th>to project:</th>
+<th>posted by:</th>
+<th>date posted:</th>
+<th>replies:</th>
+</tr>                           
+<tmpl_loop name="posts">
+<tr>                            
+<td class="firstcell"><a href="node.pl?nid=<tmpl_var name="nid">"><tmpl_var name="subject"></a></td>
+<td><a href="forum.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td>
+<td><a href="user.pl?username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a></td>
+<td><tmpl_var name="added"></td>
+<td><tmpl_if name="replies">[<tmpl_var name="modified">]
+<br />
+<a href="node.pl?nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var
+name="replies"></a>
+<br />
+<br />
+</tmpl_if><a
+href="node.pl?nid=<tmpl_var name="nid">#addcomment">add a comment</a>
+</td>
+</tr>
+</tmpl_loop>
+
+	<tr>
+		<!-- ## Closing row --><td colspan="5" class="end">&nbsp;</td>
+	</tr>
+
+</table>
+</tmpl_if>
+
+
+
+
+
+
+<tmpl_if name="logs">
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr>                            
+<th class="firstcell">title:</th>
+<th>posted by:</th>
+<th>date posted:</th>
+<th>replies:</th>
+</tr>                           
+<tmpl_loop name="logs">
+<tr>                            
+<td class="firstcell"><a href="node.pl?nid=<tmpl_var name="nid">"><tmpl_if name="subject"><tmpl_var name="subject" escape="html"><tmpl_else>Log entry</tmpl_if></a></td>
+<td><a href="user.pl?username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a></td>
+<td><tmpl_var name="added_informal"></td>
+<td><tmpl_if name="replies"><a href="node.pl?nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var name="replies"></a></tmpl_if></td>
+</tr>
+</tmpl_loop>
+
+	<tr>
+		<!-- ## Closing row --><td colspan="4" class="end">&nbsp;</td>
+	</tr>
+
+</table>
+</tmpl_if>
+
+<p>Total posts: <tmpl_var name="total" escape="html"> <tmpl_var name="type" escape="html">.</p>
+<p>
+<tmpl_unless name="first">
+&lt;&lt; <a href="forum_archive.pl?type=<tmpl_var name="type">;limit=<tmpl_var
+name="limit">;offset=<tmpl_var name="prev_offset">;pid=<tmpl_var
+name="pid" escape="url">;username=<tmpl_var name="user" escape="url">">Previous <tmpl_var name="limit" escape="html"> <tmpl_var name="type" escape="html"></a>
+| </tmpl_unless>
+<tmpl_var name="offset" escape="html">-<tmpl_var name="next_offset" escape="html">
+<tmpl_unless name="last">
+ | <a href="forum_archive.pl?type=<tmpl_var name="type">;limit=<tmpl_var name="next_limit">;offset=<tmpl_var name="next_offset">;pid=<tmpl_var
+name="pid" escape="url">;username=<tmpl_var name="user" escape="url">">Next <tmpl_var name="next_limit" escape="html"> <tmpl_var name="type" escape="html"></a> &gt;&gt;
+</tmpl_unless>
+</p>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

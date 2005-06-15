@@ -1,0 +1,177 @@
+@import "main.css";
+
+
+body
+{
+	background: #fff;
+}
+
+.pagecontent a { color: #000; text-decoration: none;}
+
+.pagecontent .hide { color: #FFF; }
+
+
+/* ---------- WHAT IS VISIBLE IN PRINT ---------- */
+
+.pagecontent h1.print
+{
+	display: block;
+}
+
+
+
+
+
+/* ---------- WHAT IS HIDDEN IN PRINT ---------- */
+
+form.pclayer
+{
+display: none;
+}
+
+#globalnav,
+#localnavpos,
+#localnav,
+.pagecontent a.actionbutton:link, .pagecontent a.actionbutton:visited,
+.pagecontent a.actionbutton:hover, .pagecontent a.actionbutton:active,
+.hide
+{
+display: none;
+}
+
+
+
+
+
+/* ---------- MAIN CONTENT ---------- */
+
+#print_header
+{
+	display: block;
+	background-color: transparent;
+	width: 100%;
+	margin: 0px 10px 0px 20px;
+	padding: 5px 0px 5px 0px;
+	border-bottom: 1px dotted #000;
+	font: bold 20px "Trebuchet MS", verdana, arial, lucida, helvetica, sans-serif;
+	color: #000;
+	text-align: left;
+}
+
+.pagecontent
+{
+	margin: 20px 10px 10px 20px;
+}
+
+.pagecontent table.itemlisting,
+.pagecontent table.pmtform
+{
+	border-top: 1px solid #999;
+	border-left: 0px solid #999;
+}
+
+.pagecontent table.itemlisting th,
+.pagecontent table.pmtform th
+{
+	border-right: 1px solid #999;
+	border-bottom: 1px solid #999;
+}
+
+.pagecontent table.itemlisting th.firstcell,
+.pagecontent table.pmtform th.firstcell
+{
+	border-left: 1px solid #999;
+}
+
+.pagecontent table.pmtform th
+
+{
+	border-bottom: 1px dotted #999;
+}
+
+.pagecontent table.itemlisting th.milestone,
+.pagecontent table.pmtform th.formcategory
+{
+	font: bold 1.2em "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	border-top: 1px solid #999;
+	border-right: 1px solid #999;
+	border-left: 1px solid #999;
+}
+
+.pagecontent table.pmtform th.formcategory
+{
+	border-right: 1px solid #999;
+	border-left: 1px solid #999;
+	border-top: 1px solid #000;
+	background-color: #EAEEF3;
+}
+
+.pagecontent table.itemlisting th.milestoneinfo
+{
+	border-right: 1px solid #999;
+	border-bottom: 1px dotted #999;
+	border-left: 1px solid #999;
+}
+
+.pagecontent table.itemlisting td,
+.pagecontent table.pmtform td
+{
+	border-right: 1px solid #999;
+	border-bottom: 1px dotted #999;
+}
+
+.pagecontent table.itemlisting td.firstcell,
+.pagecontent table.pmtform td.firstcell
+{
+	border-left: 1px solid #999;
+}
+
+.pagecontent table.pmtform td
+{
+	border-bottom: 1px solid #999;
+}
+
+.pagecontent table.itemlisting td.end,
+.pagecontent table.pmtform td.end
+{
+	border-right: 1px solid #999;
+	border-left: 1px solid #999;
+	border-bottom: 1px solid #999;
+}
+
+.pagecontent .NEW,
+.pagecontent .OPEN,
+.pagecontent .REOPENED,
+.pagecontent table.itemlisting td.NEW,
+.pagecontent table.itemlisting td.OPEN,
+.pagecontent table.itemlisting td.REOPENED,
+.pagecontent .INPROGRESS,
+.pagecontent table.itemlisting td.INPROGRESS,
+.pagecontent .RESOLVED,
+.pagecontent table.itemlisting td.RESOLVED,
+.pagecontent .VERIFIED,
+.pagecontent table.itemlisting td.VERIFIED,
+.pagecontent .CLOSED,
+.pagecontent table.itemlisting td.CLOSED,
+.pagecontent .UNASSIGNED,
+.pagecontent table.itemlisting td.UNASSIGNED,
+.pagecontent table.itemlisting td.pr0,
+.pagecontent table.itemlisting td.pr1,
+.pagecontent table.itemlisting td.pr2,
+.pagecontent table.itemlisting td.pr3,
+.pagecontent table.itemlisting td.pr4,
+.pagecontent table.itemlisting td.ok,
+.pagecontent table.itemlisting td.upcoming,
+.pagecontent table.itemlisting td.due,
+.pagecontent table.itemlisting td.late,
+.pagecontent table.itemlisting td.overdue
+{
+	font-weight: normal;
+	color: #000;
+}
+
+.pagecontent #fullviewbox
+{
+	border: 1px solid #999;
+}
+

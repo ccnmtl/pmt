@@ -1,0 +1,30 @@
+<tmpl_include name="header_usergroup.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_usergroup.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>GROUPS: My Groups</h1>
+<h1 class="print">Groups for <tmpl_var name="username"></h1>
+
+<tmpl_if name="groups">
+<h2>Current groups:</h2>
+<ul>
+<tmpl_loop name="groups">
+<li><a href="group.pl?group=<tmpl_var name='group'
+escape="url">"><tmpl_var name="group_name"
+escape="html"></a></li></tmpl_loop>
+</ul>
+<tmpl_else>
+<p>you are not in any groups</p>
+</tmpl_if>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

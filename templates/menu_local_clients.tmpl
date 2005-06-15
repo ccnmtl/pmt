@@ -1,0 +1,48 @@
+<!-- ===== LOCAL NAVIGATION ===== -->
+<div id="localnavpos">
+<div id="localnav">
+
+<h1 id="category">clients</h1>
+<ul>
+	<li><a href="client_search.pl?contact=<tmpl_var name="username" escape="url">;status=active">my clients</a></li>
+	<li><a href="clients.pl">all clients</a></li>
+	<li><a href="new_clients.pl">new clients</a></li>
+</ul>
+
+<h1>manage clients</h1>
+<ul>
+	<li><a href="home.pl?mode=add_client_form">add new client</a></li>
+</ul>
+
+<form>
+<h1>utilities</h1>
+<ul>
+<tmpl_if name="pid">
+	<li><a
+        href="webcal://pmt.ccnmtl.columbia.edu/project_ical.pl?pid=<tmpl_var
+        name="pid">;file=<tmpl_var name="name" escape="url">.ics">sync calendar</a></li>
+</tmpl_if>
+	<li><input id="calbox" type="hidden" /><a href="javascript:ViewNewCal('calbox','yyyymmdd')">calendar</a></li>
+
+	<li>search: <a href="search.pl">items</a></li>
+	<li><span class="hide">search:</span> <a href="home.pl?mode=project_search_form">projects</a></li>
+	<li><span class="hide">search:</span> <a href="client_search.pl">clients</a></li>
+</ul>
+</form>
+
+<h1>reports</h1>
+
+<ul>
+	<li class="last"><a href="home.pl?mode=clients_summary">clients summary</a></li>
+	<li><a href="user_feed.pl?username=<tmpl_var name="username" escape="url">"><img src="images/xml.gif" width="36" height="14" alt="" border="0" /></a></li>
+</ul>
+
+</div>
+</div>
+<!-- ===== END LOCAL NAVIGATION ===== -->
+
+
+
+
+
+

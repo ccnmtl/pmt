@@ -1,0 +1,62 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECTS: Search Projects<br />
+<span class="hide">PROJECTS:</span> &#62; Search Results</h1>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<thead>
+    <tr>
+<th class="Number firstcell">project no.:</th>
+<th>project:</th>
+<th>status:</th>
+<th>area:</th>
+<th>Manager:</th>
+</tr>
+</thead>
+
+<tbody>
+<tmpl_loop name="results">
+<tr>
+<td class="firstcell">
+<tmpl_if name="projnum">
+<tmpl_var name="projnum" escape="html">
+<tmpl_else>&nbsp;</tmpl_if>
+</td>
+<td>
+<a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="name" escape="html"></a>
+</td>
+<td>
+<tmpl_var name="status" escape="html">
+</td>
+<td>
+<tmpl_if name="area">
+<tmpl_var name="area" escape="html">
+<tmpl_else>&nbsp;</tmpl_if>
+</td>
+<td>
+<a href="user.pl?username=<tmpl_var name="caretaker" escape="url">"><tmpl_var name="caretaker_fullname" escape="html"></a>
+</td>
+</tr>
+</tmpl_loop>
+</tbody>
+
+<tfoot>
+<tr>
+<!-- ## Closing row --><td colspan="5" class="end">&nbsp;</td>
+</tr>
+</tfoot>
+</table>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

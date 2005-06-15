@@ -1,0 +1,270 @@
+body
+{
+	background-color: #fff;
+}
+
+
+
+
+/* ------ THE CALENDAR TABLE BOX ------ */
+
+table.calendar
+{
+	margin: auto;
+	padding: 0px;
+	border: 1px solid #999;
+}
+
+table.calendar tr
+{
+	border-right: 1px solid #999;
+	/*border-bottom: 1px solid #ccf;*/
+}
+
+table.calendar td
+{
+	width: 20px;
+	padding: 3px;
+	border: 0px;
+	font: normal 12px "trebuchet ms", verdana, arial, helvetica, sans-serif;
+	color: #000;
+	text-align: center;
+	vertical-align: middle;
+}
+
+table.calendar td a
+{
+	font-weight: normal;
+	color: #039;
+	text-decoration: none;
+}
+
+table.calendar td a:hover
+{
+	color: #960;
+	text-decoration: underline;
+}
+
+
+
+
+/* ------ THE CELL WITH DROPDOWN-MONTH AND YEAR ------ */
+
+table.calendar td.month_year
+{
+	width: 20px;
+	border-bottom: 1px solid #999;
+	background-color: #C6CED6;
+	font: bold 14px "trebuchet ms", verdana, arial, helvetica, sans-serif;
+	color: #036;
+	text-align: left;
+	vertical-align: middle;
+}
+
+table.calendar td.month_year a
+{
+	font-weight: bold;
+	color: #036;
+	text-decoration: none;
+}
+
+table.calendar td.month_year a:hover
+{
+	text-decoration: underline;
+}
+
+/* MONTH DROP DOWN MENU */
+
+select.month_selection
+{
+	width: 110px;
+	border: 1px solid #036;
+	background-color: #C6CED6;
+	font: bold 14px "trebuchet ms", verdana, arial, helvetica, sans-serif;
+	color: #036;
+}
+
+.month_name
+{
+	font: normal 12px "trebuchet ms", verdana, arial, helvetica, sans-serif;
+	color: #036;
+}
+
+
+
+
+/* ------ NAME OF DAYS OF THE WEEK ------ */
+
+table.calendar tr.name_of_days
+{
+	background-color: #EAEEF3;
+}
+
+table.calendar td.name_of_days
+{
+	width: 20px;
+	border-bottom: 1px solid #999;
+	background-color: #EAEEF3;
+	text-align: center;
+	vertical-align: middle;
+}
+
+
+
+
+/* ------ WEEKDAYS ------ */
+
+table.calendar td.weekdays
+{
+	width: 20px;
+	background-color: #fff;
+	color: #039;
+	text-decoration: none;
+	text-align: center;
+	vertical-align: middle;
+}
+
+table.calendar td.weekdays:hover
+{
+	background-color: #f0f0f0;
+}
+
+table.calendar td.weekdays a
+{
+	color: #039;
+	text-decoration: none;
+}
+
+table.calendar td.weekdays a:hover
+{
+	color: #960;
+	text-decoration: underline;
+}
+
+
+
+
+/* ------ WEEKENDS ------ */
+
+table.calendar td.weekends
+{
+	width: 20px;
+	background-color: #fff;
+	color: #c00;
+	text-decoration: none;
+	text-align: center;
+	vertical-align: middle;
+}
+
+table.calendar td.weekends:hover
+{
+	background-color: #f0f0f0;
+}
+
+table.calendar td.weekends a
+{
+	color: #c00;
+	text-decoration: none;
+}
+
+table.calendar td.weekends a:hover
+{
+	text-decoration: underline;
+}
+
+
+
+
+/* ------ TODAY HIGHLIGHT ------ */
+
+table.calendar td.todays_date
+{
+	width: 20px;
+	border: 1px solid #ccc;
+	font-weight: bold;
+	color: #00f;
+	text-decoration: none;
+	text-align: center;
+	vertical-align: middle;
+}
+
+table.calendar td.todays_date:hover
+{
+	background-color: #f0f0f0;
+}
+
+table.calendar td.todays_date a
+{
+	font-weight: bold;
+	color: #00f;
+	text-decoration: none;
+}
+
+table.calendar td.todays_date a:hover
+{
+	text-decoration: underline;
+}
+
+
+
+
+/* ------ SELECTED DATE HIGHLIGHT ------ */
+
+table.calendar td.selected_day
+{
+	width: 20px;
+	border: 1px solid #960;
+	color: #960;
+	text-decoration: none;
+	text-align: center;
+	vertical-align: middle;
+}
+
+table.calendar td.selected_day:hover
+{
+	background-color: #f0f0f0;
+}
+
+table.calendar td.selected_day a
+{
+	font-weight: bold;
+	color: #960;
+	text-decoration: none;
+}
+
+table.calendar td.selected_day a:hover
+{
+	text-decoration: underline;
+}
+
+
+
+
+/* ------ CLOSE WINDOW BUTTON ------ */
+
+table.calendar td.closewin
+{
+	padding: 2px;
+	border-top: 1px solid #ccc;
+	color: #036;
+	text-decoration: none;
+	text-align: center;
+	vertical-align: middle;
+}
+
+table.calendar td.closewin:hover
+{
+	background-color: #fff;
+}
+
+table.calendar td.closewin a
+{
+	font-weight: bold;
+	color: #036;
+	text-decoration: none;
+}
+
+table.calendar td.closewin a:hover
+{
+	text-decoration: underline;
+}

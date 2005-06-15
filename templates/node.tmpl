@@ -1,0 +1,89 @@
+<tmpl_include name="header_forums.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_forums.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<tmpl_if name="pid">
+<h1>FORUMS/LOGS: View Project's <span style="text-transform: capitalize;"><tmpl_var name="type" escape="html"></span></h1>
+<tmpl_else>
+<h1>FORUMS/LOGS: View <span style="text-transform: capitalize;"><tmpl_var name="type" escape="html"></span></h1>
+</tmpl_if>
+
+<div class="post">
+<tmpl_if name="subject">
+<h2 class="nodesubject"><tmpl_var name="subject" escape="html"></h2></tmpl_if>
+<p class="byline"><tmpl_if name="pid">to project <a href="forum.pl?pid=<tmpl_var
+name="pid">"><tmpl_var name="project"></a></tmpl_if> by <a
+href="user.pl?username=<tmpl_var name="author"
+escape="url">"><tmpl_var name="author_fullname" escape="html"></a> @
+<tmpl_var name="added" escape="html"></p>
+<div class="nodebody">
+<tmpl_var name="body">
+</div>
+
+<tmpl_if name="can_delete">
+<div style="padding: 6px; border-top: 1px solid #ccf; text-align: left;">
+<a class="actionbutton" href="home.pl?mode=delete_node;nid=<tmpl_var name="nid" escape="url">">delete this post</a>
+</div>
+</tmpl_if>
+
+</div>
+
+<br />
+
+<a name="addcomment"></a><h2>add a comment:</h2>
+<form action="home.pl" method="post">
+<input type="hidden" name="mode" value="post" />
+<input type="hidden" name="reply_to" value="<tmpl_Var name="nid">" />
+<input type="hidden" name="pid" value="<tmpl_var name="pid">" />
+<input type="hidden" name="type" value="comment" />
+
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 500px;">
+<tr><th class="firstcell">subject:</th><td><input class="textform" size="40" type="text" name="subject" 
+value="Re: <tmpl_var name="subject" escape="html">" /></td></tr>
+<tr><th class="firstcell">text:</th><td>(formatting can be done using <a
+href="http://search.cpan.org/~tima/Text-Tiki-0.73/Tiki.pm#TikiText_NOTATION">Tiki
+notation</a>)<br />
+<div class="resizer" id="bodybox"><textarea class="textform" name="body" cols="40" wrap="virtual"
+rows="10"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
+height="20" alt="" /></div></td></tr>
+<!-- <tr><td><input name="preview" type="submit" value="preview"
+/></td> -->
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input class="button" type="submit" name="preview" value="preview" /> <input class="button" type="submit" value="add comment" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+
+
+<tmpl_if name="comment_html">
+<br />
+<br />
+
+<a name="comments"></a><h2>comments:</h2>
+<br />
+<tmpl_var name="comment_html">
+
+</tmpl_if>
+
+<br />
+
+<script type="text/javascript">
+SET_DHTML("bodybox"+RESIZABLE)
+</script>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

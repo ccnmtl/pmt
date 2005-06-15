@@ -1,0 +1,78 @@
+<!-- ===== LOCAL NAVIGATION ===== -->
+<div id="localnavpos">
+<div id="localnav">
+
+<h1 id="category">items</h1>
+<ul>
+	<li><a href="home.pl">my items</a></li>
+	<li><a href="search.pl?type=%25&pid=%25&owner=<tmpl_var name="username" escape="url">&assigned_to=%25&status=OPEN&status=UNASSIGNED&status=INPROGRESS&status=RESOLVED_%25&limit=100&sortby=priority&order=DESC&show=title&show=priority&show=target_date&show=assigned&show=project&show=status&results_title=Owned+Items">owned items</a></li>
+	<li class="last"><a href="home.pl?mode=watched_items">watched items</a></li>
+	<li><a href="home.pl?mode=edit_my_items_form">edit items</a></li>
+	<li><a href="home.pl?mode=add_trackers_form">add trackers</a></li>
+	<li><a href="forum_archive.pl?username=<tmpl_var name="username">">my log entries</a></li>
+</ul>
+
+<form>
+<h1>utilities</h1>
+<ul>
+	<li><input id="calbox" type="hidden" /><a href="javascript:ViewNewCal('calbox','yyyymmdd')">calendar</a></li>
+	<li>search: <a href="search.pl">items</a></li>
+	<li><span class="hide">search:</span> <a href="home.pl?mode=project_search_form">projects</a></li>
+	<li><span class="hide">search:</span> <a href="client_search.pl">clients</a></li>
+</ul>
+</form>
+<h1>reports</h1>
+<ul>
+	<li><!-- <a href="weekly_summary.pl"> --><a href="user_weekly_report.pl?username=<tmpl_var name="username" escape="url">">weekly report</a></li>
+	<li class="last"><a href="user_history.pl?user=<tmpl_Var name="username" escape="url">&amp;month=<tmpl_var name="month" escape="url">&amp;year=<tmpl_var name="year" escape="url">">calendar: user history</a></li>
+<tmpl_if name="total_estimated_time">
+	<li class="last">total estimated time assigned: <tmpl_var
+	name="total_estimated_time" escape="html"> hours</li>
+	<li>by schedule status:</li>
+	<li><table id="progressbar" cellpadding="0" cellspacing="0">
+<tr>
+<td width="<tmpl_var name="ok">" class="ok"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"
+height="10" width="<tmpl_var name="ok">" alt=""/></td>
+<td width="<tmpl_var name="due">" class="due"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"
+height="10" width="<tmpl_var name="due">" alt=""/></td>
+<td width="<tmpl_var name="upcoming">" class="upcoming"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"
+height="10" width="<tmpl_var name="upcoming">" alt=""/></td>
+<td width="<tmpl_var name="overdue">" class="overdue"><img src="http://www2.ccnmtl.columbia.edu/images/
+pixel.gif"
+height="10" width="<tmpl_var name="overdue">" alt=""/></td>
+<td width="<tmpl_var name="late">" class="late"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"
+height="10" width="<tmpl_var name="late">" alt=""/></td>
+</tr>
+</table></li>
+<li>by priority:</li>
+	<li><table class="progressbar" cellpadding="0" cellspacing="0">
+<tr>
+<td width="<tmpl_var name="critical">" class="critical"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"
+height="10" width="<tmpl_var name="critical">" alt=""/></td>
+<td width="<tmpl_var name="high">" class="high"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"
+height="10" width="<tmpl_var name="high">" alt=""/></td>
+<td width="<tmpl_var name="medium">" class="medium"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"
+height="10" width="<tmpl_var name="medium">" alt=""/></td>
+<td width="<tmpl_var name="low">" class="low"><img src="http://www2.ccnmtl.columbia.edu/images/
+pixel.gif"
+height="10" width="<tmpl_var name="low">" alt=""/></td>
+<td width="<tmpl_var name="icing">" class="icing"><img src="http://www2.ccnmtl.columbia.edu/images/
+pixel.gif"
+height="10" width="<tmpl_var name="icing">" alt=""/></td>
+</tr>
+</table></li>
+
+
+</tmpl_if>
+	<li><a href="user_feed.pl?username=<tmpl_var name="username" escape="url">"><img src="images/xml.gif" width="36" height="14" alt="" border="0" /></a></li>
+</ul>
+
+</div>
+</div>
+<!-- ===== END LOCAL NAVIGATION ===== -->
+
+
+
+
+
+

@@ -1,0 +1,96 @@
+<tmpl_include name="header_clients.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_clients.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>CLIENTS: Search Clients<br />
+<span class="hide">CLIENTS:</span> &#62; Search Results</h1>
+
+<tmpl_if name="results">
+<h2><b>total number of results</b>: <tmpl_var name="results_count" escape="html"></h2>
+
+
+<p><tmpl_if name="prev"><a href="client_search.pl?q=<tmpl_var name="q"
+escape="url">;status=<tmpl_var name="status"
+escape="url">;department=<tmpl_var name="department"
+escape="url">;school=<tmpl_var name="school"
+escape="url">;start_date=<tmpl_var name="start_date"
+escape="url">;end_date=<tmpl_var name="end_date"
+escape="url">;project=<tmpl_var name="project"
+escape="url">;contact=<tmpl_var name="contact" escape="url">;offset=<tmpl_var
+name="prev_offset" escape="url">;limit=<tmpl_var name="limit"
+escape="url">">&lt;&lt; previous results</a></tmpl_if> <tmpl_if name="next"><a href="client_search.pl?q=<tmpl_var name="q"
+escape="url">;status=<tmpl_var name="status"
+escape="url">;department=<tmpl_var name="department"
+escape="url">;school=<tmpl_var name="school"
+escape="url">;start_date=<tmpl_var name="start_date"
+escape="url">;end_date=<tmpl_var name="end_date"
+escape="url">;project=<tmpl_var name="project"
+escape="url">;contact=<tmpl_var name="contact" escape="url">;offset=<tmpl_var
+name="next_offset" escape="url">;limit=<tmpl_var name="limit"
+escape="url">">more results &gt;&gt;</a></tmpl_if></p>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<thead>
+<tr><th>client:</th><th>school:</th><th>department:</th><th>registered:</th><th>contact:</th><th>status:</th>
+<th width="120">latest
+activity:</th></tr>
+</thead>
+
+<tbody>
+<tmpl_loop name="results">
+<tr><td class="firstcell"><!--<tmpl_if name="inactive"> class="inactive"</tmpl_if>--><a href="client.pl?client_id=<tmpl_Var name="client_id" escape="url">"><tmpl_var name="lastname" escape="html">, <tmpl_var name="firstname"
+escape="html"></a></td><td><a
+href="client_search.pl?school=<tmpl_var name="school" escape="url">"><tmpl_var name="school"
+escape="html"></a></td><td><a
+href="client_search.pl?department=<tmpl_var name="department" escape="url">"><tmpl_var name="department"
+escape="html"></a></td><td><tmpl_Var name="registered" escape="html"></td>
+<td><a href="user.pl?username=<tmpl_Var name="contact_username"
+escape="url">"><tmpl_var name="contact_fullname" escape="html"></a></td>
+<td><tmpl_if name="inactive">Inactive<tmpl_else>Active</tmpl_if></td>
+<td><tmpl_if name="last_mod"><tmpl_var name="last_mod"><tmpl_else>&#160;</tmpl_if></td>
+</tr>
+</tmpl_loop>
+</tbody>
+
+<tfoot>
+<tr>
+<!-- ## Closing row --><td colspan="7" class="end">&nbsp;</td>
+</tr>
+</tfoot>
+</table>
+
+<p><tmpl_if name="prev"><a href="client_search.pl?q=<tmpl_var name="q"
+escape="url">;status=<tmpl_var name="status"
+escape="url">;department=<tmpl_var name="department"
+escape="url">;school=<tmpl_var name="school"
+escape="url">;start_date=<tmpl_var name="start_date"
+escape="url">;end_date=<tmpl_var name="end_date"
+escape="url">;project=<tmpl_var name="project"
+escape="url">;contact=<tmpl_var name="contact" escape="url">;offset=<tmpl_var
+name="prev_offset" escape="url">;limit=<tmpl_var name="limit"
+escape="url">">&lt;&lt; previous results</a></tmpl_if> <tmpl_if name="next"><a href="client_search.pl?q=<tmpl_var name="q"
+escape="url">;status=<tmpl_var name="status"
+escape="url">;department=<tmpl_var name="department"
+escape="url">;school=<tmpl_var name="school"
+escape="url">;start_date=<tmpl_var name="start_date"
+escape="url">;end_date=<tmpl_var name="end_date"
+escape="url">;project=<tmpl_var name="project"
+escape="url">;contact=<tmpl_var name="contact" escape="url">;offset=<tmpl_var
+name="next_offset" escape="url">;limit=<tmpl_var name="limit"
+escape="url">">more results &gt;&gt;</a></tmpl_if></p>
+
+<tmpl_else>
+<p><b>There are no clients found matching your query.</b></p>
+</tmpl_if>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

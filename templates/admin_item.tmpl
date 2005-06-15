@@ -1,0 +1,81 @@
+<tmpl_include name="header.tmpl">
+
+<form action="update_item.pl" method="POST">
+<input type="hidden" name="iid" value="<tmpl_var name="iid">" />
+<input type="hidden" name="mid" value="<tmpl_var name="mid">" />
+<input type="hidden" name="type" value="<tmpl_var name="type">" />
+<input type="hidden" name="title" value="<tmpl_var name="title">" />
+<input type="hidden" name="priority" value="<tmpl_var name="priority">" />
+<input type="hidden" name="target_date" value="<tmpl_var name="target_date">" />
+<input type="hidden" name="assigned_to" value="<tmpl_var name="assigned_to">" />
+<input type="hidden" name="description" value="<tmpl_var name="description">" />
+<tmpl_loop name="keywords">
+<input type="hidden" name="keywords" value="<tmpl_var name="keyword">"
+/>
+</tmpl_loop>
+<tmpl_loop name="dependencies">
+<input type="hidden" name="depends" value="<tmpl_var name="iid">"
+/>
+</tmpl_loop>
+
+<table>
+<tr><th><tmpl_var name="type"></th><td><h2>#<tmpl_var name="iid">
+<tmpl_var name="title"></h2></td></tr>
+<tr><th>project</th><td><a href="admin_view.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td></tr>
+<tr><th>milestone</th><td><a href="admin_view.pl?mid=<tmpl_var name="mid">"><tmpl_var name="milestone"></a></td></tr>
+<tr><th>status</th><td class="<tmpl_var name="status">"><select name="status">
+<tmpl_loop name="status_select">
+<option value="<tmpl_var name="value" escape="html">"<tmpl_if
+name="selected"> selected="selected"</tmpl_if>><tmpl_var
+name="label" escape="html"></option></tmpl_loop>
+</select>
+</td></tr>
+<tr><th>priority</th><td class="pr<tmpl_var name="priority">"><tmpl_var name="priority"></td></tr>
+<tr><th>target date</th><td><tmpl_var name="target_date"></td></tr>
+<tr><th>assigned to</th><td><tmpl_var name="assigned_to_fullname"></td></tr>
+<tr><th>owner</th><td><tmpl_var name="owner_fullname"></td></tr>
+<tr><th>last modified</th><td><tmpl_var name="last_mod"></td></tr>
+<tmpl_if name="url"><tr><th>url</th><td><a href="<tmpl_var name="url">"><tmpl_var name="url"></a></td></tr></tmpl_if>
+<tmpl_if name="keywords"><tr><th>keywords</th><td><tmpl_loop name="keywords">
+<a href="keyword.pl?keyword=<tmpl_var name="keyword" escape="url">"><tmpl_var name="keyword"></a>
+</tmpl_loop></td></tr></tmpl_if>
+<tmpl_if name="dependencies"><tr><th>dependencies</th><td><tmpl_loop name="dependencies">
+<a href="admin_view.pl?iid=<tmpl_var name="iid">"><tmpl_var name="type">
+#<tmpl_var name="iid"> <tmpl_var name="title"> [<tmpl_var name="status"><tmpl_if name="r_status"> (<tmpl_var name="r_status">)</tmpl_if>]<br />
+</tmpl_loop></td></tr></tmpl_if>
+
+<tmpl_if name="dependents"><tr><th>dependents</th><td><tmpl_loop name="dependents">
+<a href="admin_view.pl?iid=<tmpl_var name="iid">"><tmpl_var name="type">
+#<tmpl_var name="iid"> <tmpl_var name="title"> [<tmpl_var name="status"><tmpl_if name="r_status"> (<tmpl_var name="r_status">)</tmpl_if>]<br />
+</tmpl_loop></td></tr></tmpl_if>
+
+<tr><th>description</th><td><tmpl_var name="description">
+</td></tr>
+<tr><th>comment</th><td><div class="resizer" id="commentbox"><textarea name="comment" wrap="virtual"
+cols="40" rows="5"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
+height="20" alt="" /></div>
+<input type="submit" value="update" /></td></tr>
+<tmpl_if name="comments"><tr><th>comments</th><td>
+<tmpl_loop name="comments">
+<b>-- <tmpl_var name="fullname"> @ <tmpl_var name="add_date_time"></b><br />
+<br /><tmpl_var name="comment"><br /><br />
+</tmpl_loop>
+</td></tr></tmpl_if>
+<tr><th>history</th><td>
+<table>
+<tmpl_loop name="history">
+<tr>
+<td class="<tmpl_var name="status">"><tmpl_var name="status"></td>
+<td>by <a href="admin_view.pl?username=<tmpl_var name="username">"><tmpl_var name="fullname"></a> 
+at <tmpl_var name="event_date_time"><tmpl_if name="comment"><hr />
+<tmpl_var name="comment"></tmpl_if></td>
+</tr>
+</tmpl_loop>
+</table>
+</td></tr>
+</table>
+</form>
+<script type="text/javascript">
+SET_DHTML("commentbox"+RESIZABLE)
+</script>
+<tmpl_include name="footer.tmpl">

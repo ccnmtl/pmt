@@ -1,0 +1,6 @@
+<settings>
+  <database>pmt2</database>
+  <database_username>anders</database_username>
+  <database_password>foo</database_password>
+  <document_repository>/var/www/pmt/data</document_repository>
+</settings>

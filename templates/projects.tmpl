@@ -1,0 +1,56 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECTS: All Projects</h1>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<colgroup id="list" span="5">
+<col class="project"></col>
+<col class="status"></col>
+<col class="caretaker"></col>
+<col class="estimatedtime"></col>
+<col class="completedtime"></col>
+<col class="modified"></col>
+<thead>
+<tr>
+<th class="firstcell">project:</th>
+<th>status:</th>
+<th>caretaker:</th>
+<th class="Number">estimated time:</th>
+<th class="Number">completed time:</th>
+<th><nobr>latest activity:</nobr></th>
+</tr>
+</thead>
+
+<tbody>
+<tmpl_loop name="projects">
+<tr><td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="name" escape="html"></a></td>
+<td><tmpl_var name="status" escape="html"></td>
+<td><a href="user.pl?username=<tmpl_var name="caretaker" escape="url">"><tmpl_var name="fullname" escape="html"></a></td>
+<td><tmpl_if name="total_estimated"><tmpl_var name="total_estimated" escape="html"><tmpl_else>-</tmpl_if></td>
+<td><tmpl_if name="total_completed"><tmpl_var name="total_completed" escape="html"><tmpl_else>-</tmpl_if></td>
+<td><tmpl_if name="modified"><tmpl_var name="modified" escape="html"><tmpl_else>&#160;</tmpl_if></td>
+</tr>
+</tmpl_loop>
+</tbody>
+
+
+<tfoot>
+<tr>
+<!-- ## Closing row --><td colspan="6" class="end">&nbsp;</td>
+</tr>
+</tfoot>
+</table>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

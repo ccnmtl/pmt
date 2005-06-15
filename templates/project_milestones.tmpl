@@ -1,0 +1,75 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECT: <a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
+<span class="hide">PROJECT:</span> &#62; Project Milestones
+</h1>
+
+
+<table cellpadding="0" cellspacing="0" class="itemlisting" style="width: 650px;">
+<tr><th class="firstcell">milestone:</th>
+<th>status:</th>
+<th>target date:</th>
+<th>remaining:</th>
+<th>completed:</th>
+</tr>
+
+<tmpl_loop name="milestones">
+<tr>
+<td class="firstcell"><a href="milestone.pl?mid=<tmpl_var name="mid">"><tmpl_var name="name" escape="html"></a></td>
+<td class="<tmpl_var name="status">"><tmpl_var name="status"></td>
+<td><tmpl_var name="target_date"></td>
+<td><tmpl_var name="total_estimated_time"></td>
+<td><tmpl_var name="total_completed_time"></td>
+</tr>
+</tmpl_loop>
+
+<tr>
+<!-- ## Closing row --><td colspan="5" class="end">&nbsp;</td>
+</tr>
+</table>
+
+<br />
+
+<h2>add milestone:</h2>
+
+<form action="add_milestone.pl" method="post">
+<input type="hidden" name="pid" value="<tmpl_var name="pid">" />
+
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 650px;">
+<tr><th class="firstcell">milestone name:</th><td><input type="text" class="textform" name="name"
+size="40" /></td></tr>
+<tr><th class="firstcell">target date:</th><td><input type="text" id="datebox" class="textform"
+name="target_date" size="15" value="" onclick="javascript:NewCal('datebox','yyyymmdd')"
+/> <a href="javascript:NewCal('datebox','yyyymmdd')"><i>select date</i></a>
+</td></tr>
+<tr><th class="firstcell">description:<br />(accepts HTML)</th><td><div class="resizer"
+id="milestonedescriptionbox"><textarea class="textform" name="description"
+wrap="virtual" cols="40" rows="8"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
+height="20" alt="" /></div></td></tr>
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" value="ADD MILESTONE" class="button" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+
+<script type="text/javascript">
+SET_DHTML("milestonedescriptionbox"+RESIZABLE)
+</script>
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

@@ -1,0 +1,108 @@
+<tmpl_include name="header_clients.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_clients.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>CLIENTS: Search Clients</h1>
+
+<form action="client_search.pl" method="GET">
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 500px;">
+<tr>
+<th class="firstcell" width="150">search term:</th>
+<td>
+<input type="text" class="textform" name="q" size="20" />
+</td>
+</tr>
+<tr>
+<th class="firstcell">status:</th>
+<td>
+<select class="medium" name="status">
+<option value="%">ANY</option>
+<option value="active">active</option>
+<option value="inactive">inactive</option>
+</select>
+</td>
+</tr>
+<tr>
+<th class="firstcell">in department:</th>
+<td>
+<select class="big" name="department">
+<option value="%">ANY</option>
+<tmpl_loop name="departments">
+<option value="<tmpl_var name="department" escape="html">"><tmpl_var name="department" escape="html"></option>
+</tmpl_loop>
+</select>
+</td>
+</tr>
+<tr>
+<th class="firstcell">in school:</th>
+<td>
+<select class="medium" name="school">
+<option value="%">ANY</option>
+<tmpl_loop name="schools">
+<option value="<tmpl_var name="school" escape="html">"><tmpl_var name="school" escape="html"></option>
+</tmpl_loop>
+</select>
+</td>
+</tr>
+<tr>
+<th class="firstcell">registered between:</th>
+<td>
+<input type="text" class="textform" onclick="getCalN(this,2)"
+name="start_date" value="<tmpl_var name="start_date" escape="html">" size="15"/> and <input type="text" class="textform" name="end_date"
+value="<tmpl_var name="end_date" escape="html">" size="15"
+onclick="getCalN(this,2)" />
+</td>
+</tr>
+<tr>
+<th class="firstcell">on project:</th>
+<td>
+<select class="big" name="project">
+<option value="%">ANY</option>
+<tmpl_loop name="projects">
+<option value="<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></option>
+</tmpl_loop>
+</select>
+</td>
+</tr>
+
+<tr>
+<th class="firstcell">contact:</th>
+<td>
+<select class="xmedium" name="contact">
+<option value="%">ANY</option>
+<tmpl_loop name="contacts">
+<option value="<tmpl_var name="contact_username" escape="html">"><tmpl_var name="contact_fullname" escape="html"></option>
+</tmpl_loop>
+</select>
+</td>
+</tr>
+
+<tr>
+<th class="firstcell">max number of results to display:</th>
+<td>
+<input type="text" class="textform" name="limit" value="100" size="15" />
+</td>
+</tr>
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="SEARCH" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+
+</form>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

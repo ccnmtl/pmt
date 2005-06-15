@@ -1,0 +1,32 @@
+<tmpl_include name="header_reports.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_reports.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>REPORTS: My Reports</h1>
+
+
+<ul>
+<li><a href="user_weekly_report.pl?username=<tmpl_var name="username"
+escape="url">">weekly report</a></li>
+<li><a href="user_history.pl?user=<tmpl_Var name="username"
+escape="url">&amp;month=<tmpl_var name="month"
+escape="url">&amp;year=<tmpl_var name="year" escape="url">">calendar view
+of user history</a></li>
+<li><a href="home.pl?mode=total_breakdown">total projects
+breakdown</a></li>
+<li><a href="home.pl?mode=user_plate">on my plate</a></li>
+
+</ul>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

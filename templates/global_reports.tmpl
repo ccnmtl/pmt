@@ -1,0 +1,51 @@
+<tmpl_include name="header_reports.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_reports.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>REPORTS:  Global Reports</h1>
+
+
+
+<ul>
+<li><a href="staff_report.pl">staff report</a></li>
+<li><a href="weekly_summary.pl">weekly summary</a></li>
+<li><a href="monthly_summary.pl">monthly summary</a></li>
+<li><a href="home.pl?mode=clients_summary">clients summary</a></li>
+</ul>
+
+<form action="home.pl" method="get">
+<p>
+<input type="hidden" name="mode" value="group_activity_summary" />
+group: <select name="group_name" class="big">
+<tmpl_loop name="groups">
+<option value="<tmpl_var name="group">"><tmpl_Var name="group_name"></option>
+</tmpl_loop>
+</select>
+<input type="submit" value="view group activity summary" class="button" />
+</p>
+</form>
+
+<form action="home.pl" method="get">
+<p>
+<input type="hidden" name="mode" value="group_plate" />
+group: <select name="group_name" class="big">
+<tmpl_loop name="groups">
+<option value="<tmpl_var name="group">"><tmpl_Var name="group_name"></option>
+</tmpl_loop>
+</select>
+<input type="submit" value="what's on the group's plate" class="button" />
+</p>
+</form>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

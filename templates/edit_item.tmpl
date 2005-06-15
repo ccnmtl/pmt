@@ -1,0 +1,197 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECTS: <a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a><br />
+<span class="hide">PROJECTS:</span> &#62;  View <span style="text-transform: capitalize;"><tmpl_var name="type"></span><br />
+<span class="hide">PROJECTS:</span> &#62; #<tmpl_var name="iid"> <tmpl_var name="title"><br />
+<span class="hide">PROJECTS: &#62; </span> 
+<a class="actionbutton" href="home.pl?mode=delete_item;iid=<tmpl_var name="iid">">delete <tmpl_var name="type"></a>
+</h1>
+
+<br />
+
+<!--
+<p id="ie6special">
+<form action="notify.pl" method="POST" class="pclayer">
+<input type="hidden" name="iid" value="<tmpl_var name="iid">" />
+<tmpl_if name="cc">
+Notify me of changes in this item <input type="checkbox" name="email_notification" value="yes" checked />
+<tmpl_else>
+Notify me of changes in this item <input type="checkbox" name="email_notification" value="yes" />
+</tmpl_if>
+<input type="submit" value="UPDATE NOTIFICATION" class="button" />
+</form>
+</p>
+-->
+
+
+<form action="update_item.pl" method="POST">
+<input type="hidden" name="iid" value="<tmpl_var name="iid">" />
+
+<table cellpadding="0" cellspacing="0" class="pmtform">
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="UPDATE <tmpl_var name="type">" /></td>
+</tr>
+<tr>
+<th class="firstcell">
+<select class="small" name="type">
+<tmpl_if name="bug">
+<option value="bug" selected>bug</option>
+<option value="action item">action item</option>
+<tmpl_else>
+<option value="action item" selected>action item</option>
+<option value="bug">bug</option>
+</tmpl_if>
+</select>
+</th>
+<td class="<tmpl_var name="type">">#<tmpl_var name="iid">
+<input type="text" class="textform"size="40" name="title" value="<tmpl_var name="title">" /></td></tr>
+<tr>
+<th class="firstcell">project:</th>
+<td><a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td></tr>
+<tr>
+<th class="firstcell">milestone:</th>
+<td>
+<select class="big" name="mid">
+<tmpl_loop name="milestone_select">
+<option value="<tmpl_var name="value" escape="html">"<tmpl_if
+name="selected"> selected="selected"</tmpl_if>><tmpl_var
+name="label" escape="html"></option></tmpl_loop>
+</select>
+</td></tr>
+<tr>
+<th class="firstcell">status:</th>
+<td>
+<select class="xmedium" name="status">
+<tmpl_loop name="status_select">
+<option value="<tmpl_var name="value" escape="html">"<tmpl_if
+name="selected"> selected="selected"</tmpl_if>><tmpl_var
+name="label" escape="html"></option></tmpl_loop>
+</select>
+</td></tr>
+<tr>
+<th class="firstcell">priority:</th>
+<td class="pr<tmpl_var name="priority">"><select class="small" name="priority">
+<tmpl_loop name="priority_select">
+<option value="<tmpl_var name="value" escape="html">"<tmpl_if
+name="selected"> selected="selected"</tmpl_if>><tmpl_var
+name="label" escape="html"></option></tmpl_loop>
+</select></td></tr>
+<tr>
+<th class="firstcell">target date:<br />(YYYY-MM-DD)</th>
+<!-- <input type="text" class="textform"name="target_date" size="15"
+value="<tmpl_var name="target_date">" onclick="getCalN(this,2)"/> -->
+<td><input type="text" id="datebox" class="textform" name="target_date" size="15"
+value="<tmpl_var name="target_date">" onclick="javascript:NewCal('datebox','yyyymmdd')" />
+<a  href="javascript:NewCal('datebox','yyyymmdd')"><i>select new date</i></a>
+</td></tr>
+<tr>
+<th class="firstcell">estimated time:</th>
+<td><input type="text" class="textform"name="estimated_time" value="<tmpl_var
+name="estimated_time" escape="html">" size="15" /></td></tr>
+<tmpl_if name="can_resolve">
+<tr>
+<th class="firstcell" width="120">resolve time:</th>
+<td><input class="textform" type="text" name="resolve_time" size="15" /></td>
+</tr>
+</tmpl_if>
+<tr>
+<th class="firstcell">assigned to:</th>
+<td><select class="big" name="assigned_to">
+<tmpl_loop name="assigned_to_select">
+<option value="<tmpl_var name="value" escape="html">"<tmpl_if
+name="selected"> selected="selected"</tmpl_if>><tmpl_var
+name="label" escape="html"></option></tmpl_loop>
+</select></td></tr>
+<tr>
+<th class="firstcell">owner:</th>
+<td><select class="big" name="owner">
+<tmpl_loop name="owner_select"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
+</select></td></tr>
+<tmpl_if name="clients">
+<tr>
+<th class="firstcell">clients:</th>
+<td>
+<tmpl_loop name="clients"><tmpl_var name="firstname" escape="html">
+<tmpl_var name="lastname" escape="html"><tmpl_unless __LAST__>, </tmpl_unless></tmpl_loop>
+</td></tr>
+</tmpl_if>
+<tr>
+<th class="firstcell">last modified:</th>
+<td><tmpl_var name="last_mod"></td></tr>
+<tr>
+<th class="firstcell">related url:</th>
+<td><tmpl_if name="url"><a target="_blank" href="<tmpl_var name="url">"><tmpl_var name="url"></a> (change: </tmpl_if><input 
+class="textform" type="text" name="url" size="40" value="<tmpl_var name="url">" /><tmpl_if name="url">)</tmpl_if></td></tr>
+<tr>
+<th class="firstcell">keywords:</th>
+<td>
+<select class="activated" name="keywords" size="5" multiple="multiple">
+<tmpl_loop name="keywords_select">
+<option value="<tmpl_var name="value" escape="html">"<tmpl_if
+name="selected"> selected="selected"</tmpl_if>><tmpl_var name="label" escape="html"></option></tmpl_loop>
+</select>
+<br />
+ <br />
+ new keywords (one per line): <br />
+<textarea class="textform" name="new_keywords" cols="5" rows="5" style="width: 50%;"></textarea></div></td></tr>
+<tr>
+<th class="firstcell">dependencies:</th>
+<td>
+<select class="available" style="width: 520px;" name="depends" multiple size="5">
+<option  value="">no dependencies</option>
+<tmpl_loop name="dependencies_select">
+<option value="<tmpl_var name="value" escape="html">"<tmpl_if
+name="selected"> selected="selected"</tmpl_if>><tmpl_var name="label" escape="html"></option>
+</tmpl_loop>
+</select>
+</td></tr>
+<tr>
+<th class="firstcell">description:</th>
+<td><div class="resizer" id="descriptionbox">
+<textarea class="textform" name="description" cols="40" rows="8" wrap="virtual"><tmpl_var name="description"></textarea><img
+src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20" height="20" alt="" /></div>
+</td></tr>
+
+<tmpl_if name="clients_select">
+<tr>
+<th class="firstcell">
+client(s):</th>
+<td>
+<select class="activated" name="clients" multiple="multiple" size="5">
+<option value="">[no specific client]</option>
+<tmpl_loop name="clients_select"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
+</select>
+</td>
+</tr>
+</tmpl_if>
+<tr>
+<th class="firstcell">comment:</th>
+<td><div class="resizer" id="commentbox"><textarea class="textform" name="comment" wrap="virtual"
+cols="40" rows="5"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
+height="20" alt="" /></div></td></tr>
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="UPDATE <tmpl_var name="type">" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+<script type="text/javascript">
+SET_DHTML("descriptionbox"+RESIZABLE,"commentbox"+RESIZABLE)
+</script>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

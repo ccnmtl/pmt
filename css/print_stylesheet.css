@@ -1,0 +1,43 @@
+/* This stylesheet is used for printing */
+
+/* make sure links are not colored */
+A:visited {color: black}
+A:hover {color: black}
+A:active {color: black}
+A:link {color: black}
+
+body {
+	background: white;
+        font-size: 12pt;
+}
+	
+/* avoid thread coloring */
+.nodesubject {
+  background-color: white;
+  color: black;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-size: 110%;
+}
+
+/* remove the border around posts */
+.post {border: #000 solid 0px; margin-bottom: 4px;}
+
+.not_printable
+{
+    display: none;
+    visibility: hidden;
+}
+
+.menu
+{
+    display: none;
+    visibility: hidden;
+}
+
+.printable
+{
+	display: inline
+	visibility: visible
+}
+

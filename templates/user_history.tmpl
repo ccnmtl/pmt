@@ -1,0 +1,37 @@
+<tmpl_include name="header_reports.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_reports.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>REPORTS: Calendar View of <a href="user.pl?username=<tmpl_var
+name="username" escape="url">"><tmpl_var name="fullname"></a>'s History</h1>
+
+<div align='center'><a href="user_history.pl?user=<tmpl_Var
+name="user">&amp;month=<tmpl_var name="prev_month">&amp;year=<tmpl_var
+name="prev_year">"><tmpl_var name="prev_month_name"></a>
+<tmpl_var name="calendar">
+<a href="user_history.pl?user=<tmpl_Var
+name="user">&amp;month=<tmpl_var name="next_month">&amp;year=<tmpl_var
+name="next_year">"><tmpl_var name="next_month_name"></a>
+</div>
+<table border="1">
+<tmpl_loop name="days">
+<tr><th colspan="4" rowspan="1"><h2 align="right"><a name="<tmpl_Var name="day">"><tmpl_Var name="month_name"> <tmpl_var
+name="day"></a></h2></th></tr>
+<tr><td rowspan="<tmpl_var name="rows">" colspan="1"><tmpl_var name="cal"></td>
+<tmpl_var name="cell">
+
+</tmpl_loop>
+</table>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

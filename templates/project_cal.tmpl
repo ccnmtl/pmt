@@ -1,0 +1,9 @@
+<tmpl_include name="header.tmpl">
+<tmpl_include name="menu.tmpl">
+<div class="pagecontent">
+[<a href="project_cal.pl?pid=<tmpl_Var name="pid">&amp;month=<tmpl_var name="prev_month">&amp;year=<tmpl_var name="prev_year">">prev</a> |
+<a href="project_cal.pl?pid=<tmpl_Var name="pid">&amp;month=<tmpl_var name="next_month">&amp;year=<tmpl_var name="next_year">">next</a>]
+
+<tmpl_var name="calendar">
+</div>
+<tmpl_include name="footer.tmpl">

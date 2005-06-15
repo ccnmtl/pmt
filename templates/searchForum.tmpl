@@ -1,0 +1,32 @@
+<tmpl_include name="header_forums.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_forums.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>FORUMS/LOGS: Search Forums<br />
+<span class="hide">FORUMS/LOGS: </span>&#62; Search Results
+</h1>
+
+
+<br />
+<tmpl_loop name="result">
+<div class="post">
+<h2 class="nodesubject"><a href='node.pl?nid=<tmpl_var name="nid" escape="url">'><tmpl_var name="subject" escape="html"></a></h2>
+<p class="byline">by <a
+href="user.pl?username=<tmpl_var name="author">"><tmpl_var name="author" escape="html"></a> @ <tmpl_var name="added"></p>
+<div class="nodebody">
+<tmpl_var name="body">
+</div>
+</div>
+</tmpl_loop>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

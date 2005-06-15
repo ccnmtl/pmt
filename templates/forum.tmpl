@@ -1,0 +1,92 @@
+<tmpl_include name="header_forums.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_forums.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<tmpl_if name="pid">
+<h1>FORUMS/LOGS: View Project's Forum</h1>
+<tmpl_else>
+<h1>FORUMS/LOGS: View Forums</h1>
+</tmpl_if>
+
+<!--
+<input name="searchWord" type="text" size="15" maxlength="40" id="search" />
+<input type="submit" value="search forum" />
+-->
+<tmpl_if name="posts">
+<div id="posts">
+<h1>recent posts</h1>
+<tmpl_loop name="posts">
+<div class="post">
+<a name="<tmpl_var name="nid">"> </a>
+<h2 class="nodesubject"><a href="node.pl?nid=<tmpl_var name="nid">"><tmpl_var
+name="subject"></a></h2>
+<p class="byline">to project <a href="forum.pl?pid=<tmpl_var
+name="pid">"><tmpl_var name="project"></a> by <a
+href="user.pl?username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a> @ <tmpl_var name="added"></p>
+<div class="nodebody">
+<tmpl_var name="body">
+</div>
+<div class="replies"><tmpl_if name="replies">[<tmpl_var name="modified">]
+<a href="node.pl?nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var
+name="replies"></a> | </tmpl_if><a
+href="node.pl?nid=<tmpl_var name="nid">#addcomment">add a comment</a></div>
+</div>
+</tmpl_loop>
+
+
+<br />
+
+
+</div>
+</tmpl_if>
+
+<div id="forumlogitems">
+<tmpl_if name="logs">
+<div id="logs">
+<h1>recent personal log entries</h1>
+<tmpl_loop name="logs">
+<div class="log"><a href="node.pl?nid=<tmpl_var name="nid">"><tmpl_var
+name="added_informal"><tmpl_if name="subject">: <tmpl_var
+name="subject" escape="html"></tmpl_if></a> by <a
+href="user.pl?username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a>
+<tmpl_if name="replies"><div class="replies"><a
+href="node.pl?nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var name="replies"></a></div></tmpl_if>
+</div>
+</tmpl_loop>
+<div class="log">&#160;</div>
+</div>
+</tmpl_if>
+
+<br />
+
+<tmpl_if name="items">
+<div id="moditems">
+<h1>recently modified items</h1>
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tmpl_loop name="items">
+<tr><td class="firstcell"><a href="item.pl?iid=<tmpl_var
+name="iid">"><tmpl_unless name="title">[<tmpl_Var name="iid">]</tmpl_unless><tmpl_var
+name="title"></a></td><td class="<tmpl_var name="status">"><tmpl_var
+name="status"></td></tr>
+<tr><td colspan="2" class="firstcell">in project: <a href="project.pl?pid=<tmpl_var
+name="pid">"><tmpl_var name="project"></a></td></tr>
+</tmpl_loop>
+	<tr>
+		<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+	</tr>
+</table>
+</div>
+</tmpl_if>
+</div>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

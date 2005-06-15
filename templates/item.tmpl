@@ -1,0 +1,71 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+<tmpl_if name="message">
+<div id="message"><tmpl_var name="message" escape="html"></div>
+</tmpl_if>
+
+
+<h1>PROJECTS: <a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a><br />
+<span class="hide">PROJECTS:</span> &#62;  View <span style="text-transform: capitalize;"><tmpl_var name="type"></span><br />
+<span class="hide">PROJECTS:</span> &#62; #<tmpl_var name="iid"> <tmpl_var name="title"><br />
+<span class="hide">PROJECTS: &#62; </span> 
+<a href="update_item.pl?iid=<tmpl_var name="iid" escape="url">" class="actionbutton">edit <tmpl_var name="type"></a>
+</h1>
+
+<br />
+
+
+
+<script type="text/javascript" language="JavaScript">
+if ('<tmpl_var name="assigned_to">'=='<tmpl_var name="username">') {
+document.write('<p id="ie6special" style="width: 710px; text-align: right;">');
+document.write('<img src="images/checked.gif" width="16" height="16" hspace="0" vspace="0" align="top"> <span style="color:#999;">Notify me of changes in this <tmpl_var name="type"></span>');
+document.write('</p>');
+}
+else {
+document.write('<form action="notify.pl" method="POST" class="pclayer">');
+document.write('<input type="hidden" name="iid" value="<tmpl_var name="iid">" />');
+document.write('<tmpl_if name="cc">');
+document.write('<p id="ie6special" style="width: 710px; text-align: right;">');
+document.write('<span id="pleasewait"> (Changing notification... Please wait...)</span>');
+document.write('<input onclick="return submitForm(this.form)" type="checkbox" name="email_notification" value="yes" checked /> Notify me of changes in this <tmpl_var name="type"> ');
+document.write('</p>');
+document.write('<tmpl_else>');
+document.write('<p id="ie6special" style="width: 710px; text-align: right;">');
+document.write('<span id="pleasewait"> (Changing notification... Please wait...)</span>');
+document.write('<input onclick="return submitForm(this.form)" type="checkbox" name="email_notification" value="yes" /> Notify me of changes in this <tmpl_var name="type"> ');
+document.write('</p>');
+document.write('</tmpl_if>');
+document.write('</form>');
+}
+</script>
+
+<!--
+THIS IS THE OLD FORM
+<form action="notify.pl" method="POST" class="pclayer">
+<input type="hidden" name="iid" value="<tmpl_var name="iid">" />
+<tmpl_if name="cc">
+Notify me of changes in this item <input onchange="submit(this.form)" type="checkbox" name="email_notification" value="yes" checked />
+<tmpl_else>
+Notify me of changes in this item <input onchange="submit(this.form)" type="checkbox" name="email_notification" value="yes" />
+</tmpl_if>
+<input type="submit" value="UPDATE NOTIFICATION" class="button" />
+</form>
+-->
+
+
+
+<tmpl_include name="item_view.tmpl">
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

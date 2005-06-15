@@ -1,0 +1,72 @@
+.printable
+{
+    display: none;
+    visibility: hidden;
+}
+
+
+.textinput {
+	font-size: 10pt;
+	border: #000 solid 1px;
+	font-family: verdana, helvetica, sans-serif;
+	}
+.button
+	{
+	background-color: #ffffff;
+	color: #000000;
+	font-size: 10pt;
+	border-top:#000000 solid 1px;
+	border-bottom:#000000 solid 1px;
+	border-right:#000000 solid 1px;
+	border-left:#000000 solid 1px;
+	font-family: verdana, helvetica, sans-serif;
+	}
+
+input {
+      background-color: #ffffff;
+      border: #000 solid 1px;
+}
+
+input[type=text],input[type=password],textarea {font-family: courier new, courier;}
+textarea {border: #000 solid 1px;}
+
+textarea {width: 100%;}
+
+.resizer textarea {width: 90%; height: 90%;}
+
+textarea.keywordsbox {width: 30em;}
+
+.textarea {
+	font-size: 10pt;
+	border-top:#CCCCCC solid 1px;
+	border-bottom:#CCCCCC solid 1px;
+	border-right:#CCCCCC solid 1px;
+	border-left:#CCCCCC solid 1px;
+	font-family: verdana, helvetica, sans-serif;
+}
+
+.loginform {
+	font-size: 10pt;
+	align: left;
+	width: 50%;
+	border-top:#CCCCCC solid 1px;
+	border-bottom:#CCCCCC solid 1px;
+	border-right:#CCCCCC solid 1px;
+	border-left:#CCCCCC solid 1px;
+	font-family: verdana, helvetica, sans-serif;
+}
+.menu select {background-color: #eee; font-size: 11px; border: 0px;}
+.menu input {background-color: #eee; font-size: 11px; border: 0px;}
+.highlightoption {color: #ffffff; background-color: #ff6600;}
+.allprojects {color: #000; background-color: #fff;}
+.menu input.button {background-color: #eee; 
+
+
+color: #c00;
+border-top: #ccc solid 1px; border-left: #ccc solid 1px;  
+border-right: #000 solid 1px; border-bottom: #000 solid 1px; }
+.menu input.button:hover {background-color: #fff;}
+
+#posts { width: 60%; float: left;}
+#logs {margin-left: 10px; width: 35%; float: left;}
+#items {margin-left: 10px; width: 35%; float: left;}

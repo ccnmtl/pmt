@@ -1,0 +1,36 @@
+<tmpl_include name="header.tmpl">
+
+<h2>user information</h2>
+<table>
+<tr><th>full name</th><td><tmpl_var name="fullname"></td></tr>
+<tr><th>email</th><td><tmpl_var name="email"></td></tr>
+</table>
+
+<tmpl_if name="items">
+<table>
+<tr>
+<th>item</a></th>
+<th>priority</a></th>
+<th>status</a></th>
+<th>project</a></th>
+<th>target date</a></th>
+<th>last modified</a></th>
+</tr>
+
+<tmpl_loop name="items">
+<tr>
+<td class="<tmpl_var name="type_class">"><a href="admin_view.pl?iid=<tmpl_var name="iid">"><tmpl_var name="type"># <tmpl_var name="iid">: <tmpl_var name="title"></a></td>
+<td class="pr<tmpl_var name="priority">"><tmpl_var name="priority"></td>
+<td class="<tmpl_var name="status">"><tmpl_var name="status"> <tmpl_if name="r_status">(<tmpl_var name="r_status">)</tmpl_if></td>
+<td><a href="admin_view.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td>
+<td><tmpl_var name="target_date"></td>
+<td><tmpl_var name="last_mod"></td>
+</tr>
+</tmpl_loop>
+
+</table>
+</tmpl_if>
+
+
+
+<tmpl_include name="footer.tmpl">

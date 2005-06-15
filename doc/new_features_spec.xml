@@ -1,0 +1,1061 @@
+<?xml version="1.0"?>
+<?cocoon-process type="xslt"?>
+<?xml-stylesheet href="/xsl/docbook/ccnmtl/docbook.xsl" type="text/xsl"?>
+
+<book>
+<bookinfo>
+<title>Specification for New Features</title>
+<authorgroup>
+<author><firstname>Anders</firstname> <surname>Pearson</surname>
+</author>
+<author><firstname>David</firstname> <surname>Miele</surname>
+</author>
+
+</authorgroup>
+
+<revhistory>
+
+<revision>
+<revnumber>1.5</revnumber>
+<date>2003-02-20</date>
+<authorinitials>anders</authorinitials>
+<revremark>updated to reflect recent work</revremark>
+</revision>
+
+<revision>
+<revnumber>1.4</revnumber>
+<date>2002-11-04</date>
+<authorinitials>anders</authorinitials>
+<revremark>added missing title</revremark>
+
+</revision>
+
+<revision>
+<revnumber>1.3</revnumber>
+<date>2002-07-09</date>
+<authorinitials>anders</authorinitials>
+<revremark>updated with results of 7/8 and 7/9 meetings
+with dave and zarina</revremark>
+
+</revision>
+
+<revision>
+<revnumber>1.2</revnumber>
+<date>2002-07-01</date>
+<authorinitials>anders</authorinitials>
+<revremark>finished first draft</revremark>
+</revision>
+
+<revision>
+    <revnumber>1.1</revnumber>
+    <date>2002-06-28</date>
+    <authorinitials>anders</authorinitials>
+    <revremark>started writing</revremark>
+</revision>
+</revhistory>
+</bookinfo>
+<chapter id="introduction">
+<title>Introduction</title>
+
+<para>This document is a combination functional spec, design plan, and
+summary of the features we're thinking of adding to the PMT. It is intended
+to be a living document. it will probably change frequently over
+the course of development of the new features.</para>
+
+<para>each item in this document consists of several parts. the description gives a brief
+overview of the desired functionality from the user's perspective.
+the 'goals' section describes what the ultimate point of adding the
+feature is. it should explain how the feature will make the PMT more
+useful or how it will help further Center objectives. the 'implementation notes/plan' section
+should give a brief overview of what will be involved in implementing the feature
+and give an indication as to how difficult it should be, what problems need
+to be overcome, what major design decisions need to be made and what external
+dependencies may exist. the priority is a rough guess of what priority
+each of these is relative to each other. scale is 1 - 5 with 5 being the
+most important features. time estimate is a guess at how long it will 
+take to implement each feature. since the spec is still being written
+and many of the features haven't been fully defined, these estimates are
+clearly <emphasis>very</emphasis> rough.
+</para>
+
+</chapter>
+<chapter id="file-rep">
+<title>Link to or include file repository</title>
+
+<sect1>
+<title>description</title>
+<para>this will involve some kind of web-based document management
+system. users should be able to upload documents, download them, and
+replace existing documents with new versions. version tracking would
+be nice but is probably not necessary.</para>
+</sect1>
+<sect1><title>goals</title>
+<para>
+this should help in the goal of making the PMT the central repository
+for all information regarding a project.</para>
+</sect1>
+<sect1><title>priority</title>
+<para>4</para>
+</sect1>
+
+<sect1><title>time estimate</title>
+<para>10 hours</para>
+</sect1>
+
+<sect1><title>details</title>
+
+<para> there will be several documents that all (official) projects
+should have. this list is still being finalized but will probably
+include 3 or 4 different documents such as Proposal, Requirements, and
+Functional Specification. These documents can then be either uploaded
+or linked to.  </para>
+
+<para> the managers of the project should also be able to upload or
+link to an arbitrary number of additional misc. documents.  </para>
+
+<para>the project page in the MMT should list each of the associated
+documents as hyperlinks. clicking on the link should either take the
+user to the document (if it's a web-viewable format like html) or
+bring up a download dialog (for other formats). perhaps the document
+type should be listed along with the link (?)</para>
+
+<para> The 'edit project' page should provide the forms for uploading
+or linking to documents. for the fixed documents, there will be a
+browse button to select a file and a text field for the url. if the
+document is already linked to as a url, that field will be pre-filled
+in with the url. there should also be a checkbox for 'delete this
+document'. a user can either hit browse to select a file to upload
+(replacing the existing document) or add/edit the url. then they hit
+submit on the form. if no file is selected and the 'delete' checkbox
+is unchecked, the backend won't modify the document repository.
+</para>
+
+<para>for each of the misc. documents, a similar set of fields should
+appear. they would be the file select, url, delete checkbox, plus a
+'title' field pre-filled with the document's title if
+appropriate.</para>
+
+<para>There should be an additional form on the 'edit project' page
+(similar to how 'add milestone' is on that page but in a seperate
+form) for 'add a misc. document'. this form would have fields for
+title, file select, and url plus a submit button.</para>
+
+<para>the documents that are actually uploaded (as opposed to the ones
+that are just linked to) should only be allowed to be of a few
+specified types such as Word documents, Excel files, HTML, XML, jpgs,
+gifs, pngs, etc. the file extension should be checked by the backend
+before being saved to enforce this. this is because certain extensions
+like '.pl' or '.cgi' are recognized by the web server as executable
+and would pose a security threat (or even just generate
+errors).</para>
+
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+<para>ideally, this would just be part of a robust, full-featured digital
+asset manager that is in use Center-wide and we could just provide a
+hook into it from the PMT. as an interim solution, we can just
+implement a simple web interface to allow for uploading of a couple
+limited document types (Word Documents (ick), excel files, html, and
+text files). since this will probably eat up disk space quickly, it
+would be preferable to have the document repository tied into the file
+server. this is currently difficult to do but should be easier when we
+move from win2k to linux or OS X for file serving. (FIXME: get estimates
+on when this move will occur)</para>
+</sect1>
+
+<sect1><title>status</title>
+<para>a basic version of the document repository is in place.
+it currently allows users to upload, download, and delete documents
+for a project.</para>
+</sect1>
+</chapter>
+
+<chapter id="time-tracking">
+<title>Time Tracking</title>
+
+<sect1><title>description</title>
+<para>
+items should have fields for estimated time and actual time. when an
+action item (and possibly a bug) is added to the PMT, an estimate is
+added for how long it is thought it will take to complete the
+item. when an item is resolved, the actual time involved is entered by
+the developer.</para>
+</sect1>
+
+<sect1><title>goals</title>
+<para>
+estimated time should help improve resource allocation by allowing PMs
+to see who is going to be busy with which projects at what
+times. tracking actual time spent on tasks should help us get a more
+accurate picture of the actual time spent on projects and, indirectly,
+the resources spent on projects. the combination of estimated and
+actual time should help us improve estimates and project schedules in
+the future.
+</para>
+</sect1>
+
+<sect1><title>priority</title>
+<para>5</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>done</para>
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+<para>
+estimated time can probably be added as just an additional field
+attached to items. it still needs to be decided whether the time
+estimate should be added at the time of adding the item (by the person
+adding the item (who may not be the developer)) or by the developer at
+a later point. because items can be resolved, reopened, reassigned,
+and re-resolved multiple times by multiple users, we'll want to track
+each of the individual resolve times.
+</para>
+</sect1>
+
+<sect1><title>status</title>
+<para>this has been implemented.</para>
+</sect1>
+</chapter>
+
+<chapter id="budget-calc">
+<title>Budget Calculations</title>
+<sect1><title>description</title>
+
+<para> Managers should be able to visit a page which produces a report
+indicating the total resources used for a given project. since it
+wouldn't really be wise to have peoples' salaries in the database,
+there will probably instead be general groups like 'programmers',
+'managers', 'video', 'part-timers', and the report would just show how
+many programmer hours, part-timer hours, etc were used on a
+project. the managers could then plug in somewhat realistic
+coefficients and calculate a total cost.</para>
+
+</sect1>
+
+<sect1>
+<title>goals</title>
+
+</sect1>
+
+<sect1><title>priority</title>
+<para>3</para></sect1>
+
+<sect1><title>time estimate</title>
+
+<para>depends largely on the functionality desired that is still to be
+specified. probably between 5 and 15 hours.  also depends on user
+groups and project categories being implemented (possibly index task
+descriptions as well) </para>
+
+</sect1>
+
+<sect1><title>details</title>
+
+<para>each project should have a field for the total starting budget
+that is filled out when the project is created. the projects would
+then each have a 'budget page' which summarizes the state of the
+budget for each project. the budget page should have a list of
+expenditures, each with an amount, a description, and a way to delete
+it. these expenditures correspond to credits and debits from the
+budget outside staff hours (eg, for equipment costs, travel expenses,
+etc.)</para>
+
+<para>managers of the project should be able to add or delete 
+expenditures at any point in the lifespan of the project.</para>
+
+<para>the budget page should somehow summarize and break down the
+budget, cost of staff hours used on the project and expenditures. ted
+or someone else needs to provide more details on what this summary and
+breakdown should include and look like.</para>
+
+</sect1>
+
+<sect1>
+<title>implementation notes/plan</title>
+<para>this depends largely on having time tracking
+and user groups in place. </para>
+</sect1>
+
+<sect1><title>status</title>
+<para>we have a page that shows the amount of time per project,
+broken down by staff type, etc. it just doesn't do actual cost
+calculations.</para></sect1>
+</chapter>
+
+<chapter id="integration">
+<title>Integration of Project Portfolio, Client Database, etc...</title>
+<sect1>
+<title>description</title>
+<para>the pmt will slowly merge with and possibly take over the
+project portfolio and client database.</para>
+
+</sect1>
+<sect1><title>goals</title>
+<para>one-stop shopping. the PMT should be the only place that
+managers and developers need to go to manage their projects.
+</para>
+</sect1>
+
+<sect1><title>priority</title>
+<para>4</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>pending further investigation of the complexity
+of the legacy systems: 15 - 40 hours</para>
+</sect1>
+
+<sect1><title>details</title>
+
+<para>there are two main legacy systems that we need to replace with
+pmt functionality, the project portfolio and the client
+database.</para>
+
+<para>for integration with the project portfolio we need to include
+the following fields in the pmt for each project:</para>
+
+<variablelist>
+<varlistentry>
+<term>type</term>
+<listitem>Course Page | Project</listitem>
+</varlistentry>
+
+<varlistentry><term>area</term>
+<listitem>subject (a set has been defined)</listitem>
+</varlistentry>
+
+<varlistentry><term>url</term>
+<listitem>link to project web page</listitem>
+</varlistentry>
+
+<varlistentry><term>title</term>
+<listitem>title of project</listitem>
+</varlistentry>
+
+<varlistentry><term>owner</term>
+<listitem>faculty owner</listitem>
+</varlistentry>
+
+<varlistentry><term>email</term>
+<listitem>faculty email | ccnmtl@columbia.edu</listitem>
+</varlistentry>
+
+<varlistentry><term>school</term>
+<listitem>cu school</listitem>
+</varlistentry>
+
+<varlistentry><term>comments</term>
+<listitem>description</listitem>
+</varlistentry>
+
+<varlistentry><term>restricted</term>
+<listitem>Columbia | Yes | No</listitem></varlistentry>
+
+<varlistentry><term>proj_mgr</term>
+<listitem>ccnmtl staff</listitem></varlistentry>
+
+<varlistentry><term>approach</term>
+<listitem>educational approach</listitem></varlistentry>
+
+<varlistentry><term>status</term>
+<listitem>closed | open | proposed</listitem>
+</varlistentry>
+
+<varlistentry><term>info_url</term>
+<listitem>information or showcase</listitem>
+</varlistentry>
+
+<varlistentry><term>launch_date</term>
+<listitem>date project released</listitem></varlistentry>
+
+<varlistentry><term>entry_rel</term>
+<listitem>Y|N release information</listitem>
+</varlistentry>
+
+<varlistentry><term>eval</term>
+<listitem>date of evaluation</listitem></varlistentry>
+
+<varlistentry><term>eval_url</term>
+<listitem>url to published evaluation</listitem></varlistentry>
+</variablelist>
+
+<para> the client database will also have a similar list of necessary
+fields.  we need to talk to rebecca and/or beeby about what these are
+going to be. clearly there may be some overlap between the fields that
+each require, fields that the video interface integration will require
+and with fields that are already in the pmt. eg: the launch_date field
+may correspond roughly to the target date of a milestone ('final
+release' probably), the project title is already there, the proj_mgr would
+probably correspond to the 'caretaker' in the pmt, the faculty
+owner would probably also be tied into the client database functionality
+somehow. the status would correspond to project phases/stages perhaps, etc.
+</para>
+
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+<para>
+we'll probably start by just adding hooks to the PMT so that
+when a project is added, it will go create an entry in the project
+portfolio and/or client database. eventually though, we'll want to
+eliminate redundant systems. the easiest way to do this will probably be
+to roll the functionality of the project portfolio and client database
+into the PMT.
+</para>
+
+</sect1>
+
+<sect1><title>status</title>
+<para>all of the fields for the project portfolio
+and a similar search interface have been added. it does not have
+a 'publish' mode though (ie, it does not create pages for
+viewing by outside faculty, etc.). </para></sect1>
+
+</chapter>
+
+<chapter id="project-stages">
+<title>Project Stages</title>
+<sect1><title>description</title>
+<para>Each project will have a 'stage', 'status', or 'phase' associated
+with it that corresponds to a stage in the project guidelines. as the 
+project progresses, the manager will be able to update the stage
+to show the lifecycle more clearly.</para>
+</sect1>
+<sect1><title>goals</title>
+<para>having explicit support for the stages of the project guidelines
+will help establish them as standard operating procedure.</para>
+</sect1>
+
+<sect1><title>priority</title>
+<para>2</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>2 hours</para>
+</sect1>
+
+<sect1><title>details</title>
+
+<para>still need to get the exact list of stages and what 
+project type/sizes they correspond to from dave.</para>
+
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+
+<para>should be pretty easy to implement. just another field on the projects 
+table. once it's in place, we can also think about adding the visual
+representation of the stages.</para>
+
+</sect1>
+
+<sect1><title>status</title>
+<para>this has been implemented</para>
+</sect1>
+</chapter>
+
+<chapter id="project-timelines">
+<title>Project Timeline</title>
+<sect1><title>description</title>
+
+<para>
+A project would have a visual representation of the
+current stage within the overall lifecycle diagram.
+</para>
+
+</sect1>
+<sect1><title>goals</title>
+<para>i have no idea.</para>
+</sect1>
+
+<sect1><title>priority</title>
+<para>1</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>1 hour (not including time to create nice graphics)</para>
+</sect1>
+
+<sect1><title>details</title>
+
+<para>this depends almost entirely on project stages</para>
+
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+
+<para>should be a simple matter of a few gifs and conditional
+statements in the template.</para>
+
+<para>it could get interesting when we consider non-standard projects
+that wouldn't really make use of the standard lifecycle. what stage
+should be displayed for something like the part-timer task pool or the
+staff requests for maurice projects?</para>
+
+</sect1>
+
+<sect1><title>status</title>
+<para>this has not been implemented</para>
+</sect1>
+
+</chapter>
+
+<chapter id="user-status">
+<title>User Status</title>
+<sect1><title>description</title>
+
+<para>we should be able to mark a user as 'inactive' and
+then that user will not be able to login, will not show up
+in various menus (so that nothing can be assigned to them), etc. 
+</para>
+
+</sect1>
+<sect1><title>goals</title>
+
+<para>this is to handle staff overturn. we can't just delete user
+accounts because that would imply deleting all the items they were
+associated with. but we'd prefer that they didn't take up valuable
+space in menus.</para>
+
+</sect1>
+
+<sect1><title>priority</title>
+<para>5</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>done</para>
+</sect1>
+
+<sect1><title>details</title>
+
+<para>the basic functionality for this is pretty much done.
+currently, when a person leaves the center, anders goes in and
+manually sets the user to 'inactive' and makes sure that all projects
+that they were caretaker of are turned over to someone else or
+deleted. we could someday make a simple interface for doing this but it 
+isn't critical
+</para>
+
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+
+<para>there still remain some tricky spots to work out. eg,
+if a verified item is owned by a now inactive user gets reopened,
+who becomes the new owner? i would probably say that the caretaker
+of the project should be. still, i can imagine quite a few of these
+little special cases that we'll have to watch out for.</para>
+
+</sect1>
+
+<sect1><title>status</title>
+<para>this has been implemented</para>
+</sect1>
+</chapter>
+
+<chapter id="user-groups">
+<title>User Groups - Part Timers</title>
+<sect1><title>description</title>
+
+<para>We should be able to create 'groups' of users similar
+to unix groups. a group such as 'part-timers' could be created that would
+include all the part-time employees. an item could then be assigned
+to the group.</para>
+
+</sect1>
+<sect1><title>goals</title>
+
+<para>with part-timers in particular, there are often tasks where
+it doesn't really matter who does them, as long as someone does. for
+these, often, a whole class of employees is equally qualified. being 
+able to assign tasks in this manner makes more sense than forcing
+a task to be assigned to one person even when others may be free and
+looking for something to do.</para>
+
+<para>having groups of users should also make it easier to 
+navigate around and find specific users.</para>
+
+</sect1>
+
+<sect1><title>priority</title>
+<para>4</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>10 hours</para>
+</sect1>
+
+<sect1><title>details</title>
+
+<para>any user should be able to create and edit groups. putting 'security'
+on the groups would probably be far more trouble than it's worth.</para>
+
+<para>somewhere, linked from the menu maybe, would be a page for adding
+a new group. it would include a form with a single text field and a 
+submit button. the user enters the name of the new group and hits submit.</para>
+
+<para>on each user's homepage would be a list of the groups that that
+user belongs to, each clickable links. clicking on a group name will
+take you to the page for that group.</para>
+
+<para>the page for a specific group would list all of the users
+who are part of the group and show all of the open items that are
+assigned to that group. it would also have an edit mode where
+the user could change the list of users in the group (via a multi select box 
+or similar).</para>
+
+<para>for a project, a group can be added as developers or guests (i'm
+thinking not as managers though but i'm not sure yet.) the effective
+result will be that all the members of that group will be considered
+part of the project. the project page won't list them individually
+though to start with. then, when a bug or action item comes in, it can
+be assigned to that group instead of a specific user. if one of
+the users in the group picks up an item that has been assigned to
+the group, they are then automatically added to the project (as whatever
+class the group was. ie, if the group was a developer, the user will
+be added as a developer) and will then show up on the project page,
+get emails as appropriate, etc. if a manager wants to reassign
+an item that was assigned to a group to an individual user, 
+they'll have to first, explicitly add that user to the project and
+then reassign as normal.</para>
+
+<para>users should observe the convention that as soon
+as (or before) they've started working on a group task,
+that they reassign it to themselves first. this prevents
+multiple people from working on the same thing at once.
+</para>
+
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+
+<para>ideally, we would have an abstract type (we'll calle them
+'entities' for lack of a better term) that contains both users and
+groups that would replace the current notion of users in the
+architecture. items would then be assigned to an 'entity', projects
+would have 'entities' as developers/managers/etc.</para>
+
+<para>that kind of low-level architectural change is pretty much 
+impossible with the complexity of the PMT and amount of legacy
+data in it. so something of a kludge will be necessary.</para>
+
+<para>groups will be implemented using 'pseudo-users'. the users table
+should have an additional field added called 'group' which will be
+boolean. if it contains a true value, that user is a 'pseudo-user' for
+a group. the user's fullname should probably specify that it is a
+group rather than a normal user. eg, it could be something like
+'part-timers (group)'. there will be a new table in the database
+called 'groups' with fields for 'group' and 'user'. each row in the 
+table specifies that a certain user is in the specified group.
+</para>
+
+<para>group pseudo-users should probably have a username
+with a prefix like 'grp_' to prevent collisions. the email field
+should be to a dummy address (perhaps something on localhost).
+the password should be set to a random value (or we could just
+specifically disallow groups from logging in like we do
+for inactive users).
+</para>
+
+<para>when an item is reassigned, the pmt will need to check
+if the previous assignee was a group and the new one is a
+user in that group. if so, that user should be added to the 
+project in the same capacity that the group was.</para>
+
+</sect1>
+
+<sect1><title>status</title>
+<para>this has been implemented</para>
+</sect1>
+
+</chapter>
+
+<chapter id="part-timer-pool">
+<title>Part Timer Task Pool</title>
+<sect1><title>description</title>
+
+<para>this is really just an extension of the user groups.
+there will be a group for part-timers and miscellaneous tasks
+can be assigned to this group.</para>
+
+</sect1>
+<sect1><title>goals</title>
+
+<para>see the user groups section.</para>
+
+</sect1>
+
+<sect1><title>priority</title>
+<para>3</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>1 hour (but depends on user groups)</para>
+</sect1>
+
+<sect1><title>details</title>
+<para>nothing to it.</para>
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+
+<para>once the user groups are implemented, this is 
+just a simple matter of creating a 'part-timers' group,
+adding the right people to it and adding it to the
+right project.</para>
+
+
+</sect1>
+
+<sect1><title>status</title>
+<para>this has been implemented</para>
+</sect1>
+
+</chapter>
+
+
+
+
+<chapter id="project-category">
+<title>Project Category</title>
+<sect1><title>description</title>
+
+<para>management should be able to mark projects as being of
+different categories. these will be mostly dependent on size.</para>
+
+</sect1>
+<sect1><title>goals</title>
+
+<para>no idea.</para>
+
+</sect1>
+
+<sect1><title>priority</title>
+<para>2</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>3 hours</para>
+</sect1>
+
+<sect1><title>details</title>
+<para>
+when a project is created and the starting budget specified,
+the project is placed into a category based on this amount.
+</para>
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+
+<para>
+
+</para>
+
+</sect1>
+
+<sect1><title>status</title>
+<para>this has not been implemented</para>
+</sect1>
+
+</chapter>
+
+<chapter id="project-priority">
+<title>Project Priority</title>
+<sect1><title>description</title>
+<para>managers should be able to specify the overall priority
+of a project relative to other Center projects.</para>
+
+</sect1>
+
+<sect1><title>goals</title>
+<para>knowing which projects are more important
+overall can help developers decide what tasks they
+should work on at any given time.</para>
+</sect1>
+
+
+<sect1><title>priority</title>
+<para>3</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>2 hours</para>
+</sect1>
+
+<sect1><title>details</title>
+
+<para>
+each project should have an additional numerical field for 'priority'.
+when the project is created the priority is specified. at any point
+later on, the priority can be changed by the managers of the project.
+it should be a pulldown select menu in the form for editting the project
+info.
+</para>
+
+<para>for simplicity it will use the same 0-4 scale that items use.</para>
+
+</sect1>
+
+<sect1><title>status</title>
+<para>this has not been implemented</para>
+</sect1>
+
+</chapter>
+
+<chapter id="calendar-view">
+<title>New Calendar View</title>
+<sect1><title>description</title>
+
+<para>some kind of Gantt chart type view of times
+for open items. viewable by project or by user.
+</para>
+
+</sect1>
+<sect1><title>goals</title></sect1>
+
+<sect1><title>priority</title>
+<para>2</para></sect1>
+
+<sect1><title>time estimate</title>
+
+<para>depending on desired functionality that still needs to be
+defined and whether suitable components exist: 5 - 60 hours </para>
+
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+
+<para>need to find a suitable module that can 
+produce this kind of chart. writing our own would be
+prohibitively time consuming.</para>
+</sect1>
+
+<sect1><title>status</title>
+<para>this has not been implemented</para>
+</sect1>
+
+</chapter>
+
+<chapter id="auto-milestones">
+<title>Automate milestone creation</title>
+<sect1><title>description</title>
+
+<para>when a new project is added, there should be a checkbox
+or radio button that allows the person adding the project to specify
+that a pre-defined set of milestones (and possibly action items) should
+be created in the project.</para>
+
+</sect1>
+<sect1><title>goals</title>
+
+<para>since we want the PMT to closely support the project
+management guidelines, having the option to have the recommended
+milestones automatically created would make this smoother.</para>
+
+</sect1>
+
+<sect1><title>priority</title>
+<para>2</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>3 hours (depends on project categories)</para>
+</sect1>
+
+<sect1>
+<title>details</title>
+
+<para>there will probably be different
+sets of milestones depending on the project category
+or size.</para>
+
+<para>when creating a new project, an additional checkbox will appear
+in the form for 'create default milestones'. the checkbox should be
+checked by default. when the new project form is submitted, if the
+create default milestones checkbox is checked, the pmt should figure
+out which category/size the project is and display a form for entering
+the target dates of those default milestones. that is then submitted
+and the entire project entry is created.</para>
+
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+
+<para>should be pretty easy to do once the guidelines are
+developed. shouldn't even have to modify anything more than
+the add_project script.</para>
+
+<para>need to get the definitive mapping of which milestones
+should be created for which categories/sizes.</para>
+
+</sect1>
+
+<sect1><title>status</title>
+<para>this has not been implemented</para>
+</sect1>
+
+</chapter>
+
+<chapter id="video-request">
+<title>Link to or include video request interface</title>
+<sect1><title>description</title>
+
+<para>integrate the video request interface with the PMT.
+when adding an action item, there would be a button for video requests
+that would provide additional fields for the various encoding info
+that the video team needs.</para>
+
+</sect1>
+<sect1><title>goals</title>
+
+<para>again, one-stop shopping. the video request tool currently
+duplicates a lot of the functionality of the PMT. this redundancy
+should probably be removed.</para>
+
+</sect1>
+
+<sect1><title>priority</title>
+<para>4</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>5-6 hours for phase 1 kludge (not including building a web
+interface to the filemaker database). 15 - 20 hours for
+duplicating the functionality in the PMT.
+</para>
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+
+<para>we'll probably start by just adding the extra fields
+to the 'add item' interface. if a box is checked specifying that
+it's a video request, the PMT item is added and a corresponding
+item is added to the filemaker video request tool. any editting of
+the video fields will still have to be done through filemaker.</para>
+
+<para>the filemaker part will need a simple web-interface built
+for this to work. mainly, it just needs to be able to add a request
+through a CGI POST operation.</para>
+
+<para>eventually, we can add the video fields into the PMT itself and
+slowly eliminate the need for the filemaker code.</para>
+
+</sect1>
+
+<sect1><title>status</title>
+<para>this has not been implemented</para>
+</sect1>
+
+</chapter>
+
+<chapter id="indexed-task-descriptions">
+<title>Indexed Task Descriptions</title>
+<sect1><title>description</title>
+
+<para>global keywords. there will be a certain set of 
+keywords that should be defined for all projects.
+</para>
+
+</sect1>
+<sect1><title>goals</title></sect1>
+
+<sect1><title>priority</title>
+<para>1</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>2 hours</para>
+</sect1>
+
+<sect1><title>details</title>
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+
+<para>should be able to just add the desired global keywords
+to the html templates at the beginning of any
+templates multi-select. then modify the perl code that
+gets the rest of the keywords for a project to skip
+those (so they only appear once).</para>
+
+</sect1>
+
+<sect1><title>status</title>
+<para>this has not been implemented (mostly because no one has
+actually given me a list of the keywords yet).</para>
+</sect1>
+
+</chapter>
+
+<chapter id="presentation-generator">
+<title>Presentation Generator</title>
+<sect1><title>description</title>
+
+<para>some kind of automatic report generator that gives summaries and
+graphs of various statistics for a project.</para>
+
+</sect1>
+<sect1><title>goals</title>
+
+<para>PMs spend a lot of time preparing for presentations. 
+something like this could help them.</para>
+
+</sect1>
+
+<sect1><title>priority</title>
+<para>3</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>depends heavily on stuff still to be defined. probably 5 - 20 hours.</para>
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+
+<para>the exact nature of the report and graphs
+still has to be defined.</para>
+
+</sect1>
+
+<sect1><title>status</title>
+<para>this has not been implemented</para>
+</sect1>
+
+</chapter>
+
+
+<chapter id="time-sheets">
+<title>Part Timer Time Sheets</title>
+<sect1><title>description</title>
+
+<para>there should be a web-based form for part-timers to fill out
+their time-sheets. it would allow them to enter how many hours they
+worked total, and how those hours were divided between projects. after
+they complete it, the breakdown of time spent would be stored in a
+database so managers can look at it. it would also then create a
+regular time-sheet that could be printed out, signed and turned in as
+normal.</para>
+
+</sect1>
+<sect1><title>goals</title>
+
+<para>this goes along with the goal of getting a better grasp
+on per-project resource usage.</para>
+
+</sect1>
+
+<sect1><title>priority</title>
+<para>4</para></sect1>
+
+<sect1><title>time estimate</title>
+<para>10 hours (depends on how complicated we want to get with it)</para>
+</sect1>
+
+<sect1><title>implementation notes/plan</title>
+
+<para>have to figure out a good way to generate a pdf from the entered
+data. this will probably start out as a seperate application from the PMT. 
+at some point, once the time-tracking aspects of the PMT have been fully
+implemented and worked out, we may be able to integrate the time-sheet
+creation with the PMT.</para>
+
+</sect1>
+
+<sect1><title>status</title>
+<para>this has not been implemented</para>
+</sect1>
+
+</chapter>
+
+</book>

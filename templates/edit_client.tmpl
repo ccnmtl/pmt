@@ -1,0 +1,113 @@
+<tmpl_include name="header_clients.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_clients.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>CLIENTS: Edit Client Information<br />
+<span class="hide">CLIENTS:</span> &#62; <tmpl_var name="firstname" escape="html"> <tmpl_var name="lastname" escape="html"><br />
+<span class="hide">CLIENTS: &#62; </span> 
+<a class="actionbutton" href="http://www.columbia.edu/cgi-bin/lookup.pl?fullname=<tmpl_var
+name="firstname" escape="url">%20<tmpl_var name="lastname"
+escape="url">">perform directory lookup</a>
+</h1>
+
+<form action="edit_client.pl" method="POST">
+<input type="hidden" name="client_id" value="<tmpl_var
+name="client_id">" />
+
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 650px;">
+<tr><th class="firstcell">lastname:</th><td><input class="textform" size="30" type="text" name="lastname" value="<tmpl_var name="lastname"
+escape="html">" /></td></tr>
+<tr><th class="firstcell">firstname:</th><td><input class="textform" size="30" type="text" name="firstname" value="<tmpl_var name="firstname"
+escape="html">" /></td></tr>
+<tr><th class="firstcell">title:</th><td><input class="textform" size="30" type="text" name="title" value="<tmpl_var name="title"
+escape="html">" /></td></tr>
+<tr><th class="firstcell">status:</th><td>
+<select class="small" name="status">
+<option value="active"<tmpl_if name="active">
+selected="selected"</tmpl_if>>active</option>
+<option value="inactive"<tmpl_unless name="active"> selected="selected"</tmpl_unless>>inactive</option>
+</select>
+</td></tr>
+<tr><th class="firstcell">department:</th><td>
+(LDAP returned: <tmpl_var name="department" escape="html">)<br />
+<select class="big" name="department">
+<tmpl_loop name="departments_select">
+<tmpl_include name="options_loop.tmpl"></tmpl_loop></select>
+</td></tr>
+<tr><th class="firstcell">school:</th><td>
+<select class="big" name="school">
+<tmpl_loop name="schools_select">
+<tmpl_include name="options_loop.tmpl"></tmpl_loop></select>
+</td></tr>
+<tr><th class="firstcell">additional affiliations:</th><td><input class="textform" size="40" type="text"
+name="add_affiliation" value="<tmpl_var name="add_affiliation"
+escape="html">" /></td></tr>
+<tr><th class="firstcell">client since:</th><td>
+<input class="textform" type="text" name="registration_date" value="<tmpl_var
+name="registration_date" escape="html">"
+onclick="getCalN(this,2)" size="15" />
+</td></tr>
+<tr><th class="firstcell">phone:</th><td><input class="textform" size="30" type="text" name="phone" value="<tmpl_var name="phone"
+escape="html">" /></td></tr>
+<tr><th class="firstcell">email:</th><td><input class="textform" size="30" type="text" name="client_email" value="<tmpl_var name="client_email"
+escape="html">" /></td></tr>
+<tr><th class="firstcell">CCNMTL contact:</th><td>
+<select class="xmedium" name="contact">
+<tmpl_loop name="contacts_select"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
+</select>
+</td></tr>
+<tr><th class="firstcell">comments:</th><td><div class="resizer" id="commentbox"><textarea class="textform" name="comments" rows="10" cols="40"
+wrap="virtual"><tmpl_var name="comments"
+escape="html"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
+height="20" alt="" /></div></td></tr>
+<tr><th class="firstcell">Projects:</th><td>
+<select name="projects" multiple="multiple" size="15">
+<tmpl_loop name="projects_select">
+<tmpl_include name="options_loop.tmpl"></tmpl_loop>
+</select>
+</td></tr>
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="UPDATE CLIENT INFORMATION" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+
+<br />
+
+<hr align="left" noshade size="1" width="710">
+
+<form action="home.pl" method="POST">
+<h2>delete client</h2>
+<input type="hidden" name="mode" value="delete_client" />
+<input type="hidden" name="client_id" value="<tmpl_Var
+name="client_id" escape="html">"/>
+<p>only delete a client entry if it is a duplicate. <b>DO NOT</b> delete a
+client just because they have left Columbia; in that case, simply mark
+them as 'inactive'. if you are unsure, <b>DON'T DELETE!</b></p>
+<input class="button" type="submit" value="DELETE CLIENT" />
+</form>
+
+<br />
+
+<br />
+
+
+<script type="text/javascript">
+SET_DHTML("commentbox"+RESIZABLE)
+</script>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

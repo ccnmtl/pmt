@@ -1,0 +1,83 @@
+<tmpl_include name="header_reports.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_reports.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>REPORTS:  Global Report <br />
+<span class="hide">REPORTS:</span> &#62; Weekly summary from 
+<strong><tmpl_var name="mon_year" escape="html">-<tmpl_var name="mon_month" escape="html">-<tmpl_var name="mon_day" escape="html"></strong>
+to
+<strong><tmpl_var name="sun_year" escape="html">-<tmpl_var name="sun_month"
+escape="html">-<tmpl_var name="sun_day" escape="html"></strong>
+</h1>
+
+
+
+<p>&#60;&#60; <a href="weekly_summary.pl?year=<tmpl_var name="pm_year"
+escape="url">;month=<tmpl_var name="pm_month"
+escape="url">;day=<tmpl_var name="pm_day" escape="url"><tmpl_loop
+name="groups">;groups=<tmpl_var name="group" escape="url"></tmpl_loop>">Previous week</a> -- <a href="weekly_summary.pl?year=<tmpl_var name="nm_year"
+escape="url">;month=<tmpl_var name="nm_month"
+escape="url">;day=<tmpl_var name="nm_day" escape="url"><tmpl_loop
+name="groups">;groups=<tmpl_var name="group" escape="url"></tmpl_loop>">Next week</a> &#62;&#62;</p>
+
+<br />
+
+<h2>View reports for groups:</h2>
+
+<form action="weekly_summary.pl">
+<table border="0" cellspacing="0" cellpadding="0" class="default">
+	<tr>
+		<td><select class="available" name="groups" multiple="multiple" size="5">
+<tmpl_loop name="groups_select">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+</select>
+<input type="hidden" name="year" value="<tmpl_var name="mon_year">" />
+<input type="hidden" name="month" value="<tmpl_var name="mon_month">" />
+<input type="hidden" name="day" value="<tmpl_var name="mon_day">" />
+</td>
+		<td style="vertical-align: middle;"><input type="submit" value="update table" class="button" /></td>
+	</tr>
+</table>
+</form>
+
+<hr align="left" noshade size="1">
+
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr><th class="firstcell" style="width:200px !important;">project:</th>
+<tmpl_loop name="groups">
+<th width="100"><tmpl_var name="group_nice_name"></th></tmpl_loop>
+<th>project total</th>
+</tr>
+<tmpl_loop name="project_times">
+<tr>
+<td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid"
+escape="url">"><tmpl_if name="projnum"><tmpl_var name="projnum"
+escape="html"> - </tmpl_if><tmpl_var name="name" escape="html"></a></td>
+<tmpl_loop name="group_times">
+<td width="100"><tmpl_var name="time" escape="html"></td>
+</tmpl_loop>
+<td><tmpl_var name="total_time" escape="html"></td>
+</tr>
+</tmpl_loop>
+
+<tr>
+<th class="firstcell" style="border-bottom: 1px solid #ccf; background-color:#f0f0f0;">group total:</th>
+<tmpl_loop name="group_totals">
+<td style="border-bottom: 1px solid #ccf;"><tmpl_var name="time"></td></tmpl_loop>
+<td style="border-bottom: 1px solid #ccf;"><tmpl_var name="total_time" escape="html"></td>
+</tr>
+</table>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

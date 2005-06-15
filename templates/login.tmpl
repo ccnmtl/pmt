@@ -1,0 +1,19 @@
+<tmpl_include name="header.tmpl">
+<form action="login.pl" method="POST">
+<h1>Enter PMT</h1>
+<p>please ensure that you have enabled cookies in your browser.</p>
+<table>
+<tr><th>username</th><td><input name="username" type="text"
+/></td></tr>
+<tr><th>password</th><td><input name="password" type="password"
+/></td></tr>
+<tr><td colspan="2"><input class="button" type="submit" value="login" /></td></tr>
+</table>
+</form>
+<a href="new/add_user.html">create a new user account</a><br />
+<form action="reminder.pl" method="post">
+<h2>forget your password?</h2>
+enter your <b>username</b> (not fullname) here: <input type="text" name="username" /><br />
+and it will be emailed to you.<br />
+<input type="submit" value="send password reminder" /></form>
+<tmpl_include name="footer.tmpl">

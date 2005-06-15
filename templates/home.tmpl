@@ -1,0 +1,82 @@
+<tmpl_include name="header_items.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_items.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>ITEMS: My Items</h1>
+<h1 class="print">Items for <tmpl_var name="username"></h1>
+
+<div id="ie6special">
+<form action="home.pl" method="get" class="pclayer" onsubmit="return validate_pid(this)">
+<input type="hidden" name="mode" value="add_item_form" />
+<select name="type" class="quickadd">
+	<option selected="selected" value="">QUICK ADD:</option>
+	<option value="">---------</option>
+	<option value="bug">a bug</option>
+	<option value="action">an action item</option>
+	<option value="todo">to do</option>
+	<option value="tracker">tracker(s)</option>
+</select>
+
+<select name="pid" class="toproject">
+	<option selected="selected" value="">TO PROJECT:</option>
+	<option value="">---------</option>
+	<tmpl_loop name="projects">
+	<option value="<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></option>
+	</tmpl_loop>
+</select>
+
+<input type="submit" class="button" value=" go "/>
+</form>
+</div>
+
+<h2>outstanding items:</h2>
+
+<tmpl_if name="items">
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="itemstable"
+onclick="sortColumn(event)">
+	<thead><tr>
+		<th class="firstcell">&#160;</th>
+		<th nowrap="nowrap">item:</th>
+		<th nowrap="nowrap">priority:</th>
+		<th nowrap="nowrap">status:</th>
+		<th nowrap="nowrap">project:</th>
+		<th nowrap="nowrap">target date:</th>
+		<th nowrap="nowrap">last modified:</th>
+	</tr></thead>
+<tbody>
+<tmpl_loop name="items">
+	<tr>
+		<td class="firstcell"><tmpl_if name="has_dependencies">D<tmpl_else>&#160;</tmpl_if></td>
+		<td><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="item.pl?iid=<tmpl_var name="iid" escape="url">">#<tmpl_var name="iid" escape="html">: <tmpl_var name="title" escape="html"></a></td>
+		<td class="pr<tmpl_var name="priority"
+                escape="html">"><span style="display:none"><tmpl_var
+                name="priority"></span><tmpl_var name="priority_label" escape="html"></td>
+		<td class="<tmpl_var name="status" escape="html">"><tmpl_if
+                name="r_status"><tmpl_var name="r_status"
+                escape="html"><tmpl_else><tmpl_var name="status"
+                escape="html"></tmpl_if></td>
+		<td><a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="project" escape="html"></a></td>
+		<td class="<tmpl_var name="schedule_status" escape="html">"><tmpl_var name="target_date" escape="html"></td>
+		<td nowrap="nowrap"><tmpl_var name="last_mod" escape="html"></td>
+	</tr>
+</tmpl_loop></tbody>
+
+	<tr>
+		<!-- ## Closing row --><td colspan="7" class="end">&nbsp;</td>
+	</tr>
+
+</table>
+</tmpl_if>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

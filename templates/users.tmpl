@@ -1,0 +1,39 @@
+<tmpl_include name="header_usergroup.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_usergroup.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>USERS/GROUPS: All Users</h1>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<thead>
+<tr><th class="firstcell">staff:</th><th class="Number">assigned hours:</th><th class="Number"># open items:</th>
+<th class="Number">hours logged in the last week:</th></tr>
+</thead>
+<tbody>
+<tmpl_loop name="users">
+<tr><td class="firstcell"><a href="user.pl?username=<tmpl_var name="username" escape="url">"><tmpl_var name="fullname" escape="html"></a></td>
+<td><tmpl_var name="hours"></td>
+<td><tmpl_var name="open_items"></td>
+<td><tmpl_var name="resolved"></td>
+</tr>
+</tmpl_loop>
+</tbody>
+
+	<tfoot>
+	<tr>
+		<!-- ## Closing row --><td colspan="4" class="end">&nbsp;</td>
+	</tr>
+	</tfoot>
+</table>
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

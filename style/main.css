@@ -1,0 +1,1205 @@
+body
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: #fff url(../images/bg_top_nav.gif) top left repeat-x;
+	font: normal 0.9em "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+}
+
+
+
+
+
+/* ---------- GLOBAL NAVIGATION ---------- */
+
+#pleasewait
+{
+	visibility: hidden;
+	font: bold 11px "trebuchet ms", verdana, arial, helvetica, sans-serif;
+	color: #999;
+}
+
+#globalnav
+{
+	height: 53px;
+	border: 0;
+}
+
+#pmtlogo
+{
+	float: left;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-right: 1px solid #40536A;
+}
+
+#pmtlogo img { border-right: 1px solid #fff; }
+
+#primenavposition   /*  box for usernavigation and pmtnavigation */
+{
+	height: 53px;
+	margin: 0 0 0 169px;
+	padding: 0;
+	border: 0;
+}
+
+#usernavigation   /*  box for user, logout, profile and quickjump */
+{
+	height: 31px;
+	margin: 0;
+	padding: 0;
+	border-bottom: solid 1px #fff;
+}
+
+#usernavigation .username    /*  div for user, logout, profile */
+{
+	margin: 0;
+	padding: 7px 0 0 6px;
+	border: 0;
+	font: normal 12px "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+}
+
+#usernavigation .quickjump    /*  div for quickjump to project */
+{
+	position: absolute;
+	top: 5px;
+	left: 560px;
+}
+
+#usernavigation a
+{
+	font-weight: bold;
+	color: #036;
+	text-decoration: none;
+}
+
+#usernavigation a:hover
+{
+	font-weight: bold;
+	color: #369;
+	text-decoration: underline;
+}
+
+#usernavigation select.dropdown
+{
+	width: 290px;
+	border: 1px solid #036;
+	background-color: #EAEEF3;
+	font: normal 10px verdana, arial, helvetica, sans-serif;
+	color: #036;
+}
+
+#pmtnavigation    /*  containment box for pmt dropdown navigations */
+{
+	width: 710px;
+	height: 30px;
+	margin: 0;
+	padding: 0;
+	/* border: solid 1px #fff; */
+}
+
+img.dropdown_arrow
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	vertical-align: middle;
+}
+
+ul.navigationlist
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	list-style-type: none;
+	text-align: center;
+}
+
+ul.navigationlist li
+{
+	width: 80px;
+	height: 20px;
+	display: block;
+	float: left;
+	margin: 0;
+	padding: 0;
+	border-top: solid 1px #40536A;
+	border-right: solid 1px #fff;
+	border-left: solid 1px #40536A;
+	border-bottom: 0;
+	text-align: center;
+}
+
+ul.navigationlist li:hover { background-color: #919DAC; }
+
+ul.navigationlist li#usergroup    /* special for users/groups button, just a little bit wider */
+{
+	width: 104px;
+}
+
+ul.navigationlist li#items    /* set the item button without the left white border */
+{
+	border-left: 0;
+}
+
+li ul {
+	position: absolute;
+	top: 53px;
+	display: none;
+	width: 120px;
+	}
+
+ul.item_list {
+	left: 130px;
+	z-index: 2;
+	}
+
+ul.project_list {
+	left: 212px;
+	z-index: 2;
+	}
+
+ul.client_list {
+	left: 294px;
+	z-index: 2;
+	}
+
+ul.group_list {
+	left: 376px;
+	z-index: 2;
+	}
+
+ul.report_list {
+	left: 482px;
+	z-index: 2;
+	}
+
+ul.forum_list {
+	left: 646px;
+	z-index: 2;
+	}
+
+ul.item_list li,    /* style for the dropdown menu on the pmt navigation list */
+ul.project_list li,
+ul.client_list li,
+ul.group_list li,
+ul.report_list li,
+ul.forum_list li
+{
+	width: 120px;
+	display: block;
+	border-top: 0;
+	border-right: 0;
+	border-bottom: 1px solid #fff;
+	border-left: 0;
+	background-color: #C6CED6;
+	font: normal 11px "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+}
+
+ul.item_list li.alignfirst,    /* special style for the first item in the dropdown menu on the pmt navigation list */
+ul.project_list li.alignfirst,
+ul.client_list li.alignfirst,
+ul.group_list li.alignfirst,
+ul.report_list li.alignfirst,
+ul.forum_list li.alignfirst
+{
+	border-top: 1px solid #40536A;
+}
+
+ul.item_list li.subitem,    /* special style indented subcategory for the dropdown menu */
+ul.project_list li.subitem,
+ul.client_list li.subitem,
+ul.group_list li.subitem,
+ul.report_list li.subitem,
+ul.forum_list li.subitem
+{
+	background-color: #EAEEF3;
+}
+
+ul.item_list li:hover,
+ul.project_list li:hover,
+ul.client_list li:hover,
+ul.group_list li:hover,
+ul.report_list li:hover,
+ul.forum_list li:hover
+{
+	border-bottom: 1px solid #40536A;
+	background-color: #e0e0e0;
+}
+
+ul.navigationlist li a {
+	display: block;
+	margin: 0;
+	padding-top: 2px;
+	padding-bottom: 6px;
+	color: #036;
+	text-decoration: none;
+	text-align: center;
+	/*border: 1px solid #f00;*/
+	}
+
+	
+ul.navigationlist li ul li a {
+	display: block;
+	margin: 0;
+	padding-top: 3px;
+	padding-left: 3px;
+	color: #036;
+	text-decoration: none;
+	text-align: left;
+	}
+
+	
+ul.navigationlist li ul li.subitem a {
+	padding-left: 20px;
+	}
+
+	
+body#sectionitems ul.navigationlist li#items,    /* highlight colors */
+body#sectionprojects ul.navigationlist li#projects,
+body#sectionclients ul.navigationlist li#clients,
+body#sectionusergroup ul.navigationlist li#usergroup,
+body#sectionreports ul.navigationlist li#reports,
+body#sectionforum ul.navigationlist li#forum
+{
+	background: #ccc;
+	}
+
+/* Holly Hack. IE Requirement \*/
+* html ul li { float: left; height: 1%; }
+
+* html ul li a { height: 1%; }
+
+/* End */
+li:hover ul, li.over ul { display: block; }
+ /* The magic */
+
+
+
+
+
+/* ---------- LOCAL NAVIGATION ---------- */
+
+#localnavpos
+{
+	float: left;
+	width: 180px;
+}
+
+#localnav
+{
+	margin: 3px 10px 0 0;
+	padding: 0px;
+	border: 0;
+	/*border: solid 1px red;*/
+	background-color: #F0EDE6;
+}
+
+#localnav h1#category
+{
+	margin: 0px;
+	background-color: #C5B083;
+}
+
+#localnav h1
+{
+	margin: 20px 0px 0px 0px;
+	padding: 2px 2px 2px 5px;
+	border: 0;
+	background-color: #D9D2C1;
+	font: bold 13px "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	text-transform: uppercase;
+}
+
+#localnav ul
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	list-style-type: none;
+}
+
+#localnav ul li
+{
+	display: block;
+	float: none;
+	margin: 0;
+	padding: 1px 1px 1px 10px;
+	border: 0;
+	border-bottom: solid 1px #fff;
+	font: normal 13px "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	text-align: left;
+}
+
+#localnav ul li a
+{
+	color: #630;
+	text-decoration: none;
+}
+
+#localnav ul li a:hover
+{
+	color: #960;
+	text-decoration: underline;
+}
+
+#localnav ul li.last
+{
+	border-bottom: solid 1px #999;
+}
+
+.hide
+{
+	color: #F0EDE6;
+}
+
+#localnav .button
+{
+	margin: 2px 0;
+	padding: 1px 6px;
+	border: 1px solid #036;
+	background-color: #EAEEF3;
+	font: bold 12px "trebuchet ms", verdana, arial, helvetica, sans-serif;
+	color: #036;
+	text-decoration: none;
+	text-transform: uppercase;
+	cursor: pointer;
+	cursor: hand;
+}
+
+#localnav .textform
+{
+	margin: 2px 0;
+	padding: 2px;
+	border: #99c solid 1px;
+	background-color: #fff;
+	font: normal 11px "trebuchet ms", verdana, arial, helvetica, sans-serif;
+}
+
+
+
+
+
+/* ---------- MAIN CONTENT ---------- */
+
+.pagecontent
+{
+	margin: 20px 10px 10px 180px;
+	padding: 0px;
+	font: normal 1em "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	/* border: solid 1px blue; */
+}
+
+.pagecontent #ie6special
+{
+	z-index: -2;
+}
+
+.pagecontent table.itemlisting thead span.arrow
+{
+	margin: 0;
+	padding: 0 5px;
+	border: 0;
+	vertical-align: text-top;
+}
+
+.pagecontent table.itemlisting td.firstcell img.bug,
+.pagecontent img.bug
+{
+	display: inline;
+	margin: 0;
+	padding: 0;
+	padding-right: 5px;
+	border: 0;
+	vertical-align: middle;
+}
+
+.pagecontent table.itemlisting td.firstcell img.actionitem,
+.pagecontent img.actionitem
+{
+	display: none;
+}
+
+.pagecontent p
+{
+	font: normal 1em "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	/* border: solid 1px blue; */
+}
+
+.pagecontent a
+{
+	color: #039;
+	text-decoration: underline;
+}
+
+.pagecontent a:hover
+{
+	color: #960;
+	text-decoration: none;
+}
+
+.pagecontent a.actionbutton:link, .pagecontent a.actionbutton:visited
+{
+	margin: 0px 0px;
+	padding: 1px 6px;
+	border: 1px solid #036;
+	background-color: #EAEEF3;
+	font: bold 11px "trebuchet ms", verdana, arial, helvetica, sans-serif;
+	color: #036;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+.pagecontent a.actionbutton:hover, .pagecontent a.actionbutton:active
+{
+	border: 1px solid #C5B083;
+	background-color: #F0EDE6;
+	color: #000;
+	text-decoration: none;
+}
+
+.pagecontent .hide
+{
+color: #fff;
+}
+
+.pagecontent h1,
+.pagecontent h1.print
+{
+	margin: 0px 0px 20px 0px;
+	padding: 0px;
+	font: bold 1.2em "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+}
+
+.pagecontent h2
+{
+	margin: 0px;
+	padding: 0px;
+	font: bold 1em "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	text-transform: capitalize;
+}
+
+.pagecontent h2.projectinfo
+{
+	margin: 0px 0px 20px 0px;
+	padding: 0px;
+	border: 0px;
+	border-top: 1px solid #369;
+	background-color: #EAEEF3;
+	font: bold 1em "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	text-transform: capitalize;
+}
+
+.pagecontent ul
+{
+	list-style-type: square;
+}
+
+.pagecontent ul li
+{
+	float: none;
+}
+
+.pagecontent .leftboxpad
+{
+	margin: 10px 0px 0px 0px;
+	padding: 0px 0px 10px 10px;
+}
+
+.pagecontent .rightboxpad
+{
+	margin: 10px 0px 0px 0px;
+	padding: 0px 0px 10px 10px;
+	float: right;
+}
+
+.pagecontent #fullviewbox
+{
+	margin: 0px;
+	padding: 5px 10px;
+	border: 1px solid #C5B083;
+	background-color: #fff;
+	text-align: left;
+}
+
+.pagecontent table.pmtform td table.default,
+table.default,
+.pagecontent table.default
+{
+	margin: 3px 0px 20px 0px;
+	padding: 0px;
+	border: 0;
+}
+
+.pagecontent table.pmtform td table.default,
+table.default th,
+.pagecontent table.default th
+{
+	margin: 0px;
+	padding: 3px 10px 3px 0px;
+	border: 0;
+	text-align: left;
+	vertical-align: top;
+}
+
+.pagecontent table.pmtform td table.default,
+table.default td,
+.pagecontent table.default td
+{
+	margin: 0px;
+	padding: 3px 4px 3px 0px;
+	border: 0;
+	text-align: left;
+	vertical-align: top;
+}
+
+.pagecontent table.itemlisting,
+.pagecontent table.pmtform,
+.pagecontent table.pmtform2
+{
+	margin: 3px 0px 20px 0px;
+	padding: 0px;
+	/*border-top: 1px solid #369;*/
+	border-top: 1px solid #ccf;
+	border-left: 0px solid #ccf;
+}
+
+.pagecontent table.itemlisting tr:hover td {
+    background-color: #f6f6f6;
+}
+
+.pagecontent table.pmtform,
+.pagecontent table.pmtform2
+{
+	width: 710px;
+}
+
+.pagecontent table.itemlisting th,
+.pagecontent table.pmtform th,
+.pagecontent table.pmtform2 th
+{
+	padding: 5px;
+	border-right: 1px solid #ccf;
+	border-bottom: 1px solid #ccf;
+	background-color: #e0e0e0;
+	font: bold 0.9em "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	color: #006;
+	text-align: left;
+	vertical-align: top;
+	text-transform: uppercase;
+}
+
+.pagecontent table.pmtform2 th
+{
+	border-right: 1px dotted #ccf;
+}
+
+.pagecontent table.itemlisting th.firstcell,
+.pagecontent table.pmtform th.firstcell,
+.pagecontent table.pmtform2 th.firstcell
+{
+	border-left: 1px solid #ccf;
+}
+
+.pagecontent table.pmtform th
+{
+	padding: 3px;
+	border-bottom: 1px dotted #ccf;
+	background-color: #fff;
+}
+
+.pagecontent table.pmtform2 th
+{
+	padding: 3px;
+	border-bottom: 1px solid #ccf;
+	background-color: #fff;
+}
+
+.pagecontent table.itemlisting th a,
+.pagecontent table.pmtform th a,
+.pagecontent table.pmtform2 th a
+{
+	color: #039;
+	text-decoration: underline;
+}
+
+.pagecontent table.itemlisting th a:hover,
+.pagecontent table.pmtform th a:hover,
+.pagecontent table.pmtform2 th a:hover
+{
+	color: #960;
+	text-decoration: none;
+}
+
+tr.footer td {
+    border-top: #000 solid 1px;
+}
+
+.pagecontent table.itemlisting th.milestone,
+.pagecontent table.pmtform th.formcategory
+{
+	padding: 4px 2px;
+	border: 0;
+	border-top: 1px solid #ccf;
+	border-right: 1px solid #ccf;
+	border-left: 1px solid #ccf;
+	background-color: #C6CED6;
+	font: bold 0.9em "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	color: #006;
+	text-align: left;
+	text-transform: none;
+}
+
+.pagecontent table.pmtform th.formcategory
+{
+	border: 0px;
+	border-right: 1px solid #ccf;
+	border-left: 1px solid #ccf;
+	border-top: 1px solid #369;
+	background-color: #EAEEF3;
+	font: bold 1em "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	text-transform: capitalize;
+}
+
+.pagecontent table.itemlisting th.milestoneinfo
+{
+	padding: 4px 5px;
+	border: 0;
+	border-right: 1px solid #ccf;
+	border-bottom: 1px dotted #ccf;
+	border-left: 1px solid #ccf;
+	background-color: #EAEEF3;
+	font: bold 0.9em "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	color: #006;
+	text-align: right;
+	text-transform: none;
+}
+
+.pagecontent table.itemlisting td,
+.pagecontent table.pmtform td,
+.pagecontent table.pmtform2 td
+{
+	padding: 5px;
+	border-right: 1px solid #ccf;
+	border-bottom: 1px dotted #ccf;
+	font: normal 12px "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	vertical-align: top;
+}
+
+.pagecontent table.pmtform2 td
+{
+	border-bottom: 1px solid #ccf;
+}
+
+.pagecontent table.itemlisting td.firstcell,
+.pagecontent table.pmtform td.firstcell,
+.pagecontent table.pmtform2 td.firstcell
+{
+	border-left: 1px solid #ccf;
+}
+
+.pagecontent table.pmtform td,
+.pagecontent table.pmtform2 td
+{
+	padding: 3px;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #ccf;
+}
+
+.pagecontent .NEW,
+.pagecontent .OPEN,
+.pagecontent .REOPENED,
+.pagecontent table.itemlisting td.NEW,
+.pagecontent table.itemlisting td.OPEN,
+.pagecontent table.itemlisting td.REOPENED
+{
+	font-weight: bold;
+	color: #f00;
+}
+
+.pagecontent .INPROGRESS,
+.pagecontent table.itemlisting td.INPROGRESS
+{
+	font-weight: bold;
+	color: #666;
+}
+
+.pagecontent .RESOLVED,
+.pagecontent table.itemlisting td.RESOLVED
+{
+	font-weight: bold;
+	color: #069;
+}
+
+.pagecontent .VERIFIED,
+.pagecontent table.itemlisting td.VERIFIED
+{
+	font-weight: bold;
+	color: #9999cc;
+}
+
+.pagecontent .CLOSED,
+.pagecontent table.itemlisting td.CLOSED
+{
+	font-weight: bold;
+	color: #009900;
+}
+
+.pagecontent .UNASSIGNED,
+.pagecontent table.itemlisting td.UNASSIGNED
+{
+	font-weight: bold;
+	color: #ff6600;
+}
+
+.pagecontent td.pr0,
+.pagecontent .pr0,
+.pagecontent table.itemlisting td.pr0
+{
+	font-weight: bold;
+	color: #9999cc;
+	text-align: left;
+}
+
+.pagecontent td.pr1,
+.pagecontent .pr1,
+.pagecontent table.itemlisting td.pr1
+{
+	font-weight: bold;
+	color: #069;
+	text-align: left;
+}
+
+.pagecontent td.pr2,
+.pagecontent .pr2,
+.pagecontent table.itemlisting td.pr2
+{
+	font-weight: bold;
+	color: #009900;
+	text-align: left;
+}
+
+.pagecontent td.pr3,
+.pagecontent .pr3,
+.pagecontent table.itemlisting td.pr3
+{
+	font-weight: bold;
+	color: #ff6600;
+	text-align: left;
+}
+
+.pagecontent td.pr4,
+.pagecontent .pr4,
+.pagecontent table.itemlisting td.pr4
+{
+	font-weight: bold;
+	color: #f00;
+	text-align: left;
+}
+
+.pagecontent table.itemlisting td.ok
+{
+	font-weight: bold;
+	color: #9999cc;
+	text-align: center;
+}
+
+.pagecontent table.itemlisting td.upcoming
+{
+	font-weight: bold;
+	color: #069;
+	text-align: center;
+}
+
+.pagecontent table.itemlisting td.due
+{
+	font-weight: bold;
+	color: #009900;
+	text-align: center;
+}
+
+.pagecontent table.itemlisting td.late
+{
+	font-weight: bold;
+	color: #f60;
+	text-align: center;
+}
+
+.pagecontent table.itemlisting td.overdue
+{
+	font-weight: bold;
+	color: #f00;
+	text-align: center;
+}
+
+.pagecontent table.itemlisting td a,
+.pagecontent table.pmtform td a,
+.pagecontent table.pmtform2 td a
+{
+	color: #039;
+	text-decoration: underline;
+}
+
+.pagecontent table.itemlisting td a:hover,
+.pagecontent table.pmtform td a:hover,
+.pagecontent table.pmtform2 td a:hover
+{
+	color: #960;
+	text-decoration: none;
+}
+
+.pagecontent table.itemlisting td.divider
+{
+	border: 0px none transparent;
+	padding: 6px;
+}
+
+.pagecontent table.itemlisting td.end,
+.pagecontent #forumlogitems #moditems td.end,
+.pagecontent table.pmtform td.end,
+.pagecontent table.pmtform2 td.end
+{
+	border-right: 1px solid #ccf;
+	border-left: 1px solid #ccf;
+	border-bottom: 1px solid #ccf;
+	color: #fff;
+	padding: 2px;
+	font-size: 2px;
+}
+
+.pagecontent select.quickadd,
+.pagecontent select.small,
+.pagecontent select.xsmall,
+.pagecontent select.xmedium,
+.pagecontent select.medium
+{
+	width: 100px;
+	border: 1px solid #036;
+	background-color: #EAEEF3;
+	font: normal 10px verdana, arial, helvetica, sans-serif;
+	color: #036;
+}
+
+.pagecontent select.xsmall
+{
+	width: 50px;
+}
+
+.pagecontent select.medium
+{
+	width: 150px;
+}
+
+.pagecontent select.xmedium
+{
+	width: 200px;
+}
+
+.pagecontent select.toproject,
+.pagecontent select.big
+{
+	width: 290px;
+	border: 1px solid #036;
+	background-color: #EAEEF3;
+	font: normal 10px verdana, arial, helvetica, sans-serif;
+	color: #036;
+}
+
+.pagecontent select.available
+{
+	width: 200px;
+	border: 1px solid #036;
+	background-color: #EAEEF3;
+	font: normal 12px verdana, arial, helvetica, sans-serif;
+	color: #036;
+}
+
+.pagecontent select.activated
+{
+	width: 200px;
+	border: 1px solid #036;
+	background-color: #EAEEF3;
+	font: normal 12px verdana, arial, helvetica, sans-serif;
+	color: #036;
+}
+
+.textform
+{
+	padding: 2px;
+	border: #99c solid 1px;
+	background-color: #fff;
+}
+
+.pagecontent .button
+{
+	margin: 0 0 0 5px;
+	padding: 1px 6px;
+	border: 1px solid #036;
+	background-color: #EAEEF3;
+	font: bold 12px "trebuchet ms", verdana, arial, helvetica, sans-serif;
+	color: #036;
+	text-decoration: none;
+	text-transform: uppercase;
+        cursor: pointer;
+        cursor: hand;
+}
+
+.pagecontent .button:hover, .button:active
+{
+	margin: 0 0 0 5px;
+	padding: 1px 6px;
+	border: 1px solid #C5B083;
+	background-color: #F0EDE6;
+	font: bold 12px "trebuchet ms", verdana, arial, helvetica, sans-serif;
+	color: #000;
+	text-decoration: none;
+        cursor: pointer;
+        cursor: hand;
+}
+
+.pagecontent table.timescompleted
+{
+	margin: 3px 0px;
+	padding: 0px;
+	border-top: 1px solid #ccc;
+	border-left: 0px solid #ccc;
+}
+
+.pagecontent table.timescompleted th
+{
+	padding: 5px 15px 5px 5px;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	background-color: #fff;
+	font: bold 12px "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	color: #006;
+	text-align: left;
+	vertical-align: top;
+	text-transform: uppercase;
+}
+
+.pagecontent table.timescompleted th a
+{
+	color: #039;
+	text-decoration: underline;
+}
+
+.pagecontent table.timescompleted th a:hover
+{
+	color: #960;
+	text-decoration: none;
+}
+
+.pagecontent table.timescompleted th.firstcell,
+.pagecontent table.timescompleted td.firstcell
+{
+	border-left: 1px solid #ccc;
+}
+
+.pagecontent table.timescompleted td
+{
+	padding: 5px 15px 5px 5px;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	background-color: #fff;
+	font: normal 12px "trebuchet ms", verdana, arial, helvetica, lucida, sans-serif;
+	vertical-align: top;
+}
+
+.pagecontent #posts
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	float: left;
+	width: 60%;
+}
+
+.pagecontent .post,
+.pagecontent .comment,
+.pagecontent #posts .post
+{
+	margin-bottom: 15px;
+	padding: 0px;
+	border: #ccf solid 1px;
+}
+
+.pagecontent .post .nodesubject,
+.pagecontent .comment .nodesubject,
+.pagecontent #posts .post .nodesubject
+{
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 3px;
+	color: #333;
+	background-color: #EAEEF3;
+	text-transform: none;
+}
+
+.pagecontent .post .byline,
+.pagecontent .comment .byline,
+.pagecontent #posts .post .byline
+{
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 3px;
+	border-top: #ccf solid 1px;
+	border-bottom: #ccf solid 1px;
+	background-color: #f5f5f5;
+	font-size: .8em;
+	color: #000;
+	text-align: right;
+}
+
+.pagecontent .post .nodebody,
+.pagecontent .comment .commentbody,
+.pagecontent #posts .post .nodebody
+{
+	margin: 0;
+	padding: 3px;
+	border: 0;
+}
+
+.pagecontent .post .nodebody p,
+.pagecontent .comment .commentbody p,
+.pagecontent #posts .post .nodebody p
+{
+	background-color: inherit;
+	text-align: justify;
+}
+
+.pagecontent .post .replies,
+.pagecontent .comment .replies,
+.pagecontent #posts .post .replies
+{
+	padding: 3px;
+	border-top: #ccf solid 1px;
+	font-size: .8em;
+	color: #669;
+	text-align: right;
+}
+
+.archive { background-color: #fcf; }
+
+
+.pagecontent #forumlogitems
+{
+	border: 0;
+	margin: 0 0 0 61%;
+}
+
+.pagecontent #forumlogitems #logs
+{
+	border: 0;
+}
+
+.pagecontent #forumlogitems #logs .log
+{
+	margin-bottom: 4px;
+	padding: 2px;
+	border-top: #ccf solid 1px;
+}
+
+.pagecontent #forumlogitems #logs .log .replies
+{
+	padding: 2px;
+	border: 0;
+	font-size: .8em;
+	color: #669;
+	text-align: right;
+}
+
+.pagecontent #forumlogitems #moditems
+{
+	border: 0;
+}
+
+.pagecontent #forumlogitems #moditems td
+{
+	font-size: 11px;
+}
+
+
+/* ---------- WHAT IS HIDDEN FROM SCREEN ---------- */
+
+#print_header,
+.pagecontent h1.print
+ {
+	display: none;
+}
+
+
+#message {
+	 background-color:#ffa;
+	 border: #f00 solid 1px;
+	 padding: 1em;
+	 font-weight: bold;
+}
+
+table#progressbar {
+		  width: 150px;
+		  height: 10px;
+		  border: #666 solid 1px;
+		  padding: 0px;
+}
+table.progressbar {
+		  width: 150px;
+		  height: 10px;
+		  border: #666 solid 1px;
+		  padding: 0px;
+}
+
+table#progressbar .done {
+		  background-color: #090;
+}
+table#progressbar .todo {
+		  background-color: #ff0;
+}
+table#progressbar .free {
+		  background-color: #ddd;
+}
+
+table#progressbar .completedbehind {
+		  background-color: #f60;
+}
+
+table#progressbar .behind {
+		  background-color: #f00;
+}
+
+#progressbar .ok {
+	     background-color: #99c;
+}
+#progressbar .upcoming {
+	     background-color: #069;
+}
+#progressbar .due {
+	     background-color: #090;
+}
+#progressbar .late {
+	     background-color: #f60;
+}
+#progressbar .overdue {
+	     background-color: #f00;
+}
+
+.progressbar .icing {
+	     background-color: #99c;
+}
+.progressbar .low {
+	     background-color: #069;
+}
+.progressbar .medium {
+	     background-color: #090;
+}
+.progressbar .high {
+	     background-color: #f60;
+}
+.progressbar .critical {
+	     background-color: #f00;
+}
+
+
+
