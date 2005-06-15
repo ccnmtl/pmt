@@ -576,7 +576,7 @@ sub update_item {
 	$message .= "dependencies changed. ";
     }
 
-    if ($self->diff($item{clients}, [map {$_->{client_id}} @{$old{clients}}])) {
+    if ($self->diff($item{clients}, [map {$_->{client_id}} @{$old{clients}}]) || $item{client_uni} ne "") {
 	$changed = 1;
 	$comment .= "<b>clients changed</b><br />\n";
 	$message .= "clients changed. ";
@@ -631,6 +631,7 @@ SQL
 	$i->update_keywords($item{'keywords'});
 	$i->update_dependencies($item{'dependencies'});
 	$i->update_clients($item{'clients'});
+	$i->add_client_by_uni($item{client_uni});
 	# add history event				 
 	$i->add_event($item{'status'},"$comment $item{comment}",$user);
 	my $new_milestone = PMT::Milestone->retrieve($item{mid});

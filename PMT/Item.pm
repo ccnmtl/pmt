@@ -592,4 +592,18 @@ sub update_clients {
 # }}}
 
 
+sub add_client_by_uni {
+    my $self = shift;
+    my $uni = shift;
+    my @clients = PMT::Client->find_by_uni($uni);
+    return unless $clients[0];
+    
+    my @ics = PMT::ItemClients->search(iid => $self->iid, client_id => $clients[0]->client_id);
+    return if @ics;
+
+    my $ic = PMT::ItemClients->create({iid => $self->iid,
+				       client_id => $clients[0]->client_id});
+    
+}
+
 1;

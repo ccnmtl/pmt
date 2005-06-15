@@ -347,5 +347,12 @@ sub update_data {
     }
 }
 
-
+sub find_by_uni {
+    my $self = shift;
+    my $uni = shift;
+    my @clients = __PACKAGE__->search(email => $uni);
+    if (@clients) { return @clients; }
+    return __PACKAGE__->search(email => "$uni\@columbia.edu");
+    
+}
 1;

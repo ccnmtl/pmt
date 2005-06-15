@@ -157,18 +157,19 @@ name="selected"> selected="selected"</tmpl_if>><tmpl_var name="label" escape="ht
 src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20" height="20" alt="" /></div>
 </td></tr>
 
-<tmpl_if name="clients_select">
 <tr>
 <th class="firstcell">
 client(s):</th>
 <td>
+<tmpl_if name="clients_select">
 <select class="activated" name="clients" multiple="multiple" size="5">
 <option value="">[no specific client]</option>
 <tmpl_loop name="clients_select"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
-</select>
+</select></tmpl_if>
+Add a Client by UNI: <input type="text" name="client_uni" size="5"/>
 </td>
 </tr>
-</tmpl_if>
+
 <tr>
 <th class="firstcell">comment:</th>
 <td><div class="resizer" id="commentbox"><textarea class="textform" name="comment" wrap="virtual"

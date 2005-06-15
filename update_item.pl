@@ -50,6 +50,7 @@ eval {
     my $target_date  = $cgi->param('target_date') || PMT::Milestone->retrieve($mid)->target_date;
     my $comment      = escape($cgi->param('comment')) || "";
     my $resolve_time = $cgi->param('resolve_time') || "";
+    my $client_uni   = $cgi->param('client_uni') || "";
 
     if($resolve_time =~ /^(\d+)$/) {
 	# default to hours if no unit was specified.
@@ -92,6 +93,7 @@ eval {
 		keywords     => \@new_keywords,
 		dependencies => \@new_deps,
 		clients      => \@new_clients,  
+		client_uni   => $client_uni,
 		status       => $status,
 		r_status     => $r_status,
 		resolve_time => $resolve_time,
