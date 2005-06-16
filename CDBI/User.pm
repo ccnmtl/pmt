@@ -298,4 +298,24 @@ sub resolve_times_for_interval {
     } @{$sth->fetchall_arrayref()}];
 }
 
+__PACKAGE__->set_sql(project_completed_time_for_interval =>
+		     qq{	
+			 select sum(a.actual_time) from actual_times a, items i, milestones m
+			     where a.resolver = ? 
+			     and a.iid = i.iid and i.mid = m.mid and m.pid = ?
+			     and a.completed > ? and a.completed <= date(?) + interval '1 day';
+		     }, 'Main');
+
+
+sub project_completed_time_for_interval {
+    my $self = shift;
+    my $pid = shift;
+    my $start_date = shift;
+    my $end_date = shift;
+    my $sth = $self->sql_project_completed_time_for_interval;
+    $sth->execute($self->username,$pid,$start_date,$end_date);
+    return $sth->fetchrow_arrayref()->[0]->[0];
+}
+
+
 1;

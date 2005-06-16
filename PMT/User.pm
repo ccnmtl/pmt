@@ -584,20 +584,6 @@ sub total_completed_time {
     return interval_to_hours($self->ss($sql,[$self->get('username')],['time'])->{time});
 }
 
-sub project_completed_time_for_interval {
-    my $self = shift;
-    my $pid = shift;
-    my $start_date = shift;
-    my $end_date = shift;
-    my $sql = qq{
-	select sum(a.actual_time) from actual_times a, items i, milestones m
-	    where a.resolver = ? 
-	    and a.iid = i.iid and i.mid = m.mid and m.pid = ?
-	    and a.completed > ? and a.completed <= date(?) + interval '1 day';
-    };
-    return $self->ss($sql,[$self->get("username"),$pid,$start_date,$end_date],
-			['time'])->{time};
-}
 
 
 # {{{ weekly_report
@@ -608,18 +594,18 @@ sub weekly_report {
     my $week_end = shift;
     my $viewer = shift || "";
     my $sortby = shift || "";
-
+    my $cdbi = CDBI::User->retrieve($self->get('username'));
     # figure out which projects have been taking up time self week
     my $active_projects = $self->active_projects($week_start,$week_end);
 
     foreach my $project (@$active_projects) {
 	$project->{time} =
-        $self->project_completed_time_for_interval($project->{pid},
+        $cdbi->project_completed_time_for_interval($project->{pid},
             $week_start, $week_end);
 	$project->{hours} = interval_to_hours($project->{time});
     }
     # get individual resolve times
-    my $cdbi = CDBI::User->retrieve($self->get('username'));
+
     return {active_projects => $active_projects,
 	    total_time => interval_to_hours($self->interval_time($week_start,$week_end)),
 	    individual_times => $cdbi->resolve_times_for_interval($week_start, $week_end),
