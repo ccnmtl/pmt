@@ -576,14 +576,6 @@ sub total_breakdown {
     return {projects => \@projects};
 }
 
-sub total_completed_time {
-    my $self = shift;
-    my $sql = qq{
-    select sum(actual_time) as time
-    from actual_times where resolver = ?;};
-    return interval_to_hours($self->ss($sql,[$self->get('username')],['time'])->{time});
-}
-
 
 
 # {{{ weekly_report

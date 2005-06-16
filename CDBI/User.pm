@@ -317,5 +317,19 @@ sub project_completed_time_for_interval {
     return $sth->fetchrow_arrayref()->[0]->[0];
 }
 
+__PACKAGE__->set_sql(total_completed_time =>
+		     qq{
+			 select sum(actual_time) as time
+			     from actual_times where resolver = ?;},
+		     'Main');
+
+sub total_completed_time {
+    my $self = shift;
+    my $sth = $self->sql_total_completed_time;
+    $sth->execute($self->username);
+    return interval_to_hours($sth->fetchrow_arrayref()->[0]->[0]);
+}
+
+
 
 1;

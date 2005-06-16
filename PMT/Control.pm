@@ -1177,11 +1177,12 @@ sub total_breakdown {
     my $q = $self->query();
     my $username = $q->param('username') || $self->{username};
     my $user = new PMT::User($username);
+    my $cdbi_user = CDBI::User->retrieve($username);
 
     my $template = $self->template("total_breakdown.tmpl");
     $template->param($user->data());
     $template->param($user->total_breakdown());
-    $template->param(total_time => $user->total_completed_time());
+    $template->param(total_time => $cdbi_user->total_completed_time());
     $template->param('reports_mode' => 1);
     $template->param(page_title => "total project breakdown report for $username");
     return $template->output();
