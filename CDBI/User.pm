@@ -268,5 +268,34 @@ sub estimated_times_by_project {
     @{$sth->fetchall_arrayref()}];
 }
 
+__PACKAGE__->set_sql(resolve_times_for_interval =>
+		     qq{select a.actual_time, to_char(a.completed,'YYYY-MM-DD HH24:MI:SS'), 
+			a.iid, i.title, p.pid, p.name
+			    from actual_times a, items i, milestones m, projects p
+			    where a.iid = i.iid
+			    and i.mid = m.mid
+			    and m.pid = p.pid
+			    and a.resolver = ?
+			    and a.completed > ? and a.completed <= date(?) + interval '1 day'
+			    order by a.completed ASC;},
+		     'Main');
+
+sub resolve_times_for_interval {
+    my $self       = shift;
+    my $start_date = shift;
+    my $end_date   = shift;
+    my $sth        = $self->sql_resolve_times_for_interval;
+    $sth->execute($self->username,$start_date,$end_date);
+    return [map {
+	{
+	    'actual_time' => $_->[0],
+	    'completed' => $_->[1],
+	    'iid' => $_->[2],
+	    'item' => $_->[3],
+	    'pid' => $_->[4],
+	    'project' => $_->[5],
+	}
+    } @{$sth->fetchall_arrayref()}];
+}
 
 1;

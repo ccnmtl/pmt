@@ -599,23 +599,6 @@ sub project_completed_time_for_interval {
 			['time'])->{time};
 }
 
-sub resolve_times_for_interval {
-    my $self = shift;
-    my $start_date = shift;
-    my $end_date = shift;
-    my $sql = qq{select a.actual_time, to_char(a.completed,'YYYY-MM-DD HH24:MI:SS'), 
-    a.iid, i.title, p.pid, p.name
-    from actual_times a, items i, milestones m, projects p
-    where a.iid = i.iid
-        and i.mid = m.mid
-        and m.pid = p.pid
-        and a.resolver = ?
-        and a.completed > ? and a.completed <= date(?) + interval '1 day'
-    order by a.completed ASC;};
-    return $self->s($sql,[$self->get("username"),$start_date,$end_date],
-        ['actual_time','completed','iid','item','pid','project']);
-
-}
 
 # {{{ weekly_report
 
@@ -636,10 +619,10 @@ sub weekly_report {
 	$project->{hours} = interval_to_hours($project->{time});
     }
     # get individual resolve times
-
+    my $cdbi = CDBI::User->retrieve($self->get('username'));
     return {active_projects => $active_projects,
 	    total_time => interval_to_hours($self->interval_time($week_start,$week_end)),
-	    individual_times => $self->resolve_times_for_interval($week_start, $week_end),
+	    individual_times => $cdbi->resolve_times_for_interval($week_start, $week_end),
 	};
 }
 
