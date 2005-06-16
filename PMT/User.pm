@@ -576,7 +576,7 @@ sub total_breakdown {
     return {projects => \@projects};
 }
 
-
+  
 
 # {{{ weekly_report
 
