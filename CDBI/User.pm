@@ -8,7 +8,7 @@ my %PRIORITIES = (4 => 'CRITICAL', 3 => 'HIGH', 2 => 'MEDIUM', 1 => 'LOW',
 
 __PACKAGE__->table('users');
 __PACKAGE__->columns (Primary          => qw/username/);
-__PACKAGE__->columns (All              => qw/fullname email status grp/);
+__PACKAGE__->columns (All              => qw/fullname email status grp password/);
 
 __PACKAGE__->has_many(nodes            => 'PMT::Node', 'author');
 __PACKAGE__->has_many(projects         => 'PMT::Project', 'caretaker');

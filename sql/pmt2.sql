@@ -9,7 +9,8 @@ CREATE TABLE users (
        fullname varchar(128),
        email varchar(32) NOT NULL,
        status varchar(16) DEFAULT 'active',
-       grp boolean DEFAULT 'false'
+       grp boolean DEFAULT 'false',
+       password varchar(32) NOT NULL DEFAULT 'nopassword'
 );
 
 CREATE TABLE in_group (

@@ -5,11 +5,10 @@ use strict;
 package PMT::User;
 use lib qw(.);
 use PMT::Common;
-use Auth;
 my %PRIORITIES = (4 => 'CRITICAL', 3 => 'HIGH', 2 => 'MEDIUM', 1 => 'LOW',
 0 => 'ICING');
 
-my @ATTRIBUTES = qw(username fullname email status grp);
+my @ATTRIBUTES = qw(username fullname email status grp password);
 
 sub new {
     my $pkg = shift;
@@ -26,7 +25,7 @@ sub new {
 sub _load_data {
     my $self = shift;
     $self->debug("_load_data()");
-    my $sql = qq{select username,fullname,email,status,grp 
+    my $sql = qq{select username,fullname,email,status,grp, password
 		     from users where username = ?;};
     my $res = $self->ss($sql,[$self->get("username")],[@ATTRIBUTES]);
     foreach my $att (@ATTRIBUTES) {
@@ -57,12 +56,12 @@ sub data {
 # dies if authentication fails
 sub validate {
     my $self = shift;
-    my $auth = new Auth();
 
     my $username = untaint_username(shift);
     my $password = untaint_password(shift);
 
-    if($auth->validate($username,$password)) {
+
+    if($self->get('password') eq $password) {
 	if($self->{status} ne "active") {
 	    $self->warn("inactive user $username");
 	    throw Error::InactiveUser "user is inactive and may not login";
@@ -70,7 +69,7 @@ sub validate {
 	    return;
 	}
     } else {
-	throw Error::Simple $auth->error();
+	throw Error::Simple "incorrect password";
     }
 }
 
@@ -85,8 +84,6 @@ sub user_info {
     $data->{user_username} = $data->{username};
     $data->{user_fullname} = $data->{fullname};
     $data->{user_email} = $data->{email};
-    my $auth = new Auth();
-    $data->{password} = $auth->get_password($data->{username});
     delete $data->{username};
     delete $data->{fullname};
     delete $data->{email};
@@ -614,10 +611,8 @@ sub weekly_report {
 # wild.
 sub delete {
     my $self = shift;
-    my $auth = new Auth();
     $self->warn("delete()");
     $self->update("delete from users where username = ?;",[$self->get("username")]);
-    $auth->delete_user($self->get("username"));
 }
 
 # }}}

@@ -15,7 +15,6 @@ use PMT::Project;
 use PMT::Group;
 use PMT::Notify;
 use PMT::NotifyProject;
-use Auth;
 use XML::Simple;
 use HTML::Template;
 use Text::Wrap;
@@ -33,7 +32,6 @@ use PMT::Common;
 
 # {{{ global variables
 
-my $auth = Auth->new();
 my $cgi = CGI->new();
 
 my @PROJECT_STATUSES = qw/Discovery Design Development
@@ -1331,11 +1329,8 @@ sub add_user {
 	|| throw Error::NO_EMAIL "no email address specified";
 
 
-    if ($auth->add_user($username,$password)) {
-	$self->update("INSERT INTO users (username,fullname,email)
-                          VALUES (?,?,?);",[$username,$fullname,$email]);
-    } 
-
+    $self->update("INSERT INTO users (username,fullname,email)
+                          VALUES (?,?,?,?);",[$username,$fullname,$email,$password]);
     return;
 }
 
@@ -1353,10 +1348,12 @@ sub update_user {
     $self->debug("update_user($username,*,*,*,$fullname,$email)");
     throw Error::NO_EMAIL "email address is necessary." 
 	unless $email;
-    if (1 == $auth->change_password($username,$password,$new_pass,$new_pass2)) 
-    {
-	$self->update("UPDATE users SET fullname = ?, email = ? 
-                          WHERE username = ?;",[$fullname,$email,$username]);
+    
+    if ($new_pass eq "") { $new_pass = $password; $new_pass2 = $password; }
+
+    if ($new_pass eq $new_pass2) {
+	$self->update("UPDATE users SET fullname = ?, email = ?, password = ? 
+                          WHERE username = ?;",[$fullname,$email,$new_pass,$username]);
     } 
     return;
 }

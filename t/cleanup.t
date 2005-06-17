@@ -13,18 +13,14 @@ my $db = $PMT->{db};
 my $sql = qq{delete from projects where name = 'regression test project';};
 $db->update($sql,[]);
 
-my $auth = new Auth();
 $sql = qq{delete from users where username = 'regressiontestuser';};
 $db->update($sql,[]);
-$auth->delete_user("regressiontestuser");
 $sql = qq{delete from users where username = 'regressiontestuser2';};
 $db->update($sql,[]);
-$auth->delete_user("regressiontestuser2");
 $sql = qq{delete from users where username = 'grp_regressiontest';};
 $db->update($sql,[]);
 $sql = qq{delete from in_group where grp = 'grp_regressiontest';};
 $db->update($sql,[]);
-$auth->delete_user("grp_regressiontest");
 $sql = qq{delete from clients where firstname = 'regression test';};
 $db->update($sql,[]);
 
