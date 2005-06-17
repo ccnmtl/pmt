@@ -27,7 +27,8 @@ document.write('<img src="images/checked.gif" width="16" height="16" hspace="0" 
 document.write('</p>');
 }
 else {
-document.write('<form action="notify.pl" method="POST" class="pclayer">');
+document.write('<form action="home.pl" method="POST" class="pclayer">'); 
+document.write('<input type="hidden" name="mode" value="notify">');
 document.write('<input type="hidden" name="iid" value="<tmpl_var name="iid">" />');
 document.write('<tmpl_if name="cc">');
 document.write('<p id="ie6special" style="width: 710px; text-align: right;">');
@@ -43,21 +44,6 @@ document.write('</tmpl_if>');
 document.write('</form>');
 }
 </script>
-
-<!--
-THIS IS THE OLD FORM
-<form action="notify.pl" method="POST" class="pclayer">
-<input type="hidden" name="iid" value="<tmpl_var name="iid">" />
-<tmpl_if name="cc">
-Notify me of changes in this item <input onchange="submit(this.form)" type="checkbox" name="email_notification" value="yes" checked />
-<tmpl_else>
-Notify me of changes in this item <input onchange="submit(this.form)" type="checkbox" name="email_notification" value="yes" />
-</tmpl_if>
-<input type="submit" value="UPDATE NOTIFICATION" class="button" />
-</form>
--->
-
-
 
 <tmpl_include name="item_view.tmpl">
 

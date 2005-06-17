@@ -67,6 +67,7 @@ sub setup {
         'update_group'           => 'update_group',
         'add_milestone'          => 'add_milestone',
         'add_services_item'      => 'add_services_item',
+        'notify'                 => 'notify',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -1546,6 +1547,25 @@ sub add_services_item {
                      pp_week => "$pp_year-$pp_month-$pp_day");
 
     return $template->output();
+}
+
+sub notify {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $user = $self->{cdbi_user};
+    my $iid = $cgi->param('iid');
+    my $item = PMT::Item->retrieve($iid);
+
+    my $notify = $cgi->param('email_notification');
+
+    if($notify eq "yes") {
+        $item->add_cc($user);
+    } else {
+        $item->drop_cc($user);
+    }
+    $self->header_type('redirect');
+    $self->header_props(-url => "item.pl?iid=$iid");
+    return "changed notification for an item";
 }
 
 1;
