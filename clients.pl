@@ -20,7 +20,8 @@ eval {
 			"current" => $_ eq $letter}} 'A'..'Z';
 
     my $user = new PMT::User($username);
-    $user->validate($username,$password);
+    my $cdbi_user = CDBI::User->retrieve($username);
+    $cdbi_user->validate($username,$password);
 
     my $template = template("clients.tmpl");
     $template->param($user->menu());

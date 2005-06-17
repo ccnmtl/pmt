@@ -12,7 +12,7 @@ my $cgi = new CGI();
 eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
-    my $user = new PMT::User($username);
+    my $user = CDBI::User->retrieve($username);
     $user->validate($username,$password);
 
     my $group = $cgi->param('group') || "";

@@ -11,7 +11,8 @@ eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
     my $user = new PMT::User($username);
-    $user->validate($username,$password);
+    my $cdbi_user = CDBI::User->retrieve($username);
+    $cdbi_user->validate($username,$password);
 
     my $pid         = $cgi->param("pid") || throw Error::NO_PID "no project specified";
     my $name        = escape($cgi->param("name")) || throw Error::NO_NAME "no name specified";

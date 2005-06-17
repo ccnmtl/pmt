@@ -18,7 +18,7 @@ ok($PMT->{db},"has db object");
 $PMT->add_user($username,$password,$fullname,$email);
 my $user = new PMT::User($username);
 my $u = CDBI::User->retrieve($username);
-$user->validate($username,$password);
+$u->validate($username,$password);
 ok(1,"$username validated");
 
 ok($u->username eq $username, "username matches");
@@ -29,7 +29,7 @@ ok($u->status eq "active", "status is correct");
 
 my $passed = 0;
 eval {
-    $user->validate($username,"not_the_right_password");
+    $u->validate($username,"not_the_right_password");
 };
 if($@) {
     $passed = 1;

@@ -70,7 +70,9 @@ sub setup {
     my $username = $q->cookie('pmtusername') || "";
     my $password = $q->cookie('pmtpassword') || "";
     $self->{user} = new PMT::User($username);
-    $self->{user}->validate($username,$password);
+    $self->{cdbi_user} = CDBI::User->retrieve($username);
+    $self->{cdbi_user}->validate($username,$password);
+    
 
     $self->{pmt} = $pmt;
     $self->{sortby} = $q->param('sortby') || $q->cookie('pmtsort') || "";

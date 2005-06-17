@@ -16,8 +16,8 @@ eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
     my $primary_user = new PMT::User($username);
-
-    $primary_user->validate($username,$password);
+    my $cdbi_user = CDBI::User->retrieve($username);
+    $cdbi_user->validate($username,$password);
     my $pid = $cgi->param('pid') || "";
     my $user = $cgi->param('username') || "";
     my $type = $cgi->param('type') || "posts";

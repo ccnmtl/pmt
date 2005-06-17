@@ -21,12 +21,12 @@ eval {
 
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
-    my $user = new PMT::User($username);
+    my $user = CDBI::User->retrieve($username);
 
     $user->validate($username,$password);
 #    my $project = new PMT::Project($pid);
     my $project = PMT::Project->retrieve($pid);
-    $user = CDBI::User->retrieve($username);
+
     my $notify_proj = $cgi->param('proj_notification');
 
     if($notify_proj eq "yes") {

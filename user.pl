@@ -12,7 +12,8 @@ eval {
     my $login = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
     my $user = new PMT::User($login);
-    $user->validate($login,$password);
+    my $cdbi_user = CDBI::User->retrieve($login);
+    $cdbi_user->validate($login,$password);
 
     my ($sec,$min,$hour,$mday,$mon,
 	$year,$wday,$yday,$isdst) = localtime(time); 

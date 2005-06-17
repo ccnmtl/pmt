@@ -14,12 +14,11 @@ eval {
 
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
-    my $user = new PMT::User($username);
+    my $user = CDBI::User->retrieve($username);
 
     $user->validate($username,$password);
     my $item = PMT::Item->retrieve($iid);
 
-    $user = CDBI::User->retrieve($username);
 
     #Min's changes to implement email notification opt in/out
 #    my $add  = $cgi->param('add')  || "";

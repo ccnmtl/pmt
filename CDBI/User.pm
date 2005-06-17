@@ -56,6 +56,32 @@ sub data {
     };
 }
 
+# {{{ validate
+
+# checks that username and password are valid
+# just returns if good. prints an error message and
+# dies if authentication fails
+sub validate {
+    my $self = shift;
+
+    my $username = untaint_username(shift);
+    my $password = untaint_password(shift);
+
+
+    if($self->password eq $password) {
+	if($self->status ne "active") {
+	    throw Error::InactiveUser "user is inactive and may not login";
+	} else {
+	    return;
+	}
+    } else {
+	throw Error::Simple "incorrect password";
+    }
+}
+
+# }}}
+
+
 # NOTE: the next 3 methods don't do the recursive user/group thing.
 
 # return Projects that this user manages
