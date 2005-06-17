@@ -16,8 +16,8 @@ eval {
     my $pid          = $cgi->param('pid') || throw Error::NO_PID "no project specified";
     my $mid          = $cgi->param('mid') || "";
     if ($mid eq "") {
-        &print_form($pid,$type,$username,$cgi,$pmt);
-        exit;
+	my $project = PMT::Project->retrieve($pid);
+	$mid = $project->upcoming_milestone();
     }
     my $title = escape($cgi->param('title')) || "no title";
     
