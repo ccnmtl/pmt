@@ -15,7 +15,8 @@
 <span class="hide">PROJECTS:</span> &#62; Add To Do
 </h1>
 
-<form action="add_item.pl" method="POST">
+<form action="home.pl" method="POST">
+<input type="hidden" name="mode" value="add_item"/>
 <input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
 <tmpl_loop name="milestone_select">
 <tmpl_if name="selected">
@@ -62,7 +63,8 @@ for yourself.</p>
 <span class="hide">PROJECTS:</span> &#62; Add Tracker
 </h1>
 
-<form action="add_item.pl" method="POST">
+<form action="home.pl" method="POST">
+<input type="hidden" name="mode" value="add_item" />
 <input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
 <tmpl_loop name="milestone_select">
 <tmpl_if name="selected">
@@ -152,7 +154,8 @@ delete it like you would any other action item or bug.</p>
 <span class="hide">PROJECTS:</span> &#62; <tmpl_if name="bug">Add A Bug <tmpl_else>Add An Action Item </tmpl_if>
 </h1>
 
-<form action="add_item.pl" method="post">
+<form action="home.pl" method="post">
+<input type="hidden" name="mode" value="add_item" />
 <input type="hidden" name="pid" value="<tmpl_var name="pid">" />
 <input type="hidden" name="type" <tmpl_if name="bug">value="bug"<tmpl_else>value="action item" </tmpl_if> />
 
