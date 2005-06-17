@@ -68,6 +68,7 @@ sub setup {
         'add_milestone'          => 'add_milestone',
         'add_services_item'      => 'add_services_item',
         'notify'                 => 'notify',
+        'notify_project'         => 'notify_project',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -1566,6 +1567,26 @@ sub notify {
     $self->header_type('redirect');
     $self->header_props(-url => "item.pl?iid=$iid");
     return "changed notification for an item";
+}
+
+sub notify_project {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pmt = $self->{pmt};
+    my $user = $self->{cdbi_user};
+    my $pid = $cgi->param('pid');
+    my $project = PMT::Project->retrieve($pid);
+
+    my $notify_proj = $cgi->param('proj_notification');
+
+    if($notify_proj eq "yes") {
+        $project->add_cc($user);
+    } else {
+        $project->drop_cc($user);
+    }
+    $self->header_type('redirect');
+    $self->header_props(-url => "project.pl?pid=$pid");
+    return "updated project notification";
 }
 
 1;

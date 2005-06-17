@@ -30,7 +30,8 @@
 <br clear="right" />
 
 <p id="ie6special">
-<form action="notify_project.pl" method="POST" class="pclayer">
+<form action="home.pl" method="POST" class="pclayer">
+        <input type="hidden" name="mode" value="notify_project" />
 	<input type="hidden" name="pid" value="<tmpl_var name="pid">" />
 	<input type="hidden" name="username" value="<tmpl_var name="username">" />
 	<tmpl_if name="proj_cc">
@@ -39,20 +40,6 @@
 	<input onclick="return submitForm(this.form)" type="checkbox" name="proj_notification" value="yes" /> Notify me of all changes in this project <span id="pleasewait"> (Changing notification... Please wait...)</span>
 	</tmpl_if>
 </form>
-
-<!--
-THIS IS THE OLD FORM
-<form action="notify_project.pl" method="POST" class="pclayer">
-	<input type="hidden" name="pid" value="<tmpl_var name="pid">" />
-	<input type="hidden" name="username" value="<tmpl_var name="username">" />
-	<tmpl_if name="proj_cc">
-	<input type="checkbox" name="proj_notification" value="yes" checked /> Notify me of changes in this project 
-	<tmpl_else>
-	<input type="checkbox" name="proj_notification" value="yes" /> Notify me of changes in this project
-	</tmpl_if>
-	<input type="submit" value="UPDATE NOTIFICATION" class="button">
-</form>
--->
 
 </p>
 
