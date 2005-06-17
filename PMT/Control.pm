@@ -65,6 +65,7 @@ sub setup {
         'project_documents'      => 'project_documents',
         'project_milestones'     => 'project_milestones',
         'update_group'           => 'update_group',
+        'add_milestone'          => 'add_milestone',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -874,6 +875,30 @@ sub update_group {
     $self->header_props(-url => "group.pl?group=$group");
     return "updated group";
 }
+
+sub add_milestone {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pid         = $cgi->param("pid") || throw Error::NO_PID "no project specified";
+    my $name        = escape($cgi->param("name")) || throw Error::NO_NAME "no name specified";
+    my $year        = $cgi->param('year') || "";
+    my $month       = $cgi->param('month') || "";
+    my $day         = $cgi->param('day') || "";
+    my $description = $cgi->param('description') || "";
+
+    my $target_date = $cgi->param('target_date') || "";
+    if($target_date =~ /(\d{4}-\d{2}-\d{2})/) {
+	$target_date = $1;
+    } else {
+	throw Error::INVALID_DATE "malformed date. a date must be specified in YYYY-MM-DD format.";
+    }
+
+    my $project = PMT::Project->retrieve($pid);
+    $project->add_milestone($name,$target_date,$description);
+    $self->header_type('redirect');
+    $self->header_props(-url => "project.pl?pid=$pid");
+}
+
 
 sub delete_item_verify {
     my $self = shift;
