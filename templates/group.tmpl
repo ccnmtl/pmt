@@ -23,7 +23,8 @@ escape="url">"><tmpl_var name="fullname"></a></li>
 <br />
 
 <h2>update group:</h2>
-<form action="update_group.pl" method="post">
+<form action="home.pl" method="post">
+<input type="hidden" name="mode" value="update_group" />
 <input type="hidden" name="group" value="<tmpl_var name="group">" />
 <select class="available" style="width: 290px;" name="users" multiple="multiple" size="10">
 <tmpl_loop name="group_select_list">

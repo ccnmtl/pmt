@@ -64,6 +64,7 @@ sub setup {
         'project_info'           => 'project_info',
         'project_documents'      => 'project_documents',
         'project_milestones'     => 'project_milestones',
+        'update_group'           => 'update_group',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -860,6 +861,20 @@ sub delete_item {
     }
 }
 
+sub update_group {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pmt = $self->{pmt};
+    my $group = $cgi->param('group') || "";
+    my @users = $cgi->param('users');
+
+    $pmt->update_group($group,\@users);
+
+    $self->header_type('redirect');
+    $self->header_props(-url => "group.pl?group=$group");
+    return "updated group";
+}
+
 sub delete_item_verify {
     my $self = shift;
     my $iid = shift;
@@ -880,7 +895,7 @@ sub delete_item_verify {
     </form>
     </body>
     </html>
-    };
+    }; #'
     
 }
 
