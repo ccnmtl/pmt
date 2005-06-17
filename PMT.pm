@@ -1329,7 +1329,7 @@ sub add_user {
 	|| throw Error::NO_EMAIL "no email address specified";
 
 
-    $self->update("INSERT INTO users (username,fullname,email)
+    $self->update("INSERT INTO users (username,fullname,email,password)
                           VALUES (?,?,?,?);",[$username,$fullname,$email,$password]);
     return;
 }

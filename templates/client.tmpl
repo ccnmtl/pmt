@@ -14,7 +14,8 @@ name="firstname" escape="url">%20<tmpl_var name="lastname"
 escape="url">">perform directory lookup</a>
 </h1>
 
-<form action="add_services_item.pl" method="get">
+<form action="home.pl" method="get">
+<input type="hidden" name="mode" value="add_services_item"/>
 <input type="hidden" name="client_id" value="<tmpl_var name="client_id" escape="html">"/>
 <table cellpadding="0" cellspacing="0" class="pmtform" style="width:600px;">
 <tr><th class="firstcell" width="120">lastname:</th><td width="200"><tmpl_var name="lastname"
