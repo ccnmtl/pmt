@@ -169,6 +169,55 @@ sub projects_by_auth {
    
 }
 
+# returns a reference to a hashtable of projects that
+# the user is attached to. searches recursively through
+# groups that the user is in. key is pid, value is project name.
+
+__PACKAGE__->set_sql(projects => qq{
+	SELECT p.pid,p.name FROM works_on w, projects p 
+	    WHERE w.pid = p.pid 
+	    AND p.status <> 'Complete'
+	    AND w.username = ?;
+    }, 'Main');
+
+sub projects {
+    my $self = shift;
+    # hash of usernames 
+    # prevents loops
+    my $seen = shift; 
+    if(!$seen) {
+	$seen = {};
+    }
+
+    if (exists $seen->{$self->username}) {
+	return {};
+    }
+
+    $seen->{$self->username} = 1;
+
+    # use a hash to automagically remove duplicates
+    my %projects = ();
+    my $sth = $self->sql_projects;
+    $sth->execute($self->username);
+
+    # get the list of projects that this user
+    # is explicitly attached to
+    foreach my $p (@{$sth->fetchall_arrayref()}) {
+	$projects{$p->[0]} = $p->[1];
+    }
+
+    # then, add in the projects for the groups that
+    # the user is part of. 
+    foreach my $g (@{$self->user_groups()}) {
+	my $group_user = CDBI::User->retrieve($g->{group});
+	my $group_projects = $group_user->projects($seen);
+	foreach my $pid (keys %{$group_projects}) {
+	    $projects{$pid} = $group_projects->{$pid};
+	}
+    }
+    return \%projects;
+}
+
 __PACKAGE__->set_sql(interval_time => qq{
     select sum(a.actual_time) from actual_times a 
 	where a.resolver = ?

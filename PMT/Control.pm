@@ -1185,12 +1185,13 @@ sub post_form {
     $template->param($user->menu());
     $template->param(page_title => 'post to forum');
     $template->param(forum_mode => 1);
-    my $projects = $user->projects();
+    my $cdbi_user = $self->{cdbi_user};
+    my $projects = $cdbi_user->projects();
     my $projs = [map {   
         {pid => $_, name => $projects->{$_}};    
     } sort {     
         lc($projects->{$a}) cmp lc($projects->{$b});     
-    } keys %{$user->projects()}];
+    } keys %{$projects}];
     $template->param(projects => $projs);
     return $template->output();
 }
