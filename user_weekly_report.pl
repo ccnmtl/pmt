@@ -67,7 +67,8 @@ eval {
     my $data = $pmt->group($user);
     $template->param($view_user->weekly_report("$mon_year-$mon_month-$mon_day",
 					    "$sun_year-$sun_month-$sun_day"));
-    $template->param($view_user->user_info());
+    my $cdbi_view_user = CDBI::User->retrieve($user->{username});
+    $template->param($cdbi_view_user->user_info());
     $template->param(page_title => "weekly report for $user");
     $template->param(reports_mode => 1);
     print $cgi->header(), $template->output();

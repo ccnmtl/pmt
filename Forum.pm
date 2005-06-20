@@ -304,7 +304,7 @@ sub email_post {
 to reply, please visit <http://pmt.ccnmtl.columbia.edu/node.pl?nid=$nid>\n";
 
     my $username = $self->user();
-    my $user = new PMT::User($username);
+    my $user = CDBI::User->retrieve($username);
 
     my $current_user = $user->user_info();
 
@@ -347,10 +347,10 @@ sub email_reply {
     # if they're just replying to their own node.
     return if $self->user() eq $reply_to_node->{author};
 
-    my $author = new PMT::User($reply_to_node->{author});
+    my $author = CDBI::User->retrieve($reply_to_node->{author});
     my $user_info = $author->user_info();
 
-    my $user = new PMT::User($self->user());
+    my $user = CDBI::User->retrieve($self->user());
 
     my $current_user = $user->user_info();
 

@@ -50,26 +50,6 @@ sub data {
 }
 
 
-# {{{ user_info
-
-# gets basic user info (username,fullname,email)
-sub user_info {
-    my $self = shift;
-    my $data = $self->data();
-    $data->{user_username} = $data->{username};
-    $data->{user_fullname} = $data->{fullname};
-    $data->{user_email} = $data->{email};
-    delete $data->{username};
-    delete $data->{fullname};
-    delete $data->{email};
-    delete $data->{status};
-
-    throw Error::NonexistantUser "user does not exist" 
-        unless $data->{user_username};
-    return $data;
-}
-
-# }}}
 
 # {{{ home
 
