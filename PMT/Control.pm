@@ -76,6 +76,8 @@ sub setup {
     my $q = $self->query();
     my $username = $q->cookie('pmtusername') || "";
     my $password = $q->cookie('pmtpassword') || "";
+
+    if ($username eq "") { throw Error::NO_USERNAME; }
     $self->{user} = new PMT::User($username);
     $self->{cdbi_user} = CDBI::User->retrieve($username);
     $self->{cdbi_user}->validate($username,$password);
@@ -1688,7 +1690,7 @@ sub update_project_form {
 
     my $works_on = $project->project_role($username);
     if($works_on) {$data{$works_on} = 1;}
-    my $template = template("edit_project.tmpl");
+    my $template = $self->template("edit_project.tmpl");
     $template->param(\%data);
     $template->param($user->menu());
     $template->param(page_title => "edit project: $data{name}",

@@ -75,7 +75,7 @@ sub validate {
 	    return;
 	}
     } else {
-	throw Error::Simple "incorrect password";
+	throw Error::INCORRECT_PASSWORD "incorrect password";
     }
 }
 
