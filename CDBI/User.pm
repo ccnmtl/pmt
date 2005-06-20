@@ -233,6 +233,30 @@ sub interval_time {
     return $sth->fetchrow_arrayref()->[0];
 }
 
+__PACKAGE__->set_sql(active_projects => qq{
+	select distinct p.pid,p.name from actual_times a,
+	items i, milestones m, projects p  
+	    where a.iid = i.iid 
+	    and a.resolver = ?
+	    and i.mid = m.mid and m.pid = p.pid
+	    and a.completed > ? and a.completed <= date(?) + interval '1 day';
+    }, 'Main');
+
+sub active_projects {
+    my $self = shift;
+    my $start_date = shift;
+    my $end_date = shift;
+    my $sth = $self->sql_active_projects;
+    $sth->execute($self->username,$start_date,$end_date);
+    return [map {
+	{
+	    pid => $_->[0],
+	    name => $_->[1],
+	}
+    } @{$sth->fetchall_arrayref()}];
+}
+
+
 sub notify_projects {
     my $self = shift;
     my $pid  = shift;

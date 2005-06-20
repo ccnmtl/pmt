@@ -271,23 +271,6 @@ sub menu {
 # }}}
 
 
-
-sub active_projects {
-    my $self = shift;
-    my $start_date = shift;
-    my $end_date = shift;
-    my $sql = qq{
-	select distinct p.pid,p.name from actual_times a,
-	items i, milestones m, projects p  
-	    where a.iid = i.iid 
-	    and a.resolver = ?
-	    and i.mid = m.mid and m.pid = p.pid
-	    and a.completed > ? and a.completed <= date(?) + interval '1 day';
-    };
-
-    return $self->s($sql,[$self->get("username"), $start_date,$end_date], ['pid','name']);
-}
-
 sub total_breakdown {
     my $self = shift;
     my $sql = qq{
@@ -316,7 +299,7 @@ sub weekly_report {
     my $sortby = shift || "";
     my $cdbi = CDBI::User->retrieve($self->get('username'));
     # figure out which projects have been taking up time self week
-    my $active_projects = $self->active_projects($week_start,$week_end);
+    my $active_projects = $cdbi->active_projects($week_start,$week_end);
 
     foreach my $project (@$active_projects) {
 	$project->{time} =
