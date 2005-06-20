@@ -71,6 +71,7 @@ sub setup {
         'notify_project'         => 'notify_project',
         'update_project'         => 'update_project',
         'update_project_form'    => 'update_project_form',
+        'search_forum'           => 'search_forum',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -1701,6 +1702,36 @@ sub update_project_form {
     $template->param(projects_mode => 1);
 
     return $template->output();
+
+}
+
+sub search_forum {
+    my $self = shift;
+    my $pmt = $self->{pmt};
+    my $user = $self->{user};
+    my $username = $user->{username};
+    my $cgi = $self->query();
+    my $forum = new Forum($username, $pmt);
+    my $search = $cgi->param('searchWord') || "";
+
+    my $sql = qq{select n.nid,n.subject,n.body,n.replies,
+                 n.project,n.author,u.fullname,n.added,
+                 n.modified
+                 from nodes n, users u
+                 where u.username = n.author
+                 AND (upper(n.body) like upper(?) OR upper(n.subject) like
+                 upper(?))
+                 order by added desc;};
+    my $result = $pmt->s($sql,["%$search%","%$search%"], ['nid','subject','body',
+                              'replies','pid','project',
+                              'author','author_fullname',
+                              'added','modified']);
+    my $template = $self->template("searchForum.tmpl");
+    $template->param(result => $result);
+    $template->param(page_title => 'Search Forum');
+    $template->param($user->menu());
+    $template->param(forum_mode => 1);
+    print $cgi->header(-charset => 'utf-8'), $template->output();
 
 }
 

@@ -28,7 +28,8 @@
 	<li><span class="hide">search:</span> <a href="home.pl?mode=project_search_form">projects</a></li>
 	<li><span class="hide">search:</span> <a href="client_search.pl">clients</a></li>
 	<li class="last">search forums:
-	<form action="searchForum.pl" method="get">
+	<form action="home.pl" method="get">
+	<input type="hidden" name="mode" value="search_forum" />
 	<input class="textform" name="searchWord" type="text" size="15" maxlength="40" id="search" />
 	<input type="submit" value="go" class="button" />
 	</form>
