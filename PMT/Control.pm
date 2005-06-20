@@ -200,7 +200,7 @@ sub my_projects {
         lc($manager_projects->{$a}) cmp lc($manager_projects->{$b});
     } keys %{$manager_projects}];
 
-    my $developer_projects = $user->developer_projects();
+    my $developer_projects = $cdbi_user->developer_projects();
     $data->{developer_projects} = [map {
         $seen{$_} = 1;
         {
