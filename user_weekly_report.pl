@@ -21,7 +21,7 @@ eval {
     $cdbi_user->validate($username,$password);
 
     my $user = $cgi->param('username') || "";
-    my $view_user = new PMT::User($user);
+    my $view_user = CDBI::User->retrieve($user);
     my $syear = $cgi->param('year') || "";
     my $smonth = $cgi->param('month') || "";
     my $sday = $cgi->param('day') || "";
@@ -66,9 +66,8 @@ eval {
     #check is user is a group
     my $data = $pmt->group($user);
     $template->param($view_user->weekly_report("$mon_year-$mon_month-$mon_day",
-					    "$sun_year-$sun_month-$sun_day"));
-    my $cdbi_view_user = CDBI::User->retrieve($user);
-    $template->param($cdbi_view_user->user_info());
+					       "$sun_year-$sun_month-$sun_day"));
+    $template->param($view_user->user_info());
     $template->param(page_title => "weekly report for $user");
     $template->param(reports_mode => 1);
     print $cgi->header(), $template->output();

@@ -280,9 +280,28 @@ sub total_breakdown {
     return {projects => \@projects};
 }
 
-  
+sub weekly_report {
+    my $self = shift;
+    my $week_start = shift;
+    my $week_end = shift;
+    my $viewer = shift || "";
+    my $sortby = shift || "";
+    # figure out which projects have been taking up time self week
+    my $active_projects = $self->active_projects($week_start,$week_end);
 
+    foreach my $project (@$active_projects) {
+	$project->{time} =
+        $cdbi->project_completed_time_for_interval($project->{pid},
+            $week_start, $week_end);
+	$project->{hours} = interval_to_hours($project->{time});
+    }
+    # get individual resolve times
 
+    return {active_projects => $active_projects,
+	    total_time => interval_to_hours($self->interval_time($week_start,$week_end)),
+	    individual_times => $self->resolve_times_for_interval($week_start, $week_end),
+	};
+}
 
 sub notify_projects {
     my $self = shift;

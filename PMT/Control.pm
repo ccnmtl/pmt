@@ -617,7 +617,7 @@ sub group_activity_summary {
     my $group = CDBI::User->retrieve($group_name);
     my %all_users = %{$group->all_users_in_group()};
     my @users = map {
-        new PMT::User($_);
+        CDBI::User->retrieve($_);
     } keys %all_users;
     my $total_time = 0.0;
     my @users_info = map {
@@ -629,8 +629,7 @@ sub group_activity_summary {
         $total_time += $report->{total_time};
         $data->{posts} = [map {$_->data()}
         sort { $b->added cmp $a->added}
-        PMT::Node->user_posts_in_range($_->{username}, $start_date,
-            $end_date)];
+        PMT::Node->user_posts_in_range($_->username, $start_date, $end_date)];
         $data;
     } @users;
     my $template = $self->template("group_activity_summary.tmpl");
