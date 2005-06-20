@@ -9,11 +9,11 @@
 <span class="hide">PROJECT:</span> &#62; Project Information
 <tmpl_if name="manager"><br />
 <span class="hide">PROJECT: &#62; </span>
-<a href="update_project.pl?pid=<tmpl_var name="pid" escape="url">" class="actionbutton">edit information</a>
+<a href="home.pl?mode=update_project_form;pid=<tmpl_var name="pid" escape="url">" class="actionbutton">edit information</a>
 <tmpl_else>
 <tmpl_if name="developer"><br />
 <span class="hide">PROJECT: &#62; </span>
-<a href="update_project.pl?pid=<tmpl_var name="pid" escape="url">" class="actionbutton">edit information</a>
+<a href="home.pl?mode=update_project_form;pid=<tmpl_var name="pid" escape="url">" class="actionbutton">edit information</a>
 <tmpl_else>
 </tmpl_if>
 </tmpl_if>

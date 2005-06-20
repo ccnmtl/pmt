@@ -26,7 +26,6 @@ eval {
 
     my $description = escape($cgi->param('description')) || "";
     my $caretaker   = escape($cgi->param('caretaker')) || "";
-    print STDERR "caretaker: $caretaker\n";
     my $pub_view    = ($cgi->param('pub_view') eq "public") ? 't' : 'f';
     my @managers    = $cgi->param('managers');
     my @developers  = $cgi->param('developers');
