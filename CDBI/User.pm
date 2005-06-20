@@ -168,7 +168,7 @@ sub managed_projects {
 }
 # }}}
 
-# {{{ developer_projects 
+
 sub developer_projects {
     my $self = shift;
     my $seen = shift; 
@@ -204,19 +204,43 @@ sub developer_projects {
     return \%projects;
    
 }
-# }}}
 
 
-# NOTE: the next 3 methods don't do the recursive user/group thing.
-
-# return Projects that this user is a guest on
 sub guest_projects {
     my $self = shift;
-    return map {$_->pid} PMT::WorksOn->search(username => $self->username,
-        auth => 'guest');
+    my $seen = shift; 
+    if(!$seen) {
+	$seen = {};
+    }
+    if (exists $seen->{$self->username}) {
+	return {};
+    }
 
+    $seen->{$self->username} = 1;
+
+    # use a hash to automagically remove duplicates
+    my %projects = ();
+    my $sth = $self->sql_projects_by_auth;
+    $sth->execute($self->username,'guest');
+
+    # get the list of projects that this user
+    # is explicitly attached to
+    foreach my $p (@{$sth->fetchall_arrayref()}) {
+	$projects{$p->[0]} = $p->[1];
+    }
+
+    # then, add in the projects for the groups that
+    # the user is part of. 
+    foreach my $g (@{$self->user_groups()}) {
+	my $group_user = CDBI::User->retrieve($g->{group});
+	my $group_projects = $group_user->guest_projects($seen);
+	foreach my $pid (keys %{$group_projects}) {
+	    $projects{$pid} = $group_projects->{$pid};
+	}
+    }
+    return \%projects;
+   
 }
-
 
 #Min's addition to implement email opt in/out
 #as of Thanksgiving Day, this is not being used.  The same subroutine

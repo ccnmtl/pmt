@@ -213,7 +213,7 @@ sub my_projects {
         lc($developer_projects->{$a}) cmp lc($developer_projects->{$b});
     } grep { !exists $seen{$_} } keys %{$developer_projects}];
 
-    my $guest_projects = $user->guest_projects();
+    my $guest_projects = $cdbi_user->guest_projects();
     $data->{guest_projects} = [map {
         {
 	            pid      => $_, 
