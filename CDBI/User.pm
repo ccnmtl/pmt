@@ -121,16 +121,58 @@ sub user_groups {
 }
 
 
+__PACKAGE__->set_sql(projects_by_auth => qq{
+	SELECT p.pid,p.name 
+        FROM works_on w, projects p
+	    WHERE  w.pid = p.pid
+	    AND p.status <> 'Complete'
+	    AND w.username = ?
+	    AND w.auth = ?;
+    }, 'Main');
+
+# {{{ managed_projects 
+sub managed_projects {
+    my $self = shift;
+    my $seen = shift; 
+    if(!$seen) {
+	$seen = {};
+    }
+    my $username = $self->username;
+    
+
+    if (exists $seen->{$username}) {
+	return {};
+    }
+
+    $seen->{$username} = 1;
+
+    # use a hash to automagically remove duplicates
+    my %projects = ();
+
+    my $sth = $self->sql_projects_by_auth;
+    $sth->execute($self->username,'manager');
+    # get the list of projects that this user
+    # is explicitly attached to
+    foreach my $p (@{$sth->fetchall_arrayref()}) {
+	$projects{$p->[0]} = $p->[1];
+    }
+
+    # then, add in the projects for the groups that
+    # the user is part of. 
+    foreach my $g (@{$self->user_groups()}) {
+	my $group_user = CDBI::User->retrieve($g->{group});
+	my $group_projects = $group_user->managed_projects($seen);
+	foreach my $pid (keys %{$group_projects}) {
+	    $projects{$pid} = $group_projects->{$pid};
+	}
+    }
+    return \%projects;
+   
+}
+# }}}
 
 
 # NOTE: the next 3 methods don't do the recursive user/group thing.
-
-# return Projects that this user manages
-sub managed_projects {
-    my $self = shift;
-    return map {$_->pid} PMT::WorksOn->search(username => $self->username,
-        auth => 'manager');
-}
 
 # return Projects that this user is a developer on
 sub developer_projects {

@@ -317,54 +317,6 @@ sub menu {
 }
 
 # }}}
-# {{{ managed_projects 
-sub managed_projects {
-    my $self = shift;
-    my $seen = shift; 
-    if(!$seen) {
-	$seen = {};
-    }
-    my $username = $self->get('username');
-
-    if (exists $seen->{$username}) {
-	$self->debug("stopping a loop");
-	return {};
-    }
-
-    $seen->{$username} = 1;
-
-    # use a hash to automagically remove duplicates
-    my %projects = ();
-    my $sql = qq{
-	SELECT p.pid,p.name 
-        FROM works_on w, projects p
-	    WHERE  w.pid = p.pid
-	    AND p.status <> 'Complete'
-	    AND w.username = ?
-	    AND w.auth = 'manager';
-    };
-
-    # get the list of projects that this user
-    # is explicitly attached to
-    foreach my $p (@{$self->s($sql,[$username],
-			      ['pid','name'])}) {
-	$projects{$p->{pid}} = $p->{name};
-    }
-
-    # then, add in the projects for the groups that
-    # the user is part of. 
-    my $cdbi = CDBI::User->retrieve($self->{username});
-    foreach my $g (@{$cdbi->user_groups()}) {
-	my $group_user = new PMT::User($g->{group});
-	my $group_projects = $group_user->managed_projects($seen);
-	foreach my $pid (keys %{$group_projects}) {
-	    $projects{$pid} = $group_projects->{$pid};
-	}
-    }
-    return \%projects;
-   
-}
-# }}}
 # {{{ developer_projects 
 sub developer_projects {
     my $self = shift;

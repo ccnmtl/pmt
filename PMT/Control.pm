@@ -186,8 +186,8 @@ sub my_projects {
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
     my $last_mods = $self->{pmt}->all_projects_by_last_mod();
     my %seen = ();
-    my $manager_projects = $user->managed_projects();
-    my $cdbi_user = CDBI::User->retrieve($user->{username});
+    my $cdbi_user = $self->{cdbi_user};
+    my $manager_projects = $cdbi_user->managed_projects();
     $data->{manager_projects} = [map {
         $seen{$_} = 1;
         {
