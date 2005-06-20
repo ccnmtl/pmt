@@ -187,7 +187,7 @@ sub my_projects {
     my $last_mods = $self->{pmt}->all_projects_by_last_mod();
     my %seen = ();
     my $cdbi_user = $self->{cdbi_user};
-    my $manager_projects = $cdbi_user->managed_projects();
+    my $manager_projects = $cdbi_user->projects_by_auth('manager');
     $data->{manager_projects} = [map {
         $seen{$_} = 1;
         {
@@ -200,7 +200,7 @@ sub my_projects {
         lc($manager_projects->{$a}) cmp lc($manager_projects->{$b});
     } keys %{$manager_projects}];
 
-    my $developer_projects = $cdbi_user->developer_projects();
+    my $developer_projects = $cdbi_user->projects_by_auth('developer');
     $data->{developer_projects} = [map {
         $seen{$_} = 1;
         {
@@ -213,7 +213,7 @@ sub my_projects {
         lc($developer_projects->{$a}) cmp lc($developer_projects->{$b});
     } grep { !exists $seen{$_} } keys %{$developer_projects}];
 
-    my $guest_projects = $cdbi_user->guest_projects();
+    my $guest_projects = $cdbi_user->projects_by_auth('guest');
     $data->{guest_projects} = [map {
         {
 	            pid      => $_, 

@@ -130,10 +130,12 @@ __PACKAGE__->set_sql(projects_by_auth => qq{
 	    AND w.auth = ?;
     }, 'Main');
 
-# {{{ managed_projects 
-sub managed_projects {
+
+sub projects_by_auth {
     my $self = shift;
+    my $auth = shift;
     my $seen = shift; 
+
     if(!$seen) {
 	$seen = {};
     }
@@ -147,7 +149,7 @@ sub managed_projects {
     my %projects = ();
 
     my $sth = $self->sql_projects_by_auth;
-    $sth->execute($self->username,'manager');
+    $sth->execute($self->username,$auth);
     # get the list of projects that this user
     # is explicitly attached to
     foreach my $p (@{$sth->fetchall_arrayref()}) {
@@ -158,45 +160,7 @@ sub managed_projects {
     # the user is part of. 
     foreach my $g (@{$self->user_groups()}) {
 	my $group_user = CDBI::User->retrieve($g->{group});
-	my $group_projects = $group_user->managed_projects($seen);
-	foreach my $pid (keys %{$group_projects}) {
-	    $projects{$pid} = $group_projects->{$pid};
-	}
-    }
-    return \%projects;
-   
-}
-# }}}
-
-
-sub developer_projects {
-    my $self = shift;
-    my $seen = shift; 
-    if(!$seen) {
-	$seen = {};
-    }
-    if (exists $seen->{$self->username}) {
-	return {};
-    }
-
-    $seen->{$self->username} = 1;
-
-    # use a hash to automagically remove duplicates
-    my %projects = ();
-    my $sth = $self->sql_projects_by_auth;
-    $sth->execute($self->username,'developer');
-
-    # get the list of projects that this user
-    # is explicitly attached to
-    foreach my $p (@{$sth->fetchall_arrayref()}) {
-	$projects{$p->[0]} = $p->[1];
-    }
-
-    # then, add in the projects for the groups that
-    # the user is part of. 
-    foreach my $g (@{$self->user_groups()}) {
-	my $group_user = CDBI::User->retrieve($g->{group});
-	my $group_projects = $group_user->developer_projects($seen);
+	my $group_projects = $group_user->projects_by_auth($auth,$seen);
 	foreach my $pid (keys %{$group_projects}) {
 	    $projects{$pid} = $group_projects->{$pid};
 	}
@@ -205,42 +169,6 @@ sub developer_projects {
    
 }
 
-
-sub guest_projects {
-    my $self = shift;
-    my $seen = shift; 
-    if(!$seen) {
-	$seen = {};
-    }
-    if (exists $seen->{$self->username}) {
-	return {};
-    }
-
-    $seen->{$self->username} = 1;
-
-    # use a hash to automagically remove duplicates
-    my %projects = ();
-    my $sth = $self->sql_projects_by_auth;
-    $sth->execute($self->username,'guest');
-
-    # get the list of projects that this user
-    # is explicitly attached to
-    foreach my $p (@{$sth->fetchall_arrayref()}) {
-	$projects{$p->[0]} = $p->[1];
-    }
-
-    # then, add in the projects for the groups that
-    # the user is part of. 
-    foreach my $g (@{$self->user_groups()}) {
-	my $group_user = CDBI::User->retrieve($g->{group});
-	my $group_projects = $group_user->guest_projects($seen);
-	foreach my $pid (keys %{$group_projects}) {
-	    $projects{$pid} = $group_projects->{$pid};
-	}
-    }
-    return \%projects;
-   
-}
 
 #Min's addition to implement email opt in/out
 #as of Thanksgiving Day, this is not being used.  The same subroutine
