@@ -192,62 +192,6 @@ WHERE  i.mid = m.mid
 # }}}
 
 
-# {{{ all_projects
-
-sub all_projects {
-    my $self = shift;
-    my $username = $self->{username};
-    my $projects = $self->s("SELECT p.pid, p.name, p.status, p.caretaker,
-                             u.fullname, to_char(max(i.last_mod), 'YYYY-MM-DD HH24:MI')
-                             FROM projects p LEFT OUTER JOIN milestones m 
-                             ON p.pid = m.pid
-                             LEFT OUTER JOIN items i on m.mid = i.mid 
-                             JOIN users u on p.caretaker = u.username
-                             WHERE 
-                             (p.pub_view = 'true' 
-	                       OR p.pid in (SELECT w.pid 
-			                    FROM works_on w
-			                    WHERE w.username = ?))	    
-                              GROUP BY
-                              p.pid,p.name,p.status,p.caretaker,u.fullname
-                             ORDER BY upper(p.name) ASC;",
-			    [$username],['pid','name','status','caretaker','fullname','modified']);
-
-    my %estimated_times = ();
-    my %completed_times = ();
-    my $q1 = qq{select m.pid, sum(i.estimated_time) as
-                estimated from items i, milestones m 
-                where i.mid = m.mid and i.status in
-                ('OPEN','UNASSIGNED', 'INPROGRESS') group by m.pid;};
-    foreach my $r (@{$self->s($q1,[],['pid','estimated'])}) {
-        $estimated_times{$r->{pid}} = interval_to_hours($r->{estimated});
-    }
-    my $q2 = qq{select m.pid, sum(a.actual_time) as
-                completed from
-                actual_times a, items i, milestones m where a.iid = i.iid
-                    and i.mid = m.mid group by m.pid;};
-    foreach my $r (@{$self->s($q2,[],['pid','completed'])}) {
-        $completed_times{$r->{pid}} = interval_to_hours($r->{completed});
-    }
-
-    my @projects;
-    foreach my $p (@$projects) {
-        if (exists $estimated_times{$p->{pid}}) {
-            $p->{total_estimated} = $estimated_times{$p->{pid}};
-        } else {
-            $p->{total_estimated} = "-";
-        }
-        if (exists $completed_times{$p->{pid}}) {
-            $p->{total_completed} = $completed_times{$p->{pid}};
-        } else {
-            $p->{total_completed} = "-";
-        }
-	push @projects, $p;
-    }
-    return \@projects;
-}
-
-# }}}
 
 
 # {{{ menu
@@ -258,7 +202,7 @@ sub menu {
     my %data = %{$self->data()};
     delete $data{status};
     my $cdbi = CDBI::User->retrieve($username);
-    my $projects = $cdbi->projects();
+    my $projects = $cdbi->projects_hash();
     $data{projects} = [map {
         {pid => $_, name => $projects->{$_}};
     } sort {

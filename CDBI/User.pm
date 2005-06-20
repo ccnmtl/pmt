@@ -180,7 +180,7 @@ __PACKAGE__->set_sql(projects => qq{
 	    AND w.username = ?;
     }, 'Main');
 
-sub projects {
+sub projects_hash {
     my $self = shift;
     # hash of usernames 
     # prevents loops
@@ -210,7 +210,7 @@ sub projects {
     # the user is part of. 
     foreach my $g (@{$self->user_groups()}) {
 	my $group_user = CDBI::User->retrieve($g->{group});
-	my $group_projects = $group_user->projects($seen);
+	my $group_projects = $group_user->projects_hash($seen);
 	foreach my $pid (keys %{$group_projects}) {
 	    $projects{$pid} = $group_projects->{$pid};
 	}
@@ -301,6 +301,72 @@ sub weekly_report {
 	    total_time => interval_to_hours($self->interval_time($week_start,$week_end)),
 	    individual_times => $self->resolve_times_for_interval($week_start, $week_end),
 	};
+}
+
+__PACKAGE__->set_sql(all_projects => qq{
+    SELECT p.pid, p.name, p.status, p.caretaker,
+    u.fullname, to_char(max(i.last_mod), 'YYYY-MM-DD HH24:MI')
+	FROM projects p LEFT OUTER JOIN milestones m 
+	ON p.pid = m.pid
+	LEFT OUTER JOIN items i on m.mid = i.mid 
+	JOIN users u on p.caretaker = u.username
+	WHERE 
+	(p.pub_view = 'true' 
+	 OR p.pid in (SELECT w.pid 
+		      FROM works_on w
+		      WHERE w.username = ?))	    
+	GROUP BY
+	p.pid,p.name,p.status,p.caretaker,u.fullname
+	ORDER BY upper(p.name) ASC;}, 'Main');
+
+__PACKAGE__->set_sql(project_estimated_times => qq{
+    select m.pid, sum(i.estimated_time) as
+	estimated from items i, milestones m 
+	where i.mid = m.mid and i.status in
+	('OPEN','UNASSIGNED', 'INPROGRESS') group by m.pid;}, 'Main');
+
+__PACKAGE__->set_sql(project_completed_times => qq{
+    select m.pid, sum(a.actual_time) as completed from
+	actual_times a, items i, milestones m where a.iid = i.iid
+	and i.mid = m.mid group by m.pid;}, 'Main');
+
+sub all_projects {
+    my $self = shift;
+    my $sth = $self->sql_all_projects;
+    $sth->execute($self->username);
+    my $projects = [map {
+	{ pid => $_->[0], name => $_->[1], status => $_->[2], caretaker => $_->[3],
+	  fullname => $_->[4], modified => $_->[5], }
+    } @{$sth->fetchall_arrayref()}];
+
+    my %estimated_times = ();
+    my %completed_times = ();
+    $sth = $self->sql_project_estimated_times;
+    $sth->execute();
+    foreach my $r (@{$sth->fetchall_arrayref()}) {
+        $estimated_times{$r->[0]} = interval_to_hours($r->[1]);
+    }
+    $sth = $self->sql_project_completed_times;
+    $sth->execute();
+    foreach my $r (@{$sth->fetchall_arrayref()}) {
+        $completed_times{$r->[0]} = interval_to_hours($r->[1]);
+    }
+
+    my @projects;
+    foreach my $p (@$projects) {
+        if (exists $estimated_times{$p->{pid}}) {
+            $p->{total_estimated} = $estimated_times{$p->{pid}};
+        } else {
+            $p->{total_estimated} = "-";
+        }
+        if (exists $completed_times{$p->{pid}}) {
+            $p->{total_completed} = $completed_times{$p->{pid}};
+        } else {
+            $p->{total_completed} = "-";
+        }
+	push @projects, $p;
+    }
+    return \@projects;
 }
 
 sub notify_projects {

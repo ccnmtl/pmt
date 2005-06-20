@@ -275,7 +275,7 @@ sub add_project {
 
 sub all_projects {
     my $self = shift;
-    my $user = $self->{user};
+    my $user = $self->{cdbi_user};
     my $template = $self->template("projects.tmpl");
     $template->param(projects => $user->all_projects());
     $template->param(projects_mode => 1);
@@ -1185,7 +1185,7 @@ sub post_form {
     $template->param(page_title => 'post to forum');
     $template->param(forum_mode => 1);
     my $cdbi_user = $self->{cdbi_user};
-    my $projects = $cdbi_user->projects();
+    my $projects = $cdbi_user->projects_hash();
     my $projs = [map {   
         {pid => $_, name => $projects->{$_}};    
     } sort {     
