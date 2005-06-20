@@ -1087,7 +1087,7 @@ sub staff_report {
         my $g = CDBI::User->retrieve("grp_$grp");
         my @users = ();
 	foreach my $u (map {$_->data()} $g->users_in_group()) {
-	    my $user = new PMT::User($u->{username});
+	    my $user = CDBI::User->retrieve($u->{username});
 	    $u->{user_time} = interval_to_hours($user->interval_time($start,$end)) || 0;
             push @users, $u;
 	}
@@ -1388,9 +1388,8 @@ sub add_group {
 sub group {
     my $self = shift;
     my $group = untaint_username(shift);
-    my $guser = new PMT::User($group);
     my $gu = CDBI::User->retrieve($group);
-    my $data = $guser->user_info();
+    my $data = $gu->user_info();
     $data->{group} = $group;
     $data->{group_name} = $data->{user_fullname};
     $data->{group_select_list} = $self->group_users_select_list($group);

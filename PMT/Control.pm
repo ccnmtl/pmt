@@ -172,11 +172,6 @@ sub update_user {
 
 }
 
-
-#Min's additions to implement email opt in/out are:
-#            proj_cc  => $user->notify_projects($_), 
-# in lines 183, 196, 208 
-# notify_projects is that of PMT/User.pm
 sub my_projects {
     my $self = shift;
     my $template = $self->template("myprojects.tmpl");

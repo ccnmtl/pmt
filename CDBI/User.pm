@@ -169,10 +169,21 @@ sub projects_by_auth {
    
 }
 
+__PACKAGE__->set_sql(interval_time => qq{
+    select sum(a.actual_time) from actual_times a 
+	where a.resolver = ?
+	and a.completed > ? and a.completed <= date(?) + interval '1 day';}, 'Main');
 
-#Min's addition to implement email opt in/out
-#as of Thanksgiving Day, this is not being used.  The same subroutine
-#in PMT/User.pm  
+sub interval_time {
+    my $self = shift;
+    my $start = shift;
+    my $end = shift;
+    # calculate the total time spent on all projects by the user
+    my $sth = $self->sql_interval_time;
+    $sth->execute($self->username,$start,$end);
+    return $sth->fetchrow_arrayref()->[0];
+}
+
 sub notify_projects {
     my $self = shift;
     my $pid  = shift;

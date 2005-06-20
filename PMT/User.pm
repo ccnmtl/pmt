@@ -80,7 +80,7 @@ sub home {
 				   @{$self->items($username,$sort)}];
     my $cdbi = CDBI::User->retrieve($username);
     $data{total_estimated_time} = $cdbi->total_estimated_time();
-    $data{groups}               = $self->user_groups();
+    $data{groups}               = $cdbi->user_groups();
     my $est_priority = $cdbi->estimated_times_by_priority();
     my $est_sched = $cdbi->estimated_times_by_schedule_status();
     my $scheds = scale_array(150.0,[$est_sched->{ok}, $est_sched->{upcoming}, 
@@ -320,24 +320,6 @@ sub menu {
 
 
 
-# {{{ interval_time
-
-sub interval_time {
-    my $self = shift;
-    my $start = shift;
-    my $end = shift;
-    # calculate the total time spent on all projects by the user
-    my $sql = qq{
-	select sum(a.actual_time) from actual_times a 
-	    where a.resolver = ?
-	    and a.completed > ? and a.completed <= date(?) + interval '1 day';
-    };
-    return $self->ss($sql,[$self->get("username"),$start,$end],
-			   ['time'])->{time};
-}
-
-# }}}
-
 sub active_projects {
     my $self = shift;
     my $start_date = shift;
@@ -393,7 +375,7 @@ sub weekly_report {
     # get individual resolve times
 
     return {active_projects => $active_projects,
-	    total_time => interval_to_hours($self->interval_time($week_start,$week_end)),
+	    total_time => interval_to_hours($cdbi->interval_time($week_start,$week_end)),
 	    individual_times => $cdbi->resolve_times_for_interval($week_start, $week_end),
 	};
 }
