@@ -34,12 +34,13 @@ eval {
     delete $data->{status};
     throw Error::NonexistantUser "user does not exist" 
         unless $data->{user_username};
+    my $vu = CDBI::User->retrieve($username);
     if ($data->{group}) {
         $data->{users} = $pmt->users_in_group($username);
     } else {
-        $data->{groups} = $viewing_user->user_groups();
+        $data->{groups} = $vu->user_groups();
     }
-    my $vu = CDBI::User->retrieve($username);
+
     $data->{total_estimated_time} = $vu->total_estimated_time();
     $template->param(%$data);
     $template->param(items => $viewing_user->items($login,$sortby));

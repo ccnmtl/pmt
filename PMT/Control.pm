@@ -317,11 +317,11 @@ sub global_reports {
 
 sub my_groups {
     my $self = shift;
-    my $user = $self->{user};
+    my $user = $self->{cdbi_user};
     my $template = $self->template("my_groups.tmpl");
     $template->param(users_mode => 1);
     $template->param(groups => $user->user_groups());
-    $template->param(page_title => "Groups for $user->{username}");
+    $template->param(page_title => "Groups for $user->username");
     return $template->output();
 }
 

@@ -97,6 +97,31 @@ sub user_info {
     return $data;
 }
 
+__PACKAGE__->set_sql(user_groups => qq{
+    select u.username,u.fullname 
+	from users u, in_group i 
+	where u.username = i.grp and i.username = ?;},
+		     'Main');
+
+# lists the group that a specified user is part of
+sub user_groups {
+    my $self = shift;
+    my $sth = $self->sql_user_groups;
+    $sth->execute($self->username);
+    
+    return [map {
+	$_->{group_name} =~ s/ \(group\)$//;
+	$_;
+    } map {
+	{
+	    'group' => $_->[0],
+	    'group_name' => $_->[1],
+	};
+    } @{$sth->fetchall_arrayref()}];
+}
+
+
+
 
 # NOTE: the next 3 methods don't do the recursive user/group thing.
 

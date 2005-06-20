@@ -191,26 +191,6 @@ WHERE  i.mid = m.mid
 
 # }}}
 
-
-
-
-# {{{ user_groups
-
-# lists the group that a specified user is part of
-sub user_groups {
-    my $self = shift;
-    my $sql = qq{select u.username,u.fullname 
-		     from users u, in_group i 
-		     where u.username = i.grp and i.username = ?;};
-    return [map {
-	$_->{group_name} =~ s/ \(group\)$//;
-	$_;
-    } @{$self->s($sql,[$self->get("username")],
-		       ['group','group_name'])}];
-}
-
-# }}}
-
 # returns a reference to a hashtable of projects that
 # the user is attached to. searches recursively through
 # groups that the user is in. key is pid, value is project name.
@@ -250,7 +230,8 @@ sub projects {
 
     # then, add in the projects for the groups that
     # the user is part of. 
-    foreach my $g (@{$self->user_groups()}) {
+    my $cdbi = CDBI::User->retrieve($self->{username});
+    foreach my $g (@{$cdbi->user_groups()}) {
 	my $group_user = new PMT::User($g->{group});
 	my $group_projects = $group_user->projects($seen);
 	foreach my $pid (keys %{$group_projects}) {
@@ -372,7 +353,8 @@ sub managed_projects {
 
     # then, add in the projects for the groups that
     # the user is part of. 
-    foreach my $g (@{$self->user_groups()}) {
+    my $cdbi = CDBI::User->retrieve($self->{username});
+    foreach my $g (@{$cdbi->user_groups()}) {
 	my $group_user = new PMT::User($g->{group});
 	my $group_projects = $group_user->managed_projects($seen);
 	foreach my $pid (keys %{$group_projects}) {
@@ -418,7 +400,8 @@ sub developer_projects {
 
     # then, add in the projects for the groups that
     # the user is part of. 
-    foreach my $g (@{$self->user_groups()}) {
+    my $cdbi = CDBI::User->retrieve($self->{username});
+    foreach my $g (@{$cdbi->user_groups()}) {
 	my $group_user = new PMT::User($g->{group});
 	my $group_projects = $group_user->developer_projects($seen);
 	foreach my $pid (keys %{$group_projects}) {
@@ -464,7 +447,8 @@ sub guest_projects {
 
     # then, add in the projects for the groups that
     # the user is part of. 
-    foreach my $g (@{$self->user_groups()}) {
+    my $cdbi = CDBI::User->retrieve($self->{username});
+    foreach my $g (@{$cdbi->user_groups()}) {
 	my $group_user = new PMT::User($g->{group});
 	my $group_projects = $group_user->guest_projects($seen);
 	foreach my $pid (keys %{$group_projects}) {
