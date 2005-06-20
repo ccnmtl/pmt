@@ -271,24 +271,6 @@ sub menu {
 # }}}
 
 
-sub total_breakdown {
-    my $self = shift;
-    my $sql = qq{
-    select p.pid,p.name,sum(a.actual_time) as time
-    from projects p, milestones m, items i, actual_times a
-    where a.resolver = ? and a.iid = i.iid and i.mid = m.mid and m.pid =
-    p.pid
-    group by p.pid,p.name order by time desc;};
-    my @projects = @{$self->s($sql,[$self->get('username')],['pid','name','time'])};
-    @projects = map { 
-        $_->{'time'} = interval_to_hours($_->{'time'});
-        $_;
-    } @projects;
-    return {projects => \@projects};
-}
-
-  
-
 # {{{ weekly_report
 
 sub weekly_report {

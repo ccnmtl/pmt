@@ -256,6 +256,33 @@ sub active_projects {
     } @{$sth->fetchall_arrayref()}];
 }
 
+__PACKAGE__->set_sql(total_breakdown => qq{
+    select p.pid,p.name,sum(a.actual_time) as time
+	from projects p, milestones m, items i, actual_times a
+	where a.resolver = ? and a.iid = i.iid and i.mid = m.mid and m.pid =
+	p.pid
+	group by p.pid,p.name order by time desc;}, 'Main');
+
+sub total_breakdown {
+    my $self = shift;
+    my $sth = $self->sql_total_breakdown;
+    $sth->execute($self->username);
+    my @projects = map { 
+        $_->{'time'} = interval_to_hours($_->{'time'});
+        $_;
+    } map {
+	{
+	    pid => $_->[0],
+	    name => $_->[1],
+	    time => $_->[2],
+	}
+    } @{$sth->fetchall_arrayref()};
+    return {projects => \@projects};
+}
+
+  
+
+
 
 sub notify_projects {
     my $self = shift;
