@@ -60,6 +60,7 @@ sub home {
     my $username = $self->get("username");
     my $sort = shift || "";
     $self->debug("home($username,$sort)");
+    my $cdbi = CDBI::User->retrieve($username);
     my %data = %{$self->data()};
     $data{items}                = [
 				   map {
@@ -77,8 +78,8 @@ sub home {
                                        $_->{priority_label} = $PRIORITIES{$_->{priority}};
 				       $_;
 				   }
-				   @{$self->items($username,$sort)}];
-    my $cdbi = CDBI::User->retrieve($username);
+				   @{$cdbi->items($username,$sort)}];
+
     $data{total_estimated_time} = $cdbi->total_estimated_time();
     $data{groups}               = $cdbi->user_groups();
     my $est_priority = $cdbi->estimated_times_by_priority();
@@ -141,55 +142,6 @@ sub quick_edit_data {
 # }}}
 
 
-# {{{ items
-
-# gets the list of items that are either assigned to the user and open
-# or owned by the user and resolved.
-sub items {
-    my $self = shift;
-    my $username = $self->get("username");
-    my $viewer = shift;
-    my $sort = shift || "priority";
-    $self->debug("user_items($viewer,$sort)");
-    my %sorts = (priority => "i.priority DESC, i.type DESC, i.target_date ASC",
-		 type => "i.type DESC, i.priority DESC, i.target_date ASC",
-		 title => "i.title ASC, i.priority DESC, i.target_date ASC",
-		 status => "i.status ASC, i.priority DESC, i.target_date ASC",
-		 project => "p.name ASC, i.priority DESC, i.type DESC, i.target_date ASC",
-		 target_date => "i.target_date ASC, i.priority DESC, i.type DESC",
-		 last_mod => "i.last_mod DESC, i.priority DESC, i.type DESC, i.target_date ASC",
-		 assigned_to => "i.assigned_to ASC, i.priority DESC, i.type DESC, i.target_date ASC",
-		 owner       => "i.owner ASC, i.priority DESC, i.type DESC, i.target_date ASC");
-    $sort = "priority" unless exists $sorts{$sort};
-    my $sql = qq {
-SELECT i.iid,i.type,i.title,i.priority,i.status,i.r_status,p.name,
-       m.pid,i.target_date,to_char(i.last_mod,'YYYY-MM-DD HH24:MI'),
-       current_date - i.target_date,i.description
-FROM   items i, milestones m, projects p
-WHERE  i.mid = m.mid 
-  AND  m.pid = p.pid 
-  AND ((i.assigned_to = ? 
-       AND i.status IN ('OPEN','UNASSIGNED','INPROGRESS')) 
-       OR 
-       (i.owner = ? AND i.status = 'RESOLVED') )
-  AND ((p.pub_view = 'true') 
-       OR  (p.pid in (SELECT w.pid 
-                      FROM   works_on w
-		      WHERE  w.username = ?))
-       OR (i.assigned_to = ?) 
-       OR (i.owner = ?))
-  ORDER BY $sorts{$sort};};
-    return make_classes([map 
-        {
-            $_->{priority_label} = $PRIORITIES{$_->{priority}}; 
-            $_;
-        } @{$self->s($sql, [$username,$username,$viewer,$viewer,$viewer],
-                ['iid','type','title','priority',
-                'status','r_status','project','pid',
-                'target_date','last_mod','overdue','description'])}]);
-}
-
-# }}}
 
 
 

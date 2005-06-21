@@ -615,5 +615,74 @@ sub total_completed_time {
 }
 
 
+my %sorts = (priority => "i.priority DESC, i.type DESC, i.target_date ASC",
+	     type => "i.type DESC, i.priority DESC, i.target_date ASC",
+	     title => "i.title ASC, i.priority DESC, i.target_date ASC",
+	     status => "i.status ASC, i.priority DESC, i.target_date ASC",
+	     project => "p.name ASC, i.priority DESC, i.type DESC, i.target_date ASC",
+	     target_date => "i.target_date ASC, i.priority DESC, i.type DESC",
+	     last_mod => "i.last_mod DESC, i.priority DESC, i.type DESC, i.target_date ASC",
+	     assigned_to => "i.assigned_to ASC, i.priority DESC, i.type DESC, i.target_date ASC",
+	     owner       => "i.owner ASC, i.priority DESC, i.type DESC, i.target_date ASC");
+
+my $sql = qq {
+SELECT i.iid,i.type,i.title,i.priority,i.status,i.r_status,p.name,
+       m.pid,i.target_date,to_char(i.last_mod,'YYYY-MM-DD HH24:MI'),
+       current_date - i.target_date,i.description
+FROM   items i, milestones m, projects p
+WHERE  i.mid = m.mid 
+  AND  m.pid = p.pid 
+  AND ((i.assigned_to = ? 
+       AND i.status IN ('OPEN','UNASSIGNED','INPROGRESS')) 
+       OR 
+       (i.owner = ? AND i.status = 'RESOLVED') )
+  AND ((p.pub_view = 'true') 
+       OR  (p.pid in (SELECT w.pid 
+                      FROM   works_on w
+		      WHERE  w.username = ?))
+       OR (i.assigned_to = ?) 
+       OR (i.owner = ?))
+  ORDER BY };
+
+foreach my $k (keys %sorts) {
+    __PACKAGE__->set_sql("items_$k" => $sql . " " . $sorts{$k} . ";", 'Main');
+} 
+
+my %item_handles = (
+    priority => sub {return shift->sql_items_priority;},
+    type => sub {return shift->sql_items_type;},
+    title => sub {return shift->sql_items_title;},
+    status => sub {return shift->sql_items_status;},
+    project => sub {return shift->sql_items_project;},
+    target_date => sub {return shift->sql_items_target_date;},
+    last_mod => sub {return shift->sql_items_last_mod;},
+    assigned_to => sub {return shift->sql_items_assigned_to;},
+    owner => sub {return shift->sql_items_owner;},
+);
+
+
+# gets the list of items that are either assigned to the user and open
+# or owned by the user and resolved.
+sub items {
+    my $self = shift;
+    my $username = $self->get("username");
+    my $viewer = shift;
+    my $sort = shift || "priority";
+    $sort = "priority" unless exists $sorts{$sort};
+    my $sth = $item_handles{$sort}($self);
+    $sth->execute($self->username,$self->username,$viewer,$viewer,$viewer);
+    return make_classes([map 
+        {
+            $_->{priority_label} = $PRIORITIES{$_->{priority}}; 
+            $_;
+	} map {
+	    { iid => $_->[0], type => $_->[1], title => $_->[2], 
+	      priority => $_->[3], status => $_->[4], r_status => $_->[5],
+	      project => $_->[6], pid => $_->[7], target_date => $_->[8],
+	      last_mod => $_->[9], overdue => $_->[10], description => $_->[11],
+	  }
+        } @{$sth->fetchall_arrayref()}]);
+}
+
 
 1;
