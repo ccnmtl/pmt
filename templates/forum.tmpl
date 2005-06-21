@@ -21,7 +21,7 @@
 <tmpl_loop name="posts">
 <div class="post">
 <a name="<tmpl_var name="nid">"> </a>
-<h2 class="nodesubject"><a href="node.pl?nid=<tmpl_var name="nid">"><tmpl_var
+<h2 class="nodesubject"><a href="home.pl?mode=node;nid=<tmpl_var name="nid">"><tmpl_var
 name="subject"></a></h2>
 <p class="byline">to project <a href="home.pl?mode=forum;pid=<tmpl_var
 name="pid">"><tmpl_var name="project"></a> by <a
@@ -30,9 +30,9 @@ href="home.pl?mode=user;username=<tmpl_var name="author">"><tmpl_var name="autho
 <tmpl_var name="body">
 </div>
 <div class="replies"><tmpl_if name="replies">[<tmpl_var name="modified">]
-<a href="node.pl?nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var
+<a href="home.pl?mode=node;nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var
 name="replies"></a> | </tmpl_if><a
-href="node.pl?nid=<tmpl_var name="nid">#addcomment">add a comment</a></div>
+href="home.pl?mode=node;nid=<tmpl_var name="nid">#addcomment">add a comment</a></div>
 </div>
 </tmpl_loop>
 
@@ -48,12 +48,12 @@ href="node.pl?nid=<tmpl_var name="nid">#addcomment">add a comment</a></div>
 <div id="logs">
 <h1>recent personal log entries</h1>
 <tmpl_loop name="logs">
-<div class="log"><a href="node.pl?nid=<tmpl_var name="nid">"><tmpl_var
+<div class="log"><a href="home.pl?mode=node;nid=<tmpl_var name="nid">"><tmpl_var
 name="added_informal"><tmpl_if name="subject">: <tmpl_var
 name="subject" escape="html"></tmpl_if></a> by <a
 href="home.pl?mode=user;username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a>
 <tmpl_if name="replies"><div class="replies"><a
-href="node.pl?nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var name="replies"></a></div></tmpl_if>
+href="home.pl?mode=node;nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var name="replies"></a></div></tmpl_if>
 </div>
 </tmpl_loop>
 <div class="log">&#160;</div>

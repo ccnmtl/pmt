@@ -301,7 +301,7 @@ sub email_post {
     my $body = Text::Wrap::wrap("","",$args->{body});
 
     $body .= "\n\n-- \nthis message sent automatically by the PMT forum. 
-to reply, please visit <http://pmt.ccnmtl.columbia.edu/node.pl?nid=$nid>\n";
+to reply, please visit <http://pmt.ccnmtl.columbia.edu/home.pl?mode=node;nid=$nid>\n";
 
     my $username = $self->user();
     my $user = CDBI::User->retrieve($username);
@@ -367,7 +367,7 @@ sub email_reply {
     }
     
     $body .= "\n\n-- \nthis message sent automatically by the PMT forum. 
-to reply, please visit <http://pmt.ccnmtl.columbia.edu/node.pl?nid=$nid>\n";
+to reply, please visit <http://pmt.ccnmtl.columbia.edu/home.pl?mode=node;nid=$nid>\n";
 
 
     my %mail = (To => $user_info->{user_email},

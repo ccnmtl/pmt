@@ -24,7 +24,7 @@ eval {
 		  );
     for my $n (@{$nodes}) {
 	$rss->add_item(title => "$n->{subject}",
-		       link => "http://pmt.ccnmtl.columbia.edu/node.pl?nid=$n->{nid}",
+		       link => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=node;nid=$n->{nid}",
 		       description => "<b>$n->{fullname}</b><br />$n->{body}");
     }
 

@@ -85,6 +85,7 @@ sub setup {
         'user'                   => 'user',
 	'project'                => 'project',
         'forum'                  => 'forum',
+	'node'                   => 'node',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2097,6 +2098,18 @@ sub forum {
     }
     $template->param(page_title => 'forum');
     $template->param(forum_mode => 1);
+    return $template->output();
+}
+
+sub node {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pmt = $self->{pmt};
+    my $nid = $cgi->param('nid') || "";
+    my $forum = new Forum($self->{cdbi_user}->username,$pmt);
+    my $template = $self->template("node.tmpl");
+    $template->param($forum->node($nid));
+    $template->param(page_title => "Forum Node: " . $template->param('subject'));
     return $template->output();
 }
 
