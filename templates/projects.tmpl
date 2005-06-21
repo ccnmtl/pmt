@@ -30,7 +30,7 @@
 <tmpl_loop name="projects">
 <tr><td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="name" escape="html"></a></td>
 <td><tmpl_var name="status" escape="html"></td>
-<td><a href="user.pl?username=<tmpl_var name="caretaker" escape="url">"><tmpl_var name="fullname" escape="html"></a></td>
+<td><a href="home.pl?mode=user;username=<tmpl_var name="caretaker" escape="url">"><tmpl_var name="fullname" escape="html"></a></td>
 <td><tmpl_if name="total_estimated"><tmpl_var name="total_estimated" escape="html"><tmpl_else>-</tmpl_if></td>
 <td><tmpl_if name="total_completed"><tmpl_var name="total_completed" escape="html"><tmpl_else>-</tmpl_if></td>
 <td><tmpl_if name="modified"><tmpl_var name="modified" escape="html"><tmpl_else>&#160;</tmpl_if></td>

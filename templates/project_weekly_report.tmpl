@@ -33,7 +33,7 @@ name="total_time" escape="html"> hours.</p>
 <tr><th class="firstcell" colspan="2">staff:</th>
 <th colspan="2">time spent on project</th></tr>
 <tmpl_loop name="active_users">
-<tr><td class="firstcell" colspan="2"><a href="user.pl?username=<tmpl_var name="username"
+<tr><td class="firstcell" colspan="2"><a href="home.pl?mode=user;username=<tmpl_var name="username"
  escape="url">"><tmpl_var name="fullname" escape="html"></a></td>
 <td colspan="2"><tmpl_var name="hours"
 escape="html"></td></tr>
@@ -61,7 +61,7 @@ escape="html"></td></tr>
 <td><a href="item.pl?iid=<tmpl_var name="iid" escape="url">"><tmpl_var
 name="item" escape="html"></a></td>
 <td><nobr><tmpl_var name="completed" escape="html"></nobr></td>
-<td><a href="user.pl?username=<tmpl_var name="username"
+<td><a href="home.pl?mode=user;username=<tmpl_var name="username"
 escape="url">"><tmpl_var name="fullname" escape="html"></a></td>
 </tr>
 </tmpl_loop>

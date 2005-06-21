@@ -14,7 +14,7 @@
 </thead>
 <tbody>
 <tmpl_loop name="users">
-<tr><td class="firstcell"><a href="user.pl?username=<tmpl_var name="username" escape="url">"><tmpl_var name="fullname" escape="html"></a></td>
+<tr><td class="firstcell"><a href="home.pl?mode=user;username=<tmpl_var name="username" escape="url">"><tmpl_var name="fullname" escape="html"></a></td>
 <td><tmpl_var name="hours"></td>
 <td><tmpl_var name="open_items"></td>
 <td><tmpl_var name="resolved"></td>

@@ -111,14 +111,14 @@
 	<tr>
 		<th>Caretaker:</th>
 		<td>
-		<a href="user.pl?username=<tmpl_var name="caretaker">"><tmpl_var name="caretaker_fullname"></a>
+		<a href="home.pl?mode=user;username=<tmpl_var name="caretaker">"><tmpl_var name="caretaker_fullname"></a>
 		</td>
 	</tr>
 	<tr>
 		<th>Managers:</th>
 		<td>
 		<tmpl_loop name="managers">
-		<a href="user.pl?username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><tmpl_unless __LAST__>, </tmpl_unless></tmpl_loop>
+		<a href="home.pl?mode=user;username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><tmpl_unless __LAST__>, </tmpl_unless></tmpl_loop>
 		</td>
 	</tr>
 	<tmpl_if name="developers">
@@ -126,7 +126,7 @@
 		<th>Developers:</th>
 		<td>
 		<tmpl_loop name="developers">
-		<a href="user.pl?username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><tmpl_unless __LAST__>, </tmpl_unless>
+		<a href="home.pl?mode=user;username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><tmpl_unless __LAST__>, </tmpl_unless>
 		</tmpl_loop>
 		</td>
 	</tr>
@@ -136,7 +136,7 @@
 		<th>Guests:</th>
 		<td>
 		<tmpl_loop name="guests">
-		<a href="user.pl?username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><tmpl_unless __LAST__>, </tmpl_unless>
+		<a href="home.pl?mode=user;username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><tmpl_unless __LAST__>, </tmpl_unless>
 		</tmpl_loop>
 		</td>
 	</tr>

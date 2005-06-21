@@ -25,7 +25,7 @@
 name="subject"></a></h2>
 <p class="byline">to project <a href="forum.pl?pid=<tmpl_var
 name="pid">"><tmpl_var name="project"></a> by <a
-href="user.pl?username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a> @ <tmpl_var name="added"></p>
+href="home.pl?mode=user;username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a> @ <tmpl_var name="added"></p>
 <div class="nodebody">
 <tmpl_var name="body">
 </div>
@@ -51,7 +51,7 @@ href="node.pl?nid=<tmpl_var name="nid">#addcomment">add a comment</a></div>
 <div class="log"><a href="node.pl?nid=<tmpl_var name="nid">"><tmpl_var
 name="added_informal"><tmpl_if name="subject">: <tmpl_var
 name="subject" escape="html"></tmpl_if></a> by <a
-href="user.pl?username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a>
+href="home.pl?mode=user;username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a>
 <tmpl_if name="replies"><div class="replies"><a
 href="node.pl?nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var name="replies"></a></div></tmpl_if>
 </div>

@@ -13,7 +13,7 @@
 <tr><th>group</th><td><tmpl_var name="user_fullname"> [<a href="home.pl?mode=group;group=<tmpl_var
 name="user_username" escape="url">">edit user list</a>]</td></tr>
 <tmpl_if name="users"><tr><th>users</th><td><tmpl_loop name="users"><a
-href="user.pl?username=<tmpl_var name="username"
+href="home.pl?mode=user;username=<tmpl_var name="username"
 escape="url">"><tmpl_Var name="fullname"
 escape="html"></a><tmpl_unless __LAST__>,
 </tmpl_unless></tmpl_loop></td></tr></tmpl_if>
@@ -44,12 +44,12 @@ escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
 <table cellpadding="0" cellspacing="0" class="itemlisting">
 <tr>
 <th class="firstcell">&#160;</th>
-<th><a href="user.pl?username=<tmpl_var name="user_username">&amp;sortby=title">item</a>:</th>
-<th><a href="user.pl?username=<tmpl_var name="user_username">&amp;sortby=priority">priority</a>:</th>
-<th><a href="user.pl?username=<tmpl_var name="user_username">&amp;sortby=status">status</a>:</th>
-<th><a href="user.pl?username=<tmpl_var name="user_username">&amp;sortby=project">project</a>:</th>
-<th><nobr><a href="user.pl?username=<tmpl_var name="user_username">&amp;sortby=target_date">target date</a>:</nobr></th>
-<th><nobr><a href="user.pl?username=<tmpl_var name="user_username">&amp;sortby=last_mod">last modified</a>:</nobr></th>
+<th><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=title">item</a>:</th>
+<th><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=priority">priority</a>:</th>
+<th><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=status">status</a>:</th>
+<th><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=project">project</a>:</th>
+<th><nobr><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=target_date">target date</a>:</nobr></th>
+<th><nobr><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=last_mod">last modified</a>:</nobr></th>
 </tr>
 
 <tmpl_loop name="items">

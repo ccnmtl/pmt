@@ -5,7 +5,7 @@
 <!-- ===== PAGE MAIN CONTENT ===== -->
 <div class="pagecontent">
 
-<h1>USERS/GROUPS: <!--<a href="user.pl?username=<tmpl_var name="group" escape="url">">--><tmpl_var name="group_name"><br />
+<h1>USERS/GROUPS: <!--<a href="home.pl?mode=user;username=<tmpl_var name="group" escape="url">">--><tmpl_var name="group_name"><br />
 <span class="hide">USERS/GROUPS:  </span> 
 <a class="actionbutton" href="home.pl?mode=group_activity_summary;group_name=<tmpl_var
 name="group" escape="url">">group activity summary</a>
@@ -14,7 +14,7 @@ name="group" escape="url">">group activity summary</a>
 <tmpl_if name="users">
 <ul>
 <tmpl_loop name="users">
-<li><a href="user.pl?username=<tmpl_var name="username"
+<li><a href="home.pl?mode=user;username=<tmpl_var name="username"
 escape="url">"><tmpl_var name="fullname"></a></li>
 </tmpl_loop>
 </ul>

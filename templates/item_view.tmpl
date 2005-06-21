@@ -66,7 +66,7 @@ name="label" escape="html"></option>
 <tmpl_var name="estimated_time" escape="html"> h</td>
 <th class="firstcell" width="120">assigned to:</th>
 <td>
-<a href="user.pl?username=<tmpl_var name="assigned_to">"><tmpl_var name="assigned_to_fullname"></a>
+<a href="home.pl?mode=user;username=<tmpl_var name="assigned_to">"><tmpl_var name="assigned_to_fullname"></a>
 </td>
 </tr>
 <tr>
@@ -78,7 +78,7 @@ name="label" escape="html"></option>
 </tmpl_if>
 <th class="firstcell" width="120">owner:</th>
 <td>
-<a href="user.pl?username=<tmpl_var name="owner">"><tmpl_var name="owner_fullname"></a>
+<a href="home.pl?mode=user;username=<tmpl_var name="owner">"><tmpl_var name="owner_fullname"></a>
 </td>
 </tr>
 <tmpl_if name="resolve_times">
@@ -97,7 +97,7 @@ name="label" escape="html"></option>
 <tmpl_var name="actual_time" escape="html">
 </td>
 <td>
-<a href="user.pl?username=<tmpl_Var name="resolver_username" escape="url">">
+<a href="home.pl?mode=user;username=<tmpl_Var name="resolver_username" escape="url">">
 <tmpl_Var name="resolver_fullname" escape="html">
 </a>
 </td>
@@ -208,7 +208,7 @@ name="label" escape="html"></option>
 </td>
 
 <td>
-by <a href="user.pl?username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><br />
+by <a href="home.pl?mode=user;username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><br />
 <nobr>at <tmpl_var name="timestamp"></nobr>
 </p>
 </td>

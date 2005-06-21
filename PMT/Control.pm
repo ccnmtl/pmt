@@ -82,6 +82,7 @@ sub setup {
         'group'                  => 'group',
         'client'                 => 'client',
         'milestone'              => 'milestone',
+        'user'                   => 'user',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -1975,7 +1976,6 @@ sub milestone {
         $data{$works_on} = 1;
     }
     my $template = $self->template("milestone.tmpl");
-    my $project = $milestone->pid;
     $data{total_remaining_time} = interval_to_hours($project->estimated_time);
     $data{total_completed_time} = interval_to_hours($project->completed_time);
     $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
@@ -1984,6 +1984,47 @@ sub milestone {
     $template->param(\%data);
     $template->param(page_title => "Milestone: $data{name}");
     $template->param(projects_mode => 1);
+    return $template->output();
+}
+
+sub user {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pmt = $self->{pmt};
+    my $login = $self->{user}->{username};
+    my ($sec,$min,$hour,$mday,$mon,
+        $year,$wday,$yday,$isdst) = localtime(time); 
+
+    my $username = $cgi->param('username') || "";
+    my $sortby   = $cgi->param('sortby')   || "priority";
+
+    my $viewing_user = new PMT::User($username);
+
+    my $template = $self->template("user.tmpl");
+    my $data = $viewing_user->data();
+    $data->{user_username} = $data->{username};
+    $data->{user_fullname} = $data->{fullname};
+    $data->{user_email} = $data->{email};
+    delete $data->{username};
+    delete $data->{fullname};
+    delete $data->{email};
+    delete $data->{status};
+    throw Error::NonexistantUser "user does not exist" 
+        unless $data->{user_username};
+    my $vu = CDBI::User->retrieve($username);
+    if ($data->{group}) {
+        $data->{users} = $pmt->users_in_group($username);
+    } else {
+        $data->{groups} = $vu->user_groups();
+    }
+
+    $data->{total_estimated_time} = $vu->total_estimated_time();
+    $template->param(%$data);
+    $template->param(items => $vu->items($login,$sortby));
+    $template->param(page_title => "user info for $username");
+    $template->param(month      => $mon + 1,
+                     year       => 1900 + $year);
+    $template->param(users_mode => 1);
     return $template->output();
 }
 
