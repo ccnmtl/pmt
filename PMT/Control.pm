@@ -122,7 +122,7 @@ sub edit_my_items_form {
     my $template = $self->template("edit_items.tmpl");
     my $user = $self->{user};
     my $cdbi_user = CDBI::User->retrieve($self->{username});
-    $template->param($user->quick_edit_data());
+    $template->param($cdbi_user->quick_edit_data());
     $template->param(page_title => "quick edit items");
     $template->param(month => $mon + 1,
         year => 1900 + $year);

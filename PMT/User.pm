@@ -109,38 +109,6 @@ sub home {
 
 # }}}
 
-sub quick_edit_data {
-    my $self = shift;
-    my $username = $self->get("username");
-    my $sort = shift || "";
-    $self->debug("home($username,$sort)");
-    my %data = %{$self->data()};
-    $data{items}                = [
-				   map {
-				       if ($_->{overdue} < -7) {
-					   $_->{schedule_status} = 'ok';
-				       } elsif ($_->{overdue} < -1) {
-					   $_->{schedule_status} = 'upcoming';
-				       } elsif ($_->{overdue} < 1) {
-					   $_->{schedule_status} = 'due';
-				       } elsif ($_->{overdue} < 7) {
-					   $_->{schedule_status} = 'overdue';
-				       } else {
-					   $_->{schedule_status} = 'late';
-				       }
-                                       my $i = PMT::Item->retrieve($_->{iid});
-                                       $_->{status_select} = $i->status_select();
-                                       $_->{priority_select} = $i->priority_select();
-                                       my $p = $i->mid->pid;
-                                       $_->{assigned_to_select} = $p->assigned_to_select($i->assigned_to);
-				       $_;
-				   }
-				   @{$self->items($username,$sort)}];
-    return \%data;
-}
-
-# }}}
-
 
 
 
