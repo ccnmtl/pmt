@@ -20,11 +20,12 @@ href="home.pl?mode=user_settings_form">PROFILE</a>
 </div>
 <!--  primary navigation: user navigation: quickjump to projects  -->
 <div class="quickjump">
-<form action="project.pl" method="get">
+<form action="home.pl" method="get">
+<input type="hidden" name="mode" value="project">
 <select class="dropdown" size="1" onChange="sendIt(this.options[selectedIndex].value);reset()">
 			<option selected="selected" value="">QUICK ACCESS TO PROJECT:</option>
                         <tmpl_loop name="projects">
-                        <option value="project.pl?pid=<tmpl_var name="pid">"
+                        <option value="home.pl?mode=project;pid=<tmpl_var name="pid">"
                         class="dropdown1"><tmpl_var name="name"
                         escape="html"></tmpl_loop>
 		</select>

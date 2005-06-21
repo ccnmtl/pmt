@@ -7,7 +7,7 @@
 
 
 
-<h1>PROJECTS: <a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
+<h1>PROJECTS: <a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
 <span class="hide">PROJECTS:</span> &#62; Main Page</h1>
 
 <tmpl_if name="description">
@@ -65,13 +65,13 @@
 
 	<tr>
 		<th class="firstcell">&#160;</th>
-		<th><a href="project.pl?pid=<tmpl_var name="pid">&amp;sortby=item">item</a>:</th>
-		<th><a href="project.pl?pid=<tmpl_var name="pid">&amp;sortby=priority">priority</a>:</th>
-		<th><a href="project.pl?pid=<tmpl_var name="pid">&amp;sortby=status">status</a>:</th>
-		<th><a href="project.pl?pid=<tmpl_var name="pid">&amp;sortby=target_date"><nobr>target date</nobr></a>:</th>
-		<th><a href="project.pl?pid=<tmpl_var name="pid">&amp;sortby=owner">owner</a>:</th>
-		<th><a href="project.pl?pid=<tmpl_var name="pid">&amp;sortby=assigned_to"><nobr>assigned to</nobr></a>:</th>
-		<th nowrap="nowrap"><a href="project.pl?pid=<tmpl_var name="pid">&amp;sortby=last_mod">last modified</a>:</th>
+		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=item">item</a>:</th>
+		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=priority">priority</a>:</th>
+		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=status">status</a>:</th>
+		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=target_date"><nobr>target date</nobr></a>:</th>
+		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=owner">owner</a>:</th>
+		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=assigned_to"><nobr>assigned to</nobr></a>:</th>
+		<th nowrap="nowrap"><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=last_mod">last modified</a>:</th>
 		<th>&#160;</th>
 	</tr>
 

@@ -21,7 +21,7 @@
 <tbody>
 <tmpl_loop name="manager_projects">
 <tr>
-<td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="name" escape="html"></a></td>
+<td class="firstcell"><a href="home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="name" escape="html"></a></td>
 <td>manager</td>
 <td><tmpl_if name="last_mod"><tmpl_var name="last_mod"><tmpl_else>&#160;</tmpl_if></td>
 <td><b>add:</b>
@@ -51,7 +51,7 @@ escape="html">">tracker</a>
 </tmpl_loop>
 
 <tmpl_loop name="developer_projects">
-<tr><td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var
+<tr><td class="firstcell"><a href="home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var
 name="name" escape="html"></a></td>
 <td>developer</td>
 <td><tmpl_if name="last_mod"><tmpl_var name="last_mod"><tmpl_else>&#160;</tmpl_if></td>
@@ -84,7 +84,7 @@ escape="url">">weekly report</a> |
 
 <tmpl_loop name="guest_projects">
 
-<tr><td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var
+<tr><td class="firstcell"><a href="home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var
 name="name" escape="html"></a></td>
 <td>guest</td>
 <td><tmpl_if name="last_mod"><tmpl_var name="last_mod"><tmpl_else>&#160;</tmpl_if></td>

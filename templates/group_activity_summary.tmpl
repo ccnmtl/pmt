@@ -40,7 +40,7 @@ name="end_month">-<tmpl_var name="end_day">" />
 name="item" escape="html"></a></td>
 <td><tmpl_var name="actual_time" escape="html"></td>
 <td><nobr><tmpl_var name="completed" escape="html"></nobr></td>
-<td style="width:150px;"><a href="project.pl?pid=<tmpl_var name="pid"
+<td style="width:150px;"><a href="home.pl?mode=project;pid=<tmpl_var name="pid"
 escape="url">"><tmpl_var name="project" escape="html"></a></td>
 </tr>
 </tmpl_loop>
@@ -70,7 +70,7 @@ escape="url">"><tmpl_var name="project" escape="html"></a></td>
 <div class="post">
 <h2 class="nodesubject"><tmpl_var name="subject"></h2>
 <p class="byline"><tmpl_if name="project"><a
-href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></tmpl_if> @ <tmpl_var name="added_informal"></p>
+href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></tmpl_if> @ <tmpl_var name="added_informal"></p>
 <div class="nodebody">
 <tmpl_Var name="body">
 </div>

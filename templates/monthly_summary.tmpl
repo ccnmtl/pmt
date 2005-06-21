@@ -54,7 +54,7 @@ name="groups">;groups=<tmpl_var name="group" escape="url"></tmpl_loop>">Next mon
 </tr>
 <tmpl_loop name="project_times">
 <tr>
-<td class="firstcell"><a href="project.pl?pid=<tmpl_var name="pid"
+<td class="firstcell"><a href="home.pl?mode=project;pid=<tmpl_var name="pid"
 escape="url">"><tmpl_if name="projnum"><tmpl_var name="projnum"
 escape="html"> - </tmpl_if><tmpl_var name="name" escape="html"></a></td>
 <tmpl_loop name="group_times">

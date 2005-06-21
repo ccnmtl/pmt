@@ -58,7 +58,7 @@ onclick="sortColumn(event)">
                 name="r_status"><tmpl_var name="r_status"
                 escape="html"><tmpl_else><tmpl_var name="status"
                 escape="html"></tmpl_if></td>
-		<td><a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="project" escape="html"></a></td>
+		<td><a href="home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="project" escape="html"></a></td>
 		<td class="<tmpl_var name="schedule_status" escape="html">"><tmpl_var name="target_date" escape="html"></td>
 		<td nowrap="nowrap"><tmpl_var name="last_mod" escape="html"></td>
 	</tr>

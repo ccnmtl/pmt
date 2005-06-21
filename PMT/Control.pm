@@ -83,6 +83,7 @@ sub setup {
         'client'                 => 'client',
         'milestone'              => 'milestone',
         'user'                   => 'user',
+	'project'                => 'project',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -281,7 +282,7 @@ sub add_project {
     $self->{pmt}->add_project($name,$description,$self->{username},$pub_view,
         $target_date, $wiki_category);
     $self->header_type('redirect');
-    $self->header_props(-url => "project.pl?pid=$pid");
+    $self->header_props(-url => "home.pl?mode=project;pid=$pid");
     return "redirecting to new project page";
 }
 
@@ -854,7 +855,7 @@ sub delete_documents {
 #        $user->dbi_commit();
 #    }
     $self->header_type('redirect');
-    $self->header_props(-url => "project.pl?pid=$pid");
+    $self->header_props(-url => "home.pl?mode=project;pid=$pid");
     return "documents deleted";
 }
 
@@ -910,7 +911,7 @@ sub add_milestone {
     my $project = PMT::Project->retrieve($pid);
     $project->add_milestone($name,$target_date,$description);
     $self->header_type('redirect');
-    $self->header_props(-url => "project.pl?pid=$pid");
+    $self->header_props(-url => "home.pl?mode=project;pid=$pid");
 }
 
 
@@ -955,7 +956,7 @@ sub delete_milestone {
     } else {
         my $pid = $milestone->delete_milestone();
         $self->header_type('redirect');
-        $self->header_props(-url => "project.pl?pid=$pid");
+        $self->header_props(-url => "home.pl?mode=project;pid=$pid");
         return "milestone deleted\n";
     }
 }
@@ -1450,7 +1451,7 @@ sub add_document {
 					  version => $version,
 					  author => $username);
     $self->header_type("redirect");
-    $self->header_props(-url => "project.pl?pid=$pid");
+    $self->header_props(-url => "home.pl?mode=project;pid=$pid");
 }
 
 sub add_group {
@@ -1593,7 +1594,7 @@ sub notify_project {
         $project->drop_cc($user);
     }
     $self->header_type('redirect');
-    $self->header_props(-url => "project.pl?pid=$pid");
+    $self->header_props(-url => "home.pl?mode=project;pid=$pid");
     return "updated project notification";
 }
 
@@ -1653,7 +1654,7 @@ sub update_project {
 		       );
 
     $self->header_type('redirect');
-    $self->header_props(-url => "project.pl?pid=$pid");
+    $self->header_props(-url => "home.pl?mode=project;pid=$pid");
     return "updated project info";
 }
 
@@ -2026,6 +2027,53 @@ sub user {
                      year       => 1900 + $year);
     $template->param(users_mode => 1);
     return $template->output();
+}
+
+sub project {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $username = $self->{user}->{username};
+    my ($sec,$min,$hour,$mday,$mon,
+        $year,$wday,$yday,$isdst) = localtime(time); 
+    my $pid    = $cgi->param('pid') || "";
+    my $sortby = $cgi->param('sortby') || $cgi->cookie("pmtsort") || "priority";
+    my $project = PMT::Project->retrieve($pid);
+    my $works_on = $project->project_role($username);
+    my %data = %{$project->data()};
+    my $caretaker = $project->caretaker;
+
+    $data{caretaker_fullname}   = $caretaker->fullname;
+    $data{milestones}           = $project->project_milestones($sortby, $username);
+    $data{managers}             = [map {$_->data()} $project->managers()];
+    $data{developers}           = [map {$_->data()} $project->developers()];
+    $data{guests}               = [map {$_->data()} $project->guests()];
+    $data{keywords}             = $project->keywords();
+    $data{total_remaining_time} = interval_to_hours($project->estimated_time);
+    $data{total_completed_time} = interval_to_hours($project->completed_time);
+    $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
+
+    my $table_width = 150;
+    ($data{done},$data{todo},$data{free},$data{completed_behind},$data{behind}) = $project->estimate_graph($table_width)
+;
+
+    if($works_on) {$data{$works_on} = 1;}
+    my $template = $self->template("project.tmpl");
+    $template->param(\%data);
+
+    $template->param(proj_cc => $project->cc(CDBI::User->retrieve($username)));
+    $template->param(page_title => "project: $data{name}",
+                     month      => $mon + 1,
+                     year       => 1900 + $year);
+    
+    my $proj = PMT::Project->retrieve($pid);
+    $template->param(documents => [map {$_->data()} $proj->documents()]);
+    $template->param(projects_mode => 1);
+    $self->header_add(-cookie => [$cgi->cookie(-name => "pmtsort",
+					       -value => $sortby,
+					       -path => '/',
+					       -expires => "+10y")]);
+    return $template->output();
+
 }
 
 1;

@@ -21,12 +21,13 @@ User: <a href="home.pl"><tmpl_var name="username"></a> |
 </div>
 <!--  primary navigation: user navigation: quickjump to projects  -->
 <div class="quickjump">
-<form action="project.pl" method="get">
+<form action="home.pl" method="get">
+<input type="hidden" name="mode" value="project" />
 	<select class="dropdown" size="1" onchange="sendIt(this.options[selectedIndex].value);reset()">
 		<option selected="selected" value="">QUICK ACCESS TO PROJECT:</option>
 		<option value="">---------------------------</option>
 		<tmpl_loop name="projects">
-		<option value="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></option>
+		<option value="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></option>
 		</tmpl_loop>
 	</select>
 </form>

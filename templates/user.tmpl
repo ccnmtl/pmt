@@ -59,7 +59,7 @@ escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
 <td class="pr<tmpl_var name="priority">"><tmpl_var name="priority_label"></td>
 <td class="<tmpl_var name="status">"><tmpl_if name="r_status"><tmpl_var
 name="r_status"><tmpl_else><tmpl_var name="status" escape="html"></tmpl_if></td>
-<td><a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td>
+<td><a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td>
 <td><tmpl_var name="target_date"></td>
 <td><nobr><tmpl_var name="last_mod"></nobr></td>
 </tr>

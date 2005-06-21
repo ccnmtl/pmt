@@ -21,7 +21,7 @@ eval {
     my $rss = new XML::RSS(version => '1.0');
     $rss->channel(
 		  title        => "PMT project feed",
-		  link         => "http://pmt.ccnmtl.columbia.edu/project.pl?pid=$pid",
+		  link         => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=project;pid=$pid",
 		  );
     for my $i (@{$items}) {
 	$rss->add_item(title => "$i->{title} ($i->{status})",

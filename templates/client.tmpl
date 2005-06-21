@@ -76,7 +76,7 @@ escape="html"></td></tr>
 
 <tmpl_if name="client_projects">
 <h2>Projects:</h2>
-<tmpl_loop name="client_projects"><a href="project.pl?pid=<tmpl_var name="pid" escape="url">"><tmpl_var
+<tmpl_loop name="client_projects"><a href="home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var
 name="name" escape="html"></a><br /></tmpl_loop>
 </tmpl_if>
 <br />
@@ -94,7 +94,7 @@ name="name" escape="html"></a><br /></tmpl_loop>
 <tr><td class="firstcell"><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class">" /><a href="item.pl?iid=<tmpl_var
 name="iid">"><tmpl_unless name="title">[<tmpl_Var name="iid">]</tmpl_unless><tmpl_var
 name="title"></a></td><td class="<tmpl_var name="status">"><tmpl_var
-name="status"></td><td><nobr><tmpl_var name="last_mod"></nobr></td><td><nobr><a href="project.pl?pid=<tmpl_var
+name="status"></td><td><nobr><tmpl_var name="last_mod"></nobr></td><td><nobr><a href="home.pl?mode=project;pid=<tmpl_var
 name="pid">"><tmpl_var name="project"></a></nobr></td></tr>
 </tmpl_loop>
 <tfoot>
