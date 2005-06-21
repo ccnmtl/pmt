@@ -15,6 +15,7 @@ use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days/;
 use Net::LDAP;
 use Text::Tiki;
 use Forum;
+use HTML::CalendarMonth;
 
 use utf8;
 use Data::Dumper;
@@ -87,6 +88,7 @@ sub setup {
         'forum'                  => 'forum',
 	'node'                   => 'node',
         'staff_report'           => 'staff_report',
+        'project_history'        => 'project_history',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2163,6 +2165,62 @@ sub staff_report {
     $template->param($data);
     $template->param(page_title => "Staff Report");
     $template->param(reports_mode => 1);
+    return $template->output();
+}
+
+sub project_history {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pid   = $cgi->param('pid')   || "";
+    my $month = $cgi->param('month') || "";
+    my $year  = $cgi->param('year')  || "";
+
+    my $project = PMT::Project->retrieve($pid);
+    my $c = HTML::CalendarMonth->new( month => $month, year => $year );
+    $c->table->attr('align','left');
+    $c->table->attr('valign','top');
+    $c->attr('width','100%');
+
+    my $calendar = $c->as_HTML;
+
+    foreach my $day ($c->days()) {
+        my $r = $project->events_on("$year-$month-$day");
+        my $cell = "";
+
+        foreach my $i (@$r) {
+            $cell .= "<tr><td><a href='item.pl?iid=$$i{iid}'>$$i{title}</a></td>";
+            $cell .= "<td class='$$i{status}'>$$i{status}</td>";
+            $cell .= "<td>$$i{comment}<hr />by $$i{username} \@ $$i{date_time}</td>";
+            $cell .= "</tr>";
+        }
+        if($cell ne "") {
+            $cell = "<table>$cell</table>";
+            $calendar =~ s{>$day</td>}{>$day<br />$cell</td>};
+        }
+    }
+
+    my $next = $month + 1;
+    my $prev = $month - 1;
+    my ($next_year,$prev_year) = ($year,$year);
+    
+    if(13 == $next) {
+        $next = 1;
+        $next_year = $year + 1;
+    }
+    if(0 == $prev) {
+        $prev = 12;
+        $prev_year = $year - 1;
+    }
+
+    my $template = $self->template("project_history.tmpl");
+
+    $template->param(calendar   => $calendar,
+                     pid        => $pid,
+                     next_month => $next,
+                     next_year  => $next_year,
+                     prev_month => $prev,
+                     prev_year  => $prev_year);
+
     return $template->output();
 
 }
