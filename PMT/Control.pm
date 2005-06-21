@@ -123,11 +123,10 @@ sub home {
     my $self = shift;
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
     my $template = $self->template("home.tmpl");
-    my $user = $self->{user};
-    my $cdbi_user = CDBI::User->retrieve($self->{username});
+    my $user = $self->{cdbi_user};
     $template->param($user->home());
-    $template->param(clients => $cdbi_user->clients_data());
-    $template->param(page_title => "homepage for $user->{username}");
+    $template->param(clients => $user->clients_data());
+    $template->param(page_title => "homepage for $user->username");
     $template->param(month => $mon + 1,
         year => 1900 + $year);
     my $cgi = $self->query();

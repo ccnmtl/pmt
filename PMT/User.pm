@@ -51,69 +51,6 @@ sub data {
 
 
 
-# {{{ home
-
-# returns a nice hashref of data to plugin to
-# the template for the user's homepage.
-sub home {
-    my $self = shift;
-    my $username = $self->get("username");
-    my $sort = shift || "";
-    $self->debug("home($username,$sort)");
-    my $cdbi = CDBI::User->retrieve($username);
-    my %data = %{$self->data()};
-    $data{items}                = [
-				   map {
-				       if ($_->{overdue} < -7) {
-					   $_->{schedule_status} = 'ok';
-				       } elsif ($_->{overdue} < -1) {
-					   $_->{schedule_status} = 'upcoming';
-				       } elsif ($_->{overdue} < 1) {
-					   $_->{schedule_status} = 'due';
-				       } elsif ($_->{overdue} < 7) {
-					   $_->{schedule_status} = 'overdue';
-				       } else {
-					   $_->{schedule_status} = 'late';
-				       }
-                                       $_->{priority_label} = $PRIORITIES{$_->{priority}};
-				       $_;
-				   }
-				   @{$cdbi->items($username,$sort)}];
-
-    $data{total_estimated_time} = $cdbi->total_estimated_time();
-    $data{groups}               = $cdbi->user_groups();
-    my $est_priority = $cdbi->estimated_times_by_priority();
-    my $est_sched = $cdbi->estimated_times_by_schedule_status();
-    my $scheds = scale_array(150.0,[$est_sched->{ok}, $est_sched->{upcoming}, 
-				    $est_sched->{due}, $est_sched->{overdue}, 
-				    $est_sched->{late}]);
-
-    $data{ok} = $scheds->[0];
-    $data{upcoming} = $scheds->[1];
-    $data{due} = $scheds->[2];
-    $data{overdue} = $scheds->[3];
-    $data{late} = $scheds->[4];
-
-    my $priorities = scale_array(150.0, [$est_priority->{priority_4}, $est_priority->{priority_3},
-					 $est_priority->{priority_2}, $est_priority->{priority_1},
-					 $est_priority->{priority_0}]);
-
-    $data{critical} = $priorities->[0];
-    $data{high} = $priorities->[1];
-    $data{medium} = $priorities->[2];
-    $data{low} = $priorities->[3];
-    $data{icing} = $priorities->[4];
-
-    return \%data;
-}
-
-# }}}
-
-
-
-
-
-
 # {{{ menu
 
 sub menu {
