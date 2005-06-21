@@ -76,6 +76,7 @@ sub setup {
         'search_forum'           => 'search_forum',
 	'keyword'                => 'keyword',
 	'document'               => 'document',
+        'users'                  => 'users',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -1875,6 +1876,18 @@ sub update_item {
     $self->header_type('redirect');
     $self->header_props(-url => "item.pl?iid=$iid;message=$message");
     return $message;
+}
+
+sub users {
+    my $self = shift;
+    my $pmt = $self->{pmt};
+    my $template = $self->template("users.tmpl");
+    
+    $template->param(users => $pmt->users_hours());
+    $template->param(page_title => "users");
+    $template->param(users_mode => 1);
+    return $template->output();
+
 }
 
 1;
