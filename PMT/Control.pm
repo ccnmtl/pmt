@@ -11,7 +11,7 @@ use PMT::Document;
 use PMT::Group;
 use CGI;
 use HTML::Template;
-use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days/;
+use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days Days_in_Month/;
 use Net::LDAP;
 use Text::Tiki;
 use Forum;
@@ -89,6 +89,7 @@ sub setup {
 	'node'                   => 'node',
         'staff_report'           => 'staff_report',
         'project_history'        => 'project_history',
+        'new_clients'            => 'new_clients',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2221,6 +2222,64 @@ sub project_history {
                      prev_month => $prev,
                      prev_year  => $prev_year);
 
+    return $template->output();
+
+}
+
+sub new_clients {
+    my $self = shift;
+    my $cgi = $self->query();
+    my @months = qw/January February March April May June July August September October November December/;
+    my $syear = $cgi->param('year') || "";
+    my $smonth = $cgi->param('month') || "";
+    my $sday = $cgi->param('day') || "";
+    my ($sec,$min,$hour,$mday,$mon,
+        $year,$wday,$yday,$isdst);
+    if($syear && $smonth && $sday) {
+        # if the day was specified in the url, use that
+        $year = $syear;
+        $mon  = $smonth;
+        $mday = $sday;
+    } else {
+        # otherwise, default to today
+        ($sec,$min,$hour,$mday,$mon,
+         $year,$wday,$yday,$isdst) = localtime(time); 
+        $year += 1900;
+        $mon += 1;
+    }
+
+
+    my ($mon_year,$mon_month,$mon_day) = ($year,$mon,1);
+    my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,Days_in_Month($mon_year,$mon_month
+) - 1);
+    my ($pm_year,$pm_month,$pm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,-1);
+    my ($nm_year,$nm_month,$nm_day) = Add_Delta_Days($sun_year,$sun_month,$sun_day,1);
+
+
+    my $template = $self->template("new_clients.tmpl");
+    $template->param(
+                     mon_year => $mon_year,
+                     mon_month => $mon_month,
+                     mon_day => $mon_day,
+                     sun_year => $sun_year,
+                     sun_month => $sun_month,
+                     sun_day => $sun_day,
+                     pm_year => $pm_year,
+                     pm_month => $pm_month,
+                     pm_day => $pm_day,
+                     nm_year => $nm_year,
+                     nm_month => $nm_month,
+                     nm_day => $nm_day,
+                     month => $months[$mon - 1],
+                     year => $mon_year,
+                     pm_mon => $months[$pm_month - 1],
+                     nm_mon => $months[$nm_month - 1],
+                     );
+
+    $template->param(clients_mode => 1);
+    $template->param(page_title => 'new clients report');
+    $template->param(clients => PMT::Client->new_clients_data("$mon_year-$mon_month-$mon_day",
+                                                          "$sun_year-$sun_month-$sun_day"));
     return $template->output();
 
 }
