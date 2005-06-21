@@ -72,6 +72,7 @@ sub setup {
         'update_project'         => 'update_project',
         'update_project_form'    => 'update_project_form',
         'search_forum'           => 'search_forum',
+	'keyword'                => 'keyword',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -1727,6 +1728,23 @@ sub search_forum {
     $template->param($user->menu());
     $template->param(forum_mode => 1);
     print $cgi->header(-charset => 'utf-8'), $template->output();
+
+}
+
+sub keyword {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pmt = $self->{pmt};
+    my $user = $self->{user};
+    my $username = $self->{cdbi_user}->username;
+    my $keyword = $cgi->param('keyword') || "";
+    my $pid     = $cgi->param('pid')     || "";
+
+    my $template = $self->template("keyword.tmpl");
+
+    $template->param($pmt->keyword($keyword,$username,$pid));
+
+    return $template->output();
 
 }
 

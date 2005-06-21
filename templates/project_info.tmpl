@@ -54,7 +54,7 @@
 		<th>Keywords:</th>
 		<td>
 		<tmpl_loop name="keywords">
-		<a href="keyword.pl?keyword=<tmpl_var name="keyword" escape="url">"><tmpl_var name="keyword"></a><tmpl_unless __LAST__>,</tmpl_unless>
+		<a href="home.pl?mode=keyword;keyword=<tmpl_var name="keyword" escape="url">"><tmpl_var name="keyword"></a><tmpl_unless __LAST__>,</tmpl_unless>
 		</tmpl_loop>
 		</td>
 	</tr>
