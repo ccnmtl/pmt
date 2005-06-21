@@ -41,7 +41,7 @@ activity:</th></tr>
 
 <tbody>
 <tmpl_loop name="results">
-<tr><td class="firstcell"><!--<tmpl_if name="inactive"> class="inactive"</tmpl_if>--><a href="client.pl?client_id=<tmpl_Var name="client_id" escape="url">"><tmpl_var name="lastname" escape="html">, <tmpl_var name="firstname"
+<tr><td class="firstcell"><!--<tmpl_if name="inactive"> class="inactive"</tmpl_if>--><a href="home.pl?mode=client;client_id=<tmpl_Var name="client_id" escape="url">"><tmpl_var name="lastname" escape="html">, <tmpl_var name="firstname"
 escape="html"></a></td><td><a
 href="client_search.pl?school=<tmpl_var name="school" escape="url">"><tmpl_var name="school"
 escape="html"></a></td><td><a

@@ -30,7 +30,7 @@ escape="html"><tmpl_unless name="current"></a><tmpl_else></span></tmpl_unless> <
 
 <tbody>
 <tmpl_loop name="clients">
-<tr><td class="firstcell"><a href="client.pl?client_id=<tmpl_var name="client_id"
+<tr><td class="firstcell"><a href="home.pl?mode=client;client_id=<tmpl_var name="client_id"
 escape="url">"><tmpl_var name="lastname" escape="html">, <tmpl_var
 name="firstname" escape="html"></a></td>
 <td><tmpl_if name="school"><a

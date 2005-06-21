@@ -80,6 +80,7 @@ sub setup {
         'all_clients'            => 'all_clients',
         'all_groups'             => 'all_groups',
         'group'                  => 'group',
+        'client'                 => 'client',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -1932,6 +1933,30 @@ sub group {
     $template->param(page_title => "Group: $group");
     $template->param(users_mode => 1);
     return $template->output();
+}
+
+sub client {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $client_id = $cgi->param('client_id') || "";
+    my $client = PMT::Client->retrieve($client_id);
+
+    my $contact = new PMT::User($client->get('contact'));
+
+    my $template = $self->template("client.tmpl");
+    my $data     = $client->data();
+    $data->{client_email} = $data->{email};
+    $data->{active} = $data->{status} eq "active";
+    $template->param(contact_fullname => $contact->get('fullname'));
+    delete $data->{email};
+    $template->param(%{$data});
+    $template->param(client_projects => $client->projects_data(),
+                     projects_select => $client->projects_select(),
+                     contacts_select => $client->contacts_select(),
+                     recent_items => $client->recent_items());
+    $template->param(clients_mode => 1);
+    return $template->output();
+
 }
 
 

@@ -181,14 +181,14 @@
 <table cellspacing="0" cellpadding="0" class="default">
 	<tr>
 		<th>Client name:</th>
-		<td><tmpl_loop name="clients"><a href="client.pl?client_id=<tmpl_var
+		<td><tmpl_loop name="clients"><a href="home.pl?mode=client;client_id=<tmpl_var
 name="client_id">"><tmpl_var name="firstname" escape="html"> <tmpl_var
 name="lastname" escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
 </tmpl_loop></td>
 	</tr>
 </table>
 <p>
-<a href="client.pl?client_id=<tmpl_var name="client_id">">More on client's information...</a> &#62;
+<a href="home.pl?mode=client;client_id=<tmpl_var name="client_id">">More on client's information...</a> &#62;
 </p>
 </tmpl_if>
 
