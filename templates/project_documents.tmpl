@@ -16,7 +16,7 @@
 <ul>
 <tmpl_loop name="documents">
 <li>
-<a href="document.pl?did=<tmpl_var name="did" escape="url">"><tmpl_var
+<a href="home.pl?mode=document;did=<tmpl_var name="did" escape="url">"><tmpl_var
 name="title" escape="html"></a> <tmpl_if name="version">(version
 <tmpl_var name="version" escape="html">)</tmpl_if> <i>[<tmpl_var name="last_mod" escape="html">]</i>
 </li>
@@ -41,7 +41,7 @@ name="title" escape="html"></a> <tmpl_if name="version">(version
 </tr>
 <tmpl_loop name="documents">
 <tr><td class="firstcell"><input type="checkbox" name="del_<tmpl_var name="did" escape="html">" /></td>
-<td><a href="document.pl?did=<tmpl_var name="did" escape="url">"><tmpl_var
+<td><a href="home.pl?mode=document;did=<tmpl_var name="did" escape="url">"><tmpl_var
 name="title" escape="html"></a> <tmpl_if name="version">(version
 <tmpl_var name="version" escape="html">)</tmpl_if> <i>[<tmpl_var name="last_mod" escape="html">]</i>
 </td>

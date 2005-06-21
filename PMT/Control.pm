@@ -73,6 +73,7 @@ sub setup {
         'update_project_form'    => 'update_project_form',
         'search_forum'           => 'search_forum',
 	'keyword'                => 'keyword',
+	'document'               => 'document',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -1739,6 +1740,30 @@ sub keyword {
     $template->param($pmt->keyword($keyword,$username,$pid));
 
     return $template->output();
+
+}
+
+sub document {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $did = $cgi->param('did') || "";
+    my $document = PMT::Document->retrieve($did);
+
+    if($document->type eq "url") {
+	$self->header_type('redirect');
+	$self->header_props(-url => $document->url);
+	return "redirecting to url";
+    } else {
+        my $content_type = $document->content_type();
+        if($document->content_disposition()) {
+            my $filename = $document->filename;
+	    $self->header_props(-type => $content_type,
+                               -content_disposition => "attachment;filename=$filename");
+        } else {
+            $self->header_props(-type => $content_type);
+        }
+        return $document->contents();
+    }
 
 }
 
