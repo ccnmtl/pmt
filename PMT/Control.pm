@@ -84,6 +84,7 @@ sub setup {
         'milestone'              => 'milestone',
         'user'                   => 'user',
 	'project'                => 'project',
+        'forum'                  => 'forum',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -993,7 +994,7 @@ sub delete_node {
         my $forum = new Forum($self->{username},$self->{pmt});
         $forum->delete_node($nid);
         $self->header_type('redirect');
-        $self->header_props(-url => "forum.pl");
+        $self->header_props(-url => "home.pl?mode=forum");
         return "deleted node";
     }
 }
@@ -1238,7 +1239,7 @@ sub post {
             subject => $subject,body => $body,
             reply_to => $reply_to);
         $self->header_type('redirect');
-        $self->header_props(-url => "forum.pl");
+        $self->header_props(-url => "home.pl?mode=forum");
     }
 }
 
@@ -2074,6 +2075,29 @@ sub project {
 					       -expires => "+10y")]);
     return $template->output();
 
+}
+
+sub forum {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $username = $self->{user}->{username};
+    my $pmt = $self->{pmt};
+    my $pid = $cgi->param('pid') || "";
+    my $forum = new Forum($username,$pmt);
+    my $template = $self->template("forum.tmpl");
+    if($pid) {
+        $template->param(posts => $forum->recent_project_posts($pid));
+        $template->param(logs => $forum->recent_project_logs($pid));
+        $template->param(items => $forum->recent_project_items($pid));
+        $template->param(pid => $pid);
+    } else {
+        $template->param(posts => $forum->recent_posts());
+        $template->param(logs => $forum->recent_logs());
+        $template->param(items => $forum->recent_items());
+    }
+    $template->param(page_title => 'forum');
+    $template->param(forum_mode => 1);
+    return $template->output();
 }
 
 1;

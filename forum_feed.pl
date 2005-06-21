@@ -20,7 +20,7 @@ eval {
     my $rss = new XML::RSS(version => '1.0');
     $rss->channel(
 		  title        => "PMT Forum",
-		  link         => "http://pmt.ccnmtl.columbia.edu/forum.pl",
+		  link         => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=forum",
 		  );
     for my $n (@{$nodes}) {
 	$rss->add_item(title => "$n->{subject}",

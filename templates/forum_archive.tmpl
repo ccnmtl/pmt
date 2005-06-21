@@ -38,7 +38,7 @@ name="pid" escape="url">;user=<tmpl_var name="user" escape="url">">Next <tmpl_va
 <tmpl_loop name="posts">
 <tr>                            
 <td class="firstcell"><a href="node.pl?nid=<tmpl_var name="nid">"><tmpl_var name="subject"></a></td>
-<td><a href="forum.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td>
+<td><a href="home.pl?mode=forum;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td>
 <td><a href="home.pl?mode=user;username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a></td>
 <td><tmpl_var name="added"></td>
 <td><tmpl_if name="replies">[<tmpl_var name="modified">]
