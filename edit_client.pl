@@ -57,7 +57,7 @@ eval {
 			     );
 	$client->update();
 	my $letter = uc(substr($lastname,0,1));
-	print $cgi->redirect("clients.pl?letter=$letter");
+	print $cgi->redirect("home.pl?mode=all_clients;letter=$letter");
     }
 };
 if($@) {

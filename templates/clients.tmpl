@@ -8,7 +8,7 @@
 <h1>CLIENTS: All Clients<br />
 <span class="hide">CLIENTS:</span> &#62;
 <tmpl_loop name="letters"><tmpl_unless name="current"><a
-href="clients.pl?letter=<tmpl_var name="letter"
+href="home.pl?mode=all_clients;letter=<tmpl_var name="letter"
 escape="url">"><tmpl_else><span style="font-size: 19px;"></tmpl_unless><tmpl_var name="letter"
 escape="html"><tmpl_unless name="current"></a><tmpl_else></span></tmpl_unless> </tmpl_loop>
 </h1>
@@ -53,7 +53,7 @@ escape="url">"><tmpl_var name="contact_fullname" escape="html"></td>
 </table>
 
 <p><tmpl_loop name="letters"><tmpl_unless name="current"><a
-href="clients.pl?letter=<tmpl_var name="letter"
+href="home.pl?mode=all_clients;letter=<tmpl_var name="letter"
 escape="url">"><tmpl_else><span style="font-size: larger; font-weight:bold;"></tmpl_unless><tmpl_var name="letter"
 escape="html"><tmpl_unless name="current"></a><tmpl_else></span></tmpl_unless> </tmpl_loop></p>
 

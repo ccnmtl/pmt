@@ -77,6 +77,7 @@ sub setup {
 	'keyword'                => 'keyword',
 	'document'               => 'document',
         'users'                  => 'users',
+        'all_clients'            => 'all_clients',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -804,7 +805,7 @@ sub delete_client {
         my $letter = substr($client->lastname,0,1);
         $client->delete();
         $self->header_type('redirect');
-        $self->header_props(-url => "clients.pl?letter=$letter");
+        $self->header_props(-url => "home.pl?mode=all_clients;letter=$letter");
         return "redirecting back to clients page";
     } else {
         return $self->verify_delete_client($client_id);
@@ -1888,6 +1889,25 @@ sub users {
     $template->param(users_mode => 1);
     return $template->output();
 
+}
+
+sub all_clients {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $letter = $cgi->param('letter') || "A";
+
+    my @letters = map {{"letter" => $_,
+                        "current" => $_ eq $letter}} 'A'..'Z';
+
+    my $template = $self->template("clients.tmpl");
+    $template->param(clients => [map {
+        $_->{inactive} = $_->{status} eq "inactive";
+        $_;
+    } @{PMT::Client->all_clients_data($letter)}]);
+    $template->param('letters' => \@letters);
+    $template->param(clients_mode => 1);
+    $template->param(page_title => "All clients ($letter)");
+    return $template->output();
 }
 
 1;
