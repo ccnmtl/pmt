@@ -73,7 +73,7 @@ at <tmpl_var name="event_date_time"></td>
 </table>
 </td></tmpl_if>
 <tmpl_if name="show_project"><td><a href="project.pl?pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td></tmpl_if>
-<tmpl_if name="show_milestone"><td><a href="milestone.pl?mid=<tmpl_var name="mid">"><tmpl_var name="milestone"></a></td></tmpl_if>
+<tmpl_if name="show_milestone"><td><a href="home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="milestone"></a></td></tmpl_if>
 <tmpl_if name="show_status"><td class="<tmpl_var name="status">"><tmpl_if
 name="r_status"><tmpl_var name="r_status"><tmpl_else><tmpl_var
 name="status"></tmpl_if></td></tmpl_if>

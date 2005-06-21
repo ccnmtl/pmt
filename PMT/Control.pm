@@ -81,6 +81,7 @@ sub setup {
         'all_groups'             => 'all_groups',
         'group'                  => 'group',
         'client'                 => 'client',
+        'milestone'              => 'milestone',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -869,7 +870,7 @@ sub delete_item {
         my $mid = $item->mid->mid;
         $item->delete();
         $self->header_type('redirect');
-        $self->header_props(-url => "milestone.pl?mid=$mid");
+        $self->header_props(-url => "home.pl?mode=milestone;mid=$mid");
         return "deleted item";
     }
 }
@@ -1423,7 +1424,7 @@ sub edit_milestone {
         description => $description);
     $milestone->update();
     $self->header_type("redirect");
-    $self->header_props(-url => "milestone.pl?mid=$mid");
+    $self->header_props(-url => "home.pl?mode=milestone;mid=$mid");
 }
 
 sub add_document {
@@ -1956,8 +1957,34 @@ sub client {
                      recent_items => $client->recent_items());
     $template->param(clients_mode => 1);
     return $template->output();
-
 }
 
+sub milestone {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $mid    = $cgi->param('mid')    || "";
+
+    my $milestone = PMT::Milestone->retrieve($mid);
+    my %data = %{$milestone->data()};
+
+    $data{'items'} = [map {$_->data()} $milestone->items()];
+    $data{'total_estimated_time'} = $milestone->estimated_time();
+    my $project = $milestone->pid;
+    my $works_on = $project->project_role($self->{cdbi_user}->username);
+    if($works_on){
+        $data{$works_on} = 1;
+    }
+    my $template = $self->template("milestone.tmpl");
+    my $project = $milestone->pid;
+    $data{total_remaining_time} = interval_to_hours($project->estimated_time);
+    $data{total_completed_time} = interval_to_hours($project->completed_time);
+    $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
+
+    ($data{done},$data{todo},$data{free},$data{completed_behind},$data{behind}) = $project->estimate_graph(150);
+    $template->param(\%data);
+    $template->param(page_title => "Milestone: $data{name}");
+    $template->param(projects_mode => 1);
+    return $template->output();
+}
 
 1;

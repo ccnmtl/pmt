@@ -27,7 +27,7 @@ eval {
 	my $r = $project->milestones_on("$year-$month-$item");
 	foreach my $m (@$r) {
 	    my $h2 = new HTML::Element 'h3';
-	    my $a = HTML::Element->new('a',href => "milestone.pl?mid=$$m{mid}");
+	    my $a = HTML::Element->new('a',href => "home.pl?mode=milestone;mid=$$m{mid}");
 	    $a->push_content("MILESTONE: $$m{name}");
 	    $h2->push_content($a);
 	    $c->item($item)->push_content($h2);
