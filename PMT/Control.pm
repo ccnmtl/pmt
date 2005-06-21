@@ -1067,7 +1067,7 @@ sub add_client_form {
     my $pmt = $self->{pmt};
 
     my $template = $self->template('add_client.tmpl');
-    $template->param($user->menu());
+
     if ($client_email ne "") {
         my $uni = "";
         if ($client_email =~ /^(\w+)$/) {
@@ -1182,7 +1182,7 @@ sub post_form {
     my $self = shift;
     my $user = $self->{user};
     my $template = $self->template("post.tmpl");
-    $template->param($user->menu());
+
     $template->param(page_title => 'post to forum');
     $template->param(forum_mode => 1);
     my $cdbi_user = $self->{cdbi_user};
@@ -1476,7 +1476,6 @@ sub project_info {
 
     my $template = $self->template("project_info.tmpl");
     $template->param(\%data);
-    $template->param($self->{user}->menu());
     $template->param(page_title => "project: $data{name}");
     $template->param(projects_mode => 1);
     
@@ -1494,7 +1493,6 @@ sub project_documents {
     $data{total_completed_time} = interval_to_hours($project->completed_time);
     $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
 
-    $template->param($self->{user}->menu());
     $template->param(\%data);
     $template->param(projects_mode => 1);
     $template->param(documents => [map {$_->data()} $project->documents()]);
@@ -1514,7 +1512,6 @@ sub project_milestones {
     $data->{total_estimated_time} = interval_to_hours($project->all_estimated_time);
 
     my $template = $self->template("project_milestones.tmpl");
-    $template->param($self->{user}->menu());
     $template->param(projects_mode => 1);
     $template->param(page_title => "project milestones");
     $template->param($data);
@@ -1532,7 +1529,6 @@ sub add_services_item {
     
     my $template = template("add_courseworks_item.tmpl");
 
-    $template->param($user->menu());
     $template->param($pmt->add_courseworks_item_form($pid,$type,$user->{username},$client_id));
 
     use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days/;
@@ -1689,7 +1685,6 @@ sub update_project_form {
     if($works_on) {$data{$works_on} = 1;}
     my $template = $self->template("edit_project.tmpl");
     $template->param(\%data);
-    $template->param($user->menu());
     $template->param(page_title => "edit project: $data{name}",
 		     month      => $mon + 1,
 		     year       => 1900 + $year);
@@ -1725,7 +1720,6 @@ sub search_forum {
     my $template = $self->template("searchForum.tmpl");
     $template->param(result => $result);
     $template->param(page_title => 'Search Forum');
-    $template->param($user->menu());
     $template->param(forum_mode => 1);
     print $cgi->header(-charset => 'utf-8'), $template->output();
 
