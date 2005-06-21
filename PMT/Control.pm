@@ -53,6 +53,8 @@ sub setup {
         'add_client'             => 'add_client',
         'post_form'              => 'post_form',
         'post'                   => 'post',
+        'update_item'            => 'update_item',
+        'update_item_form'       => 'update_item_form',
         'update_items'           => 'update_items',
         'total_breakdown'        => 'total_breakdown',
         'user_plate'             => 'user_plate',
@@ -92,6 +94,7 @@ sub setup {
     $self->{password} = $password;
     $self->{username} = $username;
     $self->{message} = $q->param('message');
+    $self->header_props(-charset => 'utf-8');
 }
 
 sub template {
@@ -1764,7 +1767,114 @@ sub document {
         }
         return $document->contents();
     }
+}
 
+sub update_item_form {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $iid = $cgi->param('iid');
+    my $pmt = $self->{pmt};
+    my $user = $self->{user};
+
+    my $r = $pmt->item($iid);
+    my $item = PMT::Item->retrieve($iid);
+    my %data = %$r;
+    my $project = PMT::Project->retrieve($data{'pid'});
+    $data{$project->project_role($user->{username})} = 1;
+    my $template = $self->template("edit_item.tmpl");
+    $template->param(\%data);
+    $template->param(page_title => "Edit Item: $data{title}");
+    $template->param(cc => $item->cc($self->{cdbi_user}));
+    return $template->output();
+}
+
+sub update_item {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $iid = $cgi->param('iid') || "";
+
+    my $user = $self->{user};
+    my $pmt = $self->{pmt};
+    my $cdbi_user = $self->{cdbi_user};
+    my $username = $cdbi_user->username;
+
+    my $status = $cgi->param('status') || "";
+
+    my $r_status = "";
+    ($status,$r_status) = split /_/, $cgi->param('status');
+
+    my $type         = $cgi->param('type') || "";
+    my $mid          = $cgi->param('mid') || "";
+    my $title        = escape($cgi->param('title')) || "no title";
+    my $assigned_to  = $cgi->param('assigned_to') || "";
+    my $owner        = $cgi->param('owner') || "";
+    my $priority     = $cgi->param('priority') || "";
+    my $url          = escape($cgi->param('url')) || "";
+    my $description  = $cgi->param('description') || "";
+    my $new_keywords = $cgi->param('new_keywords') || "";
+    my @keywords     = $cgi->param('keywords');
+    my @dependencies = $cgi->param('depends');
+    my @clients      = $cgi->param('clients');
+    my $target_date  = $cgi->param('target_date') || PMT::Milestone->retrieve($mid)->target_date;
+    my $comment      = escape($cgi->param('comment')) || "";
+    my $resolve_time = $cgi->param('resolve_time') || "";
+    my $client_uni   = $cgi->param('client_uni') || "";
+
+    if($resolve_time =~ /^(\d+)$/) {
+        # default to hours if no unit was specified.
+        $resolve_time .= "h";
+    }
+    my $estimated_time = $cgi->param('estimated_time') || "01:00";
+    if($estimated_time =~ /^(\d+)$/) {
+        $estimated_time .= "h";
+    }
+
+
+
+    push @keywords, split /\n/, $new_keywords;
+    @keywords = map {escape($_);} @keywords;
+
+    my @new_keywords;
+    foreach my $k (@keywords) {
+        push @new_keywords, $k unless $k eq "";
+    }
+
+    my @new_deps;
+    foreach my $d (@dependencies) {
+        push @new_deps, $d unless $d eq "";
+    }
+
+    my @new_clients;
+    foreach my $c (@clients) {
+        push @new_clients, $c unless $c eq "";
+    }
+
+    my %item = (type         => $type,
+                iid          => $iid,
+                mid          => $mid,
+                title        => $title,
+                assigned_to  => $assigned_to,
+                owner        => $owner,
+                priority     => $priority,
+                target_date  => $target_date,
+                url          => $url,
+                description  => $description,
+                keywords     => \@new_keywords,
+                dependencies => \@new_deps,
+                clients      => \@new_clients,  
+                client_uni   => $client_uni,
+                status       => $status,
+                r_status     => $r_status,
+                resolve_time => $resolve_time,
+                estimated_time => $estimated_time,
+                comment      => $comment);
+
+    use URI::Escape;
+
+    my $message = URI::Escape::uri_escape($pmt->update_item(\%item,$username));
+    $self->header_type('redirect');
+    $self->header_props(-url => "item.pl?iid=$iid;message=$message");
+    return $message;
 }
 
 1;

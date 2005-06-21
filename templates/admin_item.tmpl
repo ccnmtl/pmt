@@ -1,6 +1,7 @@
 <tmpl_include name="header.tmpl">
 
-<form action="update_item.pl" method="POST">
+<form action="home.pl" method="POST">
+<input type="hidden" name="mode" value="update_item" />
 <input type="hidden" name="iid" value="<tmpl_var name="iid">" />
 <input type="hidden" name="mid" value="<tmpl_var name="mid">" />
 <input type="hidden" name="type" value="<tmpl_var name="type">" />
