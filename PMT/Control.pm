@@ -86,6 +86,7 @@ sub setup {
 	'project'                => 'project',
         'forum'                  => 'forum',
 	'node'                   => 'node',
+        'staff_report'           => 'staff_report',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2111,6 +2112,59 @@ sub node {
     $template->param($forum->node($nid));
     $template->param(page_title => "Forum Node: " . $template->param('subject'));
     return $template->output();
+}
+
+sub staff_report {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pmt = $self->{pmt};
+    my $syear = $cgi->param('year') || "";
+    my $smonth = $cgi->param('month') || "";
+    my $sday = $cgi->param('day') || "";
+    my ($sec,$min,$hour,$mday,$mon,
+        $year,$wday,$yday,$isdst);
+    if($syear && $smonth && $sday) {
+        # if the day was specified in the url, use that
+        $year = $syear;
+        $mon = $smonth;
+        $mday = $sday;
+    } else {
+        # otherwise, default to today
+        ($sec,$min,$hour,$mday,$mon,
+         $year,$wday,$yday,$isdst) = localtime(time); 
+        $year += 1900;
+        $mon += 1;
+    }
+
+
+    my ($mon_year,$mon_month,$mon_day) = Monday_of_Week(Week_of_Year($year,$mon,$mday));
+    my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,7);
+    my ($pm_year,$pm_month,$pm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,-7);
+    my ($nm_year,$nm_month,$nm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,7);
+
+    my $template = $self->template("staff_report.tmpl");
+
+    $template->param(
+                     mon_year => $mon_year,
+                     mon_month => $mon_month,
+                     mon_day => $mon_day,
+                     sun_year => $sun_year,
+                     sun_month => $sun_month,
+                     sun_day => $sun_day,
+                     pm_year => $pm_year,
+                     pm_month => $pm_month,
+                     pm_day => $pm_day,
+                     nm_year => $nm_year,
+                     nm_month => $nm_month,
+                     nm_day => $nm_day,
+                     );
+    my $data = $pmt->staff_report("$mon_year-$mon_month-$mon_day",
+                                        "$sun_year-$sun_month-$sun_day");
+    $template->param($data);
+    $template->param(page_title => "Staff Report");
+    $template->param(reports_mode => 1);
+    return $template->output();
+
 }
 
 1;
