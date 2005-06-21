@@ -10,7 +10,7 @@
 
 <tmpl_if name="group">
 <table cellspacing="0" cellpadding="0" class="default">
-<tr><th>group</th><td><tmpl_var name="user_fullname"> [<a href="group.pl?group=<tmpl_var
+<tr><th>group</th><td><tmpl_var name="user_fullname"> [<a href="home.pl?mode=group;group=<tmpl_var
 name="user_username" escape="url">">edit user list</a>]</td></tr>
 <tmpl_if name="users"><tr><th>users</th><td><tmpl_loop name="users"><a
 href="user.pl?username=<tmpl_var name="username"
@@ -27,7 +27,7 @@ escape="html"></a><tmpl_unless __LAST__>,
 <tmpl_if name="groups">
 <tr><th>Groups:</th><td>
 <tmpl_loop name="groups">
-<a href="group.pl?group=<tmpl_var name='group'
+<a href="home.pl?mode=group;group=<tmpl_var name='group'
 escape="url">"><tmpl_var name="group_name"
 escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
 </tmpl_loop>

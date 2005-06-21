@@ -78,6 +78,8 @@ sub setup {
 	'document'               => 'document',
         'users'                  => 'users',
         'all_clients'            => 'all_clients',
+        'all_groups'             => 'all_groups',
+        'group'                  => 'group',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -881,7 +883,7 @@ sub update_group {
     $pmt->update_group($group,\@users);
 
     $self->header_type('redirect');
-    $self->header_props(-url => "group.pl?group=$group");
+    $self->header_props(-url => "home.pl?mode=group;group=$group");
     return "updated group";
 }
 
@@ -1454,7 +1456,7 @@ sub add_group {
     my $group = $cgi->param('group') || "";
     $group = $self->{pmt}->add_group($group);
     $self->header_type("redirect");
-    $self->header_props(-url => "group.pl?group=$group");
+    $self->header_props(-url => "home.pl?mode=group;group=$group");
 }
 
 sub project_info {
@@ -1909,5 +1911,28 @@ sub all_clients {
     $template->param(page_title => "All clients ($letter)");
     return $template->output();
 }
+
+sub all_groups {
+    my $self = shift;
+    my $pmt = $self->{pmt};
+    my $template = $self->template('groups.tmpl');
+    $template->param(groups => $pmt->groups());
+    $template->param(page_title => "Groups");
+    $template->param(users_mode => 1);
+    return $template->output();
+}
+
+sub group {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pmt = $self->{pmt};
+    my $group = $cgi->param('group') || "";
+    my $template = $self->template('group.tmpl');
+    $template->param($pmt->group($group));
+    $template->param(page_title => "Group: $group");
+    $template->param(users_mode => 1);
+    return $template->output();
+}
+
 
 1;
