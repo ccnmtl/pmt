@@ -58,12 +58,12 @@ User: <a href="home.pl"><tmpl_var name="username"></a> |
       <li><a href="home.pl?mode=project_search_form">Search Projects</a></li> 
     </ul> 
   </li>  
-  <li id="clients"><a href="client_search.pl?contact=<tmpl_var name="username" escape="url">;status=active">Clients <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+  <li id="clients"><a href="home.pl?mode=client_search;contact=<tmpl_var name="username" escape="url">;status=active">Clients <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
     <ul class="client_list"> 
-      <li class="alignfirst"><a href="client_search.pl?contact=<tmpl_var name="username" escape="url">;status=active">My Clients</a></li> 
+      <li class="alignfirst"><a href="home.pl?mode=client_search;contact=<tmpl_var name="username" escape="url">;status=active">My Clients</a></li> 
       <li><a href="home.pl?mode=all_clients">All Clients</a></li> 
       <li class="subitem"><a href="home.pl?mode=add_client_form"><img class="dropdown_arrow" src="images/subitem.gif" alt="" /> Add Clients</a></li> 
-      <li class="subitem"><a href="client_search.pl"><img class="dropdown_arrow" src="images/subitem.gif" alt="" /> Search Clients</a></li> 
+      <li class="subitem"><a href="home.pl?mode=client_search_form"><img class="dropdown_arrow" src="images/subitem.gif" alt="" /> Search Clients</a></li> 
       <li><a href="home.pl?mode=new_clients">New Clients</a></li> 
     </ul> 
   </li> 

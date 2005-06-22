@@ -11,7 +11,7 @@
 
 <h1>view this user's:</h1>
 <ul>
-	<li><a href="client_search.pl?contact=<tmpl_var name='user_username'>;status=active">clients</a></li>
+	<li><a href="home.pl?mode=client_search;contact=<tmpl_var name='user_username'>;status=active">clients</a></li>
 	<li><a href="home.pl?mode=total_breakdown;username=<tmpl_var name="user_username">">project breakdown</a></li>
 	<li><a href="home.pl?mode=user_plate;username=<tmpl_var name="user_username"
 escape="url">">plate</a></li>
@@ -25,7 +25,7 @@ escape="url">">plate</a></li>
 
 	<li>search: <a href="search.pl">items</a></li>
 	<li><span class="hide">search:</span> <a href="home.pl?mode=project_search_form">projects</a></li>
-	<li><span class="hide">search:</span> <a href="client_search.pl">clients</a></li>
+	<li><span class="hide">search:</span> <a href="home.pl?mode=client_search_form">clients</a></li>
 </ul>
 </form>
 
