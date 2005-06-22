@@ -68,7 +68,7 @@ eval {
 		     prev_month => $prev,
 		     prev_year  => $prev_year);
 
-    $template->param($user->menu());
+    $template->param($cdbi_user->menu());
     print $cgi->header, $template->output();
 };
 

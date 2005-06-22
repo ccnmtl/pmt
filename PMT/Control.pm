@@ -115,7 +115,7 @@ sub template {
     my $self = shift;
     my $template = PMT::Common::template(@_);
     $template->param(message => $self->{message});
-    $template->param($self->{user}->menu());
+    $template->param($self->{cdbi_user}->menu());
     return $template;
 }
 

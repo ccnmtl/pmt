@@ -68,7 +68,7 @@ eval {
 			 status_select => PMT::Project::status_select(),
 			 );
     }
-    $template->param($user->menu());
+    $template->param($cdbi_user->menu());
     $template->param(projects_mode => 1);
     print $cgi->header(), $template->output();
 };

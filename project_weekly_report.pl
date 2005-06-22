@@ -54,7 +54,7 @@ eval {
     my $forum = new Forum($username, $pmt);
 
     my $template = template("project_weekly_report.tmpl");
-    $template->param($user->menu());
+    $template->param($cdbi_user->menu());
     $template->param(
 		     mon_year => $mon_year,
 		     mon_month => $mon_month,

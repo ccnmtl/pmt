@@ -768,8 +768,20 @@ sub home {
     return \%data;
 }
 
-# }}}
 
+
+sub menu {
+    my $self = shift;
+    my %data = %{$self->data()};
+    delete $data{status};
+    my $projects = $self->projects_hash();
+    $data{projects} = [map {
+        {pid => $_, name => $projects->{$_}};
+    } sort {
+        lc($projects->{$a}) cmp lc($projects->{$b});
+    } keys %{$projects}];
+    return \%data;
+}
 
 
 

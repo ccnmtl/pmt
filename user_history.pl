@@ -89,7 +89,7 @@ eval {
 		     days => \@days,
 		     prev_year  => $prev_year);
 
-    $template->param($primary_user->menu());
+    $template->param($cdbi_user->menu());
     $template->param(page_title => "user history for $user");
     print $cgi->header, $template->output();
 };

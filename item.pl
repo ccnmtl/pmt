@@ -105,7 +105,7 @@ eval {
     $template->param(\%data);
 
     $template->param(page_title => "Item: $data{title}");
-    $template->param($user->menu());
+    $template->param($cdbi_user->menu());
     $template->param(cc => $item->cc(CDBI::User->retrieve($username)));
     print $cgi->header(-charset => 'utf-8'), $template->output();
 };

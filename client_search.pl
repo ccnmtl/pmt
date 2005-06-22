@@ -96,7 +96,7 @@ eval {
 	$template->param(end_date => $pmt->ss($sql,[],['date'])->{date});
     }
     $template->param(page_title => "client search");
-    $template->param($user->menu());
+    $template->param($cdbi_user->menu());
     $template->param(clients_mode => 1);
     print $cgi->header(), $template->output();
 };

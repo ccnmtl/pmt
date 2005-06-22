@@ -80,7 +80,7 @@ eval {
     my $forum = new Forum($username, $pmt);
 
     my $template = template("project_months_report.tmpl");
-    $template->param($user->menu());
+    $template->param($cdbi_user->menu());
     $template->param(
 		     year => $year,
 		     month => $month,

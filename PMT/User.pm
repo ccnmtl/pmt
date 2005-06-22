@@ -53,21 +53,6 @@ sub data {
 
 # {{{ menu
 
-sub menu {
-    my $self = shift;
-    my $username = $self->get("username");
-    my %data = %{$self->data()};
-    delete $data{status};
-    my $cdbi = CDBI::User->retrieve($username);
-    my $projects = $cdbi->projects_hash();
-    $data{projects} = [map {
-        {pid => $_, name => $projects->{$_}};
-    } sort {
-        lc($projects->{$a}) cmp lc($projects->{$b});
-    } keys %{$projects}];
-    return \%data;
-
-}
 
 # }}}
 

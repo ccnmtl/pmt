@@ -82,7 +82,7 @@ eval {
 		     prev_offset => $prev_offset);
 	  
     $template->param(page_title => 'forum archive');
-    $template->param($primary_user->menu());
+    $template->param($cdbi_user->menu());
     print $cgi->header(), $template->output();
 };
 

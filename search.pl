@@ -42,7 +42,7 @@ eval {
 
     if($csv eq "") {
 	$template = template("search.tmpl");
-	$template->param($user->menu());
+	$template->param($cdbi_user->menu());
         $template->param(items_mode => 1);
     } else {
 	$template = template("search_tab.tmpl");

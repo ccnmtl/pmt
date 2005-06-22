@@ -45,7 +45,7 @@ eval {
     my ($nm_year,$nm_month,$nm_day) = Add_Delta_Days($sun_year,$sun_month,$sun_day,1);
 
     my $template = template("monthly_summary.tmpl");
-    $template->param($user->menu());
+    $template->param($cdbi_user->menu());
     $template->param(
 		     mon_year => $mon_year,
 		     mon_month => $mon_month,

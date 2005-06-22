@@ -47,7 +47,7 @@ eval {
     my ($nm_year,$nm_month,$nm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,7);
 
     my $template = template("user_weekly_report.tmpl");
-    $template->param($primary_user->menu());
+    $template->param($cdbi_user->menu());
     $template->param(
 		     mon_year => $mon_year,
 		     mon_month => $mon_month,

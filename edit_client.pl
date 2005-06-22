@@ -82,7 +82,7 @@ sub edit_form {
     my $contact = new PMT::User($client->get('contact'));
 
     my $template = template("edit_client.tmpl");
-    $template->param($user->menu());
+    $template->param($cdbi_user->menu());
     my $data = $client->data();
     $data->{client_email} = $data->{email};
     $data->{active} = $data->{status} eq "active";
