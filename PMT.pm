@@ -1,10 +1,9 @@
 use lib qw(/home/httpd/html/lib /var/www/pmt/lib/ .);
 use strict;
-use DB;
 use CGI;
+use PMT::DB;
 use PMT::Error;
 use PMT::Config;
-use PMT::DB;
 use PMT::User;
 use PMT::Milestone;
 use PMT::Item;

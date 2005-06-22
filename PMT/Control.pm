@@ -90,6 +90,7 @@ sub setup {
         'staff_report'           => 'staff_report',
         'project_history'        => 'project_history',
         'new_clients'            => 'new_clients',
+        'project_search'         => 'project_search',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2276,5 +2277,38 @@ sub new_clients {
     return $template->output();
 
 }
+
+sub project_search {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pmt = $self->{pmt};
+    my $search = $cgi->param('search') || "";
+
+    my $type      = $cgi->param('type') || "";
+    my $area      = $cgi->param('area') || "";
+    my $approach  = $cgi->param('approach') || "";
+    my $scale     = $cgi->param('scale') || "";
+    my $distrib   = $cgi->param('distrib') || "";
+    my $manager   = $cgi->param('manager') || "";
+    my $developer = $cgi->param('developer') || "";
+    my $guest     = $cgi->param('guest') || "";
+    my $status    = $cgi->param('status') || "";
+
+    my $template = $self->template("project_search_results.tmpl");
+    $template->param(results => $pmt->project_search(type => $type,
+						     area => $area,
+						     approach => $approach,
+						     scale => $scale,
+						     distrib => $distrib,
+						     manager => $manager,
+						     developer => $developer,
+						     guest => $guest,
+						     status => $status,
+						     )
+		     );
+    $template->param($self->{user}->menu());
+    $template->param(projects_mode => 1);
+    return $template->output();
+}    
 
 1;
