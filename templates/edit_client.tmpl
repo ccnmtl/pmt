@@ -13,7 +13,8 @@ name="firstname" escape="url">%20<tmpl_var name="lastname"
 escape="url">">perform directory lookup</a>
 </h1>
 
-<form action="edit_client.pl" method="POST">
+<form action="home.pl" method="POST">
+<input type="hidden" name="mode" value="edit_client"/>
 <input type="hidden" name="client_id" value="<tmpl_var
 name="client_id">" />
 

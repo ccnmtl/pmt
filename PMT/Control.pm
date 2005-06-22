@@ -91,6 +91,8 @@ sub setup {
         'project_history'        => 'project_history',
         'new_clients'            => 'new_clients',
         'project_search'         => 'project_search',
+        'edit_client'            => 'edit_client',
+        'edit_client_form'       => 'edit_client_form',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2310,5 +2312,72 @@ sub project_search {
     $template->param(projects_mode => 1);
     return $template->output();
 }    
+
+sub edit_client {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $user = $self->{user};
+    my $client_id         = $cgi->param('client_id') || "";
+    my $client = PMT::Client->retrieve($client_id);
+    my $client_email      = $cgi->param('client_email') || "";
+    my $lastname      = $cgi->param('lastname') || "";
+    my $firstname     = $cgi->param('firstname') || "";
+    my $title                 = $cgi->param('title') || "";
+    my $registration_date = $cgi->param('registration_date') || "";
+    my $department    = $cgi->param('department') || '';
+    my $school                = $cgi->param('school') || '';
+    my $add_affiliation   = $cgi->param('add_affiliation') || "";
+    my $phone                 = $cgi->param('phone') || "";
+    my $contact       = $cgi->param('contact') || "";
+    my $comments      = $cgi->param('comments') || "";
+    my $status            = $cgi->param('status') || "active";
+
+    my @projects = $cgi->param('projects');
+
+
+    $client->update_data(
+			 lastname    => $lastname,
+			 firstname   => $firstname,
+			 title               => $title, 
+			 status          => $status,
+			 department          => $department, 
+			 school      => $school,
+			 add_affiliation => $add_affiliation,
+			 phone               => $phone,
+			 email               => $client_email, 
+			 contact     => $contact,
+			 comments    => $comments,
+			 registration_date => $registration_date,
+			 projects    => \@projects,
+			 );
+    $client->update();
+    my $letter = uc(substr($lastname,0,1));
+    $self->header_type('redirect');
+    $self->header_props(-url => "home.pl?mode=all_clients;letter=$letter");
+    return "client edited";
+}
+
+sub edit_client_form {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $client = PMT::Client->retrieve($cgi->param('client_id'));
+    my $contact = $client->contact;
+
+    my $template = $self->template("edit_client.tmpl");
+    my $data = $client->data();
+    $data->{client_email} = $data->{email};
+    $data->{active} = $data->{status} eq "active";
+    $template->param(contact_fullname => $contact->fullname);
+
+    delete $data->{email};
+    $template->param(%{$data});
+    $template->param(projects => $client->projects_data(),
+                     projects_select => $client->projects_select(),
+                     contacts_select => $client->contacts_select(),
+                     schools_select => $client->schools_select(),
+                     departments_select => $client->all_departments_select());
+    $template->param(clients_mode => 1);
+    return $template->output();
+}
 
 1;
