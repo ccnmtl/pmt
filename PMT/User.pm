@@ -1,5 +1,5 @@
 use lib qw(..);
-package CDBI::User;
+package PMT::User;
 use base 'CDBI::DBI';
 use PMT::Common;
 
@@ -159,7 +159,7 @@ sub projects_by_auth {
     # then, add in the projects for the groups that
     # the user is part of. 
     foreach my $g (@{$self->user_groups()}) {
-	my $group_user = CDBI::User->retrieve($g->{group});
+	my $group_user = PMT::User->retrieve($g->{group});
 	my $group_projects = $group_user->projects_by_auth($auth,$seen);
 	foreach my $pid (keys %{$group_projects}) {
 	    $projects{$pid} = $group_projects->{$pid};
@@ -209,7 +209,7 @@ sub projects_hash {
     # then, add in the projects for the groups that
     # the user is part of. 
     foreach my $g (@{$self->user_groups()}) {
-	my $group_user = CDBI::User->retrieve($g->{group});
+	my $group_user = PMT::User->retrieve($g->{group});
 	my $group_projects = $group_user->projects_hash($seen);
 	foreach my $pid (keys %{$group_projects}) {
 	    $projects{$pid} = $group_projects->{$pid};
@@ -291,7 +291,7 @@ sub weekly_report {
 
     foreach my $project (@$active_projects) {
 	$project->{time} =
-        $cdbi->project_completed_time_for_interval($project->{pid},
+        $self->project_completed_time_for_interval($project->{pid},
             $week_start, $week_end);
 	$project->{hours} = interval_to_hours($project->{time});
     }
@@ -665,7 +665,7 @@ my %item_handles = (
 # or owned by the user and resolved.
 sub items {
     my $self = shift;
-    my $username = $self->get("username");
+    my $username = $self->username;
     my $viewer = shift;
     my $sort = shift || "priority";
     $sort = "priority" unless exists $sorts{$sort};

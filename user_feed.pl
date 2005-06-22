@@ -12,7 +12,7 @@ use XML::RSS;
 my $cgi = new CGI();
 eval {
     my $username = $cgi->param('username') || "";
-    my $user = new PMT::User($username);
+    my $user = PMT::User->retrieve($username);
 
     my $items = $user->home()->{items};
     my $rss = new XML::RSS(version => '1.0');

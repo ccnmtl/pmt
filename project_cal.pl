@@ -12,9 +12,8 @@ eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
 
-    my $user = new PMT::User($username);
-    my $cdbi_user = CDBI::User->retrieve($username);
-    $cdbi_user->validate($username,$password);
+    my $user = PMT::User->retrieve($username);
+    $user->validate($username,$password);
 
     my $pid   = $cgi->param('pid')   || "";
     my $project = PMT::Project->retrieve($pid);
@@ -68,7 +67,7 @@ eval {
 		     prev_month => $prev,
 		     prev_year  => $prev_year);
 
-    $template->param($cdbi_user->menu());
+    $template->param($user->menu());
     print $cgi->header, $template->output();
 };
 

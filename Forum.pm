@@ -38,7 +38,7 @@ sub node {
     my $self = shift;
     my $nid = shift;
     my $node = PMT::Node->retrieve($nid);
-    my $user = CDBI::User->retrieve($self->{user});
+    my $user = PMT::User->retrieve($self->{user});
     return $node->data($user);
 }
 
@@ -304,7 +304,7 @@ sub email_post {
 to reply, please visit <http://pmt.ccnmtl.columbia.edu/home.pl?mode=node;nid=$nid>\n";
 
     my $username = $self->user();
-    my $user = CDBI::User->retrieve($username);
+    my $user = PMT::User->retrieve($username);
 
     my $current_user = $user->user_info();
 
@@ -322,9 +322,9 @@ to reply, please visit <http://pmt.ccnmtl.columbia.edu/home.pl?mode=node;nid=$ni
     foreach my $u (@users) {
 
 	# the author doesn't need a copy
-	next if $u->{username} eq $current_user->{user_username};
+	next if $u->username eq $current_user->{user_username};
 
-	my %mail = (To => $u->{email},
+	my %mail = (To => $u->email,
 		    From => "$current_user->{user_fullname} <$current_user->{user_email}>",
 		    #Subject => "[PMT Forum: ]$args->{subject}",
 		    Subject => $subject,
@@ -347,10 +347,10 @@ sub email_reply {
     # if they're just replying to their own node.
     return if $self->user() eq $reply_to_node->{author};
 
-    my $author = CDBI::User->retrieve($reply_to_node->{author});
+    my $author = PMT::User->retrieve($reply_to_node->{author});
     my $user_info = $author->user_info();
 
-    my $user = CDBI::User->retrieve($self->user());
+    my $user = PMT::User->retrieve($self->user());
 
     my $current_user = $user->user_info();
 

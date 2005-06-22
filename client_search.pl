@@ -16,9 +16,8 @@ eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
 
-    my $user = new PMT::User($username);
-    my $cdbi_user = CDBI::User->retrieve($username);
-    $cdbi_user->validate($username,$password);
+    my $user = PMT::User->retrieve($username);
+    $user->validate($username,$password);
 
     my $template;
     my $status = $cgi->param('status') || "%";
@@ -96,7 +95,7 @@ eval {
 	$template->param(end_date => $pmt->ss($sql,[],['date'])->{date});
     }
     $template->param(page_title => "client search");
-    $template->param($cdbi_user->menu());
+    $template->param($user->menu());
     $template->param(clients_mode => 1);
     print $cgi->header(), $template->output();
 };

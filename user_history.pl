@@ -15,13 +15,12 @@ eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
 
-    my $primary_user = new PMT::User($username);
-    my $cdbi_user = CDBI::User->retrieve($username);
-    $cdbi_user->validate($username,$password);
+    my $primary_user = PMT::User->retrieve($username);
+    $primary_user->validate($username,$password);
 
 
     my $user   = $cgi->param('user')  || "";
-    my $view_user = CDBI::User->retrieve($user);
+    my $view_user = PMT::User->retrieve($user);
     my $month  = $cgi->param('month') || "";
     my $year   = $cgi->param('year')  || "";
 
@@ -89,7 +88,7 @@ eval {
 		     days => \@days,
 		     prev_year  => $prev_year);
 
-    $template->param($cdbi_user->menu());
+    $template->param($primary_user->menu());
     $template->param(page_title => "user history for $user");
     print $cgi->header, $template->output();
 };

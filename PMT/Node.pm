@@ -8,7 +8,7 @@ __PACKAGE__->sequence('nodes_nid_seq');
 __PACKAGE__->columns(Primary => qw/nid/);
 __PACKAGE__->columns(All => qw/nid subject body author reply_to replies
                                type added modified project/);
-__PACKAGE__->has_a(author => 'CDBI::User');
+__PACKAGE__->has_a(author => 'PMT::User');
 
 __PACKAGE__->add_constructor('user_posts_in_range' => qq{
 author = ? and added >= ? and added <= date(?) + interval '1 day'});

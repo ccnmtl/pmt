@@ -4,7 +4,7 @@ use base 'CGI::Application';
 use lib qw(..);
 use PMT;
 use PMT::Common;
-use CDBI::User;
+use PMT::User;
 use PMT::Project;
 use PMT::Milestone;
 use PMT::Document;
@@ -97,9 +97,9 @@ sub setup {
     my $password = $q->cookie('pmtpassword') || "";
 
     if ($username eq "") { throw Error::NO_USERNAME; }
-    $self->{user} = new PMT::User($username);
-    $self->{cdbi_user} = CDBI::User->retrieve($username);
-    $self->{cdbi_user}->validate($username,$password);
+    
+    $self->{user} = PMT::User->retrieve($username);
+    $self->{user}->validate($username,$password);
     
 
     $self->{pmt} = $pmt;
@@ -115,7 +115,7 @@ sub template {
     my $self = shift;
     my $template = PMT::Common::template(@_);
     $template->param(message => $self->{message});
-    $template->param($self->{cdbi_user}->menu());
+    $template->param($self->{user}->menu());
     return $template;
 }
 
@@ -123,7 +123,7 @@ sub home {
     my $self = shift;
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
     my $template = $self->template("home.tmpl");
-    my $user = $self->{cdbi_user};
+    my $user = $self->{user};
     $template->param($user->home());
     $template->param(clients => $user->clients_data());
     $template->param(page_title => "homepage for $user->username");
@@ -139,8 +139,7 @@ sub edit_my_items_form {
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
     my $template = $self->template("edit_items.tmpl");
     my $user = $self->{user};
-    my $cdbi_user = CDBI::User->retrieve($self->{username});
-    $template->param($cdbi_user->quick_edit_data());
+    $template->param($user->quick_edit_data());
     $template->param(page_title => "quick edit items");
     $template->param(month => $mon + 1,
         year => 1900 + $year);
@@ -152,8 +151,8 @@ sub user_settings_form {
     my $self = shift;
     my $user = $self->{user};
     my $template = $self->template("user_settings_form.tmpl");
-    $template->param(username => $user->{username});
-    $template->param(fullname => $user->{fullname});
+    $template->param(username => $user->username);
+    $template->param(fullname => $user->fullname);
     $template->param(page_title => "update user settings");
     $template->param(settings_mode => 1);
     return $template->output();
@@ -170,10 +169,10 @@ sub update_user {
     my $email     = $cgi->param('email')     || "";
 
 
-    $self->{pmt}->update_user($user->{username},$self->{password},$new_pass,$new_pass2,$fullname,$email);
+    $self->{pmt}->update_user($user->username,$self->{password},$new_pass,$new_pass2,$fullname,$email);
 
     my $lcookie = $cgi->cookie(-name =>  'pmtusername',
-        -value => $user->{username},
+        -value => $user->username,
         -path => '/',
         -expires => '+10y');
     
@@ -199,40 +198,39 @@ sub my_projects {
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
     my $last_mods = $self->{pmt}->all_projects_by_last_mod();
     my %seen = ();
-    my $cdbi_user = $self->{cdbi_user};
-    my $manager_projects = $cdbi_user->projects_by_auth('manager');
+    my $manager_projects = $user->projects_by_auth('manager');
     $data->{manager_projects} = [map {
         $seen{$_} = 1;
         {
             pid      => $_, 
             name     => $manager_projects->{$_},
             last_mod => $last_mods->{$_},
-            proj_cc  => $cdbi_user->notify_projects($_), 
+            proj_cc  => $user->notify_projects($_), 
         };
     } sort {
         lc($manager_projects->{$a}) cmp lc($manager_projects->{$b});
     } keys %{$manager_projects}];
 
-    my $developer_projects = $cdbi_user->projects_by_auth('developer');
+    my $developer_projects = $user->projects_by_auth('developer');
     $data->{developer_projects} = [map {
         $seen{$_} = 1;
         {
 	            pid      => $_, 
 		    name     => $developer_projects->{$_},
                     last_mod => $last_mods->{$_},
-                    proj_cc  => $cdbi_user->notify_projects($_), 
+                    proj_cc  => $user->notify_projects($_), 
         };
     } sort {
         lc($developer_projects->{$a}) cmp lc($developer_projects->{$b});
     } grep { !exists $seen{$_} } keys %{$developer_projects}];
 
-    my $guest_projects = $cdbi_user->projects_by_auth('guest');
+    my $guest_projects = $user->projects_by_auth('guest');
     $data->{guest_projects} = [map {
         {
 	            pid      => $_, 
 		    name     => $guest_projects->{$_},
                     last_mod => $last_mods->{$_},
-                    proj_cc  => $cdbi_user->notify_projects($_), 
+                    proj_cc  => $user->notify_projects($_), 
         };
     } sort {
         lc($guest_projects->{$a}) cmp lc($guest_projects->{$b});
@@ -284,7 +282,7 @@ sub add_project {
     }
 
     my $pid =
-    $self->{pmt}->add_project($name,$description,$self->{username},$pub_view,
+    $self->{pmt}->add_project($name,$description,$self->username,$pub_view,
         $target_date, $wiki_category);
     $self->header_type('redirect');
     $self->header_props(-url => "home.pl?mode=project;pid=$pid");
@@ -293,7 +291,7 @@ sub add_project {
 
 sub all_projects {
     my $self = shift;
-    my $user = $self->{cdbi_user};
+    my $user = $self->{user};
     my $template = $self->template("projects.tmpl");
     $template->param(projects => $user->all_projects());
     $template->param(projects_mode => 1);
@@ -306,7 +304,7 @@ sub my_reports {
     my $user = $self->{user};
     my $template = $self->template("my_reports.tmpl");
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
-    $template->param(page_title => "reports for $user->{username}");
+    $template->param(page_title => "reports for $user->username");
     $template->param(month => $mon + 1,
         year => 1900 + $year);
     $template->param(reports_mode => 1);
@@ -330,7 +328,7 @@ sub global_reports {
 
 sub my_groups {
     my $self = shift;
-    my $user = $self->{cdbi_user};
+    my $user = $self->{user};
     my $template = $self->template("my_groups.tmpl");
     $template->param(users_mode => 1);
     $template->param(groups => $user->user_groups());
@@ -398,7 +396,7 @@ sub add_item {
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
 
-    my $username = $user->{username};
+    my $username = $user->username;
 
     my $type         = $cgi->param('type') || throw Error::NO_TYPE "type is necessary";
     my $pid          = $cgi->param('pid') || throw Error::NO_PID "no project specified";
@@ -551,7 +549,7 @@ sub add_trackers {
         my $target_date = $milestone->target_date;
         $pmt->add_tracker(pid => $t->{pid},
             mid => $mid, title => $t->{title}, "time" => $t->{time},
-            target_date => $target_date, owner => $user->{username},
+            target_date => $target_date, owner => $user->username,
             completed => "", clients => []);
         
     }
@@ -632,10 +630,10 @@ sub group_activity_summary {
     my ($end_year, $end_month, $end_day) = $self->get_end_date($cgi);
     my $end_date = "$end_year-$end_month-$end_day";
 
-    my $group = CDBI::User->retrieve($group_name);
+    my $group = PMT::User->retrieve($group_name);
     my %all_users = %{$group->all_users_in_group()};
     my @users = map {
-        CDBI::User->retrieve($_);
+        PMT::User->retrieve($_);
     } keys %all_users;
     my $total_time = 0.0;
     my @users_info = map {
@@ -657,7 +655,7 @@ sub group_activity_summary {
         end_month => $end_month, end_day => $end_day);
     $template->param(group_name => $group_name);
     $template->param(total_time => $total_time);
-    $template->param(group_fullname => $group->{fullname});
+    $template->param(group_fullname => $group->fullname);
     $template->param(page_title => "Group Activity Summary");
     return $template->output();
 }
@@ -668,10 +666,10 @@ sub group_plate {
     my $user = $self->{user};
     my $group_name = $cgi->param('group_name');
     
-    my $group = CDBI::User->retrieve($group_name);
+    my $group = PMT::User->retrieve($group_name);
     my %all_users = %{$group->all_users_in_group()};
     my @users = map {
-        new PMT::User($_);
+        PMT::User->retrieve($_);
     } keys %all_users;
     my $total_time = 0;
     my $total_priorities = {"priority_0" => 0, 
@@ -684,24 +682,23 @@ sub group_plate {
     
     my @users_info = map {
         my $data = $_->data();
-	my $cdbi = CDBI::User->retrieve($_->{username});
-        my $priorities = $cdbi->estimated_times_by_priority();
+        my $priorities = $_->estimated_times_by_priority();
         foreach my $pr (qw/0 1 2 3 4/) {
             $data->{"priority_$pr"} = $priorities->{"priority_$pr"} || 0;
             $total_priorities->{"priority_$pr"} += $data->{"priority_$pr"};
         }
-        my $schedules = $cdbi->estimated_times_by_schedule_status();
+        my $schedules = $_->estimated_times_by_schedule_status();
         foreach my $sched (qw/ok upcoming due overdue late/) {
             $data->{$sched} = $schedules->{$sched} || 0;
             $total_schedules->{$sched} += $data->{$sched};
         }
 
-        $data->{total_time} = $cdbi->total_estimated_time() || 0;
+        $data->{total_time} = $_->total_estimated_time() || 0;
         $total_time += $data->{total_time};
         
-        my @items = map {$_->data()} PMT::Item->assigned_to_user($_->{username});
+        my @items = map {$_->data()} PMT::Item->assigned_to_user($_->username);
         $data->{items} = \@items;
-        my $projects = $cdbi->estimated_times_by_project();
+        my $projects = $_->estimated_times_by_project();
         $data->{projects} = $projects;
         foreach my $p (@{$projects}) {
             if (exists $project_totals->{$p->{pid}}) {
@@ -795,7 +792,7 @@ sub clients_summary {
 
 sub watched_items {
     my $self = shift;
-    my $user = CDBI::User->retrieve($self->{user}->{username});
+    my $user = PMT::User->retrieve($self->{user}->username);
     my $cgi = $self->query();
 
     my $template = $self->template("watched_items.tmpl");
@@ -1176,7 +1173,7 @@ sub add_client {
     $title = substr($title,0,100);
     $phone = substr($phone,0,32);
     if ($client_email ne "" && $lastname ne "") {
-        my $contact = CDBI::User->retrieve($contact_username);
+        my $contact = PMT::User->retrieve($contact_username);
         my $client = PMT::Client->create({
                 lastname          => $lastname,
                 firstname         => $firstname,
@@ -1202,8 +1199,7 @@ sub post_form {
 
     $template->param(page_title => 'post to forum');
     $template->param(forum_mode => 1);
-    my $cdbi_user = $self->{cdbi_user};
-    my $projects = $cdbi_user->projects_hash();
+    my $projects = $user->projects_hash();
     my $projs = [map {   
         {pid => $_, name => $projects->{$_}};    
     } sort {     
@@ -1252,7 +1248,7 @@ sub update_items {
     my $user = $self->{user};
     my $cgi = $self->query();
     my %params = $cgi->Vars();
-    my $u = CDBI::User->retrieve($self->{username});    
+    my $u = PMT::User->retrieve($self->{username});    
     foreach my $k (keys %params) {
         if ($k =~ /^title_(\d+)$/) {
             my $iid = $1;
@@ -1260,7 +1256,7 @@ sub update_items {
             my $priority = $params{"priority_$iid"};
             my $status = $params{"status_$iid"};
             my $assigned_to = $params{"assigned_to_$iid"};
-            my $ass_to = CDBI::User->retrieve($assigned_to);                
+            my $ass_to = PMT::User->retrieve($assigned_to);                
             my $target_date = $params{"target_date_$iid"};
             my $resolve_time = $params{"resolve_time_$iid"};
             my $i = PMT::Item->retrieve($iid);
@@ -1363,13 +1359,12 @@ sub total_breakdown {
     my $self = shift;
     my $q = $self->query();
     my $username = $q->param('username') || $self->{username};
-    my $user = new PMT::User($username);
-    my $cdbi_user = CDBI::User->retrieve($username);
+    my $user = PMT::User->retrieve($username);
 
     my $template = $self->template("total_breakdown.tmpl");
     $template->param($user->data());
-    $template->param($cdbi_user->total_breakdown());
-    $template->param(total_time => $cdbi_user->total_completed_time());
+    $template->param($user->total_breakdown());
+    $template->param(total_time => $user->total_completed_time());
     $template->param('reports_mode' => 1);
     $template->param(page_title => "total project breakdown report for $username");
     return $template->output();
@@ -1379,8 +1374,8 @@ sub user_plate {
     my $self = shift;
     my $q = $self->query();
     my $username = $q->param('username') || $self->{username};
-    my $user = new PMT::User($username);
-    my $u = CDBI::User->retrieve($username);
+    my $user = PMT::User->retrieve($username);
+    my $u = PMT::User->retrieve($username);
     my $template = $self->template("user_plate.tmpl");
     $template->param($user->data());
     $template->param($u->estimated_times_by_priority());
@@ -1546,7 +1541,7 @@ sub add_services_item {
     
     my $template = template("add_courseworks_item.tmpl");
 
-    $template->param($pmt->add_courseworks_item_form($pid,$type,$user->{username},$client_id));
+    $template->param($pmt->add_courseworks_item_form($pid,$type,$user->username,$client_id));
 
     use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days/;
     my ($sec,$min,$hour,$mday,$mon,
@@ -1567,7 +1562,7 @@ sub add_services_item {
 sub notify {
     my $self = shift;
     my $cgi = $self->query();
-    my $user = $self->{cdbi_user};
+    my $user = $self->{user};
     my $iid = $cgi->param('iid');
     my $item = PMT::Item->retrieve($iid);
 
@@ -1587,7 +1582,7 @@ sub notify_project {
     my $self = shift;
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
-    my $user = $self->{cdbi_user};
+    my $user = $self->{user};
     my $pid = $cgi->param('pid');
     my $project = PMT::Project->retrieve($pid);
 
@@ -1607,7 +1602,7 @@ sub update_project {
     my $self = shift;
     my $cgi = $self->query();
     my $user = $self->{user};
-    my $username = $user->{username};
+    my $username = $user->username;
     my $pmt = $self->{pmt};
     my $pid = $cgi->param('pid');
     my $name        = escape($cgi->param('name')) || "";
@@ -1669,7 +1664,7 @@ sub update_project_form {
     my $pid = $cgi->param('pid');
     my $pmt = $self->{pmt};
     my $user = $self->{user};
-    my $username = $user->{username};
+    my $username = $user->username;
 
     my ($sec,$min,$hour,$mday,$mon,
 	$year,$wday,$yday,$isdst) = localtime(time); 
@@ -1717,7 +1712,7 @@ sub search_forum {
     my $self = shift;
     my $pmt = $self->{pmt};
     my $user = $self->{user};
-    my $username = $user->{username};
+    my $username = $user->username;
     my $cgi = $self->query();
     my $forum = new Forum($username, $pmt);
     my $search = $cgi->param('searchWord') || "";
@@ -1747,7 +1742,7 @@ sub keyword {
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
     my $user = $self->{user};
-    my $username = $self->{cdbi_user}->username;
+    my $username = $user->username;
     my $keyword = $cgi->param('keyword') || "";
     my $pid     = $cgi->param('pid')     || "";
 
@@ -1793,11 +1788,11 @@ sub update_item_form {
     my $item = PMT::Item->retrieve($iid);
     my %data = %$r;
     my $project = PMT::Project->retrieve($data{'pid'});
-    $data{$project->project_role($user->{username})} = 1;
+    $data{$project->project_role($user->username)} = 1;
     my $template = $self->template("edit_item.tmpl");
     $template->param(\%data);
     $template->param(page_title => "Edit Item: $data{title}");
-    $template->param(cc => $item->cc($self->{cdbi_user}));
+    $template->param(cc => $item->cc($user));
     return $template->output();
 }
 
@@ -1808,8 +1803,7 @@ sub update_item {
 
     my $user = $self->{user};
     my $pmt = $self->{pmt};
-    my $cdbi_user = $self->{cdbi_user};
-    my $username = $cdbi_user->username;
+    my $username = $user->username;
 
     my $status = $cgi->param('status') || "";
 
@@ -1949,13 +1943,13 @@ sub client {
     my $client_id = $cgi->param('client_id') || "";
     my $client = PMT::Client->retrieve($client_id);
 
-    my $contact = new PMT::User($client->get('contact'));
+    my $contact = $client->contact;
 
     my $template = $self->template("client.tmpl");
     my $data     = $client->data();
     $data->{client_email} = $data->{email};
     $data->{active} = $data->{status} eq "active";
-    $template->param(contact_fullname => $contact->get('fullname'));
+    $template->param(contact_fullname => $contact->fullname);
     delete $data->{email};
     $template->param(%{$data});
     $template->param(client_projects => $client->projects_data(),
@@ -1977,7 +1971,7 @@ sub milestone {
     $data{'items'} = [map {$_->data()} $milestone->items()];
     $data{'total_estimated_time'} = $milestone->estimated_time();
     my $project = $milestone->pid;
-    my $works_on = $project->project_role($self->{cdbi_user}->username);
+    my $works_on = $project->project_role($self->{user}->username);
     if($works_on){
         $data{$works_on} = 1;
     }
@@ -1997,14 +1991,14 @@ sub user {
     my $self = shift;
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
-    my $login = $self->{user}->{username};
+    my $login = $self->{user}->username;
     my ($sec,$min,$hour,$mday,$mon,
         $year,$wday,$yday,$isdst) = localtime(time); 
 
     my $username = $cgi->param('username') || "";
     my $sortby   = $cgi->param('sortby')   || "priority";
 
-    my $viewing_user = new PMT::User($username);
+    my $viewing_user = PMT::User->retrieve($username);
 
     my $template = $self->template("user.tmpl");
     my $data = $viewing_user->data();
@@ -2017,7 +2011,7 @@ sub user {
     delete $data->{status};
     throw Error::NonexistantUser "user does not exist" 
         unless $data->{user_username};
-    my $vu = CDBI::User->retrieve($username);
+    my $vu = PMT::User->retrieve($username);
     if ($data->{group}) {
         $data->{users} = $pmt->users_in_group($username);
     } else {
@@ -2037,7 +2031,7 @@ sub user {
 sub project {
     my $self = shift;
     my $cgi = $self->query();
-    my $username = $self->{user}->{username};
+    my $username = $self->{user}->username;
     my ($sec,$min,$hour,$mday,$mon,
         $year,$wday,$yday,$isdst) = localtime(time); 
     my $pid    = $cgi->param('pid') || "";
@@ -2065,7 +2059,7 @@ sub project {
     my $template = $self->template("project.tmpl");
     $template->param(\%data);
 
-    $template->param(proj_cc => $project->cc(CDBI::User->retrieve($username)));
+    $template->param(proj_cc => $project->cc(PMT::User->retrieve($username)));
     $template->param(page_title => "project: $data{name}",
                      month      => $mon + 1,
                      year       => 1900 + $year);
@@ -2084,7 +2078,7 @@ sub project {
 sub forum {
     my $self = shift;
     my $cgi = $self->query();
-    my $username = $self->{user}->{username};
+    my $username = $self->{user}->username;
     my $pmt = $self->{pmt};
     my $pid = $cgi->param('pid') || "";
     my $forum = new Forum($username,$pmt);
@@ -2109,7 +2103,7 @@ sub node {
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
     my $nid = $cgi->param('nid') || "";
-    my $forum = new Forum($self->{cdbi_user}->username,$pmt);
+    my $forum = new Forum($self->{user}->username,$pmt);
     my $template = $self->template("node.tmpl");
     $template->param($forum->node($nid));
     $template->param(page_title => "Forum Node: " . $template->param('subject'));

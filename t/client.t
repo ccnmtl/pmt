@@ -3,7 +3,6 @@ use Test::More tests => 17;
 use lib qw(.);
 use PMT;
 use PMT::Client;
-use CDBI::User;
 
 my $firstname = "regression test";
 my $lastname = "regression test";
@@ -16,7 +15,7 @@ my $email = "regressiontest\@columbia.edu";
 my $comments = "this is a regression test user. if it shows up in
 production data somehow, please report it.";
 my $status = "active";
-my $contact = CDBI::User->retrieve("regressiontestuser");
+my $contact = PMT::User->retrieve("regressiontestuser");
 
 my $client = PMT::Client->create({firstname => $firstname, lastname =>
 $lastname, title => $title, registration_date => $registration_date,

@@ -33,7 +33,7 @@ __PACKAGE__->columns(Others => qw/type area url restricted approach
                                info_url entry_rel eval_url projnum scale
                                distrib poster wiki_category/);
 __PACKAGE__->columns(TEMP => qw/estimated_time completed_time/);
-__PACKAGE__->has_a("caretaker" => 'CDBI::User');
+__PACKAGE__->has_a("caretaker" => 'PMT::User');
 __PACKAGE__->has_many("documents" => 'PMT::Document', "pid");
 __PACKAGE__->has_many(milestones => 'PMT::Milestone', "pid");
 __PACKAGE__->has_many(works_on => 'PMT::WorksOn', "pid");
@@ -174,7 +174,7 @@ sub interval_total {
     my $start = shift;
     my $end = shift;
     my $sth = $self->sql_interval_total;
-    $sth->execute($self->get("pid"),$start,$end);
+    $sth->execute($self->pid,$start,$end);
     return $sth->fetchall_arrayref()->[0]->[0];
 }
 
@@ -203,7 +203,7 @@ sub add_item_form {
     my $username = untaint_username(shift);
 
     my %data = %{$self->data()};
-    my $user = CDBI::User->retrieve($username);
+    my $user = PMT::User->retrieve($username);
 
     $data{'keywords'}     = $self->keywords();
     $data{'dependencies'} = $self->all_items_in_project();
@@ -249,7 +249,7 @@ sub project_milestones_select {
 
 sub upcoming_milestone  {
     my $self = shift;
-    my $pid = $self->get("pid");
+    my $pid = $self->pid;
     # ideally, we want a milestone that is open, in the future and as close
     # to today as possible
     my $sth = $self->sql_upcoming_milestone;
@@ -276,7 +276,7 @@ sub project_milestones {
     my $username = shift;
 
     my $sth = $self->sql_project_milestones;
-    $sth->execute($self->get('pid'));
+    $sth->execute($self->pid);
 
     my @milestones = map {
 	{
@@ -367,14 +367,14 @@ sub group_hours {
     my $week_end = shift;
 
     my $sth = $self->sql_group_hours;
-    $sth->execute($self->get('pid'),$group,$week_start,$week_end);
+    $sth->execute($self->pid,$group,$week_start,$week_end);
     $sth->fetchall_arrayref()->[0]->[0];
 }
 
 sub all_users_in_project {
     my $self = shift;
     my $sth = $self->sql_all_users_in_project;
-    $sth->execute($self->get('pid'));
+    $sth->execute($self->pid);
     return [map {
 	{
 	    username => $_->[0],
@@ -741,7 +741,7 @@ sub all_non_personnel_select {
     my @selected = ($self->managers(),$self->developers(),$self->guests());
     my %selected = map {$_->username => 1} @selected;
 
-    my @users = CDBI::User->all_active();
+    my @users = PMT::User->all_active();
 
     @users = grep {!exists $selected{$_->username}} @users;
 

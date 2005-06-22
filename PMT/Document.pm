@@ -2,7 +2,7 @@ use lib qw(..);
 package PMT::Document;
 use PMT::Common;
 use base 'CDBI::DBI';
-use CDBI::User;
+use PMT::User;
 use PMT::Project;
 
 __PACKAGE__->table('documents');
@@ -10,7 +10,7 @@ __PACKAGE__->sequence('documents_did_seq');
 __PACKAGE__->columns(All => qw/did pid filename title type url description
 version author last_mod/);
 __PACKAGE__->has_a(pid => 'PMT::Project');
-__PACKAGE__->has_a(author => 'CDBI::User');
+__PACKAGE__->has_a(author => 'PMT::User');
 
 my %content_types = (html => 'text/html',
                      txt => 'text/plain',
@@ -95,7 +95,7 @@ sub add_document {
         }
     }
     my $project = PMT::Project->retrieve($params{pid});
-    my $author = CDBI::User->retrieve($params{author});
+    my $author = PMT::User->retrieve($params{author});
 
     my $filename = $params{filename};
     my $title = $params{title};

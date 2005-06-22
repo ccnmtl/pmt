@@ -5,7 +5,7 @@ __PACKAGE__->table('comments');
 __PACKAGE__->sequence('comments_s');
 __PACKAGE__->columns(All => qw/cid comment add_date_time username item
 event/);
-__PACKAGE__->has_a(username => 'CDBI::User');
+__PACKAGE__->has_a(username => 'PMT::User');
 __PACKAGE__->has_a(item => 'PMT::Item');
 __PACKAGE__->has_a(event => 'PMT::Event');
 

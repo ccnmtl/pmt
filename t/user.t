@@ -3,7 +3,6 @@ use Test::More tests => 10;
 use lib qw(.);
 use PMT;
 use PMT::User;
-use CDBI::User;
 use PMT::Group;
 
 my $username = "regressiontestuser";
@@ -16,8 +15,7 @@ ok($PMT,"new()");
 ok($PMT->{db},"has db object");
 
 $PMT->add_user($username,$password,$fullname,$email);
-my $user = new PMT::User($username);
-my $u = CDBI::User->retrieve($username);
+my $u = PMT::User->retrieve($username);
 $u->validate($username,$password);
 ok(1,"$username validated");
 
@@ -39,7 +37,7 @@ ok($passed,"testuser2 incorrect password didn't validate");
 # create a group
 my $grp = $PMT->add_group("regressiontest");
 $PMT->update_group($grp, [$username]);
-my $group = CDBI::User->retrieve($grp);
+my $group = PMT::User->retrieve($grp);
 my @programmers = $group->users_in_group();
 my $found = 0;
 foreach my $u (@programmers) {

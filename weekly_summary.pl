@@ -16,9 +16,8 @@ eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
 
-    my $user = new PMT::User($username);
-    my $cdbi_user = CDBI::User->retrieve($username);
-    $cdbi_user->validate($username,$password);
+    my $user = PMT::User->retrieve($username);
+    $user->validate($username,$password);
 
     my $syear = $cgi->param('year') || "";
     my $smonth = $cgi->param('month') || "";
@@ -45,7 +44,7 @@ eval {
     my ($nm_year,$nm_month,$nm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,7);
 
     my $template = template("weekly_summary.tmpl");
-    $template->param($cdbi_user->menu());
+    $template->param($user->menu());
     $template->param(
 		     mon_year => $mon_year,
 		     mon_month => $mon_month,

@@ -22,9 +22,8 @@ eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
 
-    my $user = new PMT::User($username);
-    my $cdbi_user = CDBI::User->retrieve($username);
-    $cdbi_user->validate($username,$password);
+    my $user = PMT::User->retrieve($username);
+    $user->validate($username,$password);
 
     my $item;
     my %data;
@@ -38,8 +37,8 @@ eval {
         exit;
     }
 
-    my $owner       = CDBI::User->retrieve($data{owner});
-    my $assigned_to = CDBI::User->retrieve($data{assigned_to});
+    my $owner       = PMT::User->retrieve($data{owner});
+    my $assigned_to = PMT::User->retrieve($data{assigned_to});
     my $milestone   = $item->mid;
     my $project     = $milestone->pid;
     $data{message}              = $message;
@@ -94,19 +93,18 @@ eval {
     #$data{clients_select} = $item->clients_select();
 
     $data{$project->project_role($username)} = 1;
-    my $cdbi_project = PMT::Project->retrieve($project->{pid});
-    $data{total_remaining_time} = interval_to_hours($cdbi_project->estimated_time);
-    $data{total_completed_time} = interval_to_hours($cdbi_project->completed_time);
-    $data{total_estimated_time} = interval_to_hours($cdbi_project->all_estimated_time);
+    $data{total_remaining_time} = interval_to_hours($project->estimated_time);
+    $data{total_completed_time} = interval_to_hours($project->completed_time);
+    $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
 
-    ($data{done},$data{todo},$data{free},$data{completed_behind},$data{behind}) = $cdbi_project->estimate_graph(150);
+    ($data{done},$data{todo},$data{free},$data{completed_behind},$data{behind}) = $project->estimate_graph(150);
 
     my $template = template("item.tmpl");
     $template->param(\%data);
 
     $template->param(page_title => "Item: $data{title}");
-    $template->param($cdbi_user->menu());
-    $template->param(cc => $item->cc(CDBI::User->retrieve($username)));
+    $template->param($user->menu());
+    $template->param(cc => $item->cc($user));
     print $cgi->header(-charset => 'utf-8'), $template->output();
 };
 if($@) {

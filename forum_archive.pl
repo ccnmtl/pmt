@@ -15,9 +15,8 @@ my $cgi = new CGI();
 eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
-    my $primary_user = new PMT::User($username);
-    my $cdbi_user = CDBI::User->retrieve($username);
-    $cdbi_user->validate($username,$password);
+    my $primary_user = PMT::User->retrieve($username);
+    $primary_user->validate($username,$password);
     my $pid = $cgi->param('pid') || "";
     my $user = $cgi->param('username') || "";
     my $type = $cgi->param('type') || "posts";
@@ -35,7 +34,7 @@ eval {
 	$template->param(posts => $forum->project_posts($pid,$limit,$offset));
 	$total = $forum->num_project_posts($pid);
     } elsif ($user) {
-        my $u = new PMT::User($user);
+        my $u = PMT::User->retrieve($user);
         my @logs = reverse(PMT::Node->user_log_entries($user));
 	$total = scalar @logs;
         my $real_limit = $limit;
@@ -82,7 +81,7 @@ eval {
 		     prev_offset => $prev_offset);
 	  
     $template->param(page_title => 'forum archive');
-    $template->param($cdbi_user->menu());
+    $template->param($primary_user->menu());
     print $cgi->header(), $template->output();
 };
 

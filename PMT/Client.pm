@@ -7,7 +7,7 @@ __PACKAGE__->sequence('clients_client_id_seq');
 __PACKAGE__->columns(All => qw/client_id lastname firstname title
 registration_date department school add_affiliation phone email contact
 comments status/);
-__PACKAGE__->has_a(contact => 'CDBI::User');
+__PACKAGE__->has_a(contact => 'PMT::User');
 __PACKAGE__->has_many(items => 'PMT::ItemClients', 'client_id');
 __PACKAGE__->has_many(projects => 'PMT::ProjectClients', 'client_id');
 __PACKAGE__->add_constructor(all_active => qq{status = 'active' order by
@@ -203,7 +203,7 @@ sub contacts_select {
     my @labels = map {
 	push @values, $_->username;
 	$_->fullname;
-    } CDBI::User->all_active();
+    } PMT::User->all_active();
     return selectify(\@values,\@labels,[$self->contact->username]);
 }
 

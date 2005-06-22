@@ -9,8 +9,8 @@ __PACKAGE__->sequence("items_s");
 __PACKAGE__->columns(All => qw/iid type owner assigned_to title mid url
 status description priority r_status last_mod target_date estimated_time/);
 __PACKAGE__->has_a(mid => 'PMT::Milestone');
-__PACKAGE__->has_a(owner => 'CDBI::User');
-__PACKAGE__->has_a(assigned_to => 'CDBI::User');
+__PACKAGE__->has_a(owner => 'PMT::User');
+__PACKAGE__->has_a(assigned_to => 'PMT::User');
 __PACKAGE__->has_many(actual_times => 'PMT::ActualTime', 'iid');
 __PACKAGE__->has_many(notifies => 'PMT::Notify', 'iid');
 __PACKAGE__->has_many(keywords => 'PMT::Keyword', 'iid');
@@ -538,7 +538,7 @@ sub update_dependencies {
         $self->add_to_dependencies({ dest => $item->iid });
 
 	# make sure priorities are in order
-    	$item->prioritize_dependent($self->get("priority"),$self->get("target_date"));
+    	$item->prioritize_dependent($self->priority,$self->target_date);
     }
 }
 

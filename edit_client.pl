@@ -14,9 +14,8 @@ eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
     
-    my $user = new PMT::User($username);
-    my $cdbi_user = CDBI::User->retrieve($username);
-    $cdbi_user->validate($username,$password);
+    my $user = PMT::User->retrieve($username);
+    $user->validate($username,$password);
 
     my $client_id         = $cgi->param('client_id') || "";
     my $client = PMT::Client->retrieve($client_id);
@@ -79,14 +78,14 @@ sub edit_form {
     my $cgi = shift;
     my $client = shift;
     my $user = shift;
-    my $contact = new PMT::User($client->get('contact'));
+    my $contact = $client->contact;
 
     my $template = template("edit_client.tmpl");
-    $template->param($cdbi_user->menu());
+    $template->param($user->menu());
     my $data = $client->data();
     $data->{client_email} = $data->{email};
     $data->{active} = $data->{status} eq "active";
-    $template->param(contact_fullname => $contact->get('fullname'));
+    $template->param(contact_fullname => $contact->fullname);
     delete $data->{email};
     $template->param(%{$data});
     $template->param(projects => $client->projects_data(),

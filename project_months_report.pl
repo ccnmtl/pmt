@@ -19,9 +19,8 @@ eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
 
-    my $user = new PMT::User($username);
-    my $cdbi_user = CDBI::User->retrieve($username);
-    $cdbi_user->validate($username,$password);
+    my $user = PMT::User->retrieve($username);
+    $user->validate($username,$password);
 
     my $pid        = $cgi->param('pid') || "";
     my $num_months = $cgi->param('num_months') || "";
@@ -80,7 +79,7 @@ eval {
     my $forum = new Forum($username, $pmt);
 
     my $template = template("project_months_report.tmpl");
-    $template->param($cdbi_user->menu());
+    $template->param($user->menu());
     $template->param(
 		     year => $year,
 		     month => $month,

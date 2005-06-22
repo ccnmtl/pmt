@@ -11,7 +11,7 @@ my $cgi = CGI->new();
 eval {
     my $username = $cgi->param('username') || &print_form($pmt,$cgi) && exit(0);
     my $password = $cgi->param('password') || &print_form($pmt,$cgi) && exit(0);
-    my $user = CDBI::User->retrieve($username);
+    my $user = PMT::User->retrieve($username);
     $user->validate($username,$password);
     $pmt->redirect_with_cookie("home.pl",$username,$password);
 };

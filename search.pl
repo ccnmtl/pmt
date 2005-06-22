@@ -12,9 +12,8 @@ eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
 
-    my $user = new PMT::User($username);
-    my $cdbi_user = CDBI::User->retrieve($username);
-    $cdbi_user->validate($username,$password);
+    my $user = PMT::User->retrieve($username);
+    $user->validate($username,$password);
 
     # the default to "" here so we can do a conditional test below
     # to see if any were set or not.
@@ -42,7 +41,7 @@ eval {
 
     if($csv eq "") {
 	$template = template("search.tmpl");
-	$template->param($cdbi_user->menu());
+	$template->param($user->menu());
         $template->param(items_mode => 1);
     } else {
 	$template = template("search_tab.tmpl");
@@ -242,7 +241,7 @@ eval {
 	print $template->output();
     } else {
 	$template->param(users => [map {$_->data()}
-            CDBI::User->all_active()]);
+            PMT::User->all_active()]);
 	$template->param(page_title => 'search/filter');
 	print $cgi->header, $template->output();
 

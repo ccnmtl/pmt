@@ -8,7 +8,6 @@ use PMT::DB;
 use PMT::User;
 use PMT::Milestone;
 use PMT::Item;
-use CDBI::User;
 use PMT::Client;
 use PMT::Document;
 use PMT::Project;
@@ -96,8 +95,8 @@ sub item {
     my $item = PMT::Item->retrieve($iid);
 
     my %data = %{$item->data()};
-    my $owner       = CDBI::User->retrieve($data{owner});
-    my $assigned_to = CDBI::User->retrieve($data{assigned_to});
+    my $owner       = PMT::User->retrieve($data{owner});
+    my $assigned_to = PMT::User->retrieve($data{assigned_to});
     my $milestone   = PMT::Milestone->retrieve($data{mid});
     my $project        = $milestone->pid;
 
@@ -167,7 +166,7 @@ sub users_select {
     my @labels = map {
 	push @values, $_->username;
 	$_->fullname;
-    } CDBI::User->all_active();
+    } PMT::User->all_active();
     my @defaults = [];
     if ($default ne "") {
 	@defaults = ($default);
@@ -281,7 +280,7 @@ sub add_courseworks_item_form {
     $data{'client_id'}    = $client_id;
     $data{'client_lastname'} = $client_data->{'lastname'};
     $data{'client_firstname'} = $client_data->{'firstname'};
-    my $owner = CDBI::User->retrieve($username);
+    my $owner = PMT::User->retrieve($username);
     $data{'owner_select'} = $project->owner_select($owner);
     $data{$type}          = 1;
     return \%data;
@@ -301,9 +300,9 @@ sub add_item {
     my $username = untaint_username($args{'owner'});
     my $milestone = PMT::Milestone->retrieve($args{mid});
     my $project = $milestone->pid;
-    my $user = CDBI::User->retrieve($username);
-    my $owner = CDBI::User->retrieve($args{owner});
-    my $assigned_to = CDBI::User->retrieve($args{assigned_to});
+    my $user = PMT::User->retrieve($username);
+    my $owner = PMT::User->retrieve($args{owner});
+    my $assigned_to = PMT::User->retrieve($args{assigned_to});
     
     if($args{'assigned_to'} eq 'caretaker') {
 	$args{'assigned_to'} = $project->caretaker->username;
@@ -377,7 +376,7 @@ sub add_tracker {
     my %args = @_;
 
     my $milestone = PMT::Milestone->retrieve($args{mid});
-    my $user = CDBI::User->retrieve($args{owner});
+    my $user = PMT::User->retrieve($args{owner});
 
     my $item = PMT::Item->create({
             type => 'action item', owner => $user, assigned_to => $user,
@@ -402,7 +401,7 @@ sub add_todo {
     my %args = @_;
 
     my $milestone = PMT::Milestone->retrieve($args{mid});
-    my $user = CDBI::User->retrieve($args{owner});
+    my $user = PMT::User->retrieve($args{owner});
     my $item = PMT::Item->create({
             type => 'action item', owner => $user, assigned_to => $user,
             title => escape($args{title}), mid => $milestone, status =>
@@ -440,7 +439,7 @@ sub update_item {
     my $i  = PMT::Item->retrieve($item{iid});
     my $milestone = PMT::Milestone->retrieve($item{mid});
     my $project = $milestone->pid;
-    my $user = CDBI::User->retrieve($username);
+    my $user = PMT::User->retrieve($username);
     my %old = %$o;
     my $message = "";
 
@@ -471,8 +470,8 @@ sub update_item {
 	# make sure that the person it's assigned to is
 	# added to the project in the same capacity
 	# that the group was.
-	my $old_assigned_to = CDBI::User->retrieve($old{assigned_to});
-	my $new_assigned_to = CDBI::User->retrieve($item{assigned_to});
+	my $old_assigned_to = PMT::User->retrieve($old{assigned_to});
+	my $new_assigned_to = PMT::User->retrieve($item{assigned_to});
 
 	if($old_assigned_to->grp &&
 	   !$new_assigned_to->grp) {
@@ -488,8 +487,8 @@ sub update_item {
 	$comment .= "<b>changed ownership to $item{owner}</b><br />\n";
 	$message .= "changed ownership to $item{owner}. ";
 	
-	my $old_owner = CDBI::User->retrieve($old{owner});
-	my $new_owner = CDBI::User->retrieve($item{owner});
+	my $old_owner = PMT::User->retrieve($old{owner});
+	my $new_owner = PMT::User->retrieve($item{owner});
 
 	if($old_owner->grp && !$new_owner->grp) {
 	    $project->add_user_from_group_to_project($item{owner},
@@ -580,8 +579,8 @@ sub update_item {
 	$message .= "clients changed. ";
     }
 
-    my $assigned_to = new PMT::User($item{'assigned_to'});
-    if ($assigned_to->{status} ne "active") {
+    my $assigned_to = PMT::User->retrieve($item{'assigned_to'});
+    if ($assigned_to->status ne "active") {
 	# the assigned user is inactive, so 
 	# we need to reassign to the caretaker
 	$changed = 1;
@@ -591,8 +590,8 @@ sub update_item {
 	$message .= "reassigned to caretaker ($old_user is inactive). ";
     }
 
-    my $owner = new PMT::User($item{'owner'});
-    if ($owner->{status} ne "active") {
+    my $owner = PMT::User->retrieve($item{'owner'});
+    if ($owner->status ne "active") {
 	$changed = 1;
 	my $old_user = $item{'owner'};
 	$item{'owner'} = $project->caretaker;
@@ -610,7 +609,7 @@ last_mod = CURRENT_TIMESTAMP, mid = ?, estimated_time = ?
     WHERE iid = ?;
 SQL
     if($add_notification) {
-        my $ass_to = CDBI::User->retrieve($item->{assigned_to});
+        my $ass_to = PMT::User->retrieve($item->{assigned_to});
 	$i->add_cc($ass_to);
     }
     if($item{'resolve_time'} ne "") {
@@ -1084,10 +1083,10 @@ sub staff_report {
 	my %data = (group => $grp,
 		    total_time => interval_to_hours($self->total_group_time("grp_$grp",$start,$end)),
 		    );
-        my $g = CDBI::User->retrieve("grp_$grp");
+        my $g = PMT::User->retrieve("grp_$grp");
         my @users = ();
 	foreach my $u (map {$_->data()} $g->users_in_group()) {
-	    my $user = CDBI::User->retrieve($u->{username});
+	    my $user = PMT::User->retrieve($u->{username});
 	    $u->{user_time} = interval_to_hours($user->interval_time($start,$end)) || 0;
             push @users, $u;
 	}
@@ -1388,7 +1387,7 @@ sub add_group {
 sub group {
     my $self = shift;
     my $group = untaint_username(shift);
-    my $gu = CDBI::User->retrieve($group);
+    my $gu = PMT::User->retrieve($group);
     my $data = $gu->user_info();
     $data->{group} = $group;
     $data->{group_name} = $data->{user_fullname};
@@ -1413,7 +1412,7 @@ sub group_users_select_list {
     my $self = shift;
     my $group = untaint_username(shift);
     
-    my $g = CDBI::User->retrieve($group);
+    my $g = PMT::User->retrieve($group);
     my %in_group;
     foreach my $u ($g->users_in_group()) {
 	$in_group{$u->username} = 1;
@@ -1423,7 +1422,7 @@ sub group_users_select_list {
 			  label => $_->fullname,
 			  selected => exists $in_group{$_->username});
 		 \%t;
-	     } CDBI::User->all_active()];
+	     } PMT::User->all_active()];
 }
 
 # }}}

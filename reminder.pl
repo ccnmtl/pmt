@@ -9,7 +9,7 @@ my $cgi = CGI->new();
 eval {
     my $username = $cgi->param('username') || "";
     throw Error::NO_USERNAME "no username specified" unless $username;
-    my $user = CDBI::User->retrieve($username);
+    my $user = PMT::User->retrieve($username);
 
     my $r = $user->user_info();
     my %data = %$r;

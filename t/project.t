@@ -8,7 +8,7 @@ my $name = "regression test project";
 my $target_date = "2010-01-01";
 my $description = "a project for regression testing";
 my $wiki_category = "Regression Test Project";
-my $user = CDBI::User->retrieve("regressiontestuser");
+my $user = PMT::User->retrieve("regressiontestuser");
 
 my $pmt = new PMT();
 
