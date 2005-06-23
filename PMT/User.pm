@@ -757,6 +757,11 @@ sub users_select {
 }
 
 
+sub groups {
+    my $self = shift;
+    return [map {{group => $_->username, group_name => $_->fullname}} PMT::User->search(grp => 't')];
+}
+
 
 
 

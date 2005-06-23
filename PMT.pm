@@ -1206,14 +1206,6 @@ sub group_users_select_list {
 
 # }}}
 
-# {{{ groups
-# lists all the groups
-sub groups {
-    my $self = shift;
-    my $sql = qq{select username,fullname from users where grp = 't';};
-    return $self->s($sql,[],['group','group_name']);
-}
-# }}}
 
 # {{{ update_group
 

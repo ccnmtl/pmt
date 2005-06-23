@@ -326,7 +326,7 @@ sub global_reports {
     $template->param(reports_mode => 1);
     $template->param(page_title => "global reports");
     my $pmt = $self->{pmt};
-    $template->param(groups => $pmt->groups());
+    $template->param(groups => PMT::User->groups());
     return $template->output();
 }
 
@@ -1956,7 +1956,7 @@ sub all_groups {
     my $self = shift;
     my $pmt = $self->{pmt};
     my $template = $self->template('groups.tmpl');
-    $template->param(groups => $pmt->groups());
+    $template->param(groups => PMT::User->groups());
     $template->param(page_title => "Groups");
     $template->param(users_mode => 1);
     return $template->output();

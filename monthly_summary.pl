@@ -71,7 +71,7 @@ eval {
     $template->param(page_title => "monthly summary");
     my @values = ();
     my @labels = ();
-    foreach my $g (@{$pmt->groups()}) {
+    foreach my $g (@{PMT::User->groups()}) {
         my $name = $g->{group_name};
         $name =~ s/\s+\(group\)$//;
         push @values, $g->{group};
