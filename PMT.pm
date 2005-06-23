@@ -252,10 +252,10 @@ sub add_todo {
 
 sub update_item {
     my $self     = shift;
-    my $item     = shift;
+    my $itm     = shift;
     my $username = untaint_username(shift);
     $self->debug("update_item([item],$username)");
-    my %item     = %$item;
+    my %item     = %$itm;
     # changed if any fields have been changed
     my $changed = 0;
     # changed if (re)assigned and we may need to add someone 
@@ -264,9 +264,9 @@ sub update_item {
     my $email = 0;
     my $comment = "";
     # get old item info
-
+    print STDERR $item{iid};
     my $i  = PMT::Item->retrieve($item{iid});
-    my $o = $item->full_data();
+    my $o = $i->full_data();
     my $milestone = PMT::Milestone->retrieve($item{mid});
     my $project = $milestone->pid;
     my $user = PMT::User->retrieve($username);
@@ -439,7 +439,7 @@ last_mod = CURRENT_TIMESTAMP, mid = ?, estimated_time = ?
     WHERE iid = ?;
 SQL
     if($add_notification) {
-        my $ass_to = PMT::User->retrieve($item->{assigned_to});
+        my $ass_to = PMT::User->retrieve($i->{assigned_to});
 	$i->add_cc($ass_to);
     }
     if($item{'resolve_time'} ne "") {
