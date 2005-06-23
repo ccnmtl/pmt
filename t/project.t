@@ -12,10 +12,13 @@ my $user = PMT::User->retrieve("regressiontestuser");
 
 my $pmt = new PMT();
 
-my $pid = $pmt->add_project($name, $description, $user->username, 'true',
-    $target_date, $wiki_category);
+my $project = PMT::Project->create({name => $name, pub_view => 'true',
+   				caretaker => $user, description => $description,
+				status => 'planning', wiki_category => $wiki_category});
+my $manager = PMT::WorksOn->create({username => $user, pid => $project, auth => 'manager'});
 
-my $project = PMT::Project->retrieve($pid);
+$project->add_milestone("Final Release",$target_date,"project completion");
+
 
 ok($project->name eq $name, "name matches");
 ok($project->description eq $description, "description matches");

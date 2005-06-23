@@ -1012,45 +1012,6 @@ sub edit_project {
 }
 
 # }}}
-# {{{ add_project
-
-sub add_project {
-    my $self = shift;
-    my $name = escape(shift) 
-	|| throw Error::NO_NAME "project needs a name!";
-    my $description = escape(shift);
-    my $caretaker = untaint_username(shift);
-    my $pub_view = shift || 'true';
-    my $target_date = untaint_date(shift);
-    my $wiki_category = shift;
-    my $status = shift || 'planning';
-    $self->debug("add_project($name,[description],$caretaker,$pub_view,$target_date)");
-    # make sure status is one of the allowed.
-    # should probably move to subroutine.
-    my $good_status = 0;
-    foreach my $s (@PROJECT_STATUSES) {
-	if ($s eq $status) {
-	    $good_status = 1;
-	    last;
-	}
-    }
-    if(not $good_status) {
-	$status = 'planning';
-    }
-    $self->update("INSERT INTO projects
-        (name,pub_view,caretaker,description,status,wiki_category) VALUES
-        (?,?,?,?,?,?);",
-		     [$name,$pub_view,$caretaker,$description,$status,$wiki_category]);
-    my $r = $self->ss("SELECT max(pid) from projects;",[],['pid']);
-    $self->update("INSERT INTO works_on (username,pid,auth) VALUES (?,?,'manager');",
-		     [$caretaker,$$r{'pid'}]);
-    my $project = PMT::Project->retrieve($r->{pid});
-    $project->add_milestone("Final Release",$target_date,"project completion");
-
-    return $$r{'pid'};
-}
-
-# }}}
 # {{{ add_user
 
 sub add_user {

@@ -272,11 +272,7 @@ sub add_project {
     my $pub_view    = $cgi->param('pub_view')    || 'true';
     my $wiki_category = $cgi->param('wiki_category') || $name;
 
-    #Min's addition to handle forward slash in wiki category name
-    if($wiki_category =~ /\//) {
-    	throw Error::BAD_WIKI_CATEGORY_NAME "Illegal character in wiki_category wiki category name.  Do not use forward slash in the wiki category name.";
-    }
-
+    $wiki_category =~ s{/}{}g;
     $pub_view = $pub_view eq "private" ? "false" : "true";
 
     my $target_date = $cgi->param('target_date');
@@ -286,11 +282,15 @@ sub add_project {
         throw Error::INVALID_DATE "malformed date";
     }
 
-    my $pid =
-    $self->{pmt}->add_project($name,$description,$self->username,$pub_view,
-        $target_date, $wiki_category);
+    my $project = PMT::Project->create({name => $name, pub_view => $pub_view,
+					caretaker => $self->{user}, description => $description,
+					status => 'planning', wiki_category => $wiki_category});
+    my $manager = PMT::WorksOn->create({username => $self->{user}, pid => $project, auth => 'manager'});
+
+    $project->add_milestone("Final Release",$target_date,"project completion");
+
     $self->header_type('redirect');
-    $self->header_props(-url => "home.pl?mode=project;pid=$pid");
+    $self->header_props(-url => "home.pl?mode=project;pid=" . $project->pid);
     return "redirecting to new project page";
 }
 
