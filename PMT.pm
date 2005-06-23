@@ -1254,24 +1254,6 @@ sub redirect_with_cookie {
 
 # }}}
 
-# {{{ works_on_select 
-sub works_on_select {
-    my $self = shift;
-    my $role = shift || "manager";
-    my $sql = qq{select u.username,u.fullname
-		     from users u where u.username in 
-		     ( select distinct w.username from works_on w
-		       where w.auth = '$role')
-		     and u.status = 'active'
-		     order by upper(u.fullname) asc;};
-    my @fullnames = ();
-    my @usernames = map {
-	push @fullnames, $_->{fullname};
-	$_->{username};
-    } @{$self->s($sql,[],['username','fullname'])};
-    return selectify(\@usernames,\@fullnames,[]);
-}
-# }}}
 
 # {{{ project_search
 sub project_search {

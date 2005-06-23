@@ -351,9 +351,9 @@ sub project_search_form {
         approaches_select => PMT::Project::approaches_select(),
         scales_select => PMT::Project::scales_select(),
         distributions_select => PMT::Project::distribs_select(),
-        managers_select => $pmt->works_on_select("manager"),
-        developers_select => $pmt->works_on_select("developer"),
-        guests_select => $pmt->works_on_select("guest"),
+        managers_select => PMT::WorksOn->works_on_select("manager"),
+        developers_select => PMT::WorksOn->works_on_select("developer"),
+        guests_select => PMT::WorksOn->works_on_select("guest"),
         status_select => PMT::Project::status_select(),
     );
     $template->param(projects_mode => 1);
