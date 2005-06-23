@@ -864,7 +864,7 @@ sub weekly_summary {
     my $groups = shift;
     my @GROUPS = @{$groups};
     my @group_names = map {$_->{group}} @GROUPS;
-    my $projects = $self->projects_active_during($week_start,$week_end,\@group_names);
+    my $projects = PMT::Project->projects_active_during($week_start,$week_end,\@group_names);
     my $grand_total = interval_to_hours($self->interval_total_time($week_start,$week_end));
 
     foreach my $p (@$projects) {
@@ -917,26 +917,6 @@ sub staff_report {
     }
 
     return {groups => \@group_reports};
-}
-
-# }}}
-# {{{ projects_active_during
-
-sub projects_active_during {
-    my $self       = shift;
-    my $week_start = shift;
-    my $week_end   = shift;
-    my $groups     = shift;
-    my $groups_string = join ',', map {"'$_'"} @{$groups};
-    my $sql = qq{ select distinct p.pid,p.name,p.projnum
-		      from projects p, milestones m, items i, actual_times a, in_group g
-		      where p.pid = m.pid and m.mid = i.mid and i.iid = a.iid
-		      and a.resolver = g.username and g.grp in 
-		      ($groups_string)
-		      and a.completed > ? and a.completed <= ?
-		      order by p.projnum
-;};
-    return $self->s($sql,[$week_start,$week_end],['pid','name','projnum']);
 }
 
 # }}}

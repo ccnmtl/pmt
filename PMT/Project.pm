@@ -954,7 +954,34 @@ sub all_projects_by_last_mod {
     return \%results;
 }
 
-# }}}
+
+sub projects_active_during {
+    my $self       = shift;
+    my $week_start = shift;
+    my $week_end   = shift;
+    my $groups     = shift;
+    my $groups_string = join ',', map {"'$_'"} @{$groups};
+    my $sql = qq{ select distinct p.pid,p.name,p.projnum
+		      from projects p, milestones m, items i, actual_times a, in_group g
+		      where p.pid = m.pid and m.mid = i.mid and i.iid = a.iid
+		      and a.resolver = g.username and g.grp in 
+		      ($groups_string)
+		      and a.completed > ? and a.completed <= ?
+		      order by p.projnum
+;};
+    $self->set_sql(projects_active_during => $sql, 'Main');
+    my $sth = $self->sql_projects_active_during;
+    $sth->execute($week_start,$week_end);
+    return [map {
+	{
+	    pid => $_->[0],
+	    name => $_->[1],
+	    projnum => $_->[2],
+	}
+    } @{$sth->fetchall_arrayref()}]
+}
+
+
 
 
 1;
