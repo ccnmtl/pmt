@@ -624,7 +624,7 @@ sub total_group_time {
     my $self = shift;
     my $start = shift;
     my $end = shift;
-    my $sth = $self->sql_total_group_time();
+    my $sth = $self->sql_total_group_time;
     $sth->execute($self->username,$start,$end);
     return $sth->fetchrow_arrayref()->[0]->[0];
 }

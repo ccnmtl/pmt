@@ -1027,13 +1027,6 @@ sub interval_total_time {
 }
 
 # }}}
-# {{{ edit_milestone
-
-sub edit_milestone {
-    
-}
-
-# }}}
 # {{{ edit_project
 
 sub edit_project {
