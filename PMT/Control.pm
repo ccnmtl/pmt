@@ -1544,7 +1544,7 @@ sub add_services_item {
     my $type = $cgi->param('type') || "tracker";
     my $client_id = $cgi->param('client_id') || die "no client specified";
     
-    my $template = template("add_courseworks_item.tmpl");
+    my $template = $self->template("add_courseworks_item.tmpl");
 
     $template->param($pmt->add_courseworks_item_form($pid,$type,$user->username,$client_id));
 
