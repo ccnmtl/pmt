@@ -2331,16 +2331,16 @@ sub project_search {
     my $status    = $cgi->param('status') || "";
 
     my $template = $self->template("project_search_results.tmpl");
-    $template->param(results => $pmt->project_search(type => $type,
-						     area => $area,
-						     approach => $approach,
-						     scale => $scale,
-						     distrib => $distrib,
-						     manager => $manager,
-						     developer => $developer,
-						     guest => $guest,
-						     status => $status,
-						     )
+    $template->param(results => PMT::Project->project_search(type => $type,
+							     area => $area,
+							     approach => $approach,
+							     scale => $scale,
+							     distrib => $distrib,
+							     manager => $manager,
+							     developer => $developer,
+							     guest => $guest,
+							     status => $status,
+							     )
 		     );
     $template->param($self->{user}->menu());
     $template->param(projects_mode => 1);

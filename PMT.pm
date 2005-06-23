@@ -1174,32 +1174,6 @@ sub redirect_with_cookie {
 # }}}
 
 
-# {{{ project_search
-sub project_search {
-    my $self = shift;
-    my %args = @_;
-
-    my $sql = "select p.pid,p.projnum,p.name,p.status,p.area,p.caretaker,u.fullname from projects p, users u where u.username = p.caretaker ";
-    my @values = ();
-    my @conditions = ();
-    foreach my $k (qw/type area approach scale distrib status/) {
-	next unless $args{$k};
-	push @conditions, "p.$k = ?";
-	push @values, $args{$k};
-    }
-    foreach my $k (qw/manager developer guest/) {
-	next unless $args{$k};
-	push @conditions, "p.pid in (select w.pid from works_on w where w.username = ? and w.auth = '$k')";
-	push @values, $args{$k};
-    }
-    $sql .= " AND " if @conditions;
-    $sql .= join " AND ", @conditions;
-    $sql .= " order by upper(p.name) ASC;";
-
-
-    return $self->s($sql,[@values],['pid','projnum','name','status','area','caretaker','caretaker_fullname']);
-}
-# }}}
 
 # {{{ client_search
 sub client_search {
