@@ -1923,10 +1923,9 @@ sub update_item {
 
 sub users {
     my $self = shift;
-    my $pmt = $self->{pmt};
     my $template = $self->template("users.tmpl");
     
-    $template->param(users => $pmt->users_hours());
+    $template->param(users => PMT::User->users_hours());
     $template->param(page_title => "users");
     $template->param(users_mode => 1);
     return $template->output();

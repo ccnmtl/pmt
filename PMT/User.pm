@@ -763,6 +763,72 @@ sub groups {
 }
 
 
+__PACKAGE__->set_sql(users_hours_1 => qq{
+	SELECT u.username,u.fullname,count(i.iid) as open_items,sum(i.estimated_time) as hours
+        FROM   users u, items i
+        WHERE  u.status <> 'inactive'
+               AND (i.status IN ('OPEN','INPROGRESS','UNASSIGNED'))
+               AND u.username = i.assigned_to
+	GROUP BY u.username,u.fullname;
+    },'Main');
+
+__PACKAGE__->set_sql(users_hours_2 => qq{
+	SELECT u.username,u.fullname
+        FROM   users u
+        WHERE  u.username NOT IN (select distinct assigned_to from items)
+	       AND u.status <> 'inactive';
+    }, 'Main');
+
+__PACKAGE__->set_sql(users_hours_3 => qq{
+    SELECT u.username,sum(a.actual_time) as resolved from users u left outer join
+    actual_times a on u.username = a.resolver
+    where a.completed >= ?
+    group by u.username;}, 'Main');
+
+# returns AoH with all the active users, the number of open items
+# they have assigned to them, and their total estimated times
+sub users_hours {
+    my $self = shift;
+    my $sth = $self->sql_users_hours_1;
+    $sth->execute();
+    my %users = ();
+    foreach my $user (@{$sth->fetchall_arrayref({})}) {
+	$user->{hours} = interval_to_hours($user->{'hours'});
+	$users{$user->{username}} = $user;
+    }
+
+    # also get the users who don't have any open items
+
+    $sth = $self->sql_users_hours_2;
+    $sth->execute();
+    foreach my $user (@{$sth->fetchall_arrayref({})}) {
+	$user->{hours} = 0;
+	$user->{open_items} = 0;
+	$users{$user->{username}} = $user;
+    }
+
+    # get the resolved times in the last month
+
+
+    use Date::Calc qw/Add_Delta_Days/;
+    my ($year,$month,$day) = todays_date();
+    my ($pyear,$pmonth,$pday) = Add_Delta_Days($year,$month,$day,-7);
+    $sth = $self->sql_users_hours_3;
+    $sth->execute("$pyear-$pmonth-$pday");
+    foreach my $u (@{$sth->fetchall_arrayref({})}) {
+        $users{$u->{username}}->{resolved}  =
+        interval_to_hours($u->{resolved});
+    }
+
+    return [
+	    map {
+		$users{$_};
+	    } sort {
+		lc($users{$a}->{fullname}) cmp lc($users{$b}->{fullname});
+	    } keys %users
+	    ];
+}
+
 
 
 1;

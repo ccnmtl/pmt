@@ -57,67 +57,6 @@ sub new {
 
 # }}}
 
-
-
-
-# returns AoH with all the active users, the number of open items
-# they have assigned to them, and their total estimated times
-sub users_hours {
-    my $self = shift;
-    my $sql = qq{
-	SELECT u.username,u.fullname,count(i.iid),sum(i.estimated_time)
-        FROM   users u, items i
-        WHERE  u.status <> 'inactive'
-               AND (i.status IN ('OPEN','INPROGRESS','UNASSIGNED'))
-               AND u.username = i.assigned_to
-	GROUP BY u.username,u.fullname;
-    };
-    my %users = ();
-    foreach my $user (@{$self->s($sql,[],['username','fullname','open_items','hours'])}) {
-	$user->{hours} = interval_to_hours($user->{'hours'});
-	$users{$user->{username}} = $user;
-    }
-
-    # also get the users who don't have any open items
-
-    $sql = qq{
-	SELECT u.username,u.fullname
-        FROM   users u
-        WHERE  u.username NOT IN (select distinct assigned_to from items)
-	       AND u.status <> 'inactive';
-    };
-    foreach my $user (@{$self->s($sql,[],['username','fullname'])}) {
-	$user->{hours} = 0;
-	$user->{open_items} = 0;
-	$users{$user->{username}} = $user;
-    }
-
-    # get the resolved times in the last month
-    $sql = qq{
-    SELECT u.username,sum(a.actual_time) from users u left outer join
-    actual_times a on u.username = a.resolver
-    where a.completed >= ?
-    group by u.username;};
-
-    use Date::Calc qw/Add_Delta_Days/;
-    my ($year,$month,$day) = todays_date();
-    my ($pyear,$pmonth,$pday) = Add_Delta_Days($year,$month,$day,-7);
-
-    foreach my $u (@{$self->s($sql,["$pyear-$pmonth-$pday"],['username','resolved'])}) {
-        $users{$u->{username}}->{resolved}  =
-        interval_to_hours($u->{resolved});
-    }
-
-    return [
-	    map {
-		$users{$_};
-	    } sort {
-		lc($users{$a}->{fullname}) cmp lc($users{$b}->{fullname});
-	    } keys %users
-	    ];
-}
-
-
 # {{{ add_item
 
 sub add_item {
@@ -1172,14 +1111,6 @@ sub redirect_with_cookie {
 }
 
 # }}}
-
-
-
-
-# {{{ --- text utility functions 
-
-# }}}
-# {{{ --- text utility functions 
 
 # {{{ clean_username
 
