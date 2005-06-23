@@ -1012,48 +1012,6 @@ sub edit_project {
 }
 
 # }}}
-# {{{ items
-
-sub items {
-    my $self   = shift;
-    my $mid    = shift;
-    my $sortby = shift || "priority";
-    $self->debug("items($mid,$sortby)");
-    $sortby =~ s/\W//g;
-    $sortby ||= "priority";
-
-    my %sorts = (priority    => "i.priority DESC, i.type DESC, i.target_date ASC",
-		 type        => "i.type DESC, i.priority DESC, i.target_date ASC",
-		 owner       => "i.owner ASC, i.priority DESC, i.type DESC, i.target_date ASC",
-		 assigned_to => "i.assigned_to ASC, i.priority DESC, i.type DESC, i.target_date ASC",
-		 title       => "i.title ASC, i.priority DESC, i.target_date ASC",
-		 status      => "i.status ASC, i.priority DESC, i.target_date ASC",
-		 project     => "p.name ASC, i.priority DESC, i.type DESC, i.target_date ASC",
-		 target_date => "i.target_date ASC, i.priority DESC, i.type DESC",
-		 last_mod    => "i.last_mod DESC, i.priority DESC, i.type DESC, i.target_date ASC",
-		 item        => "i.type DESC, i.title ASC, i.priority DESC, i.target_date ASC");
-
-    my $query = <<SQL;
-SELECT i.iid,i.type,i.owner,uo.fullname,i.assigned_to,ua.fullname,
-       i.title,i.mid,m.name,i.url,i.status,i.description,i.priority,
-       i.r_status,to_char(i.last_mod,'YYYY-MM-DD HH24:MI:SS'),i.target_date,m.pid,p.name 
-FROM items i, milestones m, users uo, users ua, projects p
-WHERE uo.username = i.owner 
-  AND ua.username = i.assigned_to
-  AND i.mid = m.mid 
-  AND m.pid = p.pid 
-  AND i.mid = ?
-ORDER BY $sorts{$sortby};
-SQL
-    return $self->s($query,[$mid],
-			    ['iid','type','owner','owner_fullname',
-			     'assigned_to','assigned_to_fullname',
-			     'title','mid','milestone','url','status',
-			     'description','priority','r_status',
-			     'last_mod','target_date','pid','project']);
-}
-
-# }}}
 # {{{ add_project
 
 sub add_project {

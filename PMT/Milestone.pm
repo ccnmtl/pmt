@@ -145,8 +145,4 @@ sub delete_milestone {
     return $pid;
 }
 
-sub all_blocking_users_in_project {
-
-}
-
 1;
