@@ -358,4 +358,65 @@ sub find_by_uni {
     return __PACKAGE__->search(email => "$uni\@columbia.edu");
     
 }
+
+sub client_search {
+    my $self = shift;
+    my %args = @_;
+    
+    my $sql = "";
+    my @vars = ("%$args{query}%","%$args{query}%","%$args{query}%",
+        $args{department},$args{school},$args{contact},
+        $args{start_date},$args{end_date},"$args{status}%");
+    if ($args{project} eq "%" or $args{project} eq "") {
+        $sql = qq{select c.client_id,c.lastname,c.firstname,c.registration_date as registered,
+        c.department,c.school,c.status,c.contact as contact_username,u.fullname as contact_fullname, 
+        to_char(max(i.last_mod), 'YYYY-MM-DD HH24:MI')
+        from clients c left outer join item_clients ic on c.client_id =
+        ic.client_id left outer join items i on ic.iid = i.iid
+        join users u on c.contact = u.username
+        where 
+            (c.email ilike ? or c.lastname ilike ? or c.firstname ilike ?)
+            and c.department ilike ?
+            and c.school ilike ?
+            and c.contact like ?
+            and c.registration_date >= ?
+            and c.registration_date <= ?
+            and c.status like ?
+        group by c.client_id,c.lastname,c.firstname,c.registration_date,
+        c.department,c.school,c.status,c.contact,u.fullname
+        order by upper(c.lastname), upper(c.firstname) limit $args{limit}
+        offset $args{offset};
+    };
+    } else {
+        $sql = qq{select c.client_id,c.lastname,c.firstname,c.registration_date as registered,
+        c.department,c.school,c.status,c.contact as contact_username,u.fullname as contact_fullname,
+        to_char(max(i.last_mod),'YYYY-MM-DD HH24:MI') as last_mod
+        from clients c
+        left outer join item_clients ic on c.client_id = ic.client_id
+        left outer join items on ic.iid = i.iid
+        join users u on c.contact = u.username
+        join project_clients p on p.client_id = c.client_id
+        where (c.email ilike ? or c.lastname ilike ? or c.firstname ilike ?)
+            and c.department ilike ?
+            and c.school ilike ?
+            and c.contact like ?
+            and c.registration_date >= ?
+            and c.registration_date <= ?
+            and c.status like ?
+            and p.pid like ?
+        group by c.client_id,c.lastname,c.firstname,c.registration_date,
+        c.department,c.school,c.status,c.contact,u.fullname
+        order by upper(c.lastname), upper(c.firstname) limit $args{limit}
+        offset $args{offset};
+        };
+        push @vars, $args{project};
+    }
+    $self->set_sql(client_search => $sql, 'Main');
+    my $sth = $self->sql_client_search;
+    $sth->execute(@vars);
+    return $sth->fetchall_arrayref({});
+}
+# }}}
+
+
 1;

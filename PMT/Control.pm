@@ -2458,18 +2458,18 @@ sub client_search {
     $template->param(results => [map {
 	$_->{inactive} = $_->{status} eq "inactive";
 	$_;
-    } @{$pmt->client_search(
-			    query => $q,
-			    status => $status,
-			    department => $department,
-			    school => $school,
-			    start_date => $start_date,
-			    end_date => $end_date,
-			    project => $project,
-			    limit => $limit,
-			    offset => $offset,
-			    contact => $contact,
-			    )}]);
+    } @{PMT::Client->client_search(
+				   query => $q,
+				   status => $status,
+				   department => $department,
+				   school => $school,
+				   start_date => $start_date,
+				   end_date => $end_date,
+				   project => $project,
+				   limit => $limit,
+				   offset => $offset,
+				   contact => $contact,
+				   )}]);
     my $results_count = $pmt->client_search_count(
 						  query => $q,
 						  status => $status,
