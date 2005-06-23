@@ -950,26 +950,15 @@ sub weekly_summary {
 		total_time => $grand_total,
 		project_times => $projects,
 		);
-    $data{group_totals} = [map {{time =>
-            interval_to_hours($self->total_group_time($_->{group},$week_start,$week_end))
-        || "-"};} @{$groups}];
+    $data{group_totals} = [map {
+	my $gu = PMT::User->retrieve($_->{group});
+	{
+	    time => interval_to_hours($gu->total_group_time($week_start,$week_end)) || "-"
+	    };
+    } @{$groups}];
 
     return \%data;
 
-}
-
-# }}}
-# {{{ total_group_time
-
-sub total_group_time {
-    my $self = shift;
-    my $group = shift;
-    my $start = shift;
-    my $end = shift;
-    my $sql = qq{select sum(a.actual_time) from actual_times a, in_group g
-		     where a.resolver = g.username and g.grp = ?
-		     and a.completed > ? and a.completed <= ?;};
-    return $self->ss($sql,[$group,$start,$end],['total'])->{total};
 }
 
 # }}}
@@ -983,8 +972,9 @@ sub staff_report {
     my @group_reports = ();
 
     foreach my $grp (@GROUPS) {
+	my $group_user = PMT::User->retrieve("grp_$grp");
 	my %data = (group => $grp,
-		    total_time => interval_to_hours($self->total_group_time("grp_$grp",$start,$end)),
+		    total_time => interval_to_hours($group_user->total_group_time($start,$end)),
 		    );
         my $g = PMT::User->retrieve("grp_$grp");
         my @users = ();

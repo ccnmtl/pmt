@@ -614,6 +614,20 @@ sub total_completed_time {
     return interval_to_hours($sth->fetchrow_arrayref()->[0]->[0]);
 }
 
+__PACKAGE__->set_sql(total_group_time => 
+		     qq{select sum(a.actual_time) from actual_times a, in_group g
+			    where a.resolver = g.username and g.grp = ?
+			    and a.completed > ? and a.completed <= ?;},
+		     'Main');
+
+sub total_group_time {
+    my $self = shift;
+    my $start = shift;
+    my $end = shift;
+    my $sth = $self->sql_total_group_time();
+    $sth->execute($self->username,$start,$end);
+    return $sth->fetchrow_arrayref()->[0]->[0];
+}
 
 my %sorts = (priority => "i.priority DESC, i.type DESC, i.target_date ASC",
 	     type => "i.type DESC, i.priority DESC, i.target_date ASC",
