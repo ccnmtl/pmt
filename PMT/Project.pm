@@ -101,18 +101,6 @@ qq{SELECT i.iid,i.title,i.type,i.status
 FROM items i, milestones m
 WHERE i.target_date = ? AND i.mid = m.mid
 AND m.pid = ? ORDER BY i.priority DESC;},'Main');
-__PACKAGE__->set_sql(events_on => qq{  
-SELECT e.status,e.event_date_time,e.item,i.title,c.comment,c.username
-FROM events e, items i, milestones m, comments c
-WHERE e.item = i.iid AND c.event = e.eid AND i.mid = m.mid AND m.pid = ? 
-AND date_trunc('day',e.event_date_time) = ?
-ORDER BY e.event_date_time ASC;},'Main');
-__PACKAGE__->set_sql(recent_events => qq{
-SELECT e.status,i.iid,i.title,c.comment,c.username
-FROM   events e, items i, milestones m, comments c
-WHERE  e.item = i.iid AND c.event = e.eid AND i.mid = m.mid AND m.pid = ?
-ORDER BY e.event_date_time DESC limit 10;
-}, 'Main');
 __PACKAGE__->set_sql(recent_items => 
 qq{select i.iid,i.type,i.title,i.status,p.name,p.pid
 from items i, milestones m, projects p
@@ -159,7 +147,7 @@ __PACKAGE__->set_sql(latest_milestone =>
 
 __PACKAGE__->set_sql(interval_total =>
 		     qq{	
-			 select sum(a.actual_time) from actual_times a, items i, milestones m, in_group g
+			 select sum(a.actual_time) as total_time from actual_times a, items i, milestones m, in_group g
 			     where a.iid = i.iid and i.mid = m.mid and m.pid = ?
 			     and a.resolver = g.username and g.grp in 
 			     ('grp_programmers','grp_webmasters','grp_video',
@@ -175,7 +163,7 @@ sub interval_total {
     my $end = shift;
     my $sth = $self->sql_interval_total;
     $sth->execute($self->pid,$start,$end);
-    return $sth->fetchall_arrayref()->[0]->[0];
+    return $sth->fetchrow_hashref()->{total_time};
 }
 
 # }}}
@@ -254,8 +242,7 @@ sub upcoming_milestone  {
     # to today as possible
     my $sth = $self->sql_upcoming_milestone;
     $sth->execute($pid);
-    my $res = [map {{mid => $_->[0], delta_t => $_->[1]}}
-	       @{$sth->fetchall_arrayref()}]->[0];
+    my $res = $sth->fetchrow_hashref();
     if (defined $res) {
         return $res->{mid};
     } else {
@@ -263,7 +250,7 @@ sub upcoming_milestone  {
         # grab one. 
 	$sth = $self->sql_latest_milestone;
 	$sth->execute($pid);
-	return $sth->fetchall_arrayref()->[0]->[0];
+	return $sth->fetchrow_hashref()->{mid};
     }
 }
 
@@ -278,16 +265,7 @@ sub project_milestones {
     my $sth = $self->sql_project_milestones;
     $sth->execute($self->pid);
 
-    my @milestones = map {
-	{
-	    mid => $_->[0],
-	    name => $_->[1],
-	    target_date => $_->[2],
-	    pid => $_->[3],
-	    status => $_->[4],
-	    description => $_->[5],
-	}
-    } @{$sth->fetchall_arrayref()};
+    my @milestones = @{$sth->fetchall_arrayref({})};
 
     my $set = 0;
     my $has_open = 0;
@@ -311,37 +289,33 @@ sub project_milestones {
     return \@milestones;
 }
 
+__PACKAGE__->set_sql(events_on => qq{  
+SELECT e.status,e.event_date_time as date_time,e.item,i.title,c.comment,c.username
+FROM events e, items i, milestones m, comments c
+WHERE e.item = i.iid AND c.event = e.eid AND i.mid = m.mid AND m.pid = ? 
+AND date_trunc('day',e.event_date_time) = ?
+ORDER BY e.event_date_time ASC;},'Main');
 
 sub events_on {
     my $self = shift;
     my $date = shift;
     my $sth = $self->sql_events_on;
     $sth->execute($self->pid, $date);
-    return [map {
-        {
-            status    => $_->[0],
-            date_time => $_->[1],
-            iid       => $_->[2],
-            title     => $_->[3],
-            comment   => $_->[4],
-            username  => $_->[5],
-        }
-    } @{$sth->fetchall_arrayref()}];
+    return $sth->fetchall_arrayref({});
 }
+
+__PACKAGE__->set_sql(recent_events => qq{
+SELECT e.status,i.iid,i.title,c.comment,c.username
+FROM   events e, items i, milestones m, comments c
+WHERE  e.item = i.iid AND c.event = e.eid AND i.mid = m.mid AND m.pid = ?
+ORDER BY e.event_date_time DESC limit 10;
+}, 'Main');
 
 sub recent_events {
     my $self = shift;
     my $sth = $self->sql_recent_events;
     $sth->execute($self->pid);
-    return [map {
-        {
-            status   => $_->[0],
-            iid      => $_->[1],
-            title    => $_->[2],
-            comment  => $_->[3],
-            username => $_->[4],
-        }
-    } @{$sth->fetchall_arrayref()}];
+    return $sth->fetchall_arrayref({});
 }
 
 sub recent_items {
@@ -948,8 +922,8 @@ sub all_projects_by_last_mod {
     my $sth = $self->sql_all_projects_by_last_mod;
     $sth->execute();
     my %results = ();
-    foreach my $r (@{$sth->fetchall_arrayref()}) {
-        $results{$r->[0]} = $r->[1];
+    foreach my $r (@{$sth->fetchall_arrayref({})}) {
+        $results{$r->{pid}} = $r->{last_mod};
     }
     return \%results;
 }
@@ -972,13 +946,7 @@ sub projects_active_during {
     $self->set_sql(projects_active_during => $sql, 'Main');
     my $sth = $self->sql_projects_active_during;
     $sth->execute($week_start,$week_end);
-    return [map {
-	{
-	    pid => $_->[0],
-	    name => $_->[1],
-	    projnum => $_->[2],
-	}
-    } @{$sth->fetchall_arrayref()}]
+    return $sth->fetchall_arrayref({});
 }
 
 
