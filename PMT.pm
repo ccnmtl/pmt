@@ -118,47 +118,6 @@ sub users_hours {
 }
 
 
-# {{{ add_courseworks_item_form
-
-sub add_courseworks_item_form {
-    my $self     = shift;
-    my $pid      = shift;
-    my $type     = shift || "bug";
-    my $username = untaint_username(shift);
-    my $client_id = shift;
-    my $client = PMT::Client->retrieve($client_id);
-    my $client_data = $client->data();
-    my $project = PMT::Project->retrieve($pid);
-    my %data = %{$project->data()};
-    
-    $data{developers}        	= [map {$_->data()} $project->developers()];
-    $data{keywords}             = $project->keywords();
-
-
-    $data{'milestone_select'} = $project->project_milestones_select();
-    $data{'keywords'}     = $project->keywords();
-    $data{'dependencies'} = $project->all_items_in_project();
-    my $caretaker = $project->caretaker->username;
-    $data{'developers'}   = [map {{
-            username => $_->username, fullname => $_->fullname,
-            caretaker => ($caretaker eq $_->username),
-        };
-    }
-    $project->all_personnel_in_project()];
-    $data{'type'}         = $type;
-    $data{'on_project'}   = $project->project_role($username);
-    $data{'client_id'}    = $client_id;
-    $data{'client_lastname'} = $client_data->{'lastname'};
-    $data{'client_firstname'} = $client_data->{'firstname'};
-    my $owner = PMT::User->retrieve($username);
-    $data{'owner_select'} = $project->owner_select($owner);
-    $data{$type}          = 1;
-    return \%data;
-}
-
-# }}}
-
-
 # {{{ add_item
 
 sub add_item {
