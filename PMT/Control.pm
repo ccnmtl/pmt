@@ -1753,7 +1753,7 @@ sub keyword {
 
     my $template = $self->template("keyword.tmpl");
 
-    $template->param($pmt->keyword($keyword,$username,$pid));
+    $template->param(PMT::Keyword::keyword_data($keyword,$pid));
 
     return $template->output();
 
