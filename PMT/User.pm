@@ -229,7 +229,7 @@ sub active_projects {
     my $end_date = shift;
     my $sth = $self->sql_active_projects;
     $sth->execute($self->username,$start_date,$end_date);
-    return $sth->fetchall_arrayref();
+    return $sth->fetchall_arrayref({});
 }
 
 __PACKAGE__->set_sql(total_breakdown => qq{
@@ -258,11 +258,8 @@ sub weekly_report {
     my $sortby = shift || "";
     # figure out which projects have been taking up time self week
     my $active_projects = $self->active_projects($week_start,$week_end);
-
     foreach my $project (@$active_projects) {
-	$project->{time} =
-        $self->project_completed_time_for_interval($project->{pid},
-            $week_start, $week_end);
+	$project->{time} = $self->project_completed_time_for_interval($project->{pid},$week_start, $week_end);
 	$project->{hours} = interval_to_hours($project->{time});
     }
     # get individual resolve times
