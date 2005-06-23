@@ -19,7 +19,7 @@ sub scale_array {
     my $r = shift;
     my @a = @$r;
     my $total = 0;
-    foreach my $i (@a) { $total += $i; }
+    foreach my $i (@a) { $i ||= 0; $total += $i; }
     if ($total == 0) { $total = 1; }
     my $scale = $max / $total;
     return [map {$_ * $scale} @a];
