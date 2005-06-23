@@ -205,7 +205,8 @@ eval {
             (exists $shows{history})) {
             foreach my $i (@$r) {
                 $pmt->debug("fetching item: " . time());
-                my $r = $pmt->item($$i{iid});
+		my $item = PMT::Item->retrieve($i->{iid});
+                my $r = $item->full_data();
                 my %data = %$r;
                 foreach my $k (keys %shows) {$data{$k} = 1;}
                 push @items, \%data;

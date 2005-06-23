@@ -1789,8 +1789,9 @@ sub update_item_form {
     my $pmt = $self->{pmt};
     my $user = $self->{user};
 
-    my $r = $pmt->item($iid);
+
     my $item = PMT::Item->retrieve($iid);
+    my $r = $item->full_data();
     my %data = %$r;
     my $project = PMT::Project->retrieve($data{'pid'});
     $data{$project->project_role($user->username)} = 1;

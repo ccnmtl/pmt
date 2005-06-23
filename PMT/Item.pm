@@ -606,4 +606,70 @@ sub add_client_by_uni {
     
 }
 
+sub full_data {
+    my $item = shift;
+
+    my %data = %{$item->data()};
+    my $owner       = PMT::User->retrieve($data{owner});
+    my $assigned_to = PMT::User->retrieve($data{assigned_to});
+    my $milestone   = PMT::Milestone->retrieve($data{mid});
+    my $project        = $milestone->pid;
+
+    $data{owner_fullname}       = $owner->fullname;
+    $data{assigned_to_fullname} = $assigned_to->fullname;
+    $data{milestone}            = $milestone->name;
+    $data{pid}                  = $milestone->pid->pid;
+    $data{project}              = $project->name;
+    my $tiki = new Text::Tiki;
+    $data{description} = $data{description} || "";
+    $data{description_html} = $tiki->format($data{description});
+    $data{$data{type}}         = 1;
+    $data{keywords}            = [map {$_->data()} $item->keywords()];
+    $data{can_resolve}         = ($data{status} eq 'OPEN' || 
+				  $data{status} eq 'INPROGRESS' || 
+				  $data{status} eq 'RESOLVED');
+    $data{resolve_times}       = $item->resolve_times();
+    $data{keywords_select}     = $item->keywords_select($data{keywords});
+    $data{dependencies}        = [map {PMT::Item->retrieve($_->dest)->data()} $item->dependencies()];
+    $data{dependents}          = [map {PMT::Item->retrieve($_->source)->data()} $item->dependents()];
+    $data{history}             = $item->history();
+    $data{comments}            = $item->get_comments();
+
+    my @full_history = ();
+
+    my %history_items = ();
+
+    foreach my $h (@{$data{history}}) {
+	$history_items{$h->{event_date_time}} = $h;
+    }
+    foreach my $c (@{$data{comments}}) {
+	$history_items{$c->{add_date_time}} = $c;
+    }
+
+    foreach my $i (sort keys %history_items) {
+	my $t = $history_items{$i};
+	$t->{timestamp} = $i;
+	push @full_history, $t; 
+    }
+
+    $data{full_history}        = \@full_history;
+    $data{milestone_select}    = $project->milestone_select($milestone);
+    $data{assigned_to_select}  = $project->assigned_to_select($assigned_to);
+    $data{owner_select}        = $project->owner_select($owner);
+    $data{status_select}       = $item->status_select();
+    $data{priority_select}     = $item->priority_select();
+    $data{dependencies_select} = $project->dependencies_select($data{'iid'}, $data{dependencies});
+    if(exists $data{pub_view}) {
+	$data{pub_view}            = $data{pub_view} == 1; 
+    } else {
+	$data{pub_view} = 0;
+    }
+
+    $data{clients}        = $item->clients_data();
+    $data{clients_select} = $item->clients_select();
+
+    return \%data;
+}
+
+
 1;
