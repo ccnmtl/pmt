@@ -416,7 +416,50 @@ sub client_search {
     $sth->execute(@vars);
     return $sth->fetchall_arrayref({});
 }
-# }}}
+
+
+sub client_search_count {
+    my $self = shift;
+    my %args = @_;
+    my $sql = "";
+    my @vars = ("%$args{query}%","%$args{query}%","%$args{query}%",
+        $args{department},$args{school},$args{contact},
+        $args{start_date},$args{end_date},"$args{status}%");
+    if ($args{project} eq "%" or $args{project} eq "") {
+        $sql = qq{select count(*) as cnt
+        from clients c, users u
+        where c.contact = u.username
+            and (c.email ilike ? or c.lastname ilike ? or c.firstname ilike ?)
+            and c.department ilike ?
+            and c.school ilike ?
+            and c.contact like ?
+            and c.registration_date >= ?
+            and c.registration_date <= ?
+            and c.status like ?;
+    };
+    } else {
+        $sql = qq{select count(*) as cnt
+        from clients c, users u, project_clients p
+        where c.contact = u.username
+            and (c.email ilike ? or c.lastname ilike ? or c.firstname ilike ?)
+            and c.department ilike ?
+            and c.school ilike ?
+            and c.contact like ?
+            and c.registration_date >= ?
+            and c.registration_date <= ?
+            and c.status like ?
+            and p.client_id = c.client_id
+            and p.pid like ?;
+        };
+        push @vars, $args{project};
+    }
+    $self->set_sql(client_search_count => $sql);
+    my $sth = $self->sql_client_search_count;
+    $sth->execute(@vars);
+    return $sth->fetchrow_hashref()->{cnt};
+}
+
+
 
 
 1;
