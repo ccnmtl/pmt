@@ -1110,7 +1110,7 @@ sub add_client_form {
                 $lastname = $entry->get_value("sn") || "";
                 $firstname = $entry->get_value("givenname") || "";
                 $title = $entry->get_value("title") || "";
-                $department = $entry->get_value("ou") || "";
+                $department = $entry->get_value("ou") || "nodepartment";
                 $phone = $entry->get_value("telephonenumber") || "";
             } else {
                 $lastname = $firstname 
@@ -1138,21 +1138,24 @@ sub add_client_form {
             $mon += 1;
             $mon = sprintf "%02d", $mon;
             $mday = sprintf "%02d", $mday;
-            
-            $template->param(client_email => $client_email,
-                lastname => $lastname,
-                firstname => $firstname,
-                title => $title,
-                department => $department,
-                school => $school,
-                schools_select => PMT::Client->all_schools_select($school),
-                departments_select => PMT::Client->all_departments_select($department),
-                phone => $phone,
-                users_select => PMT::User::users_select($username),
-                year => $year,
-                month => $mon,
-                day => $mday,
-                existing_clients => PMT::Client->existing_clients($uni,$lastname),
+            my $users_select       = PMT::User->users_select($username);
+	    my $schools_select     = PMT::Client->all_schools_select($school);
+	    my $departments_select = PMT::Client->all_departments_select($department);
+	    my $existing_clients   = PMT::Client->existing_clients($uni,$lastname);
+            $template->param(client_email 	=> $client_email,
+			     lastname 		=> $lastname,
+			     firstname 		=> $firstname,
+			     title 		=> $title,
+			     department 	=> $department,
+			     school 		=> $school,
+			     schools_select 	=> $schools_select,
+			     departments_select => $departments_select,
+			     phone 		=> $phone,
+			     users_select 	=> $users_select,
+			     year 		=> $year,
+			     month 		=> $mon,
+			     day 		=> $mday,
+			     existing_clients 	=> $existing_clients,
             );
         }
     }

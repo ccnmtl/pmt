@@ -221,7 +221,10 @@ sub all_schools_select {
 
 sub all_departments_select {
     my $self = shift;
-    my $department = shift || $self->department;
+    my $department = shift || "";
+    if ($department eq "nodepartment") {
+	$department = $self->department;
+    }
     return selectify(\@DEPARTMENTS,[@DEPARTMENTS],[$department]);
 }
 
