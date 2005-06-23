@@ -1148,7 +1148,7 @@ sub add_client_form {
                 schools_select => PMT::Client->all_schools_select($school),
                 departments_select => PMT::Client->all_departments_select($department),
                 phone => $phone,
-                users_select => $pmt->users_select($username),
+                users_select => PMT::User::users_select($username),
                 year => $year,
                 month => $mon,
                 day => $mday,

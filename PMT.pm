@@ -59,20 +59,6 @@ sub new {
 
 
 
-sub users_select {
-    my $self = shift;
-    my $default = shift || "";
-    my @values = ();
-    my @labels = map {
-	push @values, $_->username;
-	$_->fullname;
-    } PMT::User->all_active();
-    my @defaults = [];
-    if ($default ne "") {
-	@defaults = ($default);
-    }
-    return selectify(\@values,\@labels,\@defaults);
-}
 
 # returns AoH with all the active users, the number of open items
 # they have assigned to them, and their total estimated times

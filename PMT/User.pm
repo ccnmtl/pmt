@@ -797,6 +797,19 @@ sub menu {
     return \%data;
 }
 
+sub users_select {
+    my $default = shift || "";
+    my @values = ();
+    my @labels = map {
+	push @values, $_->username;
+	$_->fullname;
+    } PMT::User->all_active();
+    my @defaults = [];
+    if ($default ne "") {
+	@defaults = ($default);
+    }
+    return selectify(\@values,\@labels,\@defaults);
+}
 
 
 
