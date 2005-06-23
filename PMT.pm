@@ -865,7 +865,7 @@ sub weekly_summary {
     my @GROUPS = @{$groups};
     my @group_names = map {$_->{group}} @GROUPS;
     my $projects = PMT::Project->projects_active_during($week_start,$week_end,\@group_names);
-    my $grand_total = interval_to_hours($self->interval_total_time($week_start,$week_end));
+    my $grand_total = interval_to_hours(PMT::ActualTime->interval_total_time($week_start,$week_end));
 
     foreach my $p (@$projects) {
 	my $project = PMT::Project->retrieve($p->{pid});
@@ -917,22 +917,6 @@ sub staff_report {
     }
 
     return {groups => \@group_reports};
-}
-
-# }}}
-# {{{ interval_total_time 
-
-sub interval_total_time {
-    my $self = shift;
-    my $week_start = shift;
-    my $week_end = shift;
-
-    my $sql = qq {select sum(a.actual_time) from actual_times a, in_group g
-		      where a.resolver = g.username and g.grp in 
-		      ('grp_programmers','grp_webmasters','grp_video',
-		       'grp_educationaltechnologists','grp_management')
-		      and a.completed > ? and a.completed <= ?;};
-    return $self->ss($sql,[$week_start,$week_end],['total'])->{total};
 }
 
 # }}}
