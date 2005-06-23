@@ -201,7 +201,7 @@ sub my_projects {
     my $data;
     my $user = $self->{user};
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
-    my $last_mods = $self->{pmt}->all_projects_by_last_mod();
+    my $last_mods = PMT::Project->all_projects_by_last_mod();
     my %seen = ();
     my $manager_projects = $user->projects_by_auth('manager');
     $data->{manager_projects} = [map {

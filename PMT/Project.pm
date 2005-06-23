@@ -937,4 +937,24 @@ sub estimate_graph {
     return ($done,$todo,$free,$completed_behind,$behind);
 }
 
+__PACKAGE__->set_sql(all_projects_by_last_mod => qq{
+    SELECT m.pid,to_char(max(i.last_mod), 'YYYY-MM-DD HH24:MI') as last_mod
+    FROM milestones m LEFT OUTER JOIN items i on m.mid = i.mid
+    GROUP BY m.pid;},
+		     'Main');
+
+sub all_projects_by_last_mod {
+    my $self = shift;
+    my $sth = $self->sql_all_projects_by_last_mod;
+    $sth->execute();
+    my %results = ();
+    foreach my $r (@{$sth->fetchall_arrayref()}) {
+        $results{$r->[0]} = $r->[1];
+    }
+    return \%results;
+}
+
+# }}}
+
+
 1;

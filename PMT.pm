@@ -118,22 +118,6 @@ sub users_hours {
 }
 
 
-# {{{
-sub all_projects_by_last_mod {
-    my $self = shift;
-    my $sql = qq{
-    SELECT m.pid,to_char(max(i.last_mod), 'YYYY-MM-DD HH24:MI') as last_mod
-    FROM milestones m LEFT OUTER JOIN items i on m.mid = i.mid
-    GROUP BY m.pid 
-    };
-    my %results = ();
-    foreach my $r (@{$self->s($sql,[],['pid','last_mod'])}) {
-        $results{$r->{pid}} = $r->{last_mod};
-    }
-    return \%results;
-}
-
-# }}}
 # {{{ add_courseworks_item_form
 
 sub add_courseworks_item_form {
