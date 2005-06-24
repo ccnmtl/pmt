@@ -68,20 +68,6 @@ sub logs {
 }
 
 
-sub num_posts {
-    my $self = shift;
-    $self->{pmt}->debug("Forum::num_posts()");
-    my $sql = qq{select count(*)
-		 from nodes n, projects p, users u
-		     where n.type = 'post'
-		     AND n.project = p.pid
-		     AND n.author = u.username
-		     AND (p.pid in (select w.pid from works_on w 
-				    where username = ?) 
-			  OR p.pub_view = 'true');};
-    return $self->{pmt}->ss($sql,[$self->user()],['cnt'])->{cnt};
-
-}
 
 
 sub recent_comments {

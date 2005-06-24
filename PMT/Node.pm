@@ -163,6 +163,21 @@ sub num_logs {
     return $sth->fetchrow_hashref()->{cnt};
 }
 
+__PACKAGE__->set_sql(num_posts => qq{select count(*) as cnt
+		 from nodes n, projects p, users u
+		     where n.type = 'post'
+		     AND n.project = p.pid
+		     AND n.author = u.username
+		     AND (p.pid in (select w.pid from works_on w 
+				    where username = ?) 
+			  OR p.pub_view = 'true');}, 'Main');
+sub num_posts {
+    my $self = shift;
+    my $sth = $self->sql_num_posts;
+    $sth->execute();
+    return $sth->fetchrow_hashref()->{cnt};
+}
+
 
 1;
 

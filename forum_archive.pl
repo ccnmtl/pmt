@@ -49,7 +49,7 @@ eval {
 	$total = PMT::Node->num_logs();
     } else {
 	$template->param(posts => PMT::Node->posts($username,$limit,$offset));
-	$total = $forum->num_posts();
+	$total = PMT::Node->num_posts();
     }
 
     my $next_offset = $offset + $limit;
