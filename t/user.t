@@ -35,7 +35,7 @@ if($@) {
 ok($passed,"testuser2 incorrect password didn't validate");
 
 # create a group
-my $grp = $PMT->add_group("regressiontest");
+my $grp = $PMT->add_group("regressiontestgroup");
 $PMT->update_group($grp, [$username]);
 my $group = PMT::User->retrieve($grp);
 my @programmers = $group->users_in_group();

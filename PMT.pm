@@ -710,13 +710,11 @@ sub update_group {
     my $group = untaint_username(shift);
     my $users = shift;
 
-    my $sql = qq{delete from in_group where grp = ?;};
-    $self->update($sql,[$group]);
-    $sql = qq{insert into in_group (grp,username) values (?,?);};
-
+    my @u = PMT::Group->search({grp => $group});
+    foreach my $u (@u) {$u->delete()}
+    
     foreach my $u (@$users) {
-	$u = untaint_username($u);
-	$self->update($sql,[$group,$u]);
+	my $g = PMT::Group->create({grp => $group, username => $u});
     }
 
 }
