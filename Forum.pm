@@ -119,17 +119,6 @@ sub project_posts_by_time {
          $start, $end)];
 }
 
-sub num_project_posts {
-    my $self = shift;
-    my $pid = shift;
-    $self->{pmt}->debug("Forum::num_project_posts($pid)");
-    my $sql = qq{select count(*) from nodes n, projects p, users u
-		     where n.type = 'post'
-		     AND n.project = ?
-		     AND p.pid = n.project
-		     AND n.author = u.username;};
-    return $self->{pmt}->ss($sql,[$pid],['cnt'])->{cnt};
-}
 
 
 sub recent_project_logs {

@@ -32,7 +32,7 @@ eval {
     my $total;
     if($pid) {
 	$template->param(posts => $forum->project_posts($pid,$limit,$offset));
-	$total = $forum->num_project_posts($pid);
+	$total = PMT::Node->num_project_posts($pid);
     } elsif ($user) {
         my $u = PMT::User->retrieve($user);
         my @logs = reverse(PMT::Node->user_log_entries($user));
