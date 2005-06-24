@@ -434,10 +434,10 @@ sub diff {
     my $r2 = shift;
     # ld expects references to lists
     if ("ARRAY" eq ref $r1 && "ARRAY" eq ref $r2) {
-	return $self->ld("","",$r1,$r2,0,1);
+	return ld("","",$r1,$r2,0,1);
     } else {
 	# if they're not references to lists, we just make them
-	return $self->ld("","",[$r1],[$r2],0,1);
+	return ld("","",[$r1],[$r2],0,1);
     }
 }
 
@@ -452,105 +452,12 @@ sub diff_order {
     my $r2 = shift;
     # ld expects references to lists
     if ("ARRAY" eq ref $r1 && "ARRAY" eq ref $r2) {
-	return $self->ld("","",$r1,$r2,0,0);
+	return ld("","",$r1,$r2,0,0);
     } else {
 	# if they're not references to arrays, we just make them
-	return $self->ld("","",[$r1],[$r2],0,0);
+	return ld("","",[$r1],[$r2],0,0);
     }
 }   
-
-# }}}
-# {{{ ld
-
-# recursively compares two lists by value
-# works for damn near any reasonably complex structure
-# including: lists of scalars, lists of lists, lists of hashes, 
-# lists of hashes of lists of arrays of scalars, etc, etc.
-# arguably should be called data_structures_diff
-# argument $order == 1 means that we don't care about the order
-# ie ['foo','bar'] == ['bar','foo']
-
-sub ld {
-    my $self   = shift;
-    my $x      = shift;       # first element of first list
-    my $y      = shift;       # first element of second list
-    my $r1     = shift;       # reference to rest of first list
-    my $r2     = shift;       # reference to rest of second list
-    my $sorted = shift;       # whether or not the lists have been sorted
-    my $order  = shift;       # whether we're order agnostic with lists
-
-    my $DIFFERENT = 1;
-    my $SAME      = 0;
-
-    my @xs = @$r1;
-    my @ys = @$r2;
-
-    if(!$sorted && $order) {
-	@xs = sort @xs;
-	@ys = sort @ys;
-	$sorted = 1;
-    }
-
-    if ($#xs != $#ys) {
-	# lists are different lengths, so we know right off that
-	# they must not be the same.
-	return $DIFFERENT;
-    } else {
-
-	# lists are the same length, so we compare $x and $y
-	# based on what they are
-	if (!ref $x) {
-
-	    # make sure $y isn't a reference either
-	    return $DIFFERENT if ref $y;
-
-	    # both scalars, compare them
-	    return $DIFFERENT if $x ne $y;
-	} else {
-
-	    # we're dealing with references now
-	    if (ref $x ne ref $y) {
-
-		# they're entirely different data types
-		return $DIFFERENT;
-	    } elsif ("SCALAR" eq ref $x) {
-
-		# some values that we can actually compare
-		return $DIFFERENT if $$x ne $$y;
-	    } elsif ("REF" eq ref $x) {
-
-		# yes, we even handle references to references to references...
-		return $DIFFERENT if $self->ld($$x,$$y,[],[],0,$order);
-	    } elsif ("HASH" eq ref $x) {
-
-		# references to hashes are a little tricky
-		# we make arrays of keys and values (keeping
-		# the values in order relative to the keys)
-		# and compare those.
-		my @kx = sort keys %$x;
-		my @ky = sort keys %$y;
-		my @vx = map {$$x{$_}} @kx;
-		my @vy = map {$$y{$_}} @ky;
-		return $DIFFERENT
-		    if $self->ld("", "", \@kx,\@ky,1,$order) || 
-			$self->ld("", "", \@vx,\@vy,1,$order);
-	    } elsif ("ARRAY" eq ref $x) {
-		return $DIFFERENT if $self->ld("","",$x,$y,0,$order);
-	    } else {
-		# don't know how to compare anything else
-		throw Error::UNKNOWN_TYPE "sorry, can't compare type " . ref $x;
-	    }
-	}
-	if (-1 == $#xs) {
-
-	    # no elements left in list, this is the base case.
-	    return $SAME;
-	} else {
-	    return $self->ld(shift @xs,shift @ys,\@xs,\@ys,$sorted,$order);
-	}
-
-    }
-}
 
 # }}}
 # {{{ lists_diff
