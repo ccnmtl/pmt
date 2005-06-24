@@ -13,13 +13,7 @@ my $db = $PMT->{db};
 my $sql = qq{delete from projects where name = 'regression test project';};
 $db->update($sql,[]);
 
-$sql = qq{delete from users where username = 'regressiontestuser';};
-$db->update($sql,[]);
-$sql = qq{delete from users where username = 'regressiontestuser2';};
-$db->update($sql,[]);
-$sql = qq{delete from users where username = 'grp_regressiontest';};
-$db->update($sql,[]);
-$sql = qq{delete from in_group where grp = 'grp_regressiontest';};
+$sql = qq{delete from users where username like '%regression';};
 $db->update($sql,[]);
 $sql = qq{delete from clients where firstname = 'regression test';};
 $db->update($sql,[]);

@@ -14,6 +14,12 @@ my $PMT = new PMT();
 ok($PMT,"new()");
 ok($PMT->{db},"has db object");
 
+eval {
+     my $ou = PMT::User->retrieve($username);
+     $ou->delete();
+     $ou->update();
+};
+
 my $u = PMT::User->create({username => $username, fullname => $fullname, email => $email, 
 			       password => $password});
 $u->validate($username,$password);
@@ -35,6 +41,11 @@ if($@) {
 ok($passed,"testuser2 incorrect password didn't validate");
 
 # create a group
+eval {
+     my $og = PMT::User->retrieve("regressiontestgroup");
+     $og->delete();
+     $og->update();
+};
 my $grp = $PMT->add_group("regressiontestgroup");
 $PMT->update_group($grp, [$username]);
 my $group = PMT::User->retrieve($grp);
@@ -49,6 +60,9 @@ ok($found, "users_in_group()");
 
 my $all_group_users = $group->all_users_in_group();
 ok(exists $all_group_users->{$username}, "all_users_in_group()");
+
+
+
 
 
 

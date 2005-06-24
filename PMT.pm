@@ -79,9 +79,7 @@ sub add_item {
     if(!$project->project_role($username)) {
         # if the person submitting the item isn't on the project
         # team, we need to add them as a guest on the project
-        $self->update("INSERT INTO works_on (username,pid,auth) 
-            values (?,?,'guest');",
-            [$username,$project->pid]);
+	my $w = PMT::WorksOn->create({username => $user,pid => $project, auth => 'guest'});
         $status = 'UNASSIGNED';
     }	    
 
@@ -370,13 +368,6 @@ sub update_item {
 
     # update what needs it
 
-    my $query = <<SQL;
-UPDATE items 
-SET title = ?, description = ?, priority = ?, r_status = ?, 
-url = ?, target_date = ?, type = ?, assigned_to = ?, owner = ?, status = ?,
-last_mod = CURRENT_TIMESTAMP, mid = ?, estimated_time = ?
-    WHERE iid = ?;
-SQL
     if($add_notification) {
         my $ass_to = PMT::User->retrieve($i->{assigned_to});
 	$i->add_cc($ass_to);
@@ -386,14 +377,18 @@ SQL
     }
 
     if($changed != 0) {
-	$self->update($query,
-		      [$item{'title'},escape($item{'description'}),
-		       $item{'priority'},$item{'r_status'},
-		       $item{'url'},$item{'target_date'},
-		       $item{'type'},$item{'assigned_to'},
-		       $item{'owner'},
-		       $item{'status'},$item{'mid'},
-		       $item{'estimated_time'},$item{'iid'}]);
+	$i->title($item{title});
+	$i->description($item{description});
+	$i->priority($item{priority});
+	$i->r_status($item{r_status});
+	$i->url($item{url});
+	$i->target_date($item{target_date});
+	$i->type($item{type});
+	$i->assigned_to($assigned_to);
+	$i->owner($owner);
+	$i->status($item{status});
+	$i->mid($milestone);
+	$i->estimated_time($item{estimated_time});
 	$i->update_keywords($item{'keywords'});
 	$i->update_dependencies($item{'dependencies'});
 	$i->update_clients($item{'clients'});
