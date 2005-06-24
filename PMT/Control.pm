@@ -2113,7 +2113,7 @@ sub forum {
         $template->param(items => $forum->recent_project_items($pid));
         $template->param(pid => $pid);
     } else {
-        $template->param(posts => $forum->recent_posts());
+        $template->param(posts => PMT::Node->recent_posts($username));
         $template->param(logs => $forum->recent_logs());
         $template->param(items => $forum->recent_items());
     }

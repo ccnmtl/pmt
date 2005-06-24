@@ -48,7 +48,7 @@ eval {
 	$template->param(logs => $forum->logs($limit,$offset));
 	$total = $forum->num_logs();
     } else {
-	$template->param(posts => $forum->posts($limit,$offset));
+	$template->param(posts => PMT::Node->posts($username,$limit,$offset));
 	$total = $forum->num_posts();
     }
 

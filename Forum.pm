@@ -54,50 +54,6 @@ sub delete_node {
 }
 
 
-sub recent_posts {
-    my $self = shift;
-    $self->{pmt}->debug("Forum::recent_posts()");
-    my $sql = qq{select n.nid,n.subject,n.body,n.replies,
-		 n.project,p.name,n.author,u.fullname,
-                 to_char(n.added,'FMMonth FMDDth, YYYY HH24:MI'),
-		 to_char(n.modified, 'FMMonth FMDDth, YYYY HH24:MI')
-		 from nodes n, projects p, users u
-		     where n.type = 'post'
-		     AND n.project = p.pid
-		     AND n.author = u.username
-		     AND (p.pid in (select w.pid from works_on w 
-				    where username = ?) 
-			  OR p.pub_view = 'true')
-		     order by modified desc limit 10;};
-    return $self->{pmt}->s($sql,[$self->user()],['nid','subject','body',
-						 'replies','pid','project',
-						 'author','author_fullname',
-						 'added','modified']);
-}
-
-sub posts {
-    my $self = shift;
-    my $limit = shift;
-    my $offset = shift;
-    $self->{pmt}->debug("Forum::posts($limit,$offset)");
-    my $sql = qq{select n.nid,n.subject,n.body,n.replies,
-		 n.project,p.name,n.author,u.fullname,n.added,
-		 n.modified
-		 from nodes n, projects p, users u
-		     where n.type = 'post'
-		     AND n.project = p.pid
-		     AND n.author = u.username
-		     AND (p.pid in (select w.pid from works_on w 
-				    where username = ?) 
-			  OR p.pub_view = 'true')
-		     order by modified desc limit $limit
-		     offset $offset;};
-    return $self->{pmt}->s($sql,[$self->user()],['nid','subject','body',
-						 'replies','pid','project',
-						 'author','author_fullname',
-						 'added','modified']);
-}
-
 sub recent_logs {
     my $self = shift;
     return $self->logs(10,0);

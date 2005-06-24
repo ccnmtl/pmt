@@ -109,5 +109,52 @@ sub search_forum {
     return $sth->fetchall_arrayref({});
 } 
 
+__PACKAGE__->set_sql(recent_posts => qq{select n.nid,n.subject,n.body,n.replies,
+		 n.project as pid,p.name as project,n.author,u.fullname as author_fullname,
+                 to_char(n.added,'FMMonth FMDDth, YYYY HH24:MI') as added,
+		 to_char(n.modified, 'FMMonth FMDDth, YYYY HH24:MI') as modified
+		 from nodes n, projects p, users u
+		     where n.type = 'post'
+		     AND n.project = p.pid
+		     AND n.author = u.username
+		     AND (p.pid in (select w.pid from works_on w 
+				    where username = ?) 
+			  OR p.pub_view = 'true')
+		     order by modified desc limit 10;}, 'Main');
+
+sub recent_posts {
+    my $self = shift;
+    my $username = shift;
+    my $sth = $self->sql_recent_posts;
+    $sth->execute($username);
+    return $sth->fetchall_arrayref({});
+}
+
+
+sub posts {
+    my $self = shift;
+    my $username = shift;
+    my $limit = shift;
+    my $offset = shift;
+
+    $self->set_sql(posts => qq{select n.nid,n.subject,n.body,n.replies,
+		 n.project as pid,p.name as project,n.author,u.fullname as author_fullname,n.added,
+		 n.modified
+		 from nodes n, projects p, users u
+		     where n.type = 'post'
+		     AND n.project = p.pid
+		     AND n.author = u.username
+		     AND (p.pid in (select w.pid from works_on w 
+				    where username = ?) 
+			  OR p.pub_view = 'true')
+		     order by modified desc limit $limit
+		     offset $offset;}, 'Main');
+
+    my $sth = $self->sql_posts;
+    $sth->execute($username);
+    return $sth->fetchall_arrayref({});
+}
+
+
 1;
 
