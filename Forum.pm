@@ -78,18 +78,6 @@ sub recent_comments {
             "modified desc limit 10"})];
 }
 
-sub recent_items {
-    my $self = shift;
-    $self->{pmt}->debug("Forum::recent_items()");
-    my $sql = qq{select i.iid,i.type,i.title,i.status,p.name,p.pid 
-		     from items i, projects p, milestones m 
-		     where i.mid = m.mid AND m.pid = p.pid
-		     AND (p.pid in (select w.pid from works_on w 
-				    where username = ?) 
-			  OR p.pub_view = 'true')
-		     order by last_mod desc limit 10;};
-    return $self->{pmt}->s($sql,[$self->user()],['iid','type','title','status','project','pid']);
-}
 
 sub all_recent {
     my $self = shift;

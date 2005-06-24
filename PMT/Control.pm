@@ -2115,12 +2115,14 @@ sub forum {
     } else {
         $template->param(posts => PMT::Node->recent_posts($username));
         $template->param(logs => $forum->recent_logs());
-        $template->param(items => $forum->recent_items());
+        $template->param(items => PMT::Item->recent_items());
     }
     $template->param(page_title => 'forum');
     $template->param(forum_mode => 1);
     return $template->output();
 }
+
+
 
 sub node {
     my $self = shift;

@@ -957,4 +957,21 @@ sub search_items {
     }
 }
 
+__PACKAGE__->set_sql(recent_items => qq{select i.iid,i.type,i.title,i.status,p.name as project,p.pid 
+		     from items i, projects p, milestones m 
+		     where i.mid = m.mid AND m.pid = p.pid
+		     AND (p.pid in (select w.pid from works_on w 
+				    where username = ?) 
+			  OR p.pub_view = 'true')
+		     order by last_mod desc limit 10;}, 'Main');
+
+sub recent_items {
+    my $self = shift;
+    my $username = shift;
+    my $sth = $self->sql_recent_items;
+    $sth->execute($username);
+    return $sth->fetchall_arrayref({});
+}
+
+
 1;
