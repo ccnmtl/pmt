@@ -615,15 +615,18 @@ sub update_user {
     my $new_pass2 = shift;
     my $fullname  = escape(shift);
     my $email     = escape(shift);
-    $self->debug("update_user($username,*,*,*,$fullname,$email)");
+
     throw Error::NO_EMAIL "email address is necessary." 
 	unless $email;
     
     if ($new_pass eq "") { $new_pass = $password; $new_pass2 = $password; }
 
     if ($new_pass eq $new_pass2) {
-	$self->update("UPDATE users SET fullname = ?, email = ?, password = ? 
-                          WHERE username = ?;",[$fullname,$email,$new_pass,$username]);
+	my $u = PMT::User->retrieve($username);
+	$u->fullname($fullname);
+	$u->email($email);
+	$u->password($new_pass);
+	$u->update();
     } 
     return;
 }
