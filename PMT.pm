@@ -424,57 +424,6 @@ SQL
 
 # }}}
 # {{{ subs for comparing complex data structures
-# {{{ lists_diff
-
-# recursively compares two lists
-# works for damn near any reasonably complex structure
-# lists of scalars, lists of lists, lists of hashes, 
-# lists of hashes of lists of arrays of scalars, etc, etc.
-# doesn't take order into account.
-
-sub lists_diff {
-    my $self = shift;
-    my $r1 = shift;
-    my $r2 = shift;
-    my $DIFFERENT = 1;
-    my $SAME = 0;
-
-    # sort things so order isn't taken into account.
-    my @l1 = sort @$r1;
-    my @l2 = sort @$r2;
-
-    if ($#l1 != $#l2) {
-	# lists are different lengths, so we know right off that
-	# they must not be the same.
-	return $DIFFERENT;
-    } else {
-	for(my $i = 0; $i <= $#l1; $i++) {
-	    if (ref $l1[$i] eq ref $l2[$i]) {
-		if (ref $l1[$i] eq "SCALAR") {
-		    return $DIFFERENT if $l1[$i] ne $l2[$i];
-		} elsif (ref $l1[$i] eq "HASH") {
-		    return $DIFFERENT 
-			if ($self->lists_diff([keys %{$l1[$i]}],
-					      [keys %{$l2[$i]}]) 
-			    == $DIFFERENT ||
-			    $self->lists_diff([values %{$l1[$i]}],
-					      [values %{$l2[$i]}])
-			    == $DIFFERENT);
-		} elsif (ref $l1[$i] eq "ARRAY") {
-		    return $DIFFERENT 
-			if ($self->lists_diff($l1[$i],$l2[$i]) == $DIFFERENT);
-		} else {
-		    # don't know how to compare anything else
-		}
-	    } else {
-		return $DIFFERENT;
-	    }
-	}
-    }
-    return $SAME;
-}
-
-# }}}
 # }}}
 
 
