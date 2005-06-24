@@ -46,7 +46,7 @@ eval {
 	$type = 'logs';
     } elsif ($type eq 'logs') {
 	$template->param(logs => $forum->logs($limit,$offset));
-	$total = $forum->num_logs();
+	$total = PMT::Node->num_logs();
     } else {
 	$template->param(posts => PMT::Node->posts($username,$limit,$offset));
 	$total = $forum->num_posts();

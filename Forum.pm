@@ -67,12 +67,6 @@ sub logs {
         {order_by => "modified desc limit $limit offset $offset"})];
 }
 
-sub num_logs {
-    my $self = shift;
-    $self->{pmt}->debug("Forum::num_logs()");
-    my $sql = qq{select count(*) from nodes where type='log';};
-    return $self->{pmt}->ss($sql,[],['cnt'])->{cnt};
-}
 
 sub num_posts {
     my $self = shift;

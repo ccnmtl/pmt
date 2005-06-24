@@ -155,6 +155,14 @@ sub posts {
     return $sth->fetchall_arrayref({});
 }
 
+__PACKAGE__->set_sql(num_logs => qq{select count(*) as cnt from nodes where type='log';}, 'Main');
+sub num_logs {
+    my $self = shift;
+    my $sth = $self->sql_num_logs;
+    $sth->execute();
+    return $sth->fetchrow_hashref()->{cnt};
+}
+
 
 1;
 
