@@ -459,7 +459,49 @@ sub client_search_count {
     return $sth->fetchrow_hashref()->{cnt};
 }
 
+__PACKAGE__->set_sql(all_schools => 
+		     qq{select distinct school,upper(school) as uschool from clients order by upper(school);},
+		     'Main');
 
+sub all_schools {
+    my $self = shift;
+    my $sth = $self->sql_all_schools;
+    $sth->execute();
+    return $sth->fetchall_arrayref({});
+}
 
+__PACKAGE__->set_sql(all_departments => 
+		     qq{select distinct department,upper(department) as udep 
+			    from clients order by upper(department);},
+		     'Main');
+sub all_departments {
+    my $self = shift;
+    my $sth = $self->sql_all_departments;
+    $sth->execute();
+    return $sth->fetchall_arrayref({});
+}
+
+__PACKAGE__->set_sql(all_contacts => 
+		     qq{select distinct c.contact as contact_username,u.fullname as contact_fullname,
+			upper(u.fullname) as contact_ufullname from clients c, users u 
+			    where c.contact = u.username order by upper(u.fullname) ASC;},
+		     'Main');
+
+sub all_contacts {
+    my $self = shift;
+    my $sth = $self->sql_all_contacts;
+    $sth->execute();
+    return $sth->fetchall_arrayref({});
+}
+
+__PACKAGE__->set_sql(min_registration =>
+		     qq{select min(registration_date) as minreg from clients;}, 'Main');
+
+sub min_registration {
+    my $self = shift;
+    my $sth = $self->sql_min_registration;
+    $sth->execute();
+    return $sth->fetchrow_hashref()->{minreg};
+}
 
 1;

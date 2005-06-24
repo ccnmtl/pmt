@@ -2406,18 +2406,15 @@ sub client_search_form {
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
     my $template = $self->template("client_search_form.tmpl");
-    my $sql = qq{select distinct school,upper(school) as uschool from clients order by upper(school);};
-    $template->param(schools => $pmt->s($sql,[],['school','uschool']));
-    $sql = qq{select distinct department,upper(department) as udep from clients order by upper(department);};
-    $template->param(departments => $pmt->s($sql,[],['department','udep']));
-    $sql = qq{select distinct c.contact,u.fullname,upper(u.fullname) from clients c, users u 
-		  where c.contact = u.username order by upper(u.fullname) ASC;};
-    $template->param(contacts => $pmt->s($sql,[],['contact_username','contact_fullname']));
-    $sql = qq{select min(registration_date) from clients;};
-    $template->param(start_date => $pmt->ss($sql,[],['reg'])->{reg});
-    $sql = qq{select current_date;};
-    $template->param(end_date => $pmt->ss($sql,[],['date'])->{date});
-
+    $template->param(schools => PMT::Client->all_schools());
+    $template->param(departments => PMT::Client->all_departments());
+    $template->param(contacts => PMT::Client->all_contacts());
+    $template->param(start_date => PMT::Client->min_registration());
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+    $year += 1900;
+    $mon += 1;
+    $mon = sprintf("%02d",$mon);
+    $template->param(end_date => "$year-$mon-$mday");
     $template->param(page_title => "client search");
     $template->param(clients_mode => 1);
     return $template->output();
