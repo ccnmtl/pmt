@@ -424,24 +424,6 @@ SQL
 
 # }}}
 # {{{ subs for comparing complex data structures
-# {{{ diff_order
-
-# same as diff but not order agnostic
-# ['foo','bar'] != ['bar','foo']
-sub diff_order {
-    my $self = shift;
-    my $r1 = shift;
-    my $r2 = shift;
-    # ld expects references to lists
-    if ("ARRAY" eq ref $r1 && "ARRAY" eq ref $r2) {
-	return ld("","",$r1,$r2,0,0);
-    } else {
-	# if they're not references to arrays, we just make them
-	return ld("","",[$r1],[$r2],0,0);
-    }
-}   
-
-# }}}
 # {{{ lists_diff
 
 # recursively compares two lists

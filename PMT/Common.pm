@@ -11,7 +11,7 @@ require Exporter;
 			  untaint_mid untaint_sort untaint_status
 			  untaint_d untaint_d_with_default
 			  paragraphize selectify escape template
-                          todays_date scale_array ld diff
+                          todays_date scale_array ld diff diff_order
                           );
 
 sub scale_array {
@@ -521,5 +521,18 @@ sub diff {
     }
 }
 
+# same as diff but not order agnostic
+# ['foo','bar'] != ['bar','foo']
+sub diff_order {
+    my $r1 = shift;
+    my $r2 = shift;
+    # ld expects references to lists
+    if ("ARRAY" eq ref $r1 && "ARRAY" eq ref $r2) {
+	return ld("","",$r1,$r2,0,0);
+    } else {
+	# if they're not references to arrays, we just make them
+	return ld("","",[$r1],[$r2],0,0);
+    }
+}   
 
 1;
