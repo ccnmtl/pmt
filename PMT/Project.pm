@@ -559,32 +559,31 @@ sub types_select {
 
 sub managers {
     my $self = shift;
-    return map {$_->username} grep { $_->username->status eq "active"} 
+    return grep { $_->status eq "active"} map {PMT::User->retrieve($_->username); }
     PMT::WorksOn->search(pid => $self->pid, auth => 'manager');
 }
 
 sub developers {
     my $self = shift;
-    return map {$_->username} grep { $_->username->status eq "active"}
+    return grep { $_->status eq "active"} map {PMT::User->retrieve($_->username) }
     PMT::WorksOn->search(pid => $self->pid, 
         auth => 'developer');
 }
 
 sub guests {
     my $self = shift;
-    return map {$_->username} 
-    grep { $_->username->status eq "active" } 
+    return grep { $_->status eq "active" } map {PMT::User->retrieve($_->username) }
     PMT::WorksOn->search(pid => $self->pid,
         auth => 'guest');
 }
 
 sub personnel_in_project {
     my $self = shift;
-    return map {
-        $_->username;
-    } grep {
-        $_->username->status eq "active";
-    }  PMT::WorksOn->search(pid => $self->pid);
+    return grep {
+        $_->status eq "active";
+    }  map {
+	PMT::User->retrieve($_->username);
+    } PMT::WorksOn->search({pid => $self->pid});
 }
 
 # returns list of Users who are in the project
@@ -676,20 +675,19 @@ sub dependencies_select {
 
 sub groups_in_project {
     my $self = shift;
-    return grep {$_->username->grp} PMT::WorksOn->search(pid => $self->pid);
+    return grep {PMT::User->retrieve($_->username)->grp} PMT::WorksOn->search(pid => $self->pid);
 }
 
 sub project_role {
     my $self     = shift;
     my $username = shift;
-    my @w = PMT::WorksOn->search(pid => $self->pid, username =>
-        $username);
+    my @w = PMT::WorksOn->search(pid => $self->pid, username => $username);
     if (scalar @w) {
         return $w[0]->auth;
     } else {
         # we have to go recursively through the groups to find a match
         foreach my $g ($self->groups_in_project()) {
-            my $guser = $g->username;
+            my $guser = PMT::User->retrieve($g->username);
             my $ut = $guser->all_users_in_group();
             if(exists $ut->{$username}) {
                 return $g->auth;

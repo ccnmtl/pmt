@@ -79,7 +79,7 @@ sub add_item {
     if(!$project->project_role($username)) {
         # if the person submitting the item isn't on the project
         # team, we need to add them as a guest on the project
-	my $w = PMT::WorksOn->create({username => $user,pid => $project, auth => 'guest'});
+	my $w = PMT::WorksOn->create({username => $username,pid => $project->pid, auth => 'guest'});
         $status = 'UNASSIGNED';
     }	    
 
@@ -538,16 +538,27 @@ sub edit_project {
     my $poster      = $args{poster};
 
     $self->debug("edit_project($pid,$name,$caretaker,$pub_view,$status,$projnum)");
-    $self->update(qq{UPDATE projects SET name = ?, description = ?, caretaker = ?,pub_view =?, status = ?,
-		     projnum = ?, area = ?, url = ?, restricted = ?, approach = ?,
-		     info_url = ?, entry_rel = ?, eval_url = ?, 
-		     scale = ?, distrib = ?, type = ?, poster = ? where pid = ?;},
-		     [$name,$description,$caretaker,$pub_view,
-		      $status,$projnum,$area,$url,$restricted,$approach,
-		      $info_url,$entry_rel,$eval_url,$scale,$distrib,
-		      $type,$poster,$pid]);
+    my $project = PMT::Project->retrieve($pid);
+    $project->name($name);
+    $project->description($description);
+    $project->caretaker(PMT::User->retrieve($caretaker));
+    $project->pub_view($pub_view);
+    $project->status($status);
+    $project->projnum($projnum);
+    $project->area($area);
+    $project->url($url);
+    $project->restricted($restricted);
+    $project->approach($approach);
+    $project->info_url($info_url);
+    $project->entry_rel($entry_rel);
+    $project->eval_url($eval_url);
+    $project->scale($scale);
+    $project->distrib($distrib);
+    $project->type($type);
+    $project->poster($poster);
+    
     # clear users
-    $self->update("DELETE from works_on WHERE pid = ?;",[$pid]);
+    $project->works_on()->delete_all();
     my $got_caretaker = 0;
     # put them back in
 
@@ -562,40 +573,40 @@ sub edit_project {
 	next if $manager eq "-1";
 	next if $manager eq "";
 	next if $seen{$manager};
-	$self->update("INSERT INTO works_on (username,pid,auth) values (?,?,'manager');",
-		      [$manager,$pid]);
+	my $w = PMT::WorksOn->create({username => $manager,
+				      pid => $project->pid, auth => 'manager'});
 	$seen{$manager} = 1;
 	$got_caretaker = 1 if $manager eq $caretaker;
     }
     # make sure that at least the caretaker is a manager.
     if(!$got_caretaker) {
-	$self->update("INSERT INTO works_on (username,pid,auth) values (?,?,'manager');",
-			 [$caretaker,$pid]);
+	my $w = PMT::WorksOn->create({username => $caretaker,
+				      pid => $project->pid, auth => 'manager'});
 	$seen{$caretaker} = 1;
     }
     foreach my $developer (@$dr) {
 	next if $developer eq "";
 	next if $developer eq "-1";
 	next if $seen{$developer};
-	$self->update("INSERT INTO works_on (username,pid,auth) values (?,?,'developer');",
-			 [$developer,$pid]);
+	my $w = PMT::WorksOn->create({username => $developer,
+				      pid => $project->pid, auth => 'developer'});
 	$seen{$developer} = 1;
     }
     foreach my $guest (@$gr) {
 	next if $guest eq "";
 	next if $guest eq "-1";
 	next if $seen{$guest};
-	$self->update("INSERT INTO works_on (username,pid,auth) values (?,?,'guest');",
-			 [$guest,$pid]);
+	my $w = PMT::WorksOn->create({username => $guest,
+				      pid => $project->pid, auth => 'guest'});
 	$seen{$guest} = 1;
     }
 
-    $self->update("delete from project_clients where pid = ?;",[$pid]);
+    $project->clients()->delete_all;
     foreach my $client (@$cr) {
 	next if $client eq "";
-	$self->update("insert into project_clients (pid,client_id) values (?,?);",
-		      [$pid,$client]);
+	my $p = PMT::ProjectClient->create({pid => $project->pid, client_id => $client});
     }
+    $project->update();
 
 }
 

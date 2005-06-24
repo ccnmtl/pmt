@@ -22,3 +22,16 @@ BEGIN {
     use_ok("PMT::WorksOn");
     use_ok("PMT::Dependency");
 }
+use PMT;
+my $PMT = new PMT();
+my $db = $PMT->{db};
+
+# delete the regression test user(s), project(s), etc.
+
+my $sql = qq{delete from projects where name = 'regression test project';};
+$db->update($sql,[]);
+
+$sql = qq{delete from users where username like '%regression';};
+$db->update($sql,[]);
+$sql = qq{delete from clients where firstname = 'regression test';};
+$db->update($sql,[]);

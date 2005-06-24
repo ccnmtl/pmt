@@ -15,7 +15,7 @@ my $pmt = new PMT();
 my $project = PMT::Project->create({name => $name, pub_view => 'true',
    				caretaker => $user, description => $description,
 				status => 'planning', wiki_category => $wiki_category});
-my $manager = PMT::WorksOn->create({username => $user, pid => $project, auth => 'manager'});
+my $manager = PMT::WorksOn->create({username => $user->username, pid => $project->pid, auth => 'manager'});
 
 $project->add_milestone("Final Release",$target_date,"project completion");
 
