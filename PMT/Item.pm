@@ -671,5 +671,80 @@ sub full_data {
     return \%data;
 }
 
+__PACKAGE__->set_sql(users_to_email => 
+		     qq{SELECT u.username,u.email 
+			    FROM notify n, users u
+			    WHERE n.username = u.username
+			    AND u.status = 'active' AND u.grp = 'f'
+			    AND n.iid = ? AND u.username <> ?;},
+		     'Main');
+
+# emails relevant parties with info for an item
+sub email {
+    my $self    = shift;
+    my $subject = shift;
+    my $skip    = shift;
+
+    my $r = $self->full_data();
+    my %item = %$r;
+
+    my $project_title = &truncate_string($item{'project'});  
+    my $subject_title = &truncate_string($item{'title'});  
+
+    if ($subject =~ /^new/) {
+        $subject_title = $subject_title . "(NEW)";  
+    } 
+
+    my $email_subj = "[PMT:$project_title] Attn:$item{'assigned_to_fullname'}-$subject_title";
+    my $send_to;
+
+    my $owner = $item->owner;
+    my $owner_email = $owner->username . " (" . $owner->email . ")";
+
+    my $sth = $self->sql_users_to_email;
+    $sth->execute($self->iid,$skip);
+    my @users = @{$sth->fetchall_arrayref({})};
+    $r = $item{keywords};
+    my @keywords = map {$$_{'keyword'};} @$r;
+    my $keywords = join ', ', @keywords;
+    $r = $item{dependencies};
+    my @dependencies = map {$$_{'dest'};} @$r;
+    my $dependencies = '';
+    if($#dependencies >= 0) {
+	my $dependencies = join ', ', @dependencies;
+    }
+
+    foreach my $user (@users) {
+	$ENV{PATH} = "/usr/sbin";
+	open(MAIL,"|/usr/sbin/sendmail -t");
+	print MAIL <<END_MESSAGE;
+To: $$user{'email'}
+From: $owner_email 
+Subject: $email_subj
+
+$item{'type'} #: $item{'iid'}
+title:\t\t$item{'title'}
+owner:\t\t$item{'owner_fullname'}
+assigned to:\t$item{'assigned_to_fullname'}\n
+status:\t\t$item{'status'}
+project:\t$item{'project'}
+priority:\t$item{'priority'}
+target date:\t$item{'target_date'}
+milestone:\t$item{'milestone'}
+last modified:\t$item{'last_mod'}\n
+url:\t\t$item{'url'}
+keywords:\t$keywords
+dependencies:\t$dependencies
+description: 
+$item{'description'}
+
+view $item{'type'}: http://pmt.ccnmtl.columbia.edu/item.pl?iid=$item{'iid'}
+
+please do not reply to this message.
+END_MESSAGE
+        close MAIL;
+    }
+}
+
 
 1;

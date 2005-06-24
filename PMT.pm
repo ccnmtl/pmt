@@ -129,7 +129,7 @@ sub add_item {
     # add history event
     $item->add_event($status,"<b>$args{'type'} added</b>",$user);
     # email people
-    $self->email($item->iid,"new $args{'type'}: $args{'title'}",$username);
+    $item->email("new $args{'type'}: $args{'title'}",$username);
 
     # the milestone may need to be reopened
 
@@ -625,90 +625,6 @@ sub truncate_string {
     }
 }    
 
-
-# }}}
-# {{{ email
-
-# emails relevant parties with info for an item
-sub email {
-    my $self    = shift;
-    my $iid     = shift;
-    my $subject = shift;
-    my $skip    = shift;
-
-    $self->debug("email($iid,$subject,$skip)");
-    my $item_object = PMT::Item->retrieve($iid);
-    my $r = $item_object->full_data();
-    my %item = %$r;
-
-    #Min's additions to revise email subject and source
-    my $project_title = &truncate_string($item{'project'});  
-    my $subject_title = &truncate_string($item{'title'});  
-
-    if ($subject =~ /^new/) {
-        $subject_title = $subject_title . "(NEW)";  
-    } 
-
-    my $email_subj = "[PMT:$project_title] Attn:$item{'assigned_to_fullname'}-$subject_title";
-    my $send_to;
-
-    #extract item owner's name and email
-    my $sql1 = qq {SELECT email, username 
-		      FROM users 
-		          WHERE fullname = ?;};
-    my $own = $self->s($sql1,[$item{'owner_fullname'}],['username','email']);
-    my @owner = @$own;
-    my $owner_email = $owner[0]->{username} . " (" . $owner[0]->{email} . ")";
-
-    my $sql = qq {SELECT u.username,u.email 
-		      FROM notify n, users u
-			  WHERE n.username = u.username
-			  AND u.status = 'active' AND u.grp = 'f'
-			      AND n.iid = ? AND u.username <> ?;};
-    $r = $self->s($sql,[$iid,$skip],['username','email']);
-    my @users = @$r;
-    $r = $item{keywords};
-    my @keywords = map {$$_{'keyword'};} @$r;
-    my $keywords = join ', ', @keywords;
-    $r = $item{dependencies};
-    my @dependencies = map {$$_{'dest'};} @$r;
-    my $dependencies = '';
-    if($#dependencies >= 0) {
-	my $dependencies = join ', ', @dependencies;
-    }
-
-    foreach my $user (@users) {
-	$self->debug("sending mail to $user->{username}");
-	$ENV{PATH} = "/usr/sbin";
-	open(MAIL,"|/usr/sbin/sendmail -t");
-	print MAIL <<END_MESSAGE;
-To: $$user{'email'}
-From: $owner_email 
-Subject: $email_subj
-
-$item{'type'} #: $item{'iid'}
-title:\t\t$item{'title'}
-owner:\t\t$item{'owner_fullname'}
-assigned to:\t$item{'assigned_to_fullname'}\n
-status:\t\t$item{'status'}
-project:\t$item{'project'}
-priority:\t$item{'priority'}
-target date:\t$item{'target_date'}
-milestone:\t$item{'milestone'}
-last modified:\t$item{'last_mod'}\n
-url:\t\t$item{'url'}
-keywords:\t$keywords
-dependencies:\t$dependencies
-description: 
-$item{'description'}
-
-view $item{'type'}: http://pmt.ccnmtl.columbia.edu/item.pl?iid=$item{'iid'}
-
-please do not reply to this message.
-END_MESSAGE
-        close MAIL;
-    }
-}
 
 # }}}
 # {{{ update_email
