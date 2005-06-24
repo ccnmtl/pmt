@@ -973,8 +973,6 @@ sub project_search {
     my $sth = $self->sql_project_search;
     $sth->execute(@values);
     return $sth->fetchall_arrayref({});
-
-    return $self->s($sql,[@values],['pid','projnum','name','status','area','caretaker','caretaker_fullname']);
 }
 
 
