@@ -811,4 +811,150 @@ END_MESSAGE
 }
 
 
+sub search_items {
+    my $self = shift;
+    my %args = @_;
+    my $pid         = $args{pid};
+    my $q           = $args{q};
+    my $type        = $args{type};
+    my $owner       = $args{owner};
+    my $assigned_to = $args{assigned_to};
+    my @status      = @{$args{status}};
+    my $keyword     = $args{keyword};
+    my @show        = $args{show};
+    my $number      = $args{number};
+    my $sortby      = $args{sortby};
+    my $order       = $args{order};
+    my $limit       = $args{limit};
+    my $offset      = $args{offset};
+    my $max_date    = $args{max_date};
+    my $min_date    = $args{min_date};
+
+    # ignore non iso8601 dates
+    if($max_date !~ /\d{4}-\d{2}-\d{2}/) {
+	$max_date = "";
+    }
+
+    if($min_date !~ /\d{4}-\d{2}-\d{2}/) {
+	$min_date = "";
+    }
+    
+
+    my $rows = 0;
+
+    my %show;
+    foreach my $show (@show) {
+	$show{$show} = 1;
+    }
+
+
+
+    if ($pid ne "" || $q ne "" || $type ne "" || $owner ne "" 
+	|| $assigned_to ne "" || $number ne "" || $sortby ne "" || $order ne "") 
+    {
+	$pid = $pid || "%";
+	$owner = $owner || "%";
+	$assigned_to = $assigned_to || "%";
+	if($q ne "") {
+	    $q = "%$q%";
+	} else {
+	    $q = "%";
+	}
+
+	
+	my %orders = (type => "i.type DESC, i.priority $order",
+		      priority => "i.priority $order, i.target_date ASC",
+		      target_date => "i.target_date $order, i.priority DESC",
+		      project => "upper(p.name) $order, i.priority DESC, i.target_date ASC",
+		      owner => "upper(uo.fullname) $order, i.priority DESC, i.target_date ASC",
+		      assigned_to => "upper(ua.fullname) $order, i.priority DESC, i.target_date ASC",
+		      status => "i.status $order, i.r_status $order, i.priority DESC, i.target_date ASC",
+		      last_mod => "i.last_mod $order",
+		      milestone => "upper(m.name) $order, i.priority DESC, i.target_date ASC",
+		      created => "i.iid $order",
+		      );
+
+	my $order_string = $orders{$sortby} || die "bad sortby";
+	my $query_string;
+	$query_string = qq{
+	    SELECT i.iid,i.title,i.description,i.type,i.owner,i.assigned_to,uo.fullname as owner_fullname,
+                   ua.fullname as assigned_to_fullname,i.priority,i.target_date,i.url,i.last_mod,
+	           i.mid,m.name as milestone,m.pid,p.name as project,i.status,i.r_status
+		FROM items i, milestones m, projects p, users uo, users ua
+		WHERE i.mid = m.mid
+		AND m.pid = p.pid 
+		AND i.owner = uo.username 
+		AND i.assigned_to = ua.username
+	    };
+	my @args;
+	if($type ne '%') {
+	    $query_string .= qq{ AND i.type = ? };
+	    push @args, $type;
+	}
+
+	if($max_date ne "") {
+	    $query_string .= qq{ AND i.target_date <= ? };
+	    push @args, $max_date;
+	}
+
+	if($min_date ne "") {
+	    $query_string .= qq{ AND i.target_date >= ? };
+	    push @args, $min_date;
+	}
+
+	my $status_string = "";
+	foreach my $stat (@status) {
+	    if ($stat =~ /_/) {
+		my ($s,$r) = split /_/, $stat;
+		$status_string .= "OR (i.status = 'RESOLVED' AND i.r_status like ?) ";
+		push @args, $r;
+	    } else {
+		$status_string .= "OR i.status = ? ";
+		push @args, $stat;
+	    }
+	}
+	# remove the extra "OR" at the beginning
+	if($status_string ne "") { 
+	    $status_string = substr($status_string,2);
+	    $query_string .= qq{ AND ($status_string) };
+	}
+	if($pid ne '%') {
+	    $query_string .= qq{ AND p.pid = ? };
+	    push @args, $pid;
+	}
+	if($owner ne "%") {
+	    $query_string .= qq{ AND uo.username = ? };
+	    push @args, $owner;
+	}
+	if($assigned_to ne "%") {
+	    $query_string .= qq{ AND ua.username = ? };
+	    push @args, $assigned_to;
+	}
+	if($q ne "%") {
+	    $query_string .= qq{
+		AND ( (i.iid IN (select k.iid 
+				 from keywords k 
+				 where upper(k.keyword) like upper(?)
+				 )) OR
+		      upper(i.title) LIKE upper(?) 
+		      OR upper(i.description) LIKE upper(?))	    
+		};
+	    push @args, ($q,$q,$q);
+	}
+	$query_string .= qq{
+		AND (p.pid IN (select w.pid 
+			       from works_on w 
+			       where username = ?) 
+		     OR p.pub_view = 'true')
+		ORDER BY $order_string
+		LIMIT $limit OFFSET $offset;
+	};
+	push @args, $username;
+	$self->set_sql(items_search => $query_string, 'Main');
+	my $sth = $self->sql_items_search;
+	$sth->execute(@args);
+	return $sth->fetchall_arrayref({});
+    }
+}
+
 1;
