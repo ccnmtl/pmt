@@ -605,26 +605,6 @@ sub edit_project {
 }
 
 # }}}
-# {{{ add_user
-
-sub add_user {
-    my $self     = shift;
-    my $username = untaint_username(shift);
-    $self->debug("add_user($username,*)");
-    my $password = shift 
-	|| throw Error::NO_PASSWORD "no password specified";
-    my $fullname = escape(shift)
-	|| $username;
-    my $email    = escape(shift)
-	|| throw Error::NO_EMAIL "no email address specified";
-
-
-    $self->update("INSERT INTO users (username,fullname,email,password)
-                          VALUES (?,?,?,?);",[$username,$fullname,$email,$password]);
-    return;
-}
-
-# }}}
 # {{{ update_user
 
 sub update_user {
@@ -665,9 +645,10 @@ sub add_group {
     my $email = 'nobody@localhost';
     my $password = 'nopassword';
 
-    $self->add_user($normalized,$password,$group_name,$email);
-    my $sql = qq{update users set grp = 't' where username = ?;};
-    $self->update($sql,[$normalized]);
+    my $u = PMT::User->create({username => $normalized, fullname => $group_name, email => $email, 
+			       password => $password});
+    $u->grp('t');
+    $u->update();
     return $normalized;
 }
 

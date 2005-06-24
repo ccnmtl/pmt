@@ -14,8 +14,8 @@ my $PMT = new PMT();
 ok($PMT,"new()");
 ok($PMT->{db},"has db object");
 
-$PMT->add_user($username,$password,$fullname,$email);
-my $u = PMT::User->retrieve($username);
+my $u = PMT::User->create({username => $username, fullname => $fullname, email => $email, 
+			       password => $password});
 $u->validate($username,$password);
 ok(1,"$username validated");
 

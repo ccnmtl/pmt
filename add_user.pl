@@ -17,7 +17,8 @@ eval {
     my $email    = $cgi->param('email')    || &print_form($cgi) && exit 0;
 
     throw Error::PASSWORD_MISMATCH "passwords do not match" unless $password eq $pass_ver;
-    $pmt->add_user($username,$password,$fullname,$email);
+    my $u = PMT::User->create({username => $username, fullname => $fullname, email => $email, 
+			       password => $password});
     print $cgi->redirect("login.pl");
 };
 if($@) {
