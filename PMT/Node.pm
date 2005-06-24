@@ -90,7 +90,24 @@ sub comment_html {
     }
     return $code;
 }
- 
+
+__PACKAGE__->set_sql(search_forum => 
+		     qq{select n.nid,n.subject,n.body,n.replies,
+			n.project as pid,n.author,u.fullname as author_fullname,n.added,
+			n.modified
+			    from nodes n, users u
+			    where u.username = n.author
+			    AND (upper(n.body) like upper(?) OR upper(n.subject) like
+				 upper(?))
+			    order by added desc;},
+		     'Main');
+sub search_forum {
+    my $self = shift;
+    my $search = shift;
+    my $sth = $self->sql_search_forum;
+    $sth->execute("%$search%","%$search%");
+    return $sth->fetchall_arrayref({});
+} 
 
 1;
 
