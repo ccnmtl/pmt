@@ -330,19 +330,19 @@ sub update_item {
 	$message .= "priority changed. ";
     }
 
-    if ($self->diff($item{keywords},[map {$$_{keyword}} @{$old{keywords}}])) {
+    if (diff($item{keywords},[map {$$_{keyword}} @{$old{keywords}}])) {
 	$changed = 1;
 	$comment .= "<b>keywords changed</b><br />\n";
 	$message .= "keywords changed. ";
     }
 
-    if ($self->diff($item{dependencies},[map {$$_{iid}} @{$old{dependencies}}])) {
+    if (diff($item{dependencies},[map {$$_{iid}} @{$old{dependencies}}])) {
 	$changed = 1;
 	$comment .= "<b>dependencies changed</b><br />\n";
 	$message .= "dependencies changed. ";
     }
 
-    if ($self->diff($item{clients}, [map {$_->{client_id}} @{$old{clients}}]) || $item{client_uni} ne "") {
+    if (diff($item{clients}, [map {$_->{client_id}} @{$old{clients}}]) || $item{client_uni} ne "") {
 	$changed = 1;
 	$comment .= "<b>clients changed</b><br />\n";
 	$message .= "clients changed. ";
@@ -424,24 +424,6 @@ SQL
 
 # }}}
 # {{{ subs for comparing complex data structures
-# {{{ diff
-
-# drivers to ld and lists_diff
-
-sub diff {
-    my $self = shift;
-    my $r1 = shift;
-    my $r2 = shift;
-    # ld expects references to lists
-    if ("ARRAY" eq ref $r1 && "ARRAY" eq ref $r2) {
-	return ld("","",$r1,$r2,0,1);
-    } else {
-	# if they're not references to lists, we just make them
-	return ld("","",[$r1],[$r2],0,1);
-    }
-}
-
-# }}}
 # {{{ diff_order
 
 # same as diff but not order agnostic

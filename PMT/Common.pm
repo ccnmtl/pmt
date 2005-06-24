@@ -11,7 +11,7 @@ require Exporter;
 			  untaint_mid untaint_sort untaint_status
 			  untaint_d untaint_d_with_default
 			  paragraphize selectify escape template
-                          todays_date scale_array ld
+                          todays_date scale_array ld diff
                           );
 
 sub scale_array {
@@ -508,5 +508,18 @@ sub ld {
 
     }
 }
+
+sub diff {
+    my $r1 = shift;
+    my $r2 = shift;
+    # ld expects references to lists
+    if ("ARRAY" eq ref $r1 && "ARRAY" eq ref $r2) {
+	return ld("","",$r1,$r2,0,1);
+    } else {
+	# if they're not references to lists, we just make them
+	return ld("","",[$r1],[$r2],0,1);
+    }
+}
+
 
 1;
