@@ -406,12 +406,12 @@ SQL
 	    my $old_milestone = PMT::Milestone->retrieve($old{mid});
 	    $old_milestone->update_milestone($user);
 	}
-	$self->update_email($item{'iid'},"$item{'type'} #$item{'iid'} $item{'title'} updated","$comment---------------\n$item{'comment'}",$username);
+	$i->update_email("$item{'type'} #$item{'iid'} $item{'title'} updated","$comment---------------\n$item{'comment'}",$username);
     } elsif ($item{'comment'} ne "") {
 	# add comment if needed
 	$i->add_comment($user,$item{'comment'});
 	if($changed == 0) {
-	    $self->update_email($item{'iid'},"comment added to $item{'type'} #$item{'iid'} $item{'title'}","$item{'comment'}",$username);
+	    $i->update_email("comment added to $item{'type'} #$item{'iid'} $item{'title'}","$item{'comment'}",$username);
 	    $message .= "comment added. ";
 	}
     } else {
@@ -625,88 +625,6 @@ sub truncate_string {
     }
 }    
 
-
-# }}}
-# {{{ update_email
-
-# emails relevant parties with info for an item
-# when it is updated.
-sub update_email {
-    my $self    = shift;
-    my $iid     = shift;
-    my $subject = untaint_ascii(shift);
-    my $comment = shift;
-    my $skip    = shift || "";  #username
-    $self->debug("update_email($iid,$subject,[comment],$skip)");
-    my $item_object = PMT::Item->retrieve($iid);
-    my $r = $item_object->full_data();
-    my %item = %$r;
-
-    $comment =~ s/<b>//g;
-    $comment =~ s/<\/b>//g;
-    $comment =~ s/<br \/>/\n/g;
-
-    $Text::Wrap::columns = 72;
-    my $body = Text::Wrap::wrap("","",$comment);
-
-    #Min's additions to revise email subject and source
-    my $updater = $skip; 
-#From: pmt\@www2.ccnmtl.columbia.edu (Project Management Tool)
-    if ($skip eq "") {
-       $updater = "pmt\@www2.ccnmtl.columbia.edu (Project Management Tool)";
-    }
-
-    #extract updater's email
-    my $sql1 = qq {SELECT email 
-		      FROM users 
-		          WHERE username = ?;};
-    my $upd = $self->s($sql1,[$updater],['email']);
-    my @u = @$upd; 
-    #my $updater_info = $u[0]->{email};
-    #my $updater_info = "(" . $u[0]->{email} . ")" . $updater;
-    my $updater_info = $updater . "<" . $u[0]->{email} . ">";
-
-    my $project = $item{'project'};
-
-    my $project_title = &truncate_string($project);
-    my $subject_title = &truncate_string($item{'title'});
-
-    my $email_subj = "[PMT:$project_title] Attn:$item{'assigned_to_fullname'}-$subject_title";
-
-    my $sql = qq {SELECT u.username,u.email 
-		      FROM notify n, users u
-			  WHERE n.username = u.username
-			  AND u.status = 'active' AND u.grp = 'f'
-			      AND n.iid = ? AND u.username <> ?;};
-    $r = $self->s($sql,[$iid,$skip],['username','email']);
-    my @users = @$r;
-
-    foreach my $user (@users) {
-	$self->debug("sending mail to $$user{'username'}");
-	$ENV{PATH} = "/usr/sbin";
-	open(MAIL,"|/usr/sbin/sendmail -t");
-	print MAIL <<END_MESSAGE;
-To: $$user{'email'}
-From: $updater_info 
-Subject: $email_subj
-
-updater: $updater
-updater: $updater_info 
-project:\t$project
-by:\t\t$skip
-$item{'type'}:\t$item{'iid'}
-title:\t\t$item{'title'}
-
-$body
-
-$item{'type'} URL: http://pmt.ccnmtl.columbia.edu/item.pl?iid=$item{'iid'}
-
-Please do not reply to this message.
-
-END_MESSAGE
-        close MAIL;
-    }
-}
 
 # }}}
 

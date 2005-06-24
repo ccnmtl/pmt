@@ -1352,8 +1352,8 @@ sub update_items {
                 my $milestone = $i->mid;
 
                 $milestone->update_milestone($u);
-                $self->{pmt}->update_email($iid,$i->type . " #$iid $title updated", 
-                    $comment, $self->{username});
+		$i->update_email($i->type . " #$iid $title updated", 
+                    $comment, $self->{user}->username);
                 $i->touch();
                 $i->update;
             }

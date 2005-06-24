@@ -742,7 +742,71 @@ view $item{'type'}: http://pmt.ccnmtl.columbia.edu/item.pl?iid=$item{'iid'}
 
 please do not reply to this message.
 END_MESSAGE
-        close MAIL;
+        CORE::close MAIL;
+    }
+}
+
+
+# emails relevant parties with info for an item
+# when it is updated.
+sub update_email {
+    my $self    = shift;
+    my $subject = shift;
+    my $comment = shift;
+    my $skip    = shift || "";  #username
+    my $r = $self->full_data();
+    my %item = %$r;
+
+    $comment =~ s/<b>//g;
+    $comment =~ s/<\/b>//g;
+    $comment =~ s/<br \/>/\n/g;
+
+    $Text::Wrap::columns = 72;
+    my $body = Text::Wrap::wrap("","",$comment);
+
+    my $updater = $skip; 
+
+    if ($skip eq "") {
+       $updater = "pmt\@www2.ccnmtl.columbia.edu (Project Management Tool)";
+    }
+
+    my $u = PMT::User->retrieve($updater);
+    my $updater_info = $updater . "<" . $u->email . ">";
+
+    my $project = $item{'project'};
+
+    my $project_title = &truncate_string($project);
+    my $subject_title = &truncate_string($item{'title'});
+
+    my $email_subj = "[PMT:$project_title] Attn:$item{'assigned_to_fullname'}-$subject_title";
+
+    my $sth = $self->sql_users_to_email;
+    $sth->execute($self->iid,$skip);
+    my @users = @{$sth->fetchall_arrayref({})};
+
+    foreach my $user (@users) {
+	$ENV{PATH} = "/usr/sbin";
+	open(MAIL,"|/usr/sbin/sendmail -t");
+	print MAIL <<END_MESSAGE;
+To: $$user{'email'}
+From: $updater_info 
+Subject: $email_subj
+
+updater: $updater
+updater: $updater_info 
+project:\t$project
+by:\t\t$skip
+$item{'type'}:\t$item{'iid'}
+title:\t\t$item{'title'}
+
+$body
+
+$item{'type'} URL: http://pmt.ccnmtl.columbia.edu/item.pl?iid=$item{'iid'}
+
+Please do not reply to this message.
+
+END_MESSAGE
+        CORE::close MAIL;
     }
 }
 
