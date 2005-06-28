@@ -50,7 +50,7 @@ eval {
     #Min's addition to include forum posts in reports
     my $start = $mon_year . "-" . $mon_month . "-" . $mon_day; 
     my $end   = $sun_year . "-" . $sun_month . "-" . $sun_day; 
-    my $forum = new Forum($username, $pmt);
+    my $forum = new Forum($username);
 
     my $template = get_template("project_weekly_report.tmpl");
     $template->param($user->menu());

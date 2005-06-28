@@ -12,7 +12,6 @@
 #  functionality.
 use strict;
 use lib qw(.);
-use PMT;
 use PMT::Common;
 use Mail::Sendmail;
 use Text::Wrap;
@@ -25,21 +24,12 @@ package Forum;
 sub new {
     my $pkg = shift;
     my $user = shift;
-    my $pmt = shift;
 
     my $member_vars = {
-	pmt => $pmt,
 	user => $user,
+	u => PMT::User->retrieve($user),
 	};
     return bless $member_vars, $pkg;
-}
-
-sub node {
-    my $self = shift;
-    my $nid = shift;
-    my $node = PMT::Node->retrieve($nid);
-    my $user = PMT::User->retrieve($self->{user});
-    return $node->data($user);
 }
 
 sub delete_node {
@@ -63,7 +53,7 @@ sub logs {
     my $self = shift;
     my $limit = shift || "10";
     my $offset = shift || "0";
-    return [map { $self->node($_->nid)} PMT::Node->search(type => 'log',
+    return [map { $_->data($self->{u})} PMT::Node->search(type => 'log',
         {order_by => "modified desc limit $limit offset $offset"})];
 }
 
@@ -73,7 +63,7 @@ sub logs {
 sub recent_comments {
     my $self = shift;
     return [map {
-        $self->node($_->nid);
+        $_->data($self->{u})
     } PMT::Node->search(type => 'comment', {order_by =>
             "modified desc limit 10"})];
 }
@@ -102,7 +92,7 @@ sub project_posts {
     my $limit = shift || 10;
     my $offset = shift || 0;
 
-    return [map {$self->node($_->nid)} PMT::Node->search(type => 'post',
+    return [map {$_->data($self->{u})} PMT::Node->search(type => 'post',
         project => $pid,
         {order_by => "modified desc limit $limit offset $offset"})];
 }
@@ -115,7 +105,7 @@ sub project_posts_by_time {
     my $end   = shift;
 
     
-    return [map {$self->node($_->nid)} PMT::Node->pid_posts_in_range($pid,
+    return [map {$_->data($self->{u})} PMT::Node->pid_posts_in_range($pid,
          $start, $end)];
 }
 
@@ -138,15 +128,12 @@ sub post {
     my $self        = shift;
     my %args = @_;
 
-    $self->{pmt}->debug("Forum::post( ... )");
-
     if($args{reply_to}) {
 	$args{type} = 'comment';
     } else {
 	$args{reply_to} = 0;
     }
     
-    $self->{pmt}->error("null message body") unless $args{body};
     my $tiki = new Text::Tiki;
     my $body = PMT::Common::escape($tiki->format($args{body}));
     $args{author} ||= $self->{user};
@@ -178,7 +165,6 @@ sub email_post {
     my $self = shift;
     my $nid = shift;
     my $args = shift;
-    $self->{pmt}->debug("email_post($nid,[...])");
     $Text::Wrap::columns = 72;
     my $body = Text::Wrap::wrap("","",$args->{body});
 
@@ -222,13 +208,13 @@ sub email_reply {
     $Text::Wrap::columns = 72;
     my $body = Text::Wrap::wrap("","",$args->{body});
 
-    my $reply_to_node = $self->node($args->{reply_to});
+    my $reply_to_node = PMT::Node($args->{reply_to});
 
     # don't bother sending a copy to the author
     # if they're just replying to their own node.
-    return if $self->user() eq $reply_to_node->{author};
+    return if $self->user() eq $reply_to_node->author->username;
 
-    my $author = PMT::User->retrieve($reply_to_node->{author});
+    my $author = $reply_to_node->author;
     my $user_info = $author->user_info();
 
     my $user = PMT::User->retrieve($self->user());

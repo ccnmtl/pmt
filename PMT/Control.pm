@@ -997,7 +997,7 @@ sub delete_node {
     if ($really ne "ok") {
         return $self->delete_node_verify($nid);
     } else {
-        my $forum = new Forum($self->{username},$self->{pmt});
+        my $forum = new Forum($self->{username});
         $forum->delete_node($nid);
         $self->header_type('redirect');
         $self->header_props(-url => "home.pl?mode=forum");
@@ -1242,7 +1242,7 @@ sub post {
         $template->param(forum_mode => 1);
         return $template->output();
     } else {
-        my $forum = new Forum($username,$self->{pmt});
+        my $forum = new Forum($username);
         my $nid = $forum->post(type => $type,pid => $pid,
             subject => $subject,body => $body,
             reply_to => $reply_to);
@@ -1750,7 +1750,7 @@ sub search_forum {
     my $user = $self->{user};
     my $username = $user->username;
     my $cgi = $self->query();
-    my $forum = new Forum($username, $pmt);
+    my $forum = new Forum($username);
     my $search = $cgi->param('searchWord') || "";
 
     my $template = $self->template("searchForum.tmpl");
@@ -2105,7 +2105,7 @@ sub forum {
     my $username = $self->{user}->username;
     my $pmt = $self->{pmt};
     my $pid = $cgi->param('pid') || "";
-    my $forum = new Forum($username,$pmt);
+    my $forum = new Forum($username);
     my $template = $self->template("forum.tmpl");
     if($pid) {
 	my $project = PMT::Project->retrieve($pid);
@@ -2130,9 +2130,8 @@ sub node {
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
     my $nid = $cgi->param('nid') || "";
-    my $forum = new Forum($self->{user}->username,$pmt);
     my $template = $self->template("node.tmpl");
-    $template->param($forum->node($nid));
+    $template->param(PMT::Node->retrieve($nid)->data($self->{user}));
     $template->param(page_title => "Forum Node: " . $template->param('subject'));
     return $template->output();
 }

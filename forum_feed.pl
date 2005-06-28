@@ -13,7 +13,7 @@ use Forum;
 my $cgi = new CGI();
 my $pmt = PMT->new();
 eval {
-    my $forum = new Forum('',$pmt);
+    my $forum = new Forum('');
 
     my $nodes = $forum->all_recent();
 

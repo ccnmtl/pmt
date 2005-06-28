@@ -76,7 +76,7 @@ eval {
     my $start = $year . "-" . "$month" . "-" . $start_day;
     my $end   = $end_year . "-" . "$end_month" . "-" . $end_day;
     #Min's addition to include forum posts in reports
-    my $forum = new Forum($username, $pmt);
+    my $forum = new Forum($username);
 
     my $template = get_template("project_months_report.tmpl");
     $template->param($user->menu());

@@ -27,7 +27,7 @@ eval {
     $limit = ($limit > 0) ? $limit : 20;
     $offset = ($offset >= 0) ? $offset : 0;
 
-    my $forum = new Forum($username,$pmt);
+    my $forum = new Forum($username);
     my $template = get_template("forum_archive.tmpl");
     my $total;
     if($pid) {
