@@ -118,7 +118,7 @@ sub setup {
 
 sub template {
     my $self = shift;
-    my $template = PMT::Common::template(@_);
+    my $template = PMT::Common::get_template(@_);
     $template->param(message => $self->{message});
     $template->param($self->{user}->menu());
     return $template;
