@@ -1,7 +1,6 @@
 use lib qw(/home/httpd/html/lib /var/www/pmt/lib/ .);
 use strict;
 use CGI;
-use PMT::DB;
 use PMT::Error;
 use PMT::Config;
 use PMT::User;
@@ -26,8 +25,6 @@ package PMT;
 use PMT::Common;
 
 
-@PMT::ISA = qw(Util);
-
 # {{{ global variables
 
 my $cgi = CGI->new();
@@ -47,7 +44,6 @@ sub new {
 
     my $config = new PMT::Config();
     my $self = bless {}, $pkg;
-    $self->{db} = new PMT::DB();
     $self->{error_message} = "";
     $self->{verified} = 0;
     $self->{config} = $config;
@@ -749,35 +745,6 @@ sub clean_username {
 # }}}
 
 
-# {{{ --- database utility functions
-
-# {{{ s
-
-sub s {
-    my $self        = shift;
-    return $self->{db}->s(@_);
-}
-
-# }}}
-# {{{ ss
-
-sub ss {
-    my $self        = shift;
-    return $self->{db}->ss(@_);
-}
-
-# }}}
-# {{{ update
-
-sub update {
-    my $self = shift;
-    return $self->{db}->update(@_);
-}
-
-# }}}
-
-
-# }}}
 # {{{ --- logging functions
 
 sub debug {

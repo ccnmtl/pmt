@@ -1,5 +1,5 @@
 use strict;
-use Test::More tests => 10;
+use Test::More tests => 9;
 use lib qw(.);
 use PMT;
 use PMT::User;
@@ -12,7 +12,6 @@ my $fullname = "regression test user";
 
 my $PMT = new PMT();
 ok($PMT,"new()");
-ok($PMT->{db},"has db object");
 
 eval {
      my $ou = PMT::User->retrieve($username);
