@@ -24,7 +24,7 @@ from __TABLE__
 where target_date = ? and pid = ?
 });
 
-__PACKAGE__->set_sql('num_unclosed_items',
+__PACKAGE__->set_sql(num_unclosed_items,
   qq{SELECT count(*) as num_unclosed FROM items i WHERE i.mid = ? and i.status 
   in ('OPEN','RESOLVED','UNASSIGNED','INPROGRESS');},
   'Main');
@@ -38,37 +38,31 @@ sub num_unclosed_items {
   my $self = shift;
   my $sth = $self->sql_num_unclosed_items;
   $sth->execute($self->mid);
-  my $count = $sth->fetchall_arrayref()->[0]->[0];
-  $sth->finish;
-  return $count;
+  return $sth->fetchrow_hashref()->{num_unclosed};
 }
 
 sub estimated_time {
     my $self = shift;
     my $sth = $self->sql_estimated_time;
     $sth->execute($self->mid);
-    return $sth->fetchall_arrayref()->[0]->[0];
+    return $sth->fetchrow_hashref()->{estimated_time};
 }
 
 sub completed_time {
     my $self = shift;
     my $sth = $self->sql_completed_time;
     $sth->execute($self->mid);
-    my $res = $sth->fetchall_arrayref()->[0]->[0];
-    $sth->finish;
-    return $res;
+    return $sth->fetchrow_hashref()->{completed_time};
 }
 
 sub num_items {
     my $self = shift;
     my $sth = $self->sql_num_items;
     $sth->execute($self->mid);
-    my $count = $sth->fetchall_arrayref()->[0]->[0];
-    $sth->finish;
-    return $count;
+    return $sth->fetchrow_hashref()->{num_items};
 }
 
-__PACKAGE__->set_sql(count_all => "SELECT COUNT(*) FROM __TABLE__");
+__PACKAGE__->set_sql(count_all => "SELECT COUNT(*) as cnt FROM __TABLE__");
 __PACKAGE__->has_many(items => 'PMT::Item', 'mid');
 
 sub data {

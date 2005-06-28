@@ -12,41 +12,24 @@ __PACKAGE__->has_many(items => 'PMT::ItemClients', 'client_id');
 __PACKAGE__->has_many(projects => 'PMT::ProjectClients', 'client_id');
 __PACKAGE__->add_constructor(all_active => qq{status = 'active' order by
 upper(lastname) ASC, upper(firstname) ASC});
-__PACKAGE__->set_sql(total_clients_by_school => qq{
-select school, count(*) from clients group by school;
-}, 'Main');
 
-__PACKAGE__->set_sql(total_clients_by_school_for_date => qq{
-select school, count(*) from clients 
-where registration_date like ?
-group by school;}, 'Main');
 
-__PACKAGE__->set_sql(existing_clients => 
-		     qq{
-			 select c.client_id,c.email,c.lastname,c.firstname,
-			 c.school,c.department,c.contact,u.fullname
-			     from clients c, users u 
-			     where c.contact = u.username 
-			     and (c.email ilike ? 
-				  or upper(c.lastname) = upper(?));},
-		     'Main');
-__PACKAGE__->set_sql(recent_items => qq{
-    select i.iid, i.title, p.name, p.pid, i.status,i.type,
-    to_char(i.last_mod,'YYYY-MM-DD HH24:MI') as last_mod
-	from items i, milestones m, projects p 
-	where i.mid = m.mid and m.pid = p.pid
-	and 
-	((i.iid in (select ic.iid from item_clients ic where ic.client_id = ?)) 
-	 or 
-	 (p.pid in (select pc.pid from project_clients pc where pc.client_id = ?)))
-	order by i.last_mod desc limit 10;},
-		     'Main');
+use PMT::Common;
+
+open(SCHOOLS_FILE,"config/schools.txt") or die "couldn't read in schools";
+my @SCHOOLS = grep {$_ ne ""} map {$_ =~ s/\s+$//; $_ =~ s/^\s+//; $_;} <SCHOOLS_FILE>;
+close SCHOOLS_FILE;
+open(DEPS_FILE,"config/departments.txt") or die "couldn't read in
+    departments";
+my @DEPARTMENTS = grep {$_ ne ""} map {$_ =~ s/\s+$//; $_ =~ s/^\s+//; $_;} <DEPS_FILE>;
+close DEPS_FILE;
+
 
 __PACKAGE__->set_sql(all_clients_data => qq{
 	SELECT c.client_id,c.lastname,c.firstname,c.title,c.department,
 	       c.school,c.add_affiliation,c.phone,c.email,
-	       c.contact,c.comments,c.registration_date,u.fullname,
-	       c.status, to_char(max(i.last_mod),'YYYY-MM-DD HH24:MI')
+	       c.contact,c.comments,c.registration_date,u.fullname as contact_fullname,
+	       c.status, to_char(max(i.last_mod),'YYYY-MM-DD HH24:MI') as last_mod
         FROM clients c 
         LEFT OUTER JOIN item_clients ic on c.client_id = ic.client_id
         LEFT OUTER JOIN items i on ic.iid = i.iid
@@ -59,58 +42,24 @@ __PACKAGE__->set_sql(all_clients_data => qq{
 	       c.status
 	       ORDER BY upper(c.lastname) ASC, upper(c.firstname);
     }, 'Main');
-__PACKAGE__->set_sql(new_clients_data => qq{
-	SELECT c.client_id,c.lastname,c.firstname,c.title,c.department,
-	       c.school,c.add_affiliation,c.phone,c.email,
-	       c.contact,c.comments,c.registration_date,u.fullname
-        FROM clients c, users u
-	WHERE c.contact = u.username
-	AND c.registration_date >= ? AND c.registration_date <= ?
-        ORDER BY c.registration_date ASC;
-    }, 'Main');
-    
-
-__PACKAGE__->set_sql(projects_select => qq{
-    SELECT p.pid,p.name
-	FROM projects p
-	ORDER BY upper(p.name) ASC;
-    }, 'Main');
-
-use PMT::Common;
-
-open(SCHOOLS_FILE,"config/schools.txt") or die "couldn't read in schools";
-my @SCHOOLS = grep {$_ ne ""} map {$_ =~ s/\s+$//; $_ =~ s/^\s+//; $_;} <SCHOOLS_FILE>;
-close SCHOOLS_FILE;
-open(DEPS_FILE,"config/departments.txt") or die "couldn't read in
-    departments";
-my @DEPARTMENTS = grep {$_ ne ""} map {$_ =~ s/\s+$//; $_ =~ s/^\s+//; $_;} <DEPS_FILE>;
-close DEPS_FILE;
 
 sub all_clients_data {
     my $self = shift;
     my $letter = shift;
     my $sth = $self->sql_all_clients_data;
     $sth->execute("$letter%");
-    return [map {
-	{
-	    client_id => $_->[0],
-	    lastname => $_->[1],
-	    firstname => $_->[2],
-	    title => $_->[3],
-	    department => $_->[4],
-	    school => $_->[5],
-	    add_affiliation => $_->[6],
-	    phone => $_->[7],
-	    email => $_->[8],
-	    contact => $_->[9],
-	    comments => $_->[10],
-	    registration_date => $_->[11],
-	    contact_fullname => $_->[12],
-	    status => $_->[13],
-	    last_mod => $_->[14],
-	}
-    } @{$sth->fetchall_arrayref()}];
+    return $sth->fetchall_arrayref({});
 }
+
+__PACKAGE__->set_sql(new_clients_data => qq{
+	SELECT c.client_id,c.lastname,c.firstname,c.title,c.department,
+	       c.school,c.add_affiliation,c.phone,c.email,
+	       c.contact,c.comments,c.registration_date,u.fullname as contact_fullname
+        FROM clients c, users u
+	WHERE c.contact = u.username
+	AND c.registration_date >= ? AND c.registration_date <= ?
+        ORDER BY c.registration_date ASC;
+    }, 'Main');
 
 sub new_clients_data {
     my $self = shift;
@@ -118,24 +67,21 @@ sub new_clients_data {
     my $end_date = shift;
     my $sth = $self->sql_new_clients_data;
     $sth->execute($start_date,$end_date);
-    return [map {
-	{
-	    client_id => $_->[0],
-	    lastname => $_->[1],
-	    firstname => $_->[2],
-	    title => $_->[3],
-	    department => $_->[4],
-	    school => $_->[5],
-	    add_affiliation => $_->[6],
-	    phone => $_->[7],
-	    email => $_->[8],
-	    contact => $_->[9],
-	    comments => $_->[10],
-	    registration_date => $_->[11],
-	    contact_fullname => $_->[12],
-	} 
-    } @{$sth->fetchall_arrayref()}];
+    return $sth->fetchall_arrayref({});
 }
+
+__PACKAGE__->set_sql(recent_items => qq{
+    select i.iid, i.title, p.name as project, p.pid, i.status,i.type,
+    to_char(i.last_mod,'YYYY-MM-DD HH24:MI') as last_mod
+	from items i, milestones m, projects p 
+	where i.mid = m.mid and m.pid = p.pid
+	and 
+	((i.iid in (select ic.iid from item_clients ic where ic.client_id = ?)) 
+	 or 
+	 (p.pid in (select pc.pid from project_clients pc where pc.client_id = ?)))
+	order by i.last_mod desc limit 10;},
+		     'Main');
+
 
 sub recent_items {
     my $self = shift;
@@ -145,18 +91,18 @@ sub recent_items {
         $_->{type_class} = $_->{type};
         $_->{type_class} =~ s/\s//g;
         $_;
-    } map {
-	{
-	    iid      => $_->[0],
-	    title    => $_->[1],
-	    project  => $_->[2],
-	    pid      => $_->[3],
-	    status   => $_->[4],
-	    type     => $_->[5],
-	    last_mod => $_->[6],
-	}
-    } @{$sth->fetchall_arrayref()}];
+    } @{$sth->fetchall_arrayref({})}];
 }
+
+__PACKAGE__->set_sql(existing_clients => 
+		     qq{
+			 select c.client_id,c.email,c.lastname,c.firstname,
+			 c.school,c.department,c.contact as contact_username,u.fullname as contact_fullname
+			     from clients c, users u 
+			     where c.contact = u.username 
+			     and (c.email ilike ? 
+				  or upper(c.lastname) = upper(?));},
+		     'Main');
 
 sub existing_clients {
     my $self = shift;
@@ -164,18 +110,7 @@ sub existing_clients {
     my $lastname = shift;
     my $sth = $self->sql_existing_clients;
     $sth->execute("$uni%",$lastname);
-    return [map {
-	{
-	    client_id => $_->[0],
-	    email => $_->[1],
-	    lastname => $_->[2],
-	    firstname => $_->[3],
-	    school => $_->[4],
-	    department => $_->[5],
-	    contact_username => $_->[6],
-	    contact_fullname => $_->[7],
-	}
-    } @{$sth->fetchall_arrayref()}];
+    return $sth->fetchall_arrayref({});
 }
 
 sub data {
@@ -239,6 +174,13 @@ sub projects_data {
     } $self->projects()];
 }
 
+__PACKAGE__->set_sql(projects_select => qq{
+    SELECT p.pid,p.name
+	FROM projects p
+	ORDER BY upper(p.name) ASC;
+    }, 'Main');
+
+
 # returns data structure for making a select
 # list of all projects with the ones that this
 # client is on selected.
@@ -248,12 +190,16 @@ sub projects_select {
     my $sth = $self->sql_projects_select();
     $sth->execute();
     my @labels = map {
-	push @values, $_->[0];
-	$_->[1];
-    } @{$sth->fetchall_arrayref()};
+	push @values, $_->{pid};
+	$_->{name};
+    } @{$sth->fetchall_arrayref({})};
     my @selected = map {$_->pid} $self->projects();
     return selectify(\@values,\@labels,\@selected);
 }
+
+__PACKAGE__->set_sql(total_clients_by_school => qq{
+select school, count(*) as cnt from clients group by school;
+}, 'Main');
 
 
 sub total_clients_by_school {
@@ -261,8 +207,8 @@ sub total_clients_by_school {
     my $sth = $self->sql_total_clients_by_school;
     $sth->execute();
     my %counts = map { 
-        $_->[0] => $_->[1];
-    } @{$sth->fetchall_arrayref()};
+        $_->{school} => $_->{cnt};
+    } @{$sth->fetchall_arrayref({})};
     
     my @schools = map { 
         my %data = ();
@@ -273,6 +219,11 @@ sub total_clients_by_school {
     return \@schools;
 }
 
+__PACKAGE__->set_sql(total_clients_by_school_for_date => qq{
+select school, count(*) as cnt from clients 
+where registration_date like ?
+group by school;}, 'Main');
+
 sub total_clients_by_school_for_month {
     my $self = shift;
     my $year = shift;
@@ -281,8 +232,8 @@ sub total_clients_by_school_for_month {
     my $sth = $self->sql_total_clients_by_school_for_date; 
     $sth->execute("$year-$month-%");
     my %counts = map { 
-        $_->[0] => $_->[1];
-    } @{$sth->fetchall_arrayref()};
+        $_->{school} => $_->{cnt};
+    } @{$sth->fetchall_arrayref({})};
     
     my @schools = map { 
         my %data = ();
@@ -301,8 +252,8 @@ sub total_clients_by_school_for_year {
     my $sth = $self->sql_total_clients_by_school_for_date; 
     $sth->execute("$year-%");
     my %counts = map { 
-        $_->[0] => $_->[1];
-    } @{$sth->fetchall_arrayref()};
+        $_->{school} => $_->{cnt};
+    } @{$sth->fetchall_arrayref({})};
     
     my @schools = map { 
         my %data = ();

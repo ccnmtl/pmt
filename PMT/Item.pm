@@ -28,28 +28,6 @@ mid = ? and status in ('UNASSIGNED','OPEN','RESOLVED','INPROGRESS')});
 
 __PACKAGE__->set_sql(is_notifying_user => qq{select count(*) from notify where username = ? and iid = ?});
 
-__PACKAGE__->set_sql(resolve_times => qq{select 
-    to_char(date_part('day',a.actual_time)*24 + date_part('hour',a.actual_time),'FM00') || ':' || to_char(date_part('minute',a.actual_time),'FM00'),
-    to_char(a.completed,'YYYY-MM-DD HH24:MI'),
-    a.resolver,
-    u.fullname
-    from   actual_times a, users u 
-    where  a.iid = ?
-    and  u.username = a.resolver 
-    order by completed ASC;}, 'Main');
-
-__PACKAGE__->set_sql(history => qq{
-SELECT e.status,to_char(e.event_date_time,'YYYY-MM-DD HH24:MI:SS'),
-c.username,u.fullname,c.comment
-FROM events e, users u, comments c
-WHERE e.eid = c.event AND e.item = ? AND c.username = u.username
-ORDER BY e.event_date_time ASC;},'Main');
-
-__PACKAGE__->set_sql(comments => qq{
-SELECT c.comment,to_char(c.add_date_time,'YYYY-MM-DD HH24:MI:SS'),c.username, u.fullname
-FROM comments c, users u
-WHERE c.item = ? AND c.username = u.username
-ORDER BY c.add_date_time DESC;}, 'Main');
 
 my %PRIORITIES = (4 => 'CRITICAL', 3 => 'HIGH', 2 => 'MEDIUM', 1 => 'LOW',
 0 => 'ICING');
@@ -66,20 +44,29 @@ sub is_notifying_user {
     return $res[0];
 }
 
+__PACKAGE__->set_sql(resolve_times => qq{select 
+    to_char(date_part('day',a.actual_time)*24 + date_part('hour',a.actual_time),'FM00') || ':' || to_char(date_part('minute',a.actual_time),'FM00') as actual_time,
+    to_char(a.completed,'YYYY-MM-DD HH24:MI') as completed,
+    a.resolver as resolver_username,
+    u.fullname as resolver_fullname
+    from   actual_times a, users u 
+    where  a.iid = ?
+    and  u.username = a.resolver 
+    order by completed ASC;}, 'Main');
 
 sub resolve_times {
     my $self = shift;
     my $sth = $self->sql_resolve_times;
     $sth->execute($self->iid);
-    return [map {
-        {
-            actual_time => $_->[0],
-            completed => $_->[1],
-            resolver_username => $_->[2],
-            resolver_fullname => $_->[3],
-        }
-    } @{$sth->fetchall_arrayref()}];
+    return $sth->fetchall_arrayref({});
 }
+
+__PACKAGE__->set_sql(history => qq{
+SELECT e.status,to_char(e.event_date_time,'YYYY-MM-DD HH24:MI:SS') as event_date_time,
+c.username,u.fullname,c.comment
+FROM events e, users u, comments c
+WHERE e.eid = c.event AND e.item = ? AND c.username = u.username
+ORDER BY e.event_date_time ASC;},'Main');
 
 sub history {
     my $self = shift;
@@ -88,20 +75,20 @@ sub history {
     use Text::Tiki;
     my $tiki = new Text::Tiki();
     return [map {
-        my $data = {
-            status => $_->[0],
-            event_date_time => $_->[1],
-            username => $_->[2],
-            fullname => $_->[3],
-            comment => $_->[4],
-        };
-        $data->{comment} = $data->{comment} || "";
-        $data->{comment} = $tiki->format($data->{comment});
-        $data->{comment} =~ s{&lt;br /&gt;\s*}{\n}g;
-        $data->{comment} =~ s{&lt;(/?)b&gt;}{<$1b>}g;
-        $data;
-    } @{$sth->fetchall_arrayref()}];
+        $_->{comment} = $_->{comment} || "";
+        $_->{comment} = $tiki->format($_->{comment});
+        $_->{comment} =~ s{&lt;br /&gt;\s*}{\n}g;
+        $_->{comment} =~ s{&lt;(/?)b&gt;}{<$1b>}g;
+        $_;
+    } @{$sth->fetchall_arrayref({})}];
 }
+
+__PACKAGE__->set_sql(comments => qq{
+SELECT c.comment,to_char(c.add_date_time,'YYYY-MM-DD HH24:MI:SS') as add_date_time,
+       c.username, u.fullname
+FROM comments c, users u
+WHERE c.item = ? AND c.username = u.username
+ORDER BY c.add_date_time DESC;}, 'Main');
 
 sub get_comments {
     my $self = shift;
@@ -110,16 +97,10 @@ sub get_comments {
     use Text::Tiki;
     my $tiki = new Text::Tiki();
     return [map {
-        my $data = {
-            comment       => $_->[0],
-            add_date_time => $_->[1],
-            username      => $_->[2],
-            fullname      => $_->[3],
-        };
-        $data->{comment} = $data->{comment} || "";
-	$data->{comment} = $tiki->format($data->{comment});
-	$data;
-    } @{$sth->fetchall_arrayref()}];
+        $_->{comment} = $_->{comment} || "";
+	$_->{comment} = $tiki->format($_->{comment});
+	$_;
+    } @{$sth->fetchall_arrayref({})}];
 }
 
 

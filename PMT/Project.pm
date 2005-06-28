@@ -67,14 +67,6 @@ from actual_times a, items i, milestones m
 where a.iid = i.iid and i.mid = m.mid
     and m.pid = ?;});
 
-__PACKAGE__->set_sql(keywords => 
-qq{SELECT distinct k.keyword from keywords k, items i, milestones m where
-k.iid = i.iid AND i.mid = m.mid AND m.pid = ? ORDER BY k.keyword ASC;}, 'Main');
-
-__PACKAGE__->set_sql(active_users_in_interval => 
-qq{SELECT distinct a.resolver, u.fullname from actual_times a, items i, milestones m, users u
-where a.iid = i.iid and a.resolver = u.username and i.mid = m.mid and m.pid
-= ? and a.completed > ? and a.completed <= ?;}, 'Main');
 
 __PACKAGE__->set_sql(total_time_in_interval => 
 qq{select sum(a.actual_time)  from actual_times a, items i, milestones m
@@ -86,45 +78,6 @@ qq{select sum(a.actual_time) from actual_times a, items i, milestones m
             where a.resolver = ? 
             and a.iid = i.iid and i.mid = m.mid and m.pid = ?
             and a.completed > ? and a.completed <= ?;}, 'Main');
-__PACKAGE__->set_sql(completed_times_in_interval => 
-qq{select a.actual_time, to_char(a.completed,'YYYY-MM-DD HH24:MI:SS'), 
-          a.iid, i.title, a.resolver, u.fullname
-          from actual_times a, items i, users u, milestones m
-          where a.iid = i.iid
-              and i.mid = m.mid
-              and a.resolver = u.username
-              and m.pid = ?
-              and a.completed > ? and a.completed <= ?
-          order by a.completed ASC;}, 'Main');
-__PACKAGE__->set_sql(items_on => 
-qq{SELECT i.iid,i.title,i.type,i.status
-FROM items i, milestones m
-WHERE i.target_date = ? AND i.mid = m.mid
-AND m.pid = ? ORDER BY i.priority DESC;},'Main');
-__PACKAGE__->set_sql(recent_items => 
-qq{select i.iid,i.type,i.title,i.status,p.name,p.pid
-from items i, milestones m, projects p
-where i.mid = m.mid AND m.pid = ?
-AND p.pid = m.pid
-order by last_mod desc limit 10;}, 'Main');
-
-__PACKAGE__->set_sql(group_hours =>
-		     qq{
-			 select sum(a.actual_time) from actual_times a, in_group g, 
-			 milestones m, items i
-			     where a.iid = i.iid and i.mid = m.mid and m.pid = ? and
-			     a.resolver = g.username and g.grp  = ?
-			     and a.completed > ? and a.completed <= ?;},
-		     'Main');
-__PACKAGE__->set_sql(all_users_in_project =>
-		     qq{SELECT u.username,u.fullname,u.email
-			    FROM users u, works_on w
-			    WHERE u.username = w.username 
-			    AND u.status = 'active'
-			    AND u.username not like 'grp_%'
-			    AND w.pid = ?;},
-		     'Main');
-
 __PACKAGE__->set_sql(project_milestones =>
 		     qq{SELECT mid,name,target_date,pid,status,
 			description FROM milestones where pid = ?
@@ -318,22 +271,28 @@ sub recent_events {
     return $sth->fetchall_arrayref({});
 }
 
+__PACKAGE__->set_sql(recent_items => 
+qq{select i.iid,i.type,i.title,i.status,p.name as project,p.pid
+from items i, milestones m, projects p
+where i.mid = m.mid AND m.pid = ?
+AND p.pid = m.pid
+order by last_mod desc limit 10;}, 'Main');
+
+
 sub recent_items {
     my $self = shift;
     my $sth = $self->sql_recent_items;
     $sth->execute($self->pid);
-    return [map {
-        {
-            iid     => $_->[0],
-            type    => $_->[1],
-            title   => $_->[2],
-            status  => $_->[3],
-            project => $_->[4],
-            pid     => $_->[5]
-        }
-    } @{$sth->fetchall_arrayref()}];
+    return $sth->fetchall_arrayref({});
 }
-
+__PACKAGE__->set_sql(group_hours =>
+		     qq{
+			 select sum(a.actual_time) as hours from actual_times a, in_group g, 
+			 milestones m, items i
+			     where a.iid = i.iid and i.mid = m.mid and m.pid = ? and
+			     a.resolver = g.username and g.grp  = ?
+			     and a.completed > ? and a.completed <= ?;},
+		     'Main');
 sub group_hours {
     my $self = shift;
     my $group = shift;
@@ -342,30 +301,40 @@ sub group_hours {
 
     my $sth = $self->sql_group_hours;
     $sth->execute($self->pid,$group,$week_start,$week_end);
-    $sth->fetchall_arrayref()->[0]->[0];
+    $sth->fetchrow_hashref()->{hours};
 }
+
+__PACKAGE__->set_sql(all_users_in_project =>
+		     qq{SELECT u.username,u.fullname,u.email
+			    FROM users u, works_on w
+			    WHERE u.username = w.username 
+			    AND u.status = 'active'
+			    AND u.username not like 'grp_%'
+			    AND w.pid = ?;},
+		     'Main');
 
 sub all_users_in_project {
     my $self = shift;
     my $sth = $self->sql_all_users_in_project;
     $sth->execute($self->pid);
-    return [map {
-	{
-	    username => $_->[0],
-	    fullname => $_->[1],
-	    email    => $_->[2],
-	}
-    } @{$sth->fetchall_arrayref()}];
+    return $sth->fetchall_arrayref({});
 }
+
+__PACKAGE__->set_sql(keywords => 
+qq{SELECT distinct k.keyword from keywords k, items i, milestones m where
+k.iid = i.iid AND i.mid = m.mid AND m.pid = ? ORDER BY k.keyword ASC;}, 'Main');
 
 sub keywords {
     my $self = shift;
     my $sth = $self->sql_keywords;
     $sth->execute($self->pid);
-    return [map {
-        {keyword => $_->[0]}
-    } @{$sth->fetchall_arrayref()}];
+    return $sth->fetchall_arrayref({});
 }
+
+__PACKAGE__->set_sql(active_users_in_interval => 
+qq{SELECT distinct a.resolver as username, u.fullname from actual_times a, items i, milestones m, users u
+where a.iid = i.iid and a.resolver = u.username and i.mid = m.mid and m.pid
+= ? and a.completed > ? and a.completed <= ?;}, 'Main');
 
 sub active_users_in_interval {
     my $self = shift;
@@ -373,11 +342,19 @@ sub active_users_in_interval {
     my $end = shift;
     my $sth = $self->sql_active_users_in_interval;
     $sth->execute($self->pid,$start,$end);
-    return [map {
-        {username => $_->[0],
-        fullname => $_->[1]};
-    } @{$sth->fetchall_arrayref()}];
+    return $sth->fetchall_arrayref({});
 }
+
+__PACKAGE__->set_sql(completed_times_in_interval => 
+qq{select a.actual_time, to_char(a.completed,'YYYY-MM-DD HH24:MI:SS') as completed, 
+          a.iid, i.title as item, a.resolver as username, u.fullname
+          from actual_times a, items i, users u, milestones m
+          where a.iid = i.iid
+              and i.mid = m.mid
+              and a.resolver = u.username
+              and m.pid = ?
+              and a.completed > ? and a.completed <= ?
+          order by a.completed ASC;}, 'Main');
 
 sub completed_times_in_interval {
     my $self = shift;
@@ -385,16 +362,7 @@ sub completed_times_in_interval {
     my $end = shift;
     my $sth = $self->sql_completed_times_in_interval;
     $sth->execute($self->pid,$start,$end);
-    return [map {
-        {
-            actual_time => $_->[0],
-            completed => $_->[1],
-            iid => $_->[2],
-            item => $_->[3],
-            username => $_->[4],
-            fullname => $_->[5],
-        };
-    } @{$sth->fetchall_arrayref()}];
+    return $sth->fetchall_arrayref({});
 }
 
 
@@ -462,19 +430,19 @@ sub user_time_in_interval {
     return $res;
 }
 
+__PACKAGE__->set_sql(items_on => 
+qq{SELECT i.iid,i.title,i.type,i.status
+FROM items i, milestones m
+WHERE i.target_date = ? AND i.mid = m.mid
+AND m.pid = ? ORDER BY i.priority DESC;},'Main');
+
+
 sub items_on {
     my $self = shift;
     my $date = shift;
     my $sth = $self->sql_items_on;
     $sth->execute($date, $self->pid);
-    return [map {
-        {
-            iid    => $_->[0],
-            title  => $_->[1],
-            type   => $_->[2],
-            status => $_->[3],
-        };
-    } @{$sth->fetchall_arrayref()}];
+    return $sth->fetchall_arrayref({});
 }
 
 
