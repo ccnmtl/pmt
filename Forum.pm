@@ -121,20 +121,6 @@ sub project_posts_by_time {
 
 
 
-sub recent_project_logs {
-    my $self = shift;
-    my $pid = shift;
-    $self->{pmt}->debug("Forum::recent_project_logs($pid)");
-    my $sql = qq{select n.nid,n.replies,
-		 to_char(added,'FMMonth FMDDth, YYYY') AS added_informal,
-		 n.author,u.fullname 
-		     from nodes n, users u where n.type = 'log'
-		     and n.author = u.username
-		     and n.author in (select username from works_on where pid = ?)
-		     order by modified desc limit 10;};
-    return $self->{pmt}->s($sql,[$pid],['nid','replies','added_informal',
-					'author','author_fullname']);
-}
 
 sub recent_project_items {
     my $self = shift;

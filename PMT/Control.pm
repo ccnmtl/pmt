@@ -2108,8 +2108,9 @@ sub forum {
     my $forum = new Forum($username,$pmt);
     my $template = $self->template("forum.tmpl");
     if($pid) {
+	my $project = PMT::Project->retrieve($pid);
         $template->param(posts => $forum->recent_project_posts($pid));
-        $template->param(logs => $forum->recent_project_logs($pid));
+        $template->param(logs => $project->recent_project_logs());
         $template->param(items => $forum->recent_project_items($pid));
         $template->param(pid => $pid);
     } else {

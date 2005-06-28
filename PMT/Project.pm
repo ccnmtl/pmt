@@ -975,6 +975,21 @@ sub project_search {
     return $sth->fetchall_arrayref({});
 }
 
+__PACKAGE__->set_sql(recent_project_logs => 
+		     qq{select n.nid,n.replies,
+			to_char(added,'FMMonth FMDDth, YYYY') AS added_informal,
+			n.author,u.fullname as author_fullname
+			    from nodes n, users u where n.type = 'log'
+			    and n.author = u.username
+			    and n.author in (select username from works_on where pid = ?)
+			    order by modified desc limit 10;}, 'Main');
+
+sub recent_project_logs {
+    my $self = shift;
+    my $sth = $self->sql_recent_project_logs;
+    $sth->execute($self->pid);
+    return $sth->fetchall_arrayref({});
+}
 
 
 
