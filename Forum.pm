@@ -219,7 +219,6 @@ sub email_reply {
     my $self = shift;
     my $nid = shift;
     my $args = shift;
-    $self->{pmt}->debug("email_reply($nid,[...])");
     $Text::Wrap::columns = 72;
     my $body = Text::Wrap::wrap("","",$args->{body});
 
@@ -236,14 +235,10 @@ sub email_reply {
 
     my $current_user = $user->user_info();
 
-    #Min's additions to make email subject more informative
     my $subject = "[PMT Forum] $args->{subject}";
     if ($args->{pid} ne "") {
-        my $sql = qq {SELECT name 
-            FROM projects 
-            WHERE pid = ?;};
-        my $pname = $self->{pmt}->ss($sql,[$args->{pid}],['name']);
-        my $project_name = $pname->{name};
+	my $project = PMT::Project->retrieve($args->{pid});
+        my $project_name = $project->name;
         my $subject = "[PMT Forum: $project_name] $args->{subject}";
         $body = "project: $project_name\nauthor: $current_user->{user_fullname}\n\n--\n" . $body;  
     }
