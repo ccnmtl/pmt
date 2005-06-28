@@ -15,10 +15,10 @@ escape="html">-<tmpl_var name="sun_day" escape="html"></strong>
 
 
 
-<p>&#60;&#60; <a href="monthly_summary.pl?year=<tmpl_var name="pm_year"
+<p>&#60;&#60; <a href="home.pl?mode=monthly_summary;year=<tmpl_var name="pm_year"
 escape="url">;month=<tmpl_var name="pm_month"
 escape="url">;day=<tmpl_var name="pm_day" escape="url"><tmpl_loop
-name="groups">;groups=<tmpl_var name="group" escape="url"></tmpl_loop>">Previous month</a> -- <a href="monthly_summary.pl?year=<tmpl_var name="nm_year"
+name="groups">;groups=<tmpl_var name="group" escape="url"></tmpl_loop>">Previous month</a> -- <a href="home.pl?mode=monthly_summary;year=<tmpl_var name="nm_year"
 escape="url">;month=<tmpl_var name="nm_month"
 escape="url">;day=<tmpl_var name="nm_day" escape="url"><tmpl_loop
 name="groups">;groups=<tmpl_var name="group" escape="url"></tmpl_loop>">Next month</a> &#62;&#62;</p>
@@ -27,7 +27,7 @@ name="groups">;groups=<tmpl_var name="group" escape="url"></tmpl_loop>">Next mon
 
 <h2>View reports for groups:</h2>
 
-<form action="monthly_summary.pl">
+<form action="home.pl?mode=monthly_summary">
 <table border="0" cellspacing="0" cellpadding="0" class="default">
 	<tr>
 		<td><select class="available" name="groups" multiple="multiple" size="5">
