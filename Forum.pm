@@ -270,17 +270,14 @@ sub user {
 sub reply_to_node {
     my $self = shift;
     my $nid  = shift || "";
-    $self->{pmt}->debug("reply_to_node($nid)");
 
     return unless $nid;
     return unless $nid =~ /^\d+$/;
 
-    my $sql = qq{update nodes set replies = replies + 1,
-		 modified = current_timestamp where nid = ?;};
-    $self->{pmt}->update($sql,[$nid]);
-    $sql = qq{select reply_to from nodes where nid = ?;};
-    my $d = $self->{pmt}->ss($sql,[$nid],['reply_to']);
-    $self->reply_to_node($d->{reply_to});
+    my $node = PMT::Node->retrieve($nid);
+    $node->replies($node->replies + 1);
+    $node->update();
+    $self->reply_to_node($node->reply_to);
 }
 
 sub parse_body {
