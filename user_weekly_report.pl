@@ -1,4 +1,4 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/perl -w
 
 # File: project_weekly_report.pl
 # Time-stamp: <Thu Sep 26 14:43:48 2002>

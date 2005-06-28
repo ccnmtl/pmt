@@ -1,4 +1,4 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/perl -w
 
 # File: forum_archive.pl
 # Time-stamp: <Tue Jun 18 14:33:44 2002>

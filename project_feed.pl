@@ -1,4 +1,4 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/perl -w
 
 # File: project_feed.pl
 # Time-stamp: <Fri Jun  6 13:39:23 2003>

@@ -1,4 +1,4 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/perl -w
 
 # File: project_ical.pl
 # Time-stamp: <Fri Mar 28 15:52:17 2003>

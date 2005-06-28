@@ -1,4 +1,4 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/perl -w
 
 # Min's addition to implement monthly, quarterly, semestral, annual report
 # File: project_months_report.pl

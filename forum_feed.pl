@@ -1,4 +1,4 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/perl -w
 
 # File: forum_feed.pl
 # Time-stamp: <Thu Jun  5 17:12:57 2003>

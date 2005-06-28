@@ -1,4 +1,4 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/perl -w
 
 # File: weekly_summary.pl
 # Time-stamp: <Mon Nov 11 15:45:40 2002>
