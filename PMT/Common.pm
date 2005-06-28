@@ -10,7 +10,7 @@ require Exporter;
 			  untaint_username untaint_password
 			  untaint_mid untaint_sort untaint_status
 			  untaint_d untaint_d_with_default
-			  paragraphize selectify escape template
+			  paragraphize selectify escape get_template
                           todays_date scale_array ld diff diff_order
 			  lists_diff truncate_string
                           );
@@ -402,7 +402,7 @@ sub XmlUtf8Decode
 
 # }}}
 
-sub template {
+sub get_template {
     use HTML::Template;
     my $file = shift || throw Error::Simple "no template specified";
     my $template = HTML::Template->new(filename => "templates/$file",

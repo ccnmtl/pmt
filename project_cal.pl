@@ -58,7 +58,7 @@ eval {
 	$prev_year = $year - 1;
     }
 
-    my $template = template("project_cal.tmpl");
+    my $template = get_template("project_cal.tmpl");
 
     $template->param(calendar   => $c->as_HTML,
 		     pid        => $pid,

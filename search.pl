@@ -40,11 +40,11 @@ eval {
     my $template;
 
     if($csv eq "") {
-	$template = template("search.tmpl");
+	$template = get_template("search.tmpl");
 	$template->param($user->menu());
         $template->param(items_mode => 1);
     } else {
-	$template = template("search_tab.tmpl");
+	$template = get_template("search_tab.tmpl");
     }
 
     my $rows = 0;

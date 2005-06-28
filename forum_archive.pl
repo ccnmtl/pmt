@@ -28,7 +28,7 @@ eval {
     $offset = ($offset >= 0) ? $offset : 0;
 
     my $forum = new Forum($username,$pmt);
-    my $template = template("forum_archive.tmpl");
+    my $template = get_template("forum_archive.tmpl");
     my $total;
     if($pid) {
 	$template->param(posts => $forum->project_posts($pid,$limit,$offset));

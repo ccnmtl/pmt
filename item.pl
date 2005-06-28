@@ -99,7 +99,7 @@ eval {
 
     ($data{done},$data{todo},$data{free},$data{completed_behind},$data{behind}) = $project->estimate_graph(150);
 
-    my $template = template("item.tmpl");
+    my $template = get_template("item.tmpl");
     $template->param(\%data);
 
     $template->param(page_title => "Item: $data{title}");

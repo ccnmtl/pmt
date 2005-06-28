@@ -36,7 +36,7 @@ sub print_form {
     my $pmt = shift;
     my $cgi = shift;
     print $cgi->header();
-    my $template = template("login.tmpl");
+    my $template = get_template("login.tmpl");
     $template->param(page_title => "login to PMT");
     print $template->output();
 }

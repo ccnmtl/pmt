@@ -52,7 +52,7 @@ eval {
     my $end   = $sun_year . "-" . $sun_month . "-" . $sun_day; 
     my $forum = new Forum($username, $pmt);
 
-    my $template = template("project_weekly_report.tmpl");
+    my $template = get_template("project_weekly_report.tmpl");
     $template->param($user->menu());
     $template->param(
 		     mon_year => $mon_year,

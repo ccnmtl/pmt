@@ -76,7 +76,7 @@ eval {
 	$prev_year = $year - 1;
     }
 
-    my $template = template("user_history.tmpl");
+    my $template = get_template("user_history.tmpl");
 
     $template->param(calendar   => $calendar,
 		     user       => $user,

@@ -43,7 +43,7 @@ eval {
     my ($pm_year,$pm_month,$pm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,-1);
     my ($nm_year,$nm_month,$nm_day) = Add_Delta_Days($sun_year,$sun_month,$sun_day,1);
 
-    my $template = template("monthly_summary.tmpl");
+    my $template = get_template("monthly_summary.tmpl");
     $template->param($user->menu());
     $template->param(
 		     mon_year => $mon_year,

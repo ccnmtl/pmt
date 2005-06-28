@@ -78,7 +78,7 @@ eval {
     #Min's addition to include forum posts in reports
     my $forum = new Forum($username, $pmt);
 
-    my $template = template("project_months_report.tmpl");
+    my $template = get_template("project_months_report.tmpl");
     $template->param($user->menu());
     $template->param(
 		     year => $year,

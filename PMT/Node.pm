@@ -84,7 +84,7 @@ sub comment_html {
     my $self = shift;
     my $code = '';
     foreach my $node ($self->get_replies()) {
-	my $template = template("comment.tmpl");
+	my $template = get_template("comment.tmpl");
 	$template->param($node->data());
 	$code .=  $template->output();
     }
