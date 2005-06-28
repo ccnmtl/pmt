@@ -11,7 +11,7 @@ use PMT::Document;
 use PMT::Group;
 use CGI;
 use HTML::Template;
-use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days Days_in_Month/;
+use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days Days_in_Month Add_Delta_YM/;
 use Net::LDAP;
 use Text::Tiki;
 use Forum;
@@ -95,6 +95,7 @@ sub setup {
         'edit_client_form'       => 'edit_client_form',
         'client_search'          => 'client_search',
         'client_search_form'     => 'client_search_form',
+        'project_months_report'  => 'project_months_report',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2486,6 +2487,78 @@ sub client_search {
 		     contact => $contact);
     $template->param(page_title => "client search");
     $template->param(clients_mode => 1);
+    return $template->output();
+}
+
+sub project_months_report {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pid        = $cgi->param('pid') || "";
+    my $num_months = $cgi->param('num_months') || "";
+
+    my $project = PMT::Project->retrieve($pid);
+
+    my $syear = $cgi->param('year') || "";
+    my $smonth = $cgi->param('month') || "";
+
+    my ($time_period, $time_title); 
+    if ($num_months == 1) {
+        $time_period = "month";
+        $time_title  = "Monthly";
+    } elsif ($num_months == 3) {
+        $time_period = "quarter";
+        $time_title  = "Quarterly";
+    } elsif ($num_months == 6) {
+        $time_period = "semester";
+        $time_title  = "Semestral";
+    } elsif ($num_months == 12) {
+        $time_period = "year";
+        $time_title  = "Annual";
+    }
+
+    my ($sec,$min,$hour,$mday,$month,
+        $year,$wday,$yday,$isdst);
+
+    if($syear && $smonth) {
+        # if the day was specified in the url, use that
+        $year = $syear;
+        $month = $smonth;
+    } else {
+        # otherwise, default to today
+        ($sec,$min,$hour,$mday,$month,
+         $year,$wday,$yday,$isdst) = localtime(time); 
+        $year += 1900;
+        $month += 1;
+    }
+
+    my ($p_year, $p_month, $p_day) = Add_Delta_YM($year, $month, 1, 0, -$num_months);
+    my ($n_year, $n_month, $n_day) = Add_Delta_YM($year, $month, 1, 0, $num_months);
+
+    my $start_day = 1;
+    #calculate end day
+    my ($end_year, $end_month, $end_day) = Add_Delta_Days($n_year, $n_month, $n_day, -1);
+  
+    my $start = $year . "-" . "$month" . "-" . $start_day;
+    my $end   = $end_year . "-" . "$end_month" . "-" . $end_day;
+    #Min's addition to include forum posts in reports
+    my $forum = new Forum($self->{user}->username);
+
+    my $template = $self->template("project_months_report.tmpl");
+    $template->param(
+                     year => $year,
+                     month => $month,
+                     p_year => $p_year,
+                     p_month => $p_month,
+                     n_year => $n_year,
+                     n_month => $n_month,
+                     num_months => $num_months,
+                     time_period => $time_period,
+                     time_title => $time_title,
+                     );
+    $template->param($project->weekly_report("$year-$month-$start_day", "$end_year-$end_month-$end_day"));
+    $template->param($project->data());
+    $template->param(posts => $forum->project_posts_by_time($pid, $start, $end));
+
     return $template->output();
 }
 

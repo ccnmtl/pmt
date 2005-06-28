@@ -57,10 +57,10 @@
 <ul>
 <tmpl_if name="pid">
 	<li>periodic: <a href="project_weekly_report.pl?pid=<tmpl_var name="pid">">weekly</a></li>
-	<li><span class="hide">periodic: </span><a href="project_months_report.pl?pid=<tmpl_var name="pid">&amp;num_months=1">monthly</a></li>
-	<li><span class="hide">periodic: </span><a href="project_months_report.pl?pid=<tmpl_var name="pid">&amp;num_months=3">quarterly</a></li>
-	<li><span class="hide">periodic: </span><a href="project_months_report.pl?pid=<tmpl_var name="pid">&amp;num_months=6">semestral</a></li>
-	<li><span class="hide">periodic: </span><a href="project_months_report.pl?pid=<tmpl_var name="pid">&amp;num_months=12">annual</a></li>
+	<li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=1">monthly</a></li>
+	<li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=3">quarterly</a></li>
+	<li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=6">semestral</a></li>
+	<li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=12">annual</a></li>
 	<li>calendar: <a href="project_cal.pl?pid=<tmpl_var name="pid">&amp;month=<tmpl_var name="month">&amp;year=<tmpl_var name="year">">target dates</a></li>
 	<li class="last"><span class="hide">calendar:</span> <a
         href="home.pl?mode=project_history;pid=<tmpl_var name="pid">&amp;month=<tmpl_var name="month">&amp;year=<tmpl_var name="year">">history</a></li>
