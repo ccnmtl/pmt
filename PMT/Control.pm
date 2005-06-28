@@ -96,6 +96,7 @@ sub setup {
         'client_search'          => 'client_search',
         'client_search_form'     => 'client_search_form',
         'project_months_report'  => 'project_months_report',
+        'user_history'           => 'user_history',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2559,6 +2560,82 @@ sub project_months_report {
     $template->param($project->data());
     $template->param(posts => $forum->project_posts_by_time($pid, $start, $end));
 
+    return $template->output();
+}
+
+sub user_history {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $user   = $cgi->param('user')  || "";
+    my $view_user = PMT::User->retrieve($user);
+    my $month  = $cgi->param('month') || "";
+    my $year   = $cgi->param('year')  || "";
+    my @months = qw/January February March April May June
+	July August September October November December/;
+    my @days;
+
+    my $c = HTML::CalendarMonth->new( month => $month, year => $year );
+    $c->table->attr('align','left');
+    $c->table->attr('valign','top');
+
+    my $month_name = $months[$month - 1];
+    my $calendar = $c->as_HTML;
+
+
+    $calendar =~ s/>(\d{1,2})</ class="calday">$1</g;
+
+    foreach my $day ($c->days()) {
+        my $r = $view_user->events_on("$year-$month-$day",$self->{user}->username);
+        my $cell = "";
+
+        foreach my $i (@$r) {
+            $cell .= "<td><a href='item.pl?iid=$$i{iid}'>$$i{title}</a></td>";
+            $cell .= "<td class='$$i{status}'>$$i{status}</td>";
+            $cell .= "<td>$$i{comment}<hr />by $$i{username} \@ $$i{date_time}</td>";
+            $cell .= "</tr>";
+        }
+        if($cell ne "") {
+            push @days,{'cell'       => $cell,
+                        'month_name' => $month_name,
+                        'day'        => $day,
+                        'rows'       => scalar @$r,
+                        };
+            $calendar =~ s{>$day</td>}{><b><a href="#$day">$day</a></b></td>};
+        }
+    }
+
+    foreach my $d (@days) {
+        my $new_cal = $calendar;
+        $new_cal =~ s/calday"><b><a href="\#$d->{day}">$d->{day}<\/a><\/b>/thisday"><b>$d->{day}<\/b>/;
+        $d->{cal} = $new_cal;
+    }
+
+    my $next = $month + 1;
+    my $prev = $month - 1;
+    my ($next_year,$prev_year) = ($year,$year);
+    
+    if(13 == $next) {
+        $next = 1;
+        $next_year = $year + 1;
+    }
+    if(0 == $prev) {
+        $prev = 12;
+        $prev_year = $year - 1;
+    }
+
+    my $template = $self->template("user_history.tmpl");
+
+    $template->param(calendar   => $calendar,
+                     user       => $user,
+                     next_month => $next,
+                     next_month_name => $months[($next - 1) % 12],
+                     next_year  => $next_year,
+                     prev_month => $prev,
+                     prev_month_name => $months[($prev - 1) % 12],
+                     days => \@days,
+                     prev_year  => $prev_year);
+
+    $template->param(page_title => "user history for $user");
     return $template->output();
 }
 
