@@ -22,16 +22,17 @@ BEGIN {
     use_ok("PMT::WorksOn");
     use_ok("PMT::Dependency");
 }
-use PMT;
-my $PMT = new PMT();
-my $db = $PMT->{db};
+
+use DBI;
+my $dbh = DBI->connect("DBI:Pg:dbname=pmt2","anders","",{RaiseError =>
+1, AutoCommit => 0});
+
+
 
 # delete the regression test user(s), project(s), etc.
 
-my $sql = qq{delete from projects where name = 'regression test project';};
-$db->update($sql,[]);
-
-$sql = qq{delete from users where username like '%regression';};
-$db->update($sql,[]);
-$sql = qq{delete from clients where firstname = 'regression test';};
-$db->update($sql,[]);
+$dbh->do(qq{delete from projects where name = 'regression test project';});
+$dbh->do(qq{delete from users where username like '%regression%';});
+$dbh->do(qq{delete from clients where firstname = 'regression test';});
+$dbh->commit;
+$dbh->disconnect;
