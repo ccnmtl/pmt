@@ -91,22 +91,14 @@ sub comment_html {
     return $code;
 }
 
-__PACKAGE__->set_sql(search_forum => 
-		     qq{select n.nid,n.subject,n.body,n.replies,
-			n.project as pid,n.author,u.fullname as author_fullname,n.added,
-			n.modified
-			    from nodes n, users u
-			    where u.username = n.author
-			    AND (upper(n.body) like upper(?) OR upper(n.subject) like
-				 upper(?))
-			    order by added desc;},
-		     'Main');
+__PACKAGE__->add_constructor(search_forum_query => 
+			     qq{upper(body) like upper(?) OR upper(subject) like
+				 upper(?) order by added desc});
+
 sub search_forum {
     my $self = shift;
     my $search = shift;
-    my $sth = $self->sql_search_forum;
-    $sth->execute("%$search%","%$search%");
-    return $sth->fetchall_arrayref({});
+    return [map {$_->data()} $self->search_forum_query("%$search%","%$search%")];
 } 
 
 __PACKAGE__->set_sql(recent_posts => qq{select n.nid,n.subject,n.body,n.replies,
