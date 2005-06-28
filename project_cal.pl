@@ -20,6 +20,10 @@ eval {
 
     my $month = $cgi->param('month') || "";
     my $year  = $cgi->param('year')  || "";
+    unless ($year && $month) {
+	my $day;
+	($year,$month,$day) = todays_date();
+    }
 
     my $c = HTML::CalendarMonth->new( month => $month, year => $year );
     foreach my $item ($c->days()) {

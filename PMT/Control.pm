@@ -130,13 +130,11 @@ sub template {
 
 sub home {
     my $self = shift;
-    my ($year,$mon,$mday) = todays_date();
     my $template = $self->template("home.tmpl");
     my $user = $self->{user};
     $template->param($user->home());
     $template->param(clients => $user->clients_data());
     $template->param(page_title => "homepage for $user->username");
-    $template->param(month => $mon, year => $year);
     my $cgi = $self->query();
     $template->param(items_mode => 1);
     return $template->output();
@@ -144,12 +142,10 @@ sub home {
 
 sub edit_my_items_form {
     my $self = shift;
-    my ($year,$mon,$mday) = todays_date();
     my $template = $self->template("edit_items.tmpl");
     my $user = $self->{user};
     $template->param($user->quick_edit_data());
     $template->param(page_title => "quick edit items");
-    $template->param(month => $mon, year => $year);
     $template->param(items_mode => 1);
     return $template->output();    
 }
@@ -245,10 +241,7 @@ sub my_projects {
     
     $template->param($data);
     $template->param('projects_mode' => 1);
-    my ($year,$mon,$day) = todays_date();
     $template->param(page_title => "my projects");
-    $template->param(month      => $mon,
-                     year       => $year);
     
     return $template->output();
 }
@@ -309,9 +302,7 @@ sub my_reports {
     my $self = shift;
     my $user = $self->{user};
     my $template = $self->template("my_reports.tmpl");
-    my ($year,$mon,$day) = todays_date();
     $template->param(page_title => "reports for $user->username");
-    $template->param(month => $mon, year => $year);
     $template->param(reports_mode => 1);
     return $template->output();
 }
@@ -320,8 +311,6 @@ sub global_reports {
     my $self = shift;
     my $user = $self->{user};
     my $template = $self->template("global_reports.tmpl");
-    my ($year,$mon,$day) = todays_date();
-    $template->param(month => $mon, year => $year);
     $template->param(reports_mode => 1);
     $template->param(page_title => "global reports");
     my $pmt = $self->{pmt};
@@ -1708,8 +1697,8 @@ sub update_project_form {
     my $template = $self->template("edit_project.tmpl");
     $template->param(\%data);
     $template->param(page_title => "edit project: $data{name}",
-		     month      => $mon + 1,
-		     year       => 1900 + $year);
+		     month      => $mon,
+		     year       => $year);
     my $proj = PMT::Project->retrieve($pid);
     $template->param(documents => [map {$_->data()} $proj->documents()]);
     $template->param(projects_mode => 1);
@@ -2161,7 +2150,10 @@ sub project_history {
     my $pid   = $cgi->param('pid')   || "";
     my $month = $cgi->param('month') || "";
     my $year  = $cgi->param('year')  || "";
-
+    unless ($year && $month) {
+	my $day;
+	($year,$month,$day) = todays_date();
+    }
     my $project = PMT::Project->retrieve($pid);
     my $c = HTML::CalendarMonth->new( month => $month, year => $year );
     $c->table->attr('align','left');
@@ -2524,6 +2516,10 @@ sub user_history {
     my $view_user = PMT::User->retrieve($user);
     my $month  = $cgi->param('month') || "";
     my $year   = $cgi->param('year')  || "";
+    unless ($month && $year) {
+	my $day;
+	($year,$month,$day) = todays_date();
+    }
     my @months = qw/January February March April May June
 	July August September October November December/;
     my @days;
