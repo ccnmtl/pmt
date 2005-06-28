@@ -414,6 +414,7 @@ sub update_item {
 	# no changes were made to the item and no comment was added
     }
     $self->debug("done with update_item()");
+    $i->update();
     return $message;
 }
 
