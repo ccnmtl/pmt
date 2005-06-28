@@ -99,6 +99,7 @@ sub setup {
         'user_history'           => 'user_history',
         'weekly_summary'         => 'weekly_summary',
         'monthly_summary'        => 'monthly_summary',
+        'forum_archive'          => 'forum_archive',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2716,6 +2717,76 @@ sub monthly_summary {
     $template->param(groups_select => selectify(\@values, \@labels,
             [map {$_->{group}} @groups]));
 
+    return $template->output();
+}
+
+sub forum_archive {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pid = $cgi->param('pid') || "";
+    my $user = $cgi->param('username') || "";
+    my $type = $cgi->param('type') || "posts";
+
+    my $limit = $cgi->param('limit') || 20;
+    my $offset = $cgi->param('offset') || 0;
+
+    $limit = ($limit > 0) ? $limit : 20;
+    $offset = ($offset >= 0) ? $offset : 0;
+
+    my $forum = new Forum($self->{user}->username);
+    my $template = $self->template("forum_archive.tmpl");
+    my $total;
+    if($pid) {
+        $template->param(posts => $forum->project_posts($pid,$limit,$offset));
+        $total = PMT::Node->num_project_posts($pid);
+    } elsif ($user) {
+        my $u = PMT::User->retrieve($user);
+        my @logs = reverse(PMT::Node->user_log_entries($user));
+        $total = scalar @logs;
+        my $real_limit = $limit;
+        if (($offset+$limit) > $total) {
+            $real_limit = $total - $offset;
+        }
+        $template->param(logs => [map {$_->data()}
+            @logs[$offset..$offset+$real_limit-1]]);
+        $type = 'logs';
+    } elsif ($type eq 'logs') {
+        $template->param(logs => $forum->logs($limit,$offset));
+        $total = PMT::Node->num_logs();
+    } else {
+        $template->param(posts => PMT::Node->posts($self->{user}->username,$limit,$offset));
+        $total = PMT::Node->num_posts();
+    }
+
+    my $next_offset = $offset + $limit;
+    my $next_limit  = $limit;
+    my $prev_offset = $offset - $limit;
+    my $last        = 0;
+    my $first       = 0;
+
+    if($next_offset > $total) {
+        $last = 1;
+    }
+    if($offset == 0) {
+        $first = 1;
+    }
+    if(($next_offset + $next_limit) > $total) {
+        $next_limit = $total - $next_offset;
+    }
+
+    $template->param(offset      => $offset,
+                     limit       => $limit,
+                     last        => $last,
+                     first       => $first,
+                     total       => $total,
+                     type        => $type,
+                     pid         => $pid,
+                     user        => $user,
+                     next_limit  => $next_limit,
+                     next_offset => $next_offset,
+                     prev_offset => $prev_offset);
+          
+    $template->param(page_title => 'forum archive');
     return $template->output();
 }
 

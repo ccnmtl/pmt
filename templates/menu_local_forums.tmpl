@@ -10,11 +10,11 @@
 
 <h1>archives</h1>
 <ul>
-	<li><a href="forum_archive.pl?type=posts">all posts</a></li>
+	<li><a href="home.pl?mode=forum_archive;type=posts">all posts</a></li>
 <tmpl_if name="pid">
-	<li><a href="forum_archive.pl?type=posts;pid=<tmpl_Var name="pid">">this project's posts</a></li>
+	<li><a href="home.pl?mode=forum_archive;type=posts;pid=<tmpl_Var name="pid">">this project's posts</a></li>
 </tmpl_if>
-	<li><a href="forum_archive.pl?type=logs">all log entries</a></li>
+	<li><a href="home.pl?mode=forum_archive;type=logs">all log entries</a></li>
 </ul>
 
 
