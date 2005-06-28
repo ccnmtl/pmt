@@ -145,48 +145,31 @@ sub post {
     } else {
 	$args{reply_to} = 0;
     }
-#    $args{subject} = "no subject" unless $args{subject};
     
     $self->{pmt}->error("null message body") unless $args{body};
     my $tiki = new Text::Tiki;
     my $body = PMT::Common::escape($tiki->format($args{body}));
+    $args{author} ||= $self->{user};
+    my $author = PMT::User->retrieve($args{author});
 
-    my $sql;
-    if("log" eq $args{type}) {
-	$args{pid} = 0;           # no project associated with it.
-	# put it in the database
-	$sql = qq{insert into nodes (type,author,subject,body,reply_to)
-			 values (?,?,?,?,?);};
-	$self->{pmt}->update($sql,[$args{type},$self->user(),
-				   $args{subject},$body,
-				   $args{reply_to}]);
-    } elsif ("comment" eq $args{'type'}) {
-	$sql = qq{insert into nodes (type,author,subject,body,reply_to)
-		      values (?,?,?,?,?);};
-	$self->{pmt}->update($sql,[$args{type},$self->user(),
-				   $args{subject},$body,
-				   $args{reply_to}]);
-    } else {
-	# put it in the database
-	$sql = qq{insert into nodes (type,author,subject,body,reply_to,project)
-			 values (?,?,?,?,?,?);};
-	$self->{pmt}->update($sql,[$args{type},$self->user(),
-				   $args{subject},$body,
-				   $args{reply_to},$args{pid}]);
-    }
-    $sql = qq{select currval('nodes_nid_seq');};
-    my $d = $self->{pmt}->ss($sql,[],['nid']);
+    if(("log" eq $args{type}) || ("comment" eq $args{type})) {
+	$args{pid} = 0;
+    } 
+
+    my $p = PMT::Node->create({type=>$args{type},author => $author->username,
+			       subject => $args{subject}, body =>$body,
+			       reply_to => $args{reply_to}, project => $args{pid}});
 
     $self->reply_to_node($args{reply_to});
 
 
     if($args{type} eq "post") {
-	$self->email_post($d->{nid},\%args);
+	$self->email_post($p->nid,\%args);
     } elsif($args{type} eq "comment") {
-	$self->email_reply($d->{nid},\%args);
+	$self->email_reply($p->nid,\%args);
     }
 
-    return $d->{nid};
+    return $p->nid;
 }
 
 
