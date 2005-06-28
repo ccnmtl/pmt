@@ -129,14 +129,13 @@ sub template {
 
 sub home {
     my $self = shift;
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+    my ($year,$mon,$mday) = todays_date();
     my $template = $self->template("home.tmpl");
     my $user = $self->{user};
     $template->param($user->home());
     $template->param(clients => $user->clients_data());
     $template->param(page_title => "homepage for $user->username");
-    $template->param(month => $mon + 1,
-        year => 1900 + $year);
+    $template->param(month => $mon, year => $year);
     my $cgi = $self->query();
     $template->param(items_mode => 1);
     return $template->output();
@@ -144,13 +143,12 @@ sub home {
 
 sub edit_my_items_form {
     my $self = shift;
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+    my ($year,$mon,$mday) = todays_date();
     my $template = $self->template("edit_items.tmpl");
     my $user = $self->{user};
     $template->param($user->quick_edit_data());
     $template->param(page_title => "quick edit items");
-    $template->param(month => $mon + 1,
-        year => 1900 + $year);
+    $template->param(month => $mon, year => $year);
     $template->param(items_mode => 1);
     return $template->output();    
 }
@@ -203,7 +201,6 @@ sub my_projects {
 
     my $data;
     my $user = $self->{user};
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
     my $last_mods = PMT::Project->all_projects_by_last_mod();
     my %seen = ();
     my $manager_projects = $user->projects_by_auth('manager');
@@ -247,10 +244,10 @@ sub my_projects {
     
     $template->param($data);
     $template->param('projects_mode' => 1);
-
+    my ($year,$mon,$day) = todays_date();
     $template->param(page_title => "my projects");
-    $template->param(month      => $mon + 1,
-                     year       => 1900 + $year);
+    $template->param(month      => $mon,
+                     year       => $year);
     
     return $template->output();
 }
@@ -311,10 +308,9 @@ sub my_reports {
     my $self = shift;
     my $user = $self->{user};
     my $template = $self->template("my_reports.tmpl");
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+    my ($year,$mon,$day) = todays_date();
     $template->param(page_title => "reports for $user->username");
-    $template->param(month => $mon + 1,
-        year => 1900 + $year);
+    $template->param(month => $mon, year => $year);
     $template->param(reports_mode => 1);
     return $template->output();
 }
@@ -323,9 +319,8 @@ sub global_reports {
     my $self = shift;
     my $user = $self->{user};
     my $template = $self->template("global_reports.tmpl");
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
-    $template->param(month => $mon + 1,
-        year => 1900 + $year);
+    my ($year,$mon,$day) = todays_date();
+    $template->param(month => $mon, year => $year);
     $template->param(reports_mode => 1);
     $template->param(page_title => "global reports");
     my $pmt = $self->{pmt};
@@ -375,10 +370,7 @@ sub add_item_form {
     my $project = PMT::Project->retrieve($pid);
     $template->param($project->add_item_form($type, $self->{username}));
     use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days/;
-    my ($sec,$min,$hour,$mday,$mon,
-        $year,$wday,$yday,$isdst) = localtime(time); 
-    $year += 1900;
-    $mon += 1;
+    my ($year,$mon,$mday) = todays_date();
     my ($mon_year,$mon_month,$mon_day) = Monday_of_Week(Week_of_Year($year,$mon,$mday));
     # backdated stuff goes in on sundays
     my ($p_year,$p_month,$p_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,-1);
@@ -387,8 +379,6 @@ sub add_item_form {
     $data{total_remaining_time} = interval_to_hours($project->estimated_time);
     $data{total_completed_time} = interval_to_hours($project->completed_time);
     $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
-
-#    ($data{done},$data{todo},$data{free},$data{completed_behind},$data{behind}) = $project->estimate_graph(150);
 
     $template->param(\%data);
     $template->param(p_week => "$p_year-$p_month-$p_day",
@@ -582,23 +572,12 @@ sub get_end_date {
     
         unless ($year && $month && $day) {
             # otherwise, default to today
-            ($year,$month,$day) = $self->get_todays_date();
+            ($year,$month,$day) = todays_date();
         }
     }
     $month = sprintf "%02d", $month;
     $day = sprintf "%02d", $day;
     return ($year,$month,$day);
-}
-
-sub get_todays_date {
-    my $self = shift;
-    my ($sec,$min,$hour,$mday,$mon,
-        $year,$wday,$yday,$isdst) = localtime(time); 
-    $year += 1900;
-    $mon += 1;
-    $mon = sprintf "%02d", $mon;
-    $mday = sprintf "%02d", $mday;
-    return ($year,$mon,$mday);
 }
 
 sub get_start_date {
@@ -617,7 +596,7 @@ sub get_start_date {
     
         unless ($year && $month && $day) {
             # default to most recent monday
-            ($year,$month,$day) = Monday_of_Week(Week_of_Year($self->get_todays_date()));
+            ($year,$month,$day) = Monday_of_Week(Week_of_Year(todays_date()));
         }
     }
     $month = sprintf "%02d", $month;
@@ -738,7 +717,7 @@ sub clients_summary {
     my $self = shift;
     my $user = $self->{user};
     my $template = $self->template("clients_summary.tmpl");
-    my ($year,$month,$day) = $self->get_todays_date();
+    my ($year,$month,$day) = todays_date();
     my @month_names  = ("January", "February", "March", "April", "May", 
         "June", "July", "August", "September", "October", "November", "December");
     my ($prev_month, $prev_year) = ($month - 1, $year);
@@ -1135,12 +1114,7 @@ sub add_client_form {
             # eliminate the duplication in the title
             $title =~ s/\s{2,}.*$//;
             
-            my ($sec,$min,$hour,$mday,$mon,
-                $year,$wday,$yday,$isdst) = localtime(time); 
-            $year += 1900;
-            $mon += 1;
-            $mon = sprintf "%02d", $mon;
-            $mday = sprintf "%02d", $mday;
+	    my ($year,$mon,$mday) = todays_date();
             my $users_select       = PMT::User->users_select($username);
 	    my $schools_select     = PMT::Client->all_schools_select($school);
 	    my $departments_select = PMT::Client->all_departments_select($department);
@@ -1583,10 +1557,7 @@ sub add_services_item {
 
 
     use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days/;
-    my ($sec,$min,$hour,$mday,$mon,
-        $year,$wday,$yday,$isdst) = localtime(time); 
-    $year += 1900;
-    $mon += 1;
+    my ($year,$mon,$mday) = todays_date();
     my ($mon_year,$mon_month,$mon_day) = Monday_of_Week(Week_of_Year($year,$mon,$mday));
     # backdated stuff goes in on sundays
     my ($p_year,$p_month,$p_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,-1);
@@ -1705,8 +1676,7 @@ sub update_project_form {
     my $user = $self->{user};
     my $username = $user->username;
 
-    my ($sec,$min,$hour,$mday,$mon,
-	$year,$wday,$yday,$isdst) = localtime(time); 
+    my ($year,$mon,$day) = todays_date();
 
     my $sortby = $cgi->param('sortby') || $cgi->cookie("pmtsort") || "priority";
     my $project = PMT::Project->retrieve($pid);
@@ -2019,8 +1989,7 @@ sub user {
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
     my $login = $self->{user}->username;
-    my ($sec,$min,$hour,$mday,$mon,
-        $year,$wday,$yday,$isdst) = localtime(time); 
+    my ($year,$mon,$day) = todays_date();
 
     my $username = $cgi->param('username') || "";
     my $sortby   = $cgi->param('sortby')   || "priority";
@@ -2049,8 +2018,7 @@ sub user {
     $template->param(%$data);
     $template->param(items => $vu->items($login,$sortby));
     $template->param(page_title => "user info for $username");
-    $template->param(month      => $mon + 1,
-                     year       => 1900 + $year);
+    $template->param(month => $mon, year => $year);
     $template->param(users_mode => 1);
     return $template->output();
 }
@@ -2059,8 +2027,7 @@ sub project {
     my $self = shift;
     my $cgi = $self->query();
     my $username = $self->{user}->username;
-    my ($sec,$min,$hour,$mday,$mon,
-        $year,$wday,$yday,$isdst) = localtime(time); 
+    my ($year,$mon,$day) = todays_date();
     my $pid    = $cgi->param('pid') || "";
     my $sortby = $cgi->param('sortby') || $cgi->cookie("pmtsort") || "priority";
     my $project = PMT::Project->retrieve($pid);
@@ -2088,8 +2055,8 @@ sub project {
 
     $template->param(proj_cc => $project->cc(PMT::User->retrieve($username)));
     $template->param(page_title => "project: $data{name}",
-                     month      => $mon + 1,
-                     year       => 1900 + $year);
+                     month      => $mon,
+                     year       => $year);
     
     my $proj = PMT::Project->retrieve($pid);
     $template->param(documents => [map {$_->data()} $proj->documents()]);
@@ -2146,8 +2113,7 @@ sub staff_report {
     my $syear = $cgi->param('year') || "";
     my $smonth = $cgi->param('month') || "";
     my $sday = $cgi->param('day') || "";
-    my ($sec,$min,$hour,$mday,$mon,
-        $year,$wday,$yday,$isdst);
+    my ($mday,$mon,$year);
     if($syear && $smonth && $sday) {
         # if the day was specified in the url, use that
         $year = $syear;
@@ -2155,10 +2121,7 @@ sub staff_report {
         $mday = $sday;
     } else {
         # otherwise, default to today
-        ($sec,$min,$hour,$mday,$mon,
-         $year,$wday,$yday,$isdst) = localtime(time); 
-        $year += 1900;
-        $mon += 1;
+	($year,$mon,$mday) = todays_date();
     }
 
 
@@ -2255,8 +2218,7 @@ sub new_clients {
     my $syear = $cgi->param('year') || "";
     my $smonth = $cgi->param('month') || "";
     my $sday = $cgi->param('day') || "";
-    my ($sec,$min,$hour,$mday,$mon,
-        $year,$wday,$yday,$isdst);
+    my ($mday,$mon,$year);
     if($syear && $smonth && $sday) {
         # if the day was specified in the url, use that
         $year = $syear;
@@ -2264,10 +2226,7 @@ sub new_clients {
         $mday = $sday;
     } else {
         # otherwise, default to today
-        ($sec,$min,$hour,$mday,$mon,
-         $year,$wday,$yday,$isdst) = localtime(time); 
-        $year += 1900;
-        $mon += 1;
+	($year,$mon,$mday) = todays_date();
     }
 
 
@@ -2415,10 +2374,7 @@ sub client_search_form {
     $template->param(departments => PMT::Client->all_departments());
     $template->param(contacts => PMT::Client->all_contacts());
     $template->param(start_date => PMT::Client->min_registration());
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
-    $year += 1900;
-    $mon += 1;
-    $mon = sprintf("%02d",$mon);
+    my ($year,$mon,$mday) = todays_date();
     $template->param(end_date => "$year-$mon-$mday");
     $template->param(page_title => "client search");
     $template->param(clients_mode => 1);
@@ -2518,8 +2474,7 @@ sub project_months_report {
         $time_title  = "Annual";
     }
 
-    my ($sec,$min,$hour,$mday,$month,
-        $year,$wday,$yday,$isdst);
+    my ($mday,$month,$year);
 
     if($syear && $smonth) {
         # if the day was specified in the url, use that
@@ -2527,10 +2482,7 @@ sub project_months_report {
         $month = $smonth;
     } else {
         # otherwise, default to today
-        ($sec,$min,$hour,$mday,$month,
-         $year,$wday,$yday,$isdst) = localtime(time); 
-        $year += 1900;
-        $month += 1;
+	($year,$month,$mday) = todays_date();
     }
 
     my ($p_year, $p_month, $p_day) = Add_Delta_YM($year, $month, 1, 0, -$num_months);
@@ -2647,8 +2599,7 @@ sub weekly_summary {
     my $syear = $cgi->param('year') || "";
     my $smonth = $cgi->param('month') || "";
     my $sday = $cgi->param('day') || "";
-    my ($sec,$min,$hour,$mday,$mon,
-        $year,$wday,$yday,$isdst);
+    my ($mday,$mon, $year);
     if($syear && $smonth && $sday) {
         # if the day was specified in the url, use that
         $year = $syear;
@@ -2656,10 +2607,7 @@ sub weekly_summary {
         $mday = $sday;
     } else {
         # otherwise, default to today
-        ($sec,$min,$hour,$mday,$mon,
-         $year,$wday,$yday,$isdst) = localtime(time); 
-        $year += 1900;
-        $mon += 1;
+	($year,$mon,$mday) = todays_date();
     }
 
 
