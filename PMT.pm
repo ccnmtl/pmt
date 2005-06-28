@@ -369,7 +369,7 @@ sub update_item {
     # update what needs it
 
     if($add_notification) {
-        my $ass_to = PMT::User->retrieve($i->{assigned_to});
+        my $ass_to = $i->assigned_to;
 	$i->add_cc($ass_to);
     }
     if($item{'resolve_time'} ne "") {
@@ -422,26 +422,6 @@ sub update_item {
 # }}}
 
 
-# extract first x chars of a string
-# Min's additions for revising email 
-# input 0: string to be truncated
-# input 1: max length of string 
-sub truncate_string {
-  
-    my $full_string = shift;
-    my $len = shift || 20;
-    my $truncated_string;  
-
-    #checks for length of title first
-    if ( length($full_string) > $len ) {
-        $truncated_string = substr($full_string, 0, $len) . "...";
-    } else {
-        $truncated_string = $full_string;
-    }
-}    
-
-
-# }}}
 
 # {{{ weekly_summary
 

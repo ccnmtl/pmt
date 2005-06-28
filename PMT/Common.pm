@@ -12,7 +12,7 @@ require Exporter;
 			  untaint_d untaint_d_with_default
 			  paragraphize selectify escape template
                           todays_date scale_array ld diff diff_order
-			  lists_diff
+			  lists_diff truncate_string
                           );
 
 sub scale_array {
@@ -583,6 +583,22 @@ sub lists_diff {
     return $SAME;
 }
 
-# }}}
+
+# extract first x chars of a string
+# input 0: string to be truncated
+# input 1: max length of string 
+sub truncate_string {
+  
+    my $full_string = shift;
+    my $len = shift || 20;
+    my $truncated_string;  
+
+    #checks for length of title first
+    if ( length($full_string) > $len ) {
+        $truncated_string = substr($full_string, 0, $len) . "...";
+    } else {
+        $truncated_string = $full_string;
+    }
+}    
 
 1;
