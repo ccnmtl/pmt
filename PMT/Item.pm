@@ -698,7 +698,7 @@ sub email {
     my $email_subj = "[PMT:$project_title] Attn:$item{'assigned_to_fullname'}-$subject_title";
     my $send_to;
 
-    my $owner = $item->owner;
+    my $owner = $self->owner;
     my $owner_email = $owner->username . " (" . $owner->email . ")";
 
     my $sth = $self->sql_users_to_email;

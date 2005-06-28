@@ -115,11 +115,6 @@ sub add_item {
     # add notification (owner, assigned_to, @managers)
     $item->add_notification();
 
-    #Min's changes to implement email notification opt in/out
-#    if($username ne $args{'owner'}) {
-#	$item->add_cc($user);
-#    }
-
     # add history event
     $item->add_event($status,"<b>$args{'type'} added</b>",$user);
     # email people
