@@ -106,11 +106,7 @@ sub add_item {
 	$dependent->prioritize_dependent($args{priority},$args{target_date});
     }
     
-    foreach my $client (@{$args{'clients'}}) {
-        my $c = PMT::Client->retrieve($client);
-        my $ci = PMT::ItemClients->create({iid => $item->iid, client_id =>
-                $c->client_id});
-    }
+    $item->add_clients(@{$args{clients}});
 
     # add notification (owner, assigned_to, @managers)
     $item->add_notification();
@@ -142,11 +138,7 @@ sub add_tracker {
             estimated_time => $args{'time'}});
     my $iid = $item->iid;
 
-    foreach my $client (@{$args{'clients'}}) {
-        my $c = PMT::Client->retrieve($client);
-        my $itemclient = PMT::ItemClients->create({iid => $item->iid, client_id
-                => $c->client_id});
-    }
+    $item->add_clients(@{$args{clients}});
     $item->add_resolve_time($user,$args{time},$args{completed});
 }
 

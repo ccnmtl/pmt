@@ -551,26 +551,27 @@ sub update_keywords {
     }
 }
 
-# }}}
 
-# {{{ clear_clients
-# clears the list of clients associated with an item
 sub clear_clients {
     my $self = shift;
     $self->clients()->delete_all;
 }
-# }}}
-# {{{ update_clients
+
 sub update_clients {
     my $self = shift;
     my $clients = shift;
     $self->clear_clients();
-    foreach my $client (@$clients) {
-        my $ic = PMT::ItemClients->create({iid => $self->iid, 
-                client_id => $client});
+    $self->add_clients(@$clients);
+}
+
+
+sub add_clients {
+    my $self = shift;
+    my @clients = @_;
+    foreach my $client (@clients) {
+	$self->add_to_clients({client_id => $client});
     }
 }
-# }}}
 
 
 sub add_client_by_uni {
@@ -586,6 +587,8 @@ sub add_client_by_uni {
 				       client_id => $clients[0]->client_id});
     
 }
+
+
 
 sub full_data {
     my $item = shift;
