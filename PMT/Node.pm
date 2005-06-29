@@ -112,7 +112,7 @@ __PACKAGE__->set_sql(recent_posts => qq{select n.nid,n.subject,n.body,n.replies,
 		     AND (p.pid in (select w.pid from works_on w 
 				    where username = ?) 
 			  OR p.pub_view = 'true')
-		     order by modified desc limit 10;}, 'Main');
+		     order by n.modified desc limit 10;}, 'Main');
 
 sub recent_posts {
     my $self = shift;
