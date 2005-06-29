@@ -161,236 +161,365 @@ sub add_todo {
 
 # }}}
 
-
-# {{{ update_item
-
-sub update_item {
-    my $self     = shift;
-    my $itm     = shift;
-    my $username = untaint_username(shift);
-    $self->debug("update_item([item],$username)");
-    my %item     = %$itm;
-    # changed if any fields have been changed
+# pass in two hashrefs with the data for each item
+sub compare_items {
+    my $self = shift;
+    my $item = shift;
+    my $old = shift;
+    my $project = shift;
     my $changed = 0;
-    # changed if (re)assigned and we may need to add someone 
-    # to the notification list
     my $add_notification = 0;
-    my $email = 0;
-    my $comment = "";
-    # get old item info
-    print STDERR $item{iid};
-    my $i  = PMT::Item->retrieve($item{iid});
-    my $o = $i->full_data();
-    my $milestone = PMT::Milestone->retrieve($item{mid});
-    my $project = $milestone->pid;
-    my $user = PMT::User->retrieve($username);
-    my %old = %$o;
     my $message = "";
+    my $comment = "";
 
-    # streamline the resolving of self-assigned items
-    if(($item{assigned_to} eq $old{owner}) &&
-       ($old{owner} eq $username) && 
-       ($item{status} eq "RESOLVED")) {
-	$item{status} = "VERIFIED";
-	$item{r_status} = "";
-	$self->debug("streamlined resolve");
-    } 
     # compare with new
-    if ($old{assigned_to} ne $item{assigned_to}){
-	$self->debug("reassigned item to $item{assigned_to}");
+    ($item,$old,$changed,$add_notification,$comment,$message) 
+	= $self->compare_assigned_to($item,$old,$changed,$add_notification,$comment,$message,$project);
+    ($item,$old,$changed,$add_notification,$comment,$message) 
+	= $self->compare_owners($item,$old,$changed,$add_notification,$comment,$message,$project);
+    ($item,$old,$changed,$add_notification,$comment,$message) 
+	= $self->compare_statuses($item,$old,$changed,$add_notification,$comment,$message,$project);
+    ($changed,$comment,$message) = $self->compare_milestones($item,$old,$changed,$comment,$message);
+    ($item,$old,$changed,$add_notification,$comment,$message) 
+	= $self->compare_fields($item,$old,$changed,$add_notification,$comment,$message,$project);
+
+    ($changed,$comment,$message) = $self->compare_keywords($item,$old,$changed,$comment,$message);
+    ($changed,$comment,$message) = $self->compare_dependencies($item,$old,$changed,$comment,$message);
+    ($changed,$comment,$message) = $self->compare_clients($item,$old,$changed,$comment,$message);
+
+    ($item,$old,$changed,$comment,$message) = $self->check_assigned_to_active($item,$old,$project,$changed,$comment,$message);
+    ($item,$old,$changed,$comment,$message) = $self->check_owner_active($item,$old,$project,$changed,$comment,$message);
+
+    return ($item,$old,$changed,$add_notification,$message,$comment);
+}
+
+sub compare_assigned_to {
+    my $self = shift;
+    my $item = shift;
+    my $old = shift;
+    my $changed = shift;
+    my $add_notification = shift;
+    my $comment = shift;
+    my $message = shift;
+    my $project = shift;
+
+    if ($old->{assigned_to} ne $item->{assigned_to}){
 	$changed = 1;
 	$add_notification = 1;
-	if($old{status} eq "UNASSIGNED") {
-	    $item{status} = "OPEN";
-	    $comment .= "<b>assigned to $item{assigned_to}</b><br />\n";
-	    $message .= "reassigned to $item{assigned_to}. ";
-	    $old{status} = "OPEN"; # keep it from matching again later
+	if($old->{status} eq "UNASSIGNED") {
+	    $item->{status} = "OPEN";
+	    $comment .= "<b>assigned to " . $item->{assigned_to} . "</b><br />\n";
+	    $message .= "reassigned to " . $item->{assigned_to} . ". ";
+	    $old->{status} = "OPEN"; # keep it from matching again later
 	} else {
-	    $comment .= "<b>reassigned to $item{assigned_to}</b><br />\n";
-	    $message = "reassigned to $item{assigned_to}. ";
+	    $comment .= "<b>reassigned to " . $item->{assigned_to} . "</b><br />\n";
+	    $message = "reassigned to " . $item->{assigned_to} . ". ";
 	}
 	# if it's being reassigned from a group to a 
 	# user in the group,
 	# make sure that the person it's assigned to is
 	# added to the project in the same capacity
 	# that the group was.
-	my $old_assigned_to = PMT::User->retrieve($old{assigned_to});
-	my $new_assigned_to = PMT::User->retrieve($item{assigned_to});
+	my $old_assigned_to = PMT::User->retrieve($old->{assigned_to});
+	my $new_assigned_to = PMT::User->retrieve($item->{assigned_to});
 
 	if($old_assigned_to->grp &&
 	   !$new_assigned_to->grp) {
-	    $project->add_user_from_group_to_project($item{assigned_to},
-                $old{assigned_to});
+	    $project->add_user_from_group_to_project($item->{assigned_to},
+                $old->{assigned_to});
 	}
     }
+    return ($item,$old,$changed,$add_notification,$comment,$message);
+}
 
-    if ($old{owner} ne $item{owner}) {
-	$self->debug("changed owner to $item{owner}");
+sub compare_owners {
+    my $self = shift;
+    my $item = shift;
+    my $old = shift;
+    my $changed = shift;
+    my $add_notification = shift;
+    my $comment = shift;
+    my $message = shift;
+    my $project = shift;
+
+    if ($old->{owner} ne $item->{owner}) {
 	$changed = 1;
 	$add_notification = 1;
-	$comment .= "<b>changed ownership to $item{owner}</b><br />\n";
-	$message .= "changed ownership to $item{owner}. ";
+	$comment .= "<b>changed ownership to " . $item->{owner} . "</b><br />\n";
+	$message .= "changed ownership to " . $item->{owner} . ". ";
 	
-	my $old_owner = PMT::User->retrieve($old{owner});
-	my $new_owner = PMT::User->retrieve($item{owner});
+	my $old_owner = PMT::User->retrieve($old->{owner});
+	my $new_owner = PMT::User->retrieve($item->{owner});
 
 	if($old_owner->grp && !$new_owner->grp) {
-	    $project->add_user_from_group_to_project($item{owner},
-                $old{owner});
+	    $project->add_user_from_group_to_project($item->{owner},$old->{owner});
 	}
     }
+    return ($item,$old,$changed,$add_notification,$comment,$message);
+}
 
-    if ($old{status} ne $item{status}) {
-	$self->debug("changed status to $item{status}");
+sub compare_statuses {
+    my $self = shift;
+    my $item = shift;
+    my $old = shift;
+    my $changed = shift;
+    my $add_notification = shift;
+    my $comment = shift;
+    my $message = shift;
+    my $project = shift;
+
+    if ($old->{status} ne $item->{status}) {
+	$self->debug("changed status to " . $item->{status});
 	$changed = 1;
-	if($item{status} eq "OPEN" && $old{status} eq "UNASSIGNED") {
-	    $comment .= "<b>assigned to $item{assigned_to}</b><br />\n";
-	    $message .= "assigned to $item{assigned_to}. ";
+	if($item->{status} eq "OPEN" && $old->{status} eq "UNASSIGNED") {
+	    $comment .= "<b>assigned to " . $item->{assigned_to} . "</b><br />\n";
+	    $message .= "assigned to " . $item->{assigned_to} . ". ";
 	    $add_notification = 1;
-	} elsif ($item{status} eq "OPEN" && $old{status} ne "OPEN") {
+	} elsif ($item->{status} eq "OPEN" && $old->{status} ne "OPEN") {
 	    $comment .= "<b>reopened</b><br />\n";
 	    $message .= "reopened. ";
-	} elsif ($item{status} eq "RESOLVED" && $old{status} ne "RESOLVED") {
-	    throw Error::UNRESOLVED_DEPENDENCIES "dependencies not resolved" 
-		if $i->check_dependencies();
-	    $comment .= "<b>resolved $item{r_status}</b><br />\n";
-	    $message .= "resolved $item{r_status}. ";
-	    $old{r_status} = $item{r_status}; # prevent it from re-matching later
-	} elsif ($item{status} eq "VERIFIED" && $old{status} ne "VERIFIED") {
+	} elsif ($item->{status} eq "RESOLVED" && $old->{status} ne "RESOLVED") {
+	    $comment .= "<b>resolved " . $item->{r_status} . "</b><br />\n";
+	    $message .= "resolved " . $item->{r_status} . ". ";
+	    $old->{r_status} = $item->{r_status}; # prevent it from re-matching later
+	} elsif ($item->{status} eq "VERIFIED" && $old->{status} ne "VERIFIED") {
 	    $comment .= "<b>verified</b><br />\n";
 	    $message .= "verified. ";
-	} elsif ($item{status} eq "CLOSED" && $old{status} ne "CLOSED") {
+	} elsif ($item->{status} eq "CLOSED" && $old->{status} ne "CLOSED") {
 	    $comment .= "<b>closed</b><br />\n";
 	    $message .= "closed. ";
-	} elsif ($item{status} eq "INPROGRESS" && $old{status} ne "INPROGRESS") {
+	} elsif ($item->{status} eq "INPROGRESS" && $old->{status} ne "INPROGRESS") {
 	    $comment .= "<b>marked in progress</b><br />\n";
 	    $message .= "marked in progress.  ";
 	} else {
 	    throw Error::INVALID_STATUS "invalid status";
 	}
-	if($old{status} eq "RESOLVED" && $item{status} ne "RESOLVED") {
-	    $old{r_status} = ""; # prevent double matching
+	if($old->{status} eq "RESOLVED" && $item->{status} ne "RESOLVED") {
+	    $old->{r_status} = ""; # prevent double matching
 	}
     }
+    return ($item,$old,$changed,$add_notification,$comment,$message);
+}
 
-    if ($item{mid} ne $old{mid}) {
-	$self->debug("moved to different milestone");
+sub compare_milestones {
+    my $self = shift;
+    my $item = shift;
+    my $old = shift;
+    my $changed = shift;
+    my $comment = shift;
+    my $message = shift;
+
+    if ($item->{mid} ne $old->{mid}) {
 	$changed = 1;
 	$comment .= "<b>changed milestone</b><br />\n";
 	$message .= "changed milestone. ";
     }
 
+    return ($changed,$comment,$message);
+}
+
+sub compare_fields {
+    my $self = shift;
+    my $item = shift;
+    my $old = shift;
+    my $changed = shift;
+    my $add_notification = shift;
+    my $comment = shift;
+    my $message = shift;
+    my $project = shift;
+
     # normalize time representation
-    if($old{estimated_time} =~ /^\d+$/) {
-	$old{estimated_time} .= "h";
+    if($old->{estimated_time} =~ /^\d+$/) {
+	$old->{estimated_time} .= "h";
     }
 
     foreach my $field 
 	(qw/title description r_status url target_date type estimated_time/) 
     {
-	$item{$field} ||= "";
-	$old{$field} ||= "";
-	if($item{$field} ne $old{$field}) { 
-	    $self->debug("changed $field");
+	$item->{$field} ||= "";
+	$old->{$field} ||= "";
+	if($item->{$field} ne $old->{$field}) { 
 	    $changed = 1;
 	    $comment .= "<b>$field updated</b><br />\n";
 	    $message .= "$field updated. ";
 	}
     }
-    $item{priority} ||= 0;
-    $old{priority} ||= 0;
-    if($item{priority} != $old{priority}) {
+    $item->{priority} ||= 0;
+    $old->{priority} ||= 0;
+    if($item->{priority} != $old->{priority}) {
 	$changed = 1;
 	$comment .= "<b>priority changed</b><br />\n";
 	$message .= "priority changed. ";
     }
 
-    if (diff($item{keywords},[map {$$_{keyword}} @{$old{keywords}}])) {
+    return ($item,$old,$changed,$add_notification,$comment,$message);
+}
+
+sub compare_keywords {
+    my $self = shift;
+    my $item = shift;
+    my $old = shift;
+    my $changed = shift;
+    my $comment = shift;
+    my $message = shift;
+    if (diff($item->{keywords},[map {$$_{keyword}} @{$old->{keywords}}])) {
 	$changed = 1;
 	$comment .= "<b>keywords changed</b><br />\n";
 	$message .= "keywords changed. ";
     }
-
-    if (diff($item{dependencies},[map {$$_{iid}} @{$old{dependencies}}])) {
+    return ($changed,$comment,$message);
+}
+sub compare_dependencies {
+    my $self = shift;
+    my $item = shift;
+    my $old = shift;
+    my $changed = shift;
+    my $comment = shift;
+    my $message = shift;
+    if (diff($item->{dependencies},[map {$$_{iid}} @{$old->{dependencies}}])) {
 	$changed = 1;
 	$comment .= "<b>dependencies changed</b><br />\n";
 	$message .= "dependencies changed. ";
     }
-
-    if (diff($item{clients}, [map {$_->{client_id}} @{$old{clients}}]) || $item{client_uni} ne "") {
+    return ($changed,$comment,$message);
+}
+sub compare_clients {
+    my $self = shift;
+    my $item = shift;
+    my $old = shift;
+    my $changed = shift;
+    my $comment = shift;
+    my $message = shift;
+    if (diff($item->{clients}, [map {$_->{client_id}} @{$old->{clients}}]) || $item->{client_uni} ne "") {
 	$changed = 1;
 	$comment .= "<b>clients changed</b><br />\n";
 	$message .= "clients changed. ";
     }
+    return ($changed,$comment,$message);
+}
 
-    my $assigned_to = PMT::User->retrieve($item{'assigned_to'});
+sub check_assigned_to_active {
+    my $self = shift;
+    my $item = shift;
+    my $old = shift;
+    my $project = shift;
+    my $changed = shift;
+    my $comment = shift;
+    my $message = shift;
+    my $assigned_to = PMT::User->retrieve($item->{assigned_to});
+
     if ($assigned_to->status ne "active") {
 	# the assigned user is inactive, so 
 	# we need to reassign to the caretaker
 	$changed = 1;
-	my $old_user = $item{'assigned_to'};
-	$item{'assigned_to'} = $project->caretaker;
+	my $old_user = $item->{'assigned_to'};
+	$item->{'assigned_to'} = $project->caretaker;
 	$comment .= "<b>reassigned to caretaker ($old_user is inactive)</b><br />\n";
 	$message .= "reassigned to caretaker ($old_user is inactive). ";
     }
+    return ($item,$old,$changed,$comment,$message);
+}
 
-    my $owner = PMT::User->retrieve($item{'owner'});
+sub check_owner_active {
+    my $self = shift;
+    my $item = shift;
+    my $old = shift;
+    my $project = shift;
+    my $changed = shift;
+    my $comment = shift;
+    my $message = shift;
+    my $owner = PMT::User->retrieve($item->{owner});
+
     if ($owner->status ne "active") {
 	$changed = 1;
-	my $old_user = $item{'owner'};
-	$item{'owner'} = $project->caretaker;
+	my $old_user = $item->{'owner'};
+	$item->{'owner'} = $project->caretaker;
 	$comment .= "<b>changed ownership to caretaker ($old_user is inactive)</b><br />\n";
 	$message .= "changed ownership to caretaker ($old_user is inactive). ";
     }
+    return ($item,$old,$changed,$comment,$message);
+}
 
+# {{{ update_item
+
+sub update_item {
+    my $self     = shift;
+    my $item     = shift;
+    my $username = untaint_username(shift);
+
+    # get old item info
+
+    my $i  = PMT::Item->retrieve($item->{iid});
+    my $old = $i->full_data();
+    my $milestone = PMT::Milestone->retrieve($item->{mid});
+    my $project = $milestone->pid;
+    my $user = PMT::User->retrieve($username);
+
+
+    # streamline the resolving of self-assigned items
+    if(($item->{assigned_to} eq $old->{owner}) &&
+       ($old->{owner} eq $username) && 
+       ($item->{status} eq "RESOLVED")) {
+	$item->{status} = "VERIFIED";
+	$item->{r_status} = "";
+    } 
+
+    # changed if any fields have been changed
+    my $changed = 0;
+    # changed if (re)assigned and we may need to add someone 
+    # to the notification list
+    my $add_notification = 0;
+    my $comment = "";
+    my $message = "";
+
+    ($item,$old,$changed,$add_notification,$message,$comment) 
+	= $self->compare_items($item,$old,$project);
     # update what needs it
 
     if($add_notification) {
         my $ass_to = $i->assigned_to;
 	$i->add_cc($ass_to);
     }
-    if($item{'resolve_time'} ne "") {
-	$i->add_resolve_time($user,$item{'resolve_time'});
+    if($item->{'resolve_time'} ne "") {
+	$i->add_resolve_time($user,$item->{'resolve_time'});
     }
 
     if($changed != 0) {
-	$i->title($item{title});
-	$i->description($item{description});
-	$i->priority($item{priority});
-	$i->r_status($item{r_status});
-	$i->url($item{url});
-	$i->target_date($item{target_date});
-	$i->type($item{type});
-	$i->assigned_to($assigned_to);
-	$i->owner($owner);
-	$i->status($item{status});
+	$i->title($item->{title});
+	$i->description($item->{description});
+	$i->priority($item->{priority});
+	$i->r_status($item->{r_status});
+	$i->url($item->{url});
+	$i->target_date($item->{target_date});
+	$i->type($item->{type});
+	$i->assigned_to(PMT::User->retrieve($item->{assigned_to}));
+	$i->owner(PMT::User->retrieve($item->{owner}));
+	$i->status($item->{status});
 	$i->mid($milestone);
-	$i->estimated_time($item{estimated_time});
-	$i->update_keywords($item{'keywords'});
-	$i->update_dependencies($item{'dependencies'});
-	$i->update_clients($item{'clients'});
-	$i->add_client_by_uni($item{client_uni});
+	$i->estimated_time($item->{estimated_time});
+	$i->update_keywords($item->{'keywords'});
+	$i->update_dependencies($item->{'dependencies'});
+	$i->update_clients($item->{'clients'});
+	$i->add_client_by_uni($item->{client_uni});
 	# add history event				 
-	$i->add_event($item{'status'},"$comment $item{comment}",$user);
-	my $new_milestone = PMT::Milestone->retrieve($item{mid});
+	$i->add_event($item->{'status'},"$comment " . $item->{comment},$user);
+	my $new_milestone = PMT::Milestone->retrieve($item->{mid});
 	$milestone->update_milestone($user);
-	if($item{mid} != $old{mid}) {
-	    my $old_milestone = PMT::Milestone->retrieve($old{mid});
+	if($item->{mid} != $old->{mid}) {
+	    my $old_milestone = PMT::Milestone->retrieve($old->{mid});
 	    $old_milestone->update_milestone($user);
 	}
-	$i->update_email("$item{'type'} #$item{'iid'} $item{'title'} updated","$comment---------------\n$item{'comment'}",$username);
-    } elsif ($item{'comment'} ne "") {
+	$i->update_email($item->{'type'} . " #" . $item->{'iid'} . " " . $item->{'title'} . " updated",
+			 "$comment---------------\n" . $item->{'comment'},$username);
+    } elsif ($item->{'comment'} ne "") {
 	# add comment if needed
-	$i->add_comment($user,$item{'comment'});
+	$i->add_comment($user,$item->{'comment'});
 	if($changed == 0) {
-	    $i->update_email("comment added to $item{'type'} #$item{'iid'} $item{'title'}","$item{'comment'}",$username);
+	    $i->update_email("comment added to " . $item->{'type'} . " #" . $item->{'iid'} . " " . $item->{'title'},
+			     $item->{'comment'},$username);
 	    $message .= "comment added. ";
 	}
-    } else {
-	$self->debug("no changes were made to the item");
-	# no changes were made to the item and no comment was added
-    }
-    $self->debug("done with update_item()");
+    } 
     $i->update();
     return $message;
 }
