@@ -1,5 +1,5 @@
 use strict;
-use Test::More tests => 6;
+use Test::More tests => 15;
 use lib qw(.);
 use PMT;
 use PMT::Project;
@@ -41,3 +41,23 @@ ok($project->cc($user));
 
 $project->drop_cc($user);
 ok(!$project->cc($user));
+
+# some extra simple tests to catch runtime errors
+$project->interval_total("2005-01-01","2005-01-07");
+ok(1);
+$project->add_item_form("bug","regressiontestuser");
+ok(1);
+$project->project_milestones_select();
+ok(1);
+$project->upcoming_milestone();
+ok(1);
+$project->project_milestones("regressiontestuser");
+ok(1);
+$project->events_on("2005-01-01");
+ok(1);
+$project->recent_events();
+ok(1);
+$project->recent_items();
+ok(1);
+$project->group_hours("grp_programmers","2005-01-01","2005-01-07");
+ok(1);

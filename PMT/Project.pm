@@ -196,6 +196,7 @@ sub upcoming_milestone  {
     my $sth = $self->sql_upcoming_milestone;
     $sth->execute($pid);
     my $res = $sth->fetchrow_hashref();
+    $sth->finish;
     if (defined $res) {
         return $res->{mid};
     } else {

@@ -26,7 +26,7 @@ __PACKAGE__->add_constructor(all_active => qq{status = 'active' order by
 upper(fullname) ASC});
 
 __PACKAGE__->set_sql(total_estimated_time =>  
-		     qq{select sum(i.estimated_time) from items i where
+		     qq{select sum(i.estimated_time) as total from items i where
 			    i.assigned_to = ? 
 			    and i.status IN ('OPEN','UNASSIGNED','INPROGRESS');
 		    },'Main');
@@ -200,7 +200,7 @@ sub projects_hash {
 }
 
 __PACKAGE__->set_sql(interval_time => qq{
-    select sum(a.actual_time) from actual_times a 
+    select sum(a.actual_time) as time from actual_times a 
 	where a.resolver = ?
 	and a.completed > ? and a.completed <= date(?) + interval '1 day';}, 'Main');
 
@@ -211,7 +211,7 @@ sub interval_time {
     # calculate the total time spent on all projects by the user
     my $sth = $self->sql_interval_time;
     $sth->execute($self->username,$start,$end);
-    return $sth->fetchrow_arrayref()->[0];
+    return $sth->fetchrow_hashref()->{time};
 }
 
 __PACKAGE__->set_sql(active_projects => qq{
@@ -386,7 +386,9 @@ sub total_estimated_time {
     my $self = shift;
     my $sth = $self->sql_total_estimated_time;
     $sth->execute($self->username);
-    return interval_to_hours($sth->fetchrow_arrayref()->[0]);
+    my $res = interval_to_hours($sth->fetchrow_hashref()->{total});
+    $sth->finish;
+    return $res;
 }
 
 __PACKAGE__->set_sql(watched_items => 
@@ -577,17 +579,7 @@ sub total_group_time {
     return $sth->fetchrow_hashref()->{time};
 }
 
-my %sorts = (priority => "i.priority DESC, i.type DESC, i.target_date ASC",
-	     type => "i.type DESC, i.priority DESC, i.target_date ASC",
-	     title => "i.title ASC, i.priority DESC, i.target_date ASC",
-	     status => "i.status ASC, i.priority DESC, i.target_date ASC",
-	     project => "p.name ASC, i.priority DESC, i.type DESC, i.target_date ASC",
-	     target_date => "i.target_date ASC, i.priority DESC, i.type DESC",
-	     last_mod => "i.last_mod DESC, i.priority DESC, i.type DESC, i.target_date ASC",
-	     assigned_to => "i.assigned_to ASC, i.priority DESC, i.type DESC, i.target_date ASC",
-	     owner       => "i.owner ASC, i.priority DESC, i.type DESC, i.target_date ASC");
-
-my $sql = qq {
+__PACKAGE__->set_sql(items_search => qq {
 SELECT i.iid,i.type,i.title,i.priority,i.status,i.r_status,p.name as project,
        m.pid,i.target_date,to_char(i.last_mod,'YYYY-MM-DD HH24:MI') as last_mod,
        current_date - i.target_date as overdue,i.description
@@ -604,24 +596,7 @@ WHERE  i.mid = m.mid
 		      WHERE  w.username = ?))
        OR (i.assigned_to = ?) 
        OR (i.owner = ?))
-  ORDER BY };
-
-foreach my $k (keys %sorts) {
-    __PACKAGE__->set_sql("items_$k" => $sql . " " . $sorts{$k} . ";", 'Main');
-} 
-
-my %item_handles = (
-    priority => sub {return shift->sql_items_priority;},
-    type => sub {return shift->sql_items_type;},
-    title => sub {return shift->sql_items_title;},
-    status => sub {return shift->sql_items_status;},
-    project => sub {return shift->sql_items_project;},
-    target_date => sub {return shift->sql_items_target_date;},
-    last_mod => sub {return shift->sql_items_last_mod;},
-    assigned_to => sub {return shift->sql_items_assigned_to;},
-    owner => sub {return shift->sql_items_owner;},
-);
-
+  ORDER BY i.priority DESC, i.type DESC, i.target_date ASC;}, 'Main');
 
 # gets the list of items that are either assigned to the user and open
 # or owned by the user and resolved.
@@ -629,10 +604,10 @@ sub items {
     my $self = shift;
     my $username = $self->username;
     my $viewer = shift;
-    my $sort = shift || "priority";
-    $sort = "priority" unless exists $sorts{$sort};
-    my $sth = $item_handles{$sort}($self);
+
+    my $sth = $self->sql_items_search;
     $sth->execute($self->username,$self->username,$viewer,$viewer,$viewer);
+
     return make_classes([map 
         {
             $_->{priority_label} = $PRIORITIES{$_->{priority}}; 
