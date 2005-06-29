@@ -21,7 +21,7 @@
 <tmpl_if name="pid">
 <h1>this project's reports</h1>
 <ul>
-        <li>periodic: <a href="project_weekly_report.pl?pid=<tmpl_var name="pid">">weekly</a></li>
+        <li>periodic: <a href="home.pl?mode=project_weekly_report;pid=<tmpl_var name="pid">">weekly</a></li>
         <li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=1">monthly</a></li>
         <li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=3">quarterly</a></li>
         <li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=6">semestral</a></li>
