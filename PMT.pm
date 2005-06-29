@@ -47,7 +47,6 @@ sub new {
     $self->{error_message} = "";
     $self->{verified} = 0;
     $self->{config} = $config;
-    $self->debug("{{{ new()");
     return $self;
 }
 
@@ -58,7 +57,6 @@ sub new {
 sub add_item {
     my $self = shift;
     my $args = shift || throw Error::NO_ARGUMENTS "no arguments given to add_item()";
-    $self->debug("add_item( ... )");
     my %args = %$args;
     my $status;
     my $username = untaint_username($args{'owner'});
@@ -269,7 +267,6 @@ sub compare_statuses {
     my $project = shift;
 
     if ($old->{status} ne $item->{status}) {
-	$self->debug("changed status to " . $item->{status});
 	$changed = 1;
 	if($item->{status} eq "OPEN" && $old->{status} eq "UNASSIGNED") {
 	    $comment .= "<b>assigned to " . $item->{assigned_to} . "</b><br />\n";
@@ -524,14 +521,6 @@ sub update_item {
     return $message;
 }
 
-# }}}
-# {{{ subs for comparing complex data structures
-# }}}
-
-
-
-# {{{ weekly_summary
-
 sub weekly_summary {
     my $self = shift;
     my $week_start = shift;
@@ -564,9 +553,6 @@ sub weekly_summary {
     return \%data;
 
 }
-
-# }}}
-# {{{ staff_report
 
 sub staff_report {
     my $self = shift;
@@ -624,7 +610,6 @@ sub edit_project {
     my $type        = $args{type};
     my $poster      = $args{poster};
 
-    $self->debug("edit_project($pid,$name,$caretaker,$pub_view,$status,$projnum)");
     my $project = PMT::Project->retrieve($pid);
     $project->name($name);
     $project->description($description);
@@ -893,11 +878,6 @@ sub DESTROY {
     my $self = shift;
     # check if it's defined first to get rid of some
     # annoying warning messages.
-    if(defined $self) {
-	if($self->can("debug")) {
-	    $self->debug("}}} DESTROY()");
-	}
-    }
 }
 
 1;
