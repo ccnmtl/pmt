@@ -2103,20 +2103,7 @@ sub staff_report {
     my $self = shift;
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
-    my $syear = $cgi->param('year') || "";
-    my $smonth = $cgi->param('month') || "";
-    my $sday = $cgi->param('day') || "";
-    my ($mday,$mon,$year);
-    if($syear && $smonth && $sday) {
-        # if the day was specified in the url, use that
-        $year = $syear;
-        $mon = $smonth;
-        $mday = $sday;
-    } else {
-        # otherwise, default to today
-	($year,$mon,$mday) = todays_date();
-    }
-
+    my ($year,$mon,$mday) = $self->get_date();
 
     my ($mon_year,$mon_month,$mon_day) = Monday_of_Week(Week_of_Year($year,$mon,$mday));
     my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,7);
@@ -2211,20 +2198,7 @@ sub new_clients {
     my $self = shift;
     my $cgi = $self->query();
     my @months = qw/January February March April May June July August September October November December/;
-    my $syear = $cgi->param('year') || "";
-    my $smonth = $cgi->param('month') || "";
-    my $sday = $cgi->param('day') || "";
-    my ($mday,$mon,$year);
-    if($syear && $smonth && $sday) {
-        # if the day was specified in the url, use that
-        $year = $syear;
-        $mon  = $smonth;
-        $mday = $sday;
-    } else {
-        # otherwise, default to today
-	($year,$mon,$mday) = todays_date();
-    }
-
+    my ($year,$mon,$mday) = $self->get_date();
 
     my ($mon_year,$mon_month,$mon_day) = ($year,$mon,1);
     my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,Days_in_Month($mon_year,$mon_month
@@ -2452,8 +2426,7 @@ sub project_months_report {
 
     my $project = PMT::Project->retrieve($pid);
 
-    my $syear = $cgi->param('year') || "";
-    my $smonth = $cgi->param('month') || "";
+    my ($year,$month,$mday) = $self->get_date();
 
     my ($time_period, $time_title); 
     if ($num_months == 1) {
@@ -2468,17 +2441,6 @@ sub project_months_report {
     } elsif ($num_months == 12) {
         $time_period = "year";
         $time_title  = "Annual";
-    }
-
-    my ($mday,$month,$year);
-
-    if($syear && $smonth) {
-        # if the day was specified in the url, use that
-        $year = $syear;
-        $month = $smonth;
-    } else {
-        # otherwise, default to today
-	($year,$month,$mday) = todays_date();
     }
 
     my ($p_year, $p_month, $p_day) = Add_Delta_YM($year, $month, 1, 0, -$num_months);
@@ -2596,20 +2558,8 @@ sub weekly_summary {
     my $self = shift;
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
-    my $syear = $cgi->param('year') || "";
-    my $smonth = $cgi->param('month') || "";
-    my $sday = $cgi->param('day') || "";
-    my ($mday,$mon, $year);
-    if($syear && $smonth && $sday) {
-        # if the day was specified in the url, use that
-        $year = $syear;
-        $mon = $smonth;
-        $mday = $sday;
-    } else {
-        # otherwise, default to today
-	($year,$mon,$mday) = todays_date();
-    }
 
+    my ($year,$mon,$mday) = $self->get_date();
 
     my ($mon_year,$mon_month,$mon_day) = Monday_of_Week(Week_of_Year($year,$mon,$mday));
     my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,7);
@@ -2662,20 +2612,8 @@ sub monthly_summary {
     my $self = shift;
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
-    my $syear = $cgi->param('year') || "";
-    my $smonth = $cgi->param('month') || "";
-    my $sday = $cgi->param('day') || "";
-    my ($mday,$mon,$year);
-    if($syear && $smonth && $sday) {
-        # if the day was specified in the url, use that
-        $year = $syear;
-        $mon = $smonth;
-        $mday = $sday;
-    } else {
-        # otherwise, default to today
-	($year,$mon,$mday) = todays_date();
-    }
 
+    my ($year,$mon,$mday) = $self->get_date();
 
     my ($mon_year,$mon_month,$mon_day) = ($year,$mon,1);
     my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,
@@ -2799,21 +2737,8 @@ sub project_weekly_report {
     my $pid = $cgi->param('pid') || "";
     my $project = PMT::Project->retrieve($pid);
                                 
-    my $syear = $cgi->param('year') || "";
-    my $smonth = $cgi->param('month') || "";
-    my $sday = $cgi->param('day') || "";
-    my ($mday,$mon,$year);
-    if($syear && $smonth && $sday) {
-        # if the day was specified in the url, use that
-        $year = $syear;         
-        $mon = $smonth;         
-        $mday = $sday;          
-    } else {                    
-        # otherwise, default to today
-        ($year,$mon,$mday) = todays_date();         
-    }                           
-                                
-                                
+    my ($year,$mon,$mday) = $self->get_date();
+
     my ($mon_year,$mon_month,$mon_day) = Monday_of_Week(Week_of_Year($year,$mon,$mday));
     my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,6);
     my ($pm_year,$pm_month,$pm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,-7);
@@ -2847,12 +2772,12 @@ sub project_weekly_report {
     return $template->output();
 }
 
-sub user_weekly_report {
+# tries to get the date from parameters,
+# defaults to the current date
+sub get_date {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
-    my $user = $cgi->param('username') || "";
-    my $view_user = PMT::User->retrieve($user);
+
     my $syear = $cgi->param('year') || "";
     my $smonth = $cgi->param('month') || "";
     my $sday = $cgi->param('day') || "";
@@ -2866,6 +2791,16 @@ sub user_weekly_report {
         # otherwise, default to today
 	($year,$mon,$mday) = todays_date();
     }
+    return ($year,$mon,$mday);
+}
+
+sub user_weekly_report {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pmt = $self->{pmt};
+    my $user = $cgi->param('username') || "";
+    my $view_user = PMT::User->retrieve($user);
+    my ($year,$mon,$mday) = $self->get_date();
 
     my ($mon_year,$mon_month,$mon_day) = Monday_of_Week(Week_of_Year($year,$mon,$mday));
     my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,7);
