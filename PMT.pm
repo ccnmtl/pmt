@@ -99,13 +99,7 @@ sub add_item {
     }
     # add dependencies
     
-    foreach my $dep (@{$args{'dependencies'}}) {
-        my $dependent = PMT::Item->retrieve($dep);
-        my $dependency = $item->add_to_dependencies({dest =>
-                $dep});
-	$dependent->prioritize_dependent($args{priority},$args{target_date});
-    }
-    
+    $item->update_dependencies($args{dependencies});
     $item->add_clients(@{$args{clients}});
 
     # add notification (owner, assigned_to, @managers)
