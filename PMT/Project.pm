@@ -727,29 +727,27 @@ sub clients_select {
     return selectify($values,\@labels,$selected);
 }
 
-#Min: In addition to weekly reports, this subroutine is used to generate
-#monthly, quarterly, semestral and annual reports
-sub weekly_report {
+sub interval_report {
     my $self = shift;
-    my $week_start = shift;
-    my $week_end = shift;
+    my $interval_start = shift;
+    my $interval_end = shift;
 
     
-    # figure out which users have been active during the week
-    my $active_users = $self->active_users_in_interval($week_start,$week_end);
+    # figure out which users have been active during the interval
+    my $active_users = $self->active_users_in_interval($interval_start,$interval_end);
 
     # calculate the total time spent on the project by all users
     my $total_time =
-    interval_to_hours($self->total_time_in_interval($week_start, $week_end));
+    interval_to_hours($self->total_time_in_interval($interval_start, $interval_end));
 
     foreach my $user (@$active_users) {
 	$user->{time} = $self->user_time_in_interval($user->{username},
-            $week_start,$week_end);
+            $interval_start,$interval_end);
 	$user->{hours} = interval_to_hours($user->{time});
     }
     # get individual times
     
-    my $indivs = $self->completed_times_in_interval($week_start,$week_end);
+    my $indivs = $self->completed_times_in_interval($interval_start,$interval_end);
     
     return {active_users => $active_users,
 	    total_time => $total_time,

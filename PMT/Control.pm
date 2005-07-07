@@ -2459,7 +2459,7 @@ sub project_months_report {
                      time_period => $time_period,
                      time_title => $time_title,
                      );
-    $template->param($project->weekly_report("$year-$month-$start_day", "$end_year-$end_month-$end_day"));
+    $template->param($project->interval_report("$year-$month-$start_day", "$end_year-$end_month-$end_day"));
     $template->param($project->data());
     $template->param(posts => $forum->project_posts_by_time($pid, $start, $end));
 
@@ -2756,7 +2756,7 @@ sub project_weekly_report {
                      nm_month => $nm_month,
                      nm_day => $nm_day,
                      );
-    $template->param($project->weekly_report("$mon_year-$mon_month-$mon_day",
+    $template->param($project->interval_report("$mon_year-$mon_month-$mon_day",
                                              "$sun_year-$sun_month-$sun_day"));
     $template->param($project->data());
 
