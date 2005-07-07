@@ -104,45 +104,15 @@ sub get_comments {
 }
 
 
-#Min's addition to implement email opt in/out
-sub data_withuser {
-    my $self = shift;
-    my $username = shift;
-
-     
-    my %type_classes = (bug => 'bug', 'action item' => 'actionitem');
-    return {
-        iid                  => $self->iid, 
-	type                 => $self->type, 
-	owner                => $self->owner->username,
-        assigned_to          => $self->assigned_to->username, 
-        owner_fullname       => $self->owner->fullname,
-        assigned_to_fullname => $self->assigned_to->fullname,
-        title                => $self->title, 
-        mid                  => $self->mid->mid, 
-        milestone            => $self->mid->name,
-        pid                  => $self->mid->pid->pid,
-        project              => $self->mid->pid->name,
-        url                  => $self->url, 
-	status               => $self->status,
-        description          => $self->description, 
-	priority             => $self->priority,
-        priority_label       => $PRIORITIES{$self->priority},
-        r_status             => $self->r_status, 
-	last_mod             => $self->last_mod_clean,
-        target_date          => $self->target_date, 
-        estimated_time       => PMT::Common::interval_to_hours($self->estimated_time),
-        type_class           => $type_classes{$self->type},
-        priority_select      => $self->priority_select(), 
-        status_select        => $self->status_select(),
-	notify               => $self->is_notifying_user($username),
-    };
-}
-
 sub data {
     my $self = shift;
+    my $username = shift || "";
 
     my %type_classes = (bug => 'bug', 'action item' => 'actionitem');
+    my $notify = "";
+    if ($username ne "") {
+	$notify = $self->is_notifying_user($username);
+    }
     return {
         iid                  => $self->iid, 
 	type                 => $self->type, 
@@ -167,6 +137,7 @@ sub data {
         type_class           => $type_classes{$self->type},
         priority_select      => $self->priority_select(), 
         status_select        => $self->status_select(),
+	notify               => $notify,
     };
 }
 

@@ -82,7 +82,7 @@ sub unclosed_items {
     my $username = shift;
 
     #Min's changes to implement notification opt in/out
-    my @items = map {$_->data_withuser($username)} PMT::Item->unclosed_items_in_milestone($self->mid);
+    my @items = map {$_->data($username)} PMT::Item->unclosed_items_in_milestone($self->mid);
     #my @items = map {$_->data()} PMT::Item->unclosed_items_in_milestone($self->mid, $username);
     if ($sortby eq "item") {
         @items = sort {$a->{iid} <=> $b->{iid}} @items;
