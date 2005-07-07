@@ -574,7 +574,7 @@ sub all_personnel_in_project {
         } 
     }
 
-    return map {$unique{$_}} sort keys %unique;
+    return sort {uc($a->fullname) cmp uc($b->fullname) } map {$unique{$_}} keys %unique;
 }
 
 # {{{ owner_select
