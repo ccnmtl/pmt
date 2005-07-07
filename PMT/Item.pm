@@ -354,7 +354,6 @@ sub drop_cc {
     my $self     = shift;
     my $user     = shift;
 
-    #Min's changes to implement email notification opt in/out
     #check first if user is assigned to the item
     my @notifies = PMT::Item->search(iid => $self->iid, 
         assigned_to => $user->username);
@@ -408,7 +407,6 @@ sub add_notification {
     my $assigned_to = $self->assigned_to;
     my %notified;
 
-    #Min's changes to implement email notification opt in/out
     #check if the owner wants to be notified of anything about this item 
     if ($self->project_notification($owner) > 0) {
         $notified{$owner->username} = 1;
@@ -429,7 +427,7 @@ sub add_notification {
     $self->notify(\@notify);
 }
 
-# Min's addition to implement email notification opt in/out
+
 # queries if the user's name and pid exists in notify_project table
 sub project_notification {
     my $self = shift;
@@ -440,9 +438,7 @@ sub project_notification {
     return scalar @notifies;
 }
 
-
-# Min's addition to implement email notification opt in/out
-# called by item.pl line 58
+# boolean test if a user gets notified about an item
 sub notify_item {
     my $self     = shift;
     my $username = shift;
