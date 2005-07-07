@@ -29,7 +29,7 @@ __PACKAGE__->set_sql(all_clients_data => qq{
 	SELECT c.client_id,c.lastname,c.firstname,c.title,c.department,
 	       c.school,c.add_affiliation,c.phone,c.email,
 	       c.contact,c.comments,c.registration_date,u.fullname as contact_fullname,
-	       c.status, to_char(max(i.last_mod),'YYYY-MM-DD HH24:MI') as last_mod
+	       c.status, date_trunc('minute',max(i.last_mod)) as last_mod
         FROM clients c 
         LEFT OUTER JOIN item_clients ic on c.client_id = ic.client_id
         LEFT OUTER JOIN items i on ic.iid = i.iid
@@ -72,7 +72,7 @@ sub new_clients_data {
 
 __PACKAGE__->set_sql(recent_items => qq{
     select i.iid, i.title, p.name as project, p.pid, i.status,i.type,
-    to_char(i.last_mod,'YYYY-MM-DD HH24:MI') as last_mod
+    date_trunc('minute',i.last_mod) as last_mod
 	from items i, milestones m, projects p 
 	where i.mid = m.mid and m.pid = p.pid
 	and 
@@ -321,7 +321,7 @@ sub client_search {
     if ($args{project} eq "%" or $args{project} eq "") {
         $sql = qq{select c.client_id,c.lastname,c.firstname,c.registration_date as registered,
         c.department,c.school,c.status,c.contact as contact_username,u.fullname as contact_fullname, 
-        to_char(max(i.last_mod), 'YYYY-MM-DD HH24:MI')
+        date_trunc('minute',max(i.last_mod))
         from clients c left outer join item_clients ic on c.client_id =
         ic.client_id left outer join items i on ic.iid = i.iid
         join users u on c.contact = u.username
@@ -341,7 +341,7 @@ sub client_search {
     } else {
         $sql = qq{select c.client_id,c.lastname,c.firstname,c.registration_date as registered,
         c.department,c.school,c.status,c.contact as contact_username,u.fullname as contact_fullname,
-        to_char(max(i.last_mod),'YYYY-MM-DD HH24:MI') as last_mod
+        date_trunc('minute',max(i.last_mod)) as last_mod
         from clients c
         left outer join item_clients ic on c.client_id = ic.client_id
         left outer join items on ic.iid = i.iid

@@ -46,7 +46,7 @@ sub is_notifying_user {
 
 __PACKAGE__->set_sql(resolve_times => qq{select 
     to_char(date_part('day',a.actual_time)*24 + date_part('hour',a.actual_time),'FM00') || ':' || to_char(date_part('minute',a.actual_time),'FM00') as actual_time,
-    to_char(a.completed,'YYYY-MM-DD HH24:MI') as completed,
+    date_trunc('minute',a.completed) as completed,
     a.resolver as resolver_username,
     u.fullname as resolver_fullname
     from   actual_times a, users u 
@@ -62,7 +62,7 @@ sub resolve_times {
 }
 
 __PACKAGE__->set_sql(history => qq{
-SELECT e.status,to_char(e.event_date_time,'YYYY-MM-DD HH24:MI:SS') as event_date_time,
+SELECT e.status,date_trunc('second',e.event_date_time) as event_date_time,
 c.username,u.fullname,c.comment
 FROM events e, users u, comments c
 WHERE e.eid = c.event AND e.item = ? AND c.username = u.username
@@ -84,7 +84,7 @@ sub history {
 }
 
 __PACKAGE__->set_sql(comments => qq{
-SELECT c.comment,to_char(c.add_date_time,'YYYY-MM-DD HH24:MI:SS') as add_date_time,
+SELECT c.comment,date_trunc('second',c.add_date_time) as add_date_time,
        c.username, u.fullname
 FROM comments c, users u
 WHERE c.item = ? AND c.username = u.username

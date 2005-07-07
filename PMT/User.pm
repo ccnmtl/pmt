@@ -273,7 +273,7 @@ sub weekly_report {
 
 __PACKAGE__->set_sql(all_projects => qq{
     SELECT p.pid, p.name, p.status, p.caretaker,
-    u.fullname, to_char(max(i.last_mod), 'YYYY-MM-DD HH24:MI') as modified
+    u.fullname, date_trunc('minute',max(i.last_mod)) as modified
 	FROM projects p LEFT OUTER JOIN milestones m 
 	ON p.pid = m.pid
 	LEFT OUTER JOIN items i on m.mid = i.mid 
@@ -395,7 +395,7 @@ sub total_estimated_time {
 __PACKAGE__->set_sql(watched_items => 
 		     qq{
     select i.iid,i.type,i.title,i.priority,i.status,i.r_status,p.name as project,
-       m.pid,i.target_date,to_char(i.last_mod,'YYYY-MM-DD HH24:MI') as last_mod,
+       m.pid,i.target_date,date_trunc('minute',i.last_mod) as last_mod,
        current_date - i.target_date as overdue, i.description, i.assigned_to,
        ua.fullname as assigned_to_fullname, i.owner, uo.fullname as owner_fullname
        from items i, notify n, milestones m, projects p, users ua, users uo
@@ -513,7 +513,7 @@ sub estimated_times_by_project {
 }
 
 __PACKAGE__->set_sql(resolve_times_for_interval =>
-		     qq{select a.actual_time, to_char(a.completed,'YYYY-MM-DD HH24:MI:SS') as completed, 
+		     qq{select a.actual_time, date_trunc('second',a.completed) as completed, 
 			a.iid, i.title, p.pid, p.name as project
 			    from actual_times a, items i, milestones m, projects p
 			    where a.iid = i.iid
@@ -582,7 +582,7 @@ sub total_group_time {
 
 __PACKAGE__->set_sql(items_search => qq {
 SELECT i.iid,i.type,i.title,i.priority,i.status,i.r_status,p.name as project,
-       m.pid,i.target_date,to_char(i.last_mod,'YYYY-MM-DD HH24:MI') as last_mod,
+       m.pid,i.target_date,date_trunc('minute',i.last_mod) as last_mod,
        current_date - i.target_date as overdue,i.description
 FROM   items i, milestones m, projects p
 WHERE  i.mid = m.mid 

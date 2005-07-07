@@ -213,7 +213,6 @@ sub upcoming_milestone  {
 sub project_milestones {
     my $self   = shift;
     my $sortby = shift || "priority";
-    #Min's addition to implement notification opt in/out
     my $username = shift;
 
     my $sth = $self->sql_project_milestones;
@@ -225,7 +224,6 @@ sub project_milestones {
     my $has_open = 0;
     foreach my $m (@milestones) {
         my $milestone = PMT::Milestone->retrieve($m->{mid});
-        #Min's addition to implement notification opt in/out
 	$m->{items} = $milestone->unclosed_items($sortby, $username);
 	$m->{total_estimated_time} = interval_to_hours($milestone->estimated_time) || "0";
 	$m->{total_completed_time} = interval_to_hours($milestone->completed_time) || "0";
@@ -347,7 +345,7 @@ sub active_users_in_interval {
 }
 
 __PACKAGE__->set_sql(completed_times_in_interval => 
-qq{select a.actual_time, to_char(a.completed,'YYYY-MM-DD HH24:MI:SS') as completed, 
+qq{select a.actual_time, date_trunc('second',a.completed) as completed, 
           a.iid, i.title as item, a.resolver as username, u.fullname
           from actual_times a, items i, users u, milestones m
           where a.iid = i.iid
@@ -877,7 +875,7 @@ sub estimate_graph {
 }
 
 __PACKAGE__->set_sql(all_projects_by_last_mod => qq{
-    SELECT m.pid,to_char(max(i.last_mod), 'YYYY-MM-DD HH24:MI') as last_mod
+    SELECT m.pid,date_trunc('minute',max(i.last_mod)) as last_mod
     FROM milestones m LEFT OUTER JOIN items i on m.mid = i.mid
     GROUP BY m.pid;},
 		     'Main');
