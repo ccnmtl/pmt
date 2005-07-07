@@ -89,27 +89,17 @@ sub add_item {
             target_date => $args{target_date}, estimated_time =>
             $args{estimated_time}});
     
-    # add keywords
-    my @keywords = @{$args{'keywords'}};
-
-    foreach my $keyword (@keywords) {
-        $item->add_to_keywords({keyword => $keyword});
-    }
-    # add dependencies
-    
+    $item->update_keywords(@{$args{keywords}});
     $item->update_dependencies($args{dependencies});
     $item->add_clients(@{$args{clients}});
 
     # add notification (owner, assigned_to, @managers)
     $item->add_notification();
 
-    # add history event
     $item->add_event($status,"<b>$args{'type'} added</b>",$user);
-    # email people
     $item->email("new $args{'type'}: $args{'title'}",$username);
 
     # the milestone may need to be reopened
-
     $milestone->update_milestone($user);
 }
 

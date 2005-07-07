@@ -447,38 +447,30 @@ sub add_item {
 	push @new_clients, $client unless $client eq "";
     }
 
-    #Min's changes to implement multiple assignees to an action item
-    # loop through each assignee, creating a new action item for
-    # each assignee
-    #foreach my $assignee (@assigned_to) {
+    if($type eq "tracker") {
+	my $resolve_time = $cgi->param('time') || "1 hour";
+	if($resolve_time =~ /^(\d+)$/) {
+	    # default to hours if now unit is specified
+	    $resolve_time = "$1"."h";
+	}
+	$pmt->add_tracker(pid => $pid,
+			  mid => $mid,
+			  title => $title,
+			  'time' => $resolve_time,
+			  target_date => $target_date,
+			  owner => $username,
+			  completed => $completed,
+			  clients => \@new_clients);
+    } elsif ($type eq "todo") {
+	$pmt->add_todo(pid => $pid,
+		       mid => $mid,
+		       title => $title,
+		       target_date => $target_date,
+		       owner => $username);
+    } else {
+	foreach my $assignee (@assigned_to) {
 
-        if($type eq "tracker") {
-    	    my $resolve_time = $cgi->param('time') || "1 hour";
-	    if($resolve_time =~ /^(\d+)$/) {
-	        # default to hours if now unit is specified
-	        $resolve_time = "$1"."h";
-	    }
-	    $pmt->add_tracker(pid => $pid,
-	    		      mid => $mid,
-			      title => $title,
-			      'time' => $resolve_time,
-			      target_date => $target_date,
-			      owner => $username,
-			      completed => $completed,
-			      clients => \@new_clients);
-        } elsif ($type eq "todo") {
-	    $pmt->add_todo(pid => $pid,
-		           mid => $mid,
-		           title => $title,
-		           target_date => $target_date,
-		           owner => $username);
-        } else {
-    #Min's changes to implement multiple assignees to an action item
-    # loop through each assignee, creating a new action item for
-    # each assignee
-            foreach my $assignee (@assigned_to) {
-
-               my %item = (type         => $type,
+	    my %item = (type         => $type,
 	                pid          => $pid,
 		        mid          => $mid,
 		        title        => $title,
@@ -492,10 +484,10 @@ sub add_item {
 		        dependencies => \@new_dependencies,
 		        clients      => \@new_clients,
 		        estimated_time => $estimated_time);
-	       $pmt->add_item(\%item);
-	    }
+	    $pmt->add_item(\%item);
+	}
 	$type =~ s/\s/%20/g;
-      }
+    }
     # put the user back at the add item for for the same type/project
     # so they can conveniently add multiple items
     $self->header_type('redirect');

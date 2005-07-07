@@ -1,5 +1,5 @@
 use strict;
-use Test::More tests => 40;
+use Test::More tests => 41;
 use lib qw(.);
 use PMT;
 use PMT::User;
@@ -29,6 +29,8 @@ ok($u->fullname eq $fullname, "fullname matches");
 ok($u->email eq $email, "email matches");
 ok($u->status eq "active", "status is correct");
 
+my $ui = $u->user_info();
+ok($ui->{password} eq $password, "password comes back from user_info()");
 
 my $passed = 0;
 eval {

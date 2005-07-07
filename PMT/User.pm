@@ -39,6 +39,7 @@ sub data {
         email => $self->email,
         status => $self->status,
         grp => $self->grp,
+	password => $self->password,
     };
 }
 
