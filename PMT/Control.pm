@@ -137,7 +137,7 @@ sub home {
     my $user = $self->{user};
     $template->param($user->home());
     $template->param(clients => $user->clients_data());
-    $template->param(page_title => "homepage for $user->username");
+    $template->param(page_title => "homepage for " . $user->username);
     my $cgi = $self->query();
     $template->param(items_mode => 1);
     return $template->output();
