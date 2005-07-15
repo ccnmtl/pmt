@@ -2774,15 +2774,10 @@ sub get_date {
     my $smonth = $cgi->param('month') || "";
     my $sday = $cgi->param('day') || "";
     my ($mday,$mon,$year);
-    if($syear && $smonth && $sday) {
-        # if the day was specified in the url, use that
-        $year = $syear;
-        $mon = $smonth;
-        $mday = $sday;
-    } else {
-        # otherwise, default to today
-	($year,$mon,$mday) = todays_date();
-    }
+    my ($tyear,$tmon,$tday) = todays_date();
+    $year = $syear ? $syear : $tyear;
+    $mon  = $smonth  ? $smonth  : $tmon;
+    $mday = $sday  ? $sday  : $tday;
     return ($year,$mon,$mday);
 }
 
