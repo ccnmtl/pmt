@@ -433,7 +433,7 @@ sub project_notification {
     my $self = shift;
     my $user = shift;
 
-    my @notifies = PMT::NotifyProject->retrieve(pid => $self->mid->pid->pid, 
+    my @notifies = PMT::NotifyProject->search(pid => $self->mid->pid->pid, 
         username => $user->username);
     return scalar @notifies;
 }
