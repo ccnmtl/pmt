@@ -89,7 +89,7 @@ sub add_item {
             target_date => $args{target_date}, estimated_time =>
             $args{estimated_time}});
     
-    $item->update_keywords(@{$args{keywords}});
+    $item->update_keywords($args{keywords});
     $item->update_dependencies($args{dependencies});
     $item->add_clients(@{$args{clients}});
 
