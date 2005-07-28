@@ -321,7 +321,7 @@ sub client_search {
     if ($args{project} eq "%" or $args{project} eq "") {
         $sql = qq{select c.client_id,c.lastname,c.firstname,c.registration_date as registered,
         c.department,c.school,c.status,c.contact as contact_username,u.fullname as contact_fullname, 
-        date_trunc('minute',max(i.last_mod))
+        date_trunc('minute',max(i.last_mod)) as last_mod
         from clients c left outer join item_clients ic on c.client_id =
         ic.client_id left outer join items i on ic.iid = i.iid
         join users u on c.contact = u.username
