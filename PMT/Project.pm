@@ -127,7 +127,7 @@ sub add_user_from_group_to_project {
     my $username = untaint_username(shift);
     my $group = untaint_username(shift);
     my @wo = PMT::WorksOn->search(pid => $self->pid, username => $username);
-    if(len(@wo) == 0) {
+    if (!scalar @wo) {
 	# add 'em
 	my $auth = $self->project_role($group);
 	PMT::WorksOn->create({pid => $self->pid, username => $username, auth => $auth});
