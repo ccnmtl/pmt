@@ -14,6 +14,15 @@ name="firstname" escape="url">%20<tmpl_var name="lastname"
 escape="url">">perform directory lookup</a>
 </h1>
 
+<tmpl_if name="client_prev">
+  <a class="actionbutton" href="home.pl?mode=client;client_id=<tmpl_var name="client_prev" escape="url">">previous client (older)</a>
+</tmpl_if>
+<tmpl_if name="client_next">
+  <a class="actionbutton" href="home.pl?mode=client;client_id=<tmpl_var name="client_next" escape="url">">next client (newer)</a>
+</tmpl_if>
+<br />
+<br />
+
 <form action="home.pl" method="get">
 <input type="hidden" name="mode" value="add_services_item"/>
 <input type="hidden" name="client_id" value="<tmpl_var name="client_id" escape="html">"/>

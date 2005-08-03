@@ -455,4 +455,171 @@ sub min_registration {
     return $sth->fetchrow_hashref()->{minreg};
 }
 
+
+__PACKAGE__->set_sql(current_client_reg_date_clients_ascending => 
+     qq{SELECT c1.client_id FROM clients c1, clients c2 WHERE c1.registration_date = c2.registration_date AND c2.client_id = ? ORDER BY c1.client_id ASC ;},'Main');
+
+# in this case, "normal" means the current client`s reg. date is unique
+__PACKAGE__->set_sql(next_client_normal =>
+     qq{SELECT c1.client_id FROM clients c1, clients c2 WHERE c2.client_id = ? AND c1.registration_date >= c2.registration_date AND c1.client_id <> c2.client_id ORDER BY c1.registration_date ASC, c1.client_id ASC LIMIT 1;},'Main');
+     
+__PACKAGE__->set_sql(next_client_special => 
+     qq{SELECT c1.client_id FROM clients c1, clients c2 WHERE c2.client_id = ? AND c1.registration_date > c2.registration_date ORDER BY c1.registration_date ASC, c1.client_id ASC LIMIT 1;},'Main');
+
+sub next_client {
+    my $self = shift;
+    my $client_ID = shift;
+#    warn("Abe debug: === vvv 'next' debugging vvv ===\n");
+#    warn("Abe debug: client_ID: '$client_ID'\n");
+
+    my $sth2 = $self->sql_current_client_reg_date_clients_ascending;
+    $sth2->execute("$client_ID");
+
+#    warn("Abe debug: --- Check current date ---\n");
+    my $num_clients_on_this_date = $sth2->rows();
+#    warn("Abe debug: number of clients registered on this date: $num_clients_on_this_date\n");
+#    warn("Abe debug: --------------------------------\n");
+    
+    if ($num_clients_on_this_date < 1) { # this is a fatal error
+      die "Something wierd happenned; num_clients_on_this_date is supposed to be at least 1, but was instead $num_clients_on_this_date.\n"
+
+    } elsif ($num_clients_on_this_date > 1) { # this needs special-case code
+#      warn("Abe debug: special case reached\n");
+      
+      my $temp_client_ID;
+      my $result2;
+      my $count=0;
+      # the purpose of the following loop: to "chew up and spit out" all the rows up to and including the one
+      # representing the current client, out of all the rows of clients IDs for clients registered on the same date
+      # as the "current" one; for this to work, "ORDER BY c1.client_id ASC" is very important in the
+      # sql_current_client_reg_date_clients_ascending query.
+      do {
+         $result2 = $sth2->fetchrow_hashref();
+         $count++; # count the number of rows "chewed" so we know better than to go "off the edge" later
+         $temp_client_ID = $result2->{client_id};
+      } while ($temp_client_ID != $client_ID); 
+      # OK, by now the current row should be for this client, so let`s get the next one, unless this is the last one
+      
+      if ( $count < $num_clients_on_this_date ) { # there`s no need for an "else"
+        
+        $result2 = $sth2->fetchrow_hashref();
+#        warn("Abe debug: special case about to return " . $result2->{client_id} . "\n");
+        return $result2->{client_id}; # voila!
+        
+      }
+    
+      $sth2 = $self->sql_next_client_special;
+      $sth2->execute("$client_ID");
+  
+      $result2 = $sth2->fetchrow_hashref();
+      
+      if ( $result2 ) {
+        return $result2->{client_id};
+      } else {
+        return 0;
+      }
+
+    }
+
+    # now, the "normal" case
+    
+    my $sth = $self->sql_next_client_normal;
+    $sth->execute("$client_ID");
+
+    my $result = $sth->fetchrow_hashref();
+    
+    if ( $result ) {
+      return $result->{client_id};
+    } else {
+      return 0;
+    }
+    
+#    warn("Abe debug: ================================\n");    
+
+}
+
+
+__PACKAGE__->set_sql(current_client_reg_date_clients_descending => 
+     qq{SELECT c1.client_id FROM clients c1, clients c2 WHERE c1.registration_date = c2.registration_date AND c2.client_id = ? ORDER BY c1.client_id DESC ;},'Main');
+
+# in this case, "normal" means the current client`s reg. date is unique
+__PACKAGE__->set_sql(prev_client_normal =>
+     qq{SELECT c1.client_id FROM clients c1, clients c2 WHERE c2.client_id = ? AND c1.registration_date <= c2.registration_date AND c1.client_id <> c2.client_id ORDER BY c1.registration_date DESC, c1.client_id DESC LIMIT 1;},'Main');
+     
+__PACKAGE__->set_sql(prev_client_special =>
+     qq{SELECT c1.client_id FROM clients c1, clients c2 WHERE c2.client_id = ? AND c1.registration_date < c2.registration_date ORDER BY c1.registration_date DESC, c1.client_id DESC LIMIT 1;},'Main');
+
+sub prev_client {
+
+    my $self = shift;
+    my $client_ID = shift;
+ #   warn("Abe debug: === vvv 'prev' debugging vvv ===\n");
+ #   warn("Abe debug: client_ID: '$client_ID'\n");
+
+    my $sth2 = $self->sql_current_client_reg_date_clients_descending;
+    $sth2->execute("$client_ID");
+
+ #   warn("Abe debug: --- Check current date ---\n");
+    my $num_clients_on_this_date = $sth2->rows();
+ #   warn("Abe debug: number of clients registered on this date: $num_clients_on_this_date\n");
+ #   warn("Abe debug: --------------------------------\n");
+    
+    if ($num_clients_on_this_date < 1) { # this is a fatal error
+      die "Something wierd happenned; num_clients_on_this_date is supposed to be at least 1, but was instead $num_clients_on_this_date.\n"
+
+    } elsif ($num_clients_on_this_date > 1) { # this needs special-case code
+ #     warn("Abe debug: special case reached\n");
+      
+      my $temp_client_ID;
+      my $result2;
+      my $count=0;
+      # the purpose of the following loop: to "chew up and spit out" all the rows up to and including the one
+      # representing the current client, out of all the rows of clients IDs for clients registered on the same date
+      # as the "current" one; for this to work, "ORDER BY c1.client_id ASC" is very important in the
+      # sql_current_client_reg_date_clients_ascending query.
+      do {
+         $result2 = $sth2->fetchrow_hashref();
+         $count++; # count the number of rows "chewed" so we know better than to go "off the edge" later
+         $temp_client_ID = $result2->{client_id};
+      } while ($temp_client_ID != $client_ID); 
+      # OK, by now the current row should be for this client, so let`s get the next one, unless this is the last one
+      
+      if ( $count < $num_clients_on_this_date ) { # there`s no need for an "else"
+        
+        $result2 = $sth2->fetchrow_hashref();
+ #       warn("Abe debug: special case about to return " . $result2->{client_id} . "\n");
+        return $result2->{client_id}; # voila!
+        
+      }
+    
+      $sth2 = $self->sql_prev_client_special;
+      $sth2->execute("$client_ID");
+  
+      $result2 = $sth2->fetchrow_hashref();
+      
+      if ( $result2 ) {
+        return $result2->{client_id};
+      } else {
+        return 0;
+      }
+
+    }
+
+    # now, the "normal" case
+    
+    my $sth = $self->sql_prev_client_normal;
+    $sth->execute("$client_ID");
+
+    my $result = $sth->fetchrow_hashref();
+    
+    if ( $result ) {
+      return $result->{client_id};
+    } else {
+      return 0;
+    }
+    
+#    warn("Abe debug: ================================\n");    
+
+}
+
 1;

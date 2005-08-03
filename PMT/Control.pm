@@ -1925,6 +1925,11 @@ sub client {
     my $client_id = $cgi->param('client_id') || "";
     my $client = PMT::Client->retrieve($client_id);
 
+    # how about a polite error for a non-existent client ID?
+    if (! $client) {
+      return("<html><body><h1>Client ID #$client_id was not found in the database.</h1><br>Please press 'back' in your browser controls to continue using the PMT in this window and/or tab.</body></html>");
+    }
+
     my $contact = $client->contact;
 
     my $template = $self->template("client.tmpl");
@@ -1939,6 +1944,19 @@ sub client {
                      contacts_select => $client->contacts_select(),
                      recent_items => $client->recent_items());
     $template->param(clients_mode => 1);
+    
+    # note by Abe: the following two code blocks operate on the basis of "maybe" in case there is no previous or next client relative to the current client
+    
+    my $prev_client_maybe = PMT::Client->prev_client($client_id);
+    if ($prev_client_maybe) {
+      $template->param(client_prev => $prev_client_maybe);
+    }
+    
+    my $next_client_maybe = PMT::Client->next_client($client_id);
+    if ($next_client_maybe) {
+      $template->param(client_next => $next_client_maybe);
+    }
+    
     return $template->output();
 }
 
