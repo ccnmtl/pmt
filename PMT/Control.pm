@@ -1945,17 +1945,8 @@ sub client {
                      recent_items => $client->recent_items());
     $template->param(clients_mode => 1);
     
-    # note by Abe: the following two code blocks operate on the basis of "maybe" in case there is no previous or next client relative to the current client
-    
-    my $prev_client_maybe = PMT::Client->prev_client($client_id);
-    if ($prev_client_maybe) {
-      $template->param(client_prev => $prev_client_maybe);
-    }
-    
-    my $next_client_maybe = PMT::Client->next_client($client_id);
-    if ($next_client_maybe) {
-      $template->param(client_next => $next_client_maybe);
-    }
+    $template->param(client_prev => $client->prev_client());
+    $template->param(client_next => $client->next_client());
     
     return $template->output();
 }
