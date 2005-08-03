@@ -455,15 +455,15 @@ sub min_registration {
     return $sth->fetchrow_hashref()->{minreg};
 }
 
-__PACKAGE__->set_sql(clients_reg_date_count =>
+__PACKAGE__->set_sql(clients_reg_date_count_next =>
 		     qq{SELECT count(*) as cnt from clients 
-			    WHERE registration_date = ?;},'Main');
+			    WHERE registration_date = ? and client_id > ?;},'Main');
 
 # in this case, "normal" means the current client`s reg. date is unique
 __PACKAGE__->set_sql(next_client_normal =>
      qq{SELECT c1.client_id FROM clients c1, clients c2
 	    WHERE c2.client_id = ? AND c1.registration_date > c2.registration_date
-	    ORDER BY c1.registration_date ASC LIMIT 1;},'Main');
+	    ORDER BY c1.registration_date ASC, c1.client_id ASC LIMIT 1;},'Main');
      
 __PACKAGE__->set_sql(next_client_special => 
      qq{SELECT c1.client_id FROM clients c1, clients c2
@@ -474,12 +474,12 @@ __PACKAGE__->set_sql(next_client_special =>
 sub next_client {
     my $self = shift;
 
-    my $sth = $self->sql_clients_reg_date_count;
-    $sth->execute($self->registration_date);
+    my $sth = $self->sql_clients_reg_date_count_next;
+    $sth->execute($self->registration_date,$self->client_id);
     my $count = $sth->fetchrow_hashref()->{cnt};
     $sth->finish;
 
-    if ($count > 1) {
+    if ($count >= 1) {
 	# non-unique registration date
 	$sth = $self->sql_next_client_special;
     } else {
@@ -493,11 +493,15 @@ sub next_client {
     return $next_id;
 }
 
+__PACKAGE__->set_sql(clients_reg_date_count_prev =>
+		     qq{SELECT count(*) as cnt from clients 
+			    WHERE registration_date = ? and client_id < ?;},'Main');
+
 # in this case, "normal" means the current client`s reg. date is unique
 __PACKAGE__->set_sql(prev_client_normal =>
      qq{SELECT c1.client_id FROM clients c1, clients c2 
 	    WHERE c2.client_id = ? AND c1.registration_date < c2.registration_date 
-	    ORDER BY c1.registration_date DESC LIMIT 1;},'Main');
+	    ORDER BY c1.registration_date DESC, c1.client_id DESC LIMIT 1;},'Main');
      
 __PACKAGE__->set_sql(prev_client_special =>
      qq{SELECT c1.client_id FROM clients c1, clients c2 
@@ -508,12 +512,12 @@ __PACKAGE__->set_sql(prev_client_special =>
 sub prev_client {
     my $self = shift;
 
-    my $sth = $self->sql_clients_reg_date_count;
-    $sth->execute($self->registration_date);
+    my $sth = $self->sql_clients_reg_date_count_prev;
+    $sth->execute($self->registration_date,$self->client_id);
     my $count = $sth->fetchrow_hashref()->{cnt};
     $sth->finish;
 
-    if ($count > 1) {
+    if ($count >= 1) {
 	# non-unique registration date
 	$sth = $self->sql_prev_client_special;
     } else {
