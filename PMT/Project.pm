@@ -913,6 +913,26 @@ sub projects_active_during {
 }
 
 
+sub projects_active_between {
+    my $self       = shift;
+    my $date_start = shift;
+    my $date_end   = shift;
+    
+    my $sql = qq{
+      select p.pid, p.name, p.projnum, tempalias.max, p.status, u.fullname, u.email from 
+        ( select p.pid, max(completed) from projects p, milestones m, items i, actual_times a 
+          where p.pid = m.pid and m.mid = i.mid and i.iid = a.iid and a.completed >= ? and a.completed <= ? group by p.pid
+	) as tempalias, projects p, users u where tempalias.pid=p.pid and p.caretaker=u.username order by max desc;
+    };
+
+    $self->set_sql(projects_active_between => $sql, 'Main');
+    my $sth = $self->sql_projects_active_between;
+    $sth->execute($date_start,$date_end);
+    return $sth->fetchall_arrayref({});
+
+}
+
+
 sub project_search {
     my $self = shift;
     my %args = @_;

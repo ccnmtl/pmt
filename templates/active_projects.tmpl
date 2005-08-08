@@ -1,0 +1,49 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECTS: Active Projects<tmpl_if name="days"> for the last <tmpl_var name="days"> days</tmpl_if></h1>
+
+
+
+ 
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<thead>
+<tr>
+<th class="firstcell">Project ID</th>
+<th>Project name</th>
+<th>Project number</th>
+<th>Last worked on</th>
+<th>Project status</th>
+<th>Project caretaker</th>
+</tr>
+</thead>
+
+<tbody>
+<tmpl_loop name="projects">
+<tr>
+<td class="firstcell"><a href="home.pl?mode=project;pid=<tmpl_var name="project_ID" escape="url">"><tmpl_var name="project_ID"></a></td>
+<td><tmpl_var name="project_name"></td>
+<td><tmpl_var name="project_number"></td>
+<td><tmpl_var name="project_last_worked_on"></td>
+<td><tmpl_var name="project_status"></td>
+<td><tmpl_if name="caretaker_email"><a href="mailto:<tmpl_var name="caretaker_email">"><tmpl_var name="caretaker_name"></a><tmpl_else><tmpl_var name="caretaker_name"></tmpl_if></td>
+</tr>
+</tmpl_loop>
+</tbody>
+
+<tfoot>
+<tr>
+<!-- ## Closing row --><td colspan="7" class="end">&nbsp;</td>
+</tr>
+</tfoot>
+</table>
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+<tmpl_include name="footer.tmpl">
