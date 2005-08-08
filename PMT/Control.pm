@@ -2873,8 +2873,8 @@ sub active_projects_report {
 				  project_number => $$hashref{"projnum"},
 				  project_last_worked_on => $$hashref{"max"},
 				  project_status => $$hashref{"status"},
-				  caretaker_name => $$hashref{"fullname"},
-				  caretaker_email => $$hashref{"email"}
+				  caretaker_real_name => $$hashref{"fullname"},
+				  caretaker_user_ID => $$hashref{"username"}
 				};
 
        } else {
@@ -2884,8 +2884,8 @@ sub active_projects_report {
 				  project_number => " n/a ",
 				  project_last_worked_on => $$hashref{"max"},
 				  project_status => $$hashref{"status"},
-				  caretaker_name => $$hashref{"fullname"},
-				  caretaker_email => $$hashref{"email"}
+				  caretaker_real_name => $$hashref{"fullname"},
+				  caretaker_user_ID => $$hashref{"username"}
 				};
 	 
        }

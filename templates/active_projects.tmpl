@@ -30,7 +30,7 @@
 <td><tmpl_var name="project_number"></td>
 <td><tmpl_var name="project_last_worked_on"></td>
 <td><tmpl_var name="project_status"></td>
-<td><tmpl_if name="caretaker_email"><a href="mailto:<tmpl_var name="caretaker_email">"><tmpl_var name="caretaker_name"></a><tmpl_else><tmpl_var name="caretaker_name"></tmpl_if></td>
+<td><a href="home.pl?mode=user;username=<tmpl_var name="caretaker_user_ID">"><tmpl_var name="caretaker_real_name"></a></td>
 </tr>
 </tmpl_loop>
 </tbody>
