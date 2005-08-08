@@ -7,8 +7,10 @@
 
 <h1>PROJECTS: Active Projects<tmpl_if name="days"> for the last <tmpl_var name="days"> days</tmpl_if></h1>
 
-
-
+<form type="GET" action="home.pl">
+  <input type="hidden" name="mode" value="active_projects_report">
+  Number of days to display: <input type="text" size="4" name="days"> <input type="submit" value="Go!">
+</form>
  
 <table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
 <thead>
