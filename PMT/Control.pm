@@ -2832,69 +2832,24 @@ sub user_weekly_report {
 
 
 sub active_projects_report {
-
     my $self = shift;
     my $template = $self->template("active_projects.tmpl");
 
     my $cgi = $self->query();
     my $days = $cgi->param('days') || 31; # 31 is the default number of days
 
-    my ($sec,$min,$hour,$mday,$month,$year,$wday,$yday,$isdst) = localtime(time);
-    $year += 1900; # the year number is 0 at 1900 CE
-    $month++; # the month number is 0-based
-    my $year2 = $year;
-    my $month2 = $month;
-    my $day_of_month2 = $mday;
+    my ($year2,$month2,$day_of_month2) = todays_date();
 
-    ($sec,$min,$hour,$mday,$month,$year,$wday,$yday,$isdst) = localtime(time - 86400*$days); # 86400 = number of seconds in a day
+    my ($sec,$min,$hour,$mday,$month,$year,$wday,$yday,$isdst) = localtime(time - 86400*$days); # 86400 = number of seconds in a day
     $year += 1900; # the year number is 0 at 1900 CE
     $month++; # the month number is 0-based
     my $year1 = $year;
     my $month1 = $month;
     my $day_of_month1 = $mday;
 
-   # $year1 = 1900; # testing code to set the start year to 1900 since the test database has no entries for the month ending 2005-8-4
-
-    my $active_projects =
-      PMT::Project->projects_active_between("$year1-$month1-$day_of_month1","$year2-$month2-$day_of_month2");
-
-    # warn("Abe testing: length of array pointed to by returned arrayref = " . scalar(@$active_projects) . "\n");
-
-    my @array_to_output;
-
-    my $hashref;
-    foreach (@$active_projects) {
-       $hashref=$_;
-       
-       if (defined $$hashref{"projnum"}) {
-
-	 push @array_to_output, { project_ID => $$hashref{"pid"},
-	                          project_name => $$hashref{"name"},
-				  project_number => $$hashref{"projnum"},
-				  project_last_worked_on => $$hashref{"max"},
-				  project_status => $$hashref{"status"},
-				  caretaker_real_name => $$hashref{"fullname"},
-				  caretaker_user_ID => $$hashref{"username"}
-				};
-
-       } else {
-	 
-	 push @array_to_output, { project_ID => $$hashref{"pid"},
-	                          project_name => $$hashref{"name"},
-				  project_number => " n/a ",
-				  project_last_worked_on => $$hashref{"max"},
-				  project_status => $$hashref{"status"},
-				  caretaker_real_name => $$hashref{"fullname"},
-				  caretaker_user_ID => $$hashref{"username"}
-				};
-	 
-       }
-       
-    }
-  
-    $template->param('projects' => \@array_to_output);
+    $template->param('projects' => PMT::Project->projects_active_between("$year1-$month1-$day_of_month1",
+									 "$year2-$month2-$day_of_month2"));
     $template->param('days' => $days);
-    
     $template->param(page_title => "Active Projects Report");
     
     return $template->output();
