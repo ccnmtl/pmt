@@ -2856,10 +2856,15 @@ sub active_projects_report {
     # warn("Abe testing: length of array pointed to by returned arrayref = " . scalar(@$active_projects) . "\n");
 
     my @array_to_output;
-
     my $hashref;
+    my $hours;
+
+    my $total_hours=0.0; # $total_hours = total hours worked _ever_ for all viewed projects, not just hours worked in the current "days"
+        
     foreach (@$active_projects) {
        $hashref=$_;
+
+       $hours = PMT::Common::interval_to_hours($$hashref{"time_worked_on"}); # _all_ hours ever worked on this project, not just in "days"
 
        push @array_to_output, { pid => $$hashref{"pid"},
                                 project_name => $$hashref{"project_name"},
@@ -2868,14 +2873,15 @@ sub active_projects_report {
 			        project_status => $$hashref{"project_status"},
 			        caretaker_fullname => $$hashref{"caretaker_fullname"},
 			        caretaker_username => $$hashref{"caretaker_username"},
-			        # time_worked_on => $$hashref{"time_worked_on"}
-			        time_worked_on => PMT::Common::interval_to_hours($$hashref{"time_worked_on"})
+			        time_worked_on => $hours
 			      };
+	$total_hours += $hours;
        
     }
   
     $template->param('projects' => \@array_to_output);
     $template->param('days' => $days);
+    $template->param('total_hours' => $total_hours);
     
     $template->param(page_title => "Active Projects Report");
     

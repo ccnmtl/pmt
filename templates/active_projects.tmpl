@@ -41,7 +41,6 @@ name="project_number"><tmpl_else> n/a </tmpl_if></td>
 </tr>
 </tmpl_loop>
 </tbody>
-
 <tfoot>
 <tr>
 <!-- ## Closing row --><td colspan="7" class="end">&nbsp;</td>
@@ -49,6 +48,7 @@ name="project_number"><tmpl_else> n/a </tmpl_if></td>
 </tfoot>
 </table>
 
+<tmpl_if name="total_hours"><p>Total number of hours worked (at any date) on the projects in this report: <b><tmpl_var name="total_hours"></b></p></tmpl_if>
 
 </div>
 <!-- ===== END PAGE MAIN CONTENT ===== -->
