@@ -21,6 +21,7 @@
 <th>Last worked on</th>
 <th>Project status</th>
 <th>Project caretaker</th>
+<th>Related reports</th>
 </tr>
 </thead>
 
@@ -34,6 +35,7 @@ name="project_number"><tmpl_else> n/a </tmpl_if></td>
 <td><tmpl_var name="project_last_worked_on"></td>
 <td><tmpl_var name="project_status"></td>
 <td><a href="home.pl?mode=user;username=<tmpl_var name="caretaker_username">"><tmpl_var name="caretaker_fullname"></a></td>
+<td><a href="home.pl?mode=project_weekly_report;pid=<tmpl_var name="pid" escape="url">">Weekly</a>&nbsp;<a href="home.pl?mode=project_months_report;num_months=1&pid=<tmpl_var name="pid" escape="url">">Monthly</a>&nbsp;<a href="home.pl?mode=project_months_report;num_months=12&pid=<tmpl_var name="pid" escape="url">">Yearly</a></td>
 </tr>
 </tmpl_loop>
 </tbody>

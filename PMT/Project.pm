@@ -920,7 +920,7 @@ sub projects_active_between {
     
     my $sql = qq{
       select p.pid, p.name as project_name, p.projnum as project_number, 
-      tempalias.max as project_last_worked_on, p.status as project_status, 
+      date(tempalias.max) as project_last_worked_on, p.status as project_status, 
       u.fullname as caretaker_fullname, u.username as caretaker_username 
 	  from 
         ( select p.pid, max(completed) from projects p, milestones m, items i, actual_times a 
