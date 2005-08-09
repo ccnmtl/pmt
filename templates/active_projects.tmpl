@@ -16,11 +16,12 @@
 <thead>
 <tr>
 <th class="firstcell">Project ID</th>
-<th>Project name</th>
+<th>Project name (click for project info)</th>
 <th>Project number</th>
 <th>Last worked on</th>
 <th>Project status</th>
 <th>Project caretaker</th>
+<th>Hours worked on</th>
 <th>Related reports</th>
 </tr>
 </thead>
@@ -29,12 +30,13 @@
 <tmpl_loop name="projects">
 <tr>
 <td class="firstcell"><a href="home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="pid"></a></td>
-<td><a href="home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="project_name"></a></td>
+<td><a href="home.pl?mode=project_info;pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="project_name"></a></td>
 <td><tmpl_if name="project_number"><tmpl_var
 name="project_number"><tmpl_else> n/a </tmpl_if></td>
 <td><tmpl_var name="project_last_worked_on"></td>
 <td><tmpl_var name="project_status"></td>
 <td><a href="home.pl?mode=user;username=<tmpl_var name="caretaker_username">"><tmpl_var name="caretaker_fullname"></a></td>
+<td><tmpl_var name="time_worked_on"></td>
 <td><a href="home.pl?mode=project_weekly_report;pid=<tmpl_var name="pid" escape="url">">Weekly</a>&nbsp;<a href="home.pl?mode=project_months_report;num_months=1&pid=<tmpl_var name="pid" escape="url">">Monthly</a>&nbsp;<a href="home.pl?mode=project_months_report;num_months=12&pid=<tmpl_var name="pid" escape="url">">Yearly</a></td>
 </tr>
 </tmpl_loop>

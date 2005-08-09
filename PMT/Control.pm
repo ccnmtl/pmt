@@ -2832,6 +2832,7 @@ sub user_weekly_report {
 
 
 sub active_projects_report {
+
     my $self = shift;
     my $template = $self->template("active_projects.tmpl");
 
@@ -2847,9 +2848,35 @@ sub active_projects_report {
     my $month1 = $month;
     my $day_of_month1 = $mday;
 
-    $template->param('projects' => PMT::Project->projects_active_between("$year1-$month1-$day_of_month1",
-									 "$year2-$month2-$day_of_month2"));
+   # $year1 = 1900; # testing code to set the start year to 1900 since the test database has no entries for the month ending 2005-8-4
+
+    my $active_projects =
+      PMT::Project->projects_active_between("$year1-$month1-$day_of_month1","$year2-$month2-$day_of_month2");
+
+    # warn("Abe testing: length of array pointed to by returned arrayref = " . scalar(@$active_projects) . "\n");
+
+    my @array_to_output;
+
+    my $hashref;
+    foreach (@$active_projects) {
+       $hashref=$_;
+
+       push @array_to_output, { pid => $$hashref{"pid"},
+                                project_name => $$hashref{"project_name"},
+		     	        project_number => $$hashref{"project_number"},
+			        project_last_worked_on => $$hashref{"project_last_worked_on"},
+			        project_status => $$hashref{"project_status"},
+			        caretaker_fullname => $$hashref{"caretaker_fullname"},
+			        caretaker_username => $$hashref{"caretaker_username"},
+			        # time_worked_on => $$hashref{"time_worked_on"}
+			        time_worked_on => PMT::Common::interval_to_hours($$hashref{"time_worked_on"})
+			      };
+       
+    }
+  
+    $template->param('projects' => \@array_to_output);
     $template->param('days' => $days);
+    
     $template->param(page_title => "Active Projects Report");
     
     return $template->output();
