@@ -103,6 +103,7 @@ sub setup {
         'project_weekly_report'  => 'project_weekly_report',
         'user_weekly_report'     => 'user_weekly_report',
         'active_projects_report' => 'active_projects_report',
+        'active_projects_report_csv' => 'active_projects_report_csv',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2848,12 +2849,8 @@ sub active_projects_report {
     my $month1 = $month;
     my $day_of_month1 = $mday;
 
-   # $year1 = 1900; # testing code to set the start year to 1900 since the test database has no entries for the month ending 2005-8-4
-
     my $active_projects =
       PMT::Project->projects_active_between("$year1-$month1-$day_of_month1","$year2-$month2-$day_of_month2");
-
-    # warn("Abe testing: length of array pointed to by returned arrayref = " . scalar(@$active_projects) . "\n");
 
     my @array_to_output;
     my $hashref;
@@ -2875,7 +2872,7 @@ sub active_projects_report {
 			        caretaker_username => $$hashref{"caretaker_username"},
 			        time_worked_on => $hours
 			      };
-	$total_hours += $hours;
+     	 $total_hours += $hours;
        
     }
   
@@ -2887,6 +2884,65 @@ sub active_projects_report {
     
     return $template->output();
     
+}
+
+
+sub active_projects_report_csv {
+
+    my $self = shift;
+
+    my $cgi = $self->query();
+    my $days = $cgi->param('days') || 31; # 31 is the default number of days
+    my $csv_header = $cgi->param('csv_header') || 0; # please pass in 1 for CSV with header line, 0 for no header
+
+    my ($year2,$month2,$day_of_month2) = todays_date();
+
+    my ($sec,$min,$hour,$mday,$month,$year,$wday,$yday,$isdst) = localtime(time - 86400*$days); # 86400 = number of seconds in a day
+    $year += 1900; # the year number is 0 at 1900 CE
+    $month++; # the month number is 0-based
+    my $year1 = $year;
+    my $month1 = $month;
+    my $day_of_month1 = $mday;
+
+    my $active_projects =
+      PMT::Project->projects_active_between("$year1-$month1-$day_of_month1","$year2-$month2-$day_of_month2");
+
+    my $hashref;
+    my $hours;
+
+    my $string_to_return;
+    $string_to_return = "";
+ 
+    $self->header_props(-type => "text/csx",
+                        -content_disposition => "attachment;filename=active_projects_report.csv");
+
+    if ($csv_header) {
+      $string_to_return = 
+ "\"Project ID\",\"Project Name\",\"Project Number\",\"Last Worked On Date\",\"Project Status\",\"Project Caretaker\",\"Hours Worked\"\n";
+    }	       
+
+    {
+
+	    no warnings 'uninitialized'; # this requires at least Perl 5.6; I put it here due to unneeded Apache log errors
+	    
+	    foreach (@$active_projects) {
+	       $hashref=$_;
+
+	       $string_to_return .=    "\"" . $$hashref{"pid"} .
+				    "\",\"" . $$hashref{"project_name"} .
+				    "\",\"" . $$hashref{"project_number"} .
+				    "\",\"" . $$hashref{"project_last_worked_on"} .
+				    "\",\"" . $$hashref{"project_status"} .
+				    "\",\"" . $$hashref{"caretaker_fullname"} .
+				    "\",\"" . PMT::Common::interval_to_hours($$hashref{"time_worked_on"}) .
+				    "\"\n";
+	       
+    }
+
+  }
+
+  return($string_to_return);
+ 
 }
 
 1;
