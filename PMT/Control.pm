@@ -2913,7 +2913,7 @@ sub active_projects_report_csv {
     my $string_to_return;
     $string_to_return = "";
  
-    $self->header_props(-type => "text/csx",
+    $self->header_props(-type => "text/csv",
                         -content_disposition => "attachment;filename=active_projects_report.csv");
 
     if ($csv_header) {
