@@ -923,9 +923,13 @@ sub projects_active_between {
       date(tempalias.max) as project_last_worked_on, p.status as project_status, 
       u.fullname as caretaker_fullname, u.username as caretaker_username, tempalias.sum as time_worked_on
 	  from 
-        ( select p.pid, max(completed), sum(a.actual_time) from projects p, milestones m, items i, actual_times a 
-          where p.pid = m.pid and m.mid = i.mid and i.iid = a.iid and a.completed >= ? and a.completed <= ? group by p.pid
-	) as tempalias, projects p, users u where tempalias.pid=p.pid and p.caretaker=u.username order by max desc;
+        ( select p.pid, max(completed), sum(a.actual_time) 
+	  from projects p, milestones m, items i, actual_times a 
+          where p.pid = m.pid and m.mid = i.mid and i.iid = a.iid 
+	  and a.completed >= ? and a.completed <= ? group by p.pid
+	) as tempalias, projects p, users u 
+	where tempalias.pid=p.pid and p.caretaker=u.username 
+	order by max desc;
     };
 
     $self->set_sql(projects_active_between => $sql, 'Main');

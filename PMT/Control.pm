@@ -103,7 +103,6 @@ sub setup {
         'project_weekly_report'  => 'project_weekly_report',
         'user_weekly_report'     => 'user_weekly_report',
         'active_projects_report' => 'active_projects_report',
-        'active_projects_report_csv' => 'active_projects_report_csv',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2833,116 +2832,54 @@ sub user_weekly_report {
 
 
 sub active_projects_report {
-
     my $self = shift;
-    my $template = $self->template("active_projects.tmpl");
-
-    my $cgi = $self->query();
+    my $cgi  = $self->query();
     my $days = $cgi->param('days') || 31; # 31 is the default number of days
 
     my ($year2,$month2,$day_of_month2) = todays_date();
 
     my ($sec,$min,$hour,$mday,$month,$year,$wday,$yday,$isdst) = localtime(time - 86400*$days); # 86400 = number of seconds in a day
     $year += 1900; # the year number is 0 at 1900 CE
-    $month++; # the month number is 0-based
-    my $year1 = $year;
-    my $month1 = $month;
+    $month++;      # the month number is 0-based
+    my $year1         = $year;
+    my $month1        = $month;
     my $day_of_month1 = $mday;
 
     my $active_projects =
       PMT::Project->projects_active_between("$year1-$month1-$day_of_month1","$year2-$month2-$day_of_month2");
 
     my @array_to_output;
-    my $hashref;
-    my $hours;
 
-    my $total_hours=0.0; # $total_hours = total hours worked _ever_ for all viewed projects, not just hours worked in the current "days"
-        
-    foreach (@$active_projects) {
-       $hashref=$_;
-
-       $hours = PMT::Common::interval_to_hours($$hashref{"time_worked_on"}); # _all_ hours ever worked on this project, not just in "days"
-
-       push @array_to_output, { pid => $$hashref{"pid"},
-                                project_name => $$hashref{"project_name"},
-		     	        project_number => $$hashref{"project_number"},
-			        project_last_worked_on => $$hashref{"project_last_worked_on"},
-			        project_status => $$hashref{"project_status"},
-			        caretaker_fullname => $$hashref{"caretaker_fullname"},
-			        caretaker_username => $$hashref{"caretaker_username"},
-			        time_worked_on => $hours
-			      };
-     	 $total_hours += $hours;
-       
-    }
-  
-    $template->param('projects' => \@array_to_output);
-    $template->param('days' => $days);
-    $template->param('total_hours' => $total_hours);
+    my $output = "";
+    if ($cgi->param('csv')) {
+	$self->header_props(-type => "text/csv",
+			    -content_disposition => "attachment;filename=active_projects_report.csv");
+	if ($cgi->param('csv_header')) {
+	    $output = qq{"Project ID","Project Name","Project Number","Last Worked On Date","Project Status","Project Caretaker","Hours Worked"} . "\n";
+	}	       
+	foreach my $project (@$active_projects) {
+	    $output .= "\"" . join('","', $project->{pid}, $project->{project_name},
+				   $project->{project_number}, $project->{project_last_worked_on},
+				   $project->{project_status}, $project->{caretaker_fullname},
+				   interval_to_hours($project->{time_worked_on})) . "\"\n";
+	}
+    } else {
+	my $total_hours = 0.0; # $total_hours = total hours worked _ever_ for all viewed projects, not just hours worked in the current "days"
+	my @projects = map {
+	    $_->{time_worked_on} = interval_to_hours($_->{time_worked_on}); # _all_ hours ever worked on this project, not just in "days"
+	    $total_hours += $_->{time_worked_on};
+	    $_;
+	} @{$active_projects};
+	my $template = $self->template("active_projects.tmpl");
+	$template->param('projects' => \@projects);
+	$template->param('days' => $days);
+	$template->param('total_hours' => $total_hours);
     
-    $template->param(page_title => "Active Projects Report");
+	$template->param(page_title => "Active Projects Report");
+	$output = $template->output();
+    }    
+    return $output;
     
-    return $template->output();
-    
-}
-
-
-sub active_projects_report_csv {
-
-    my $self = shift;
-
-    my $cgi = $self->query();
-    my $days = $cgi->param('days') || 31; # 31 is the default number of days
-    my $csv_header = $cgi->param('csv_header') || 0; # please pass in 1 for CSV with header line, 0 for no header
-
-    my ($year2,$month2,$day_of_month2) = todays_date();
-
-    my ($sec,$min,$hour,$mday,$month,$year,$wday,$yday,$isdst) = localtime(time - 86400*$days); # 86400 = number of seconds in a day
-    $year += 1900; # the year number is 0 at 1900 CE
-    $month++; # the month number is 0-based
-    my $year1 = $year;
-    my $month1 = $month;
-    my $day_of_month1 = $mday;
-
-    my $active_projects =
-      PMT::Project->projects_active_between("$year1-$month1-$day_of_month1","$year2-$month2-$day_of_month2");
-
-    my $hashref;
-    my $hours;
-
-    my $string_to_return;
-    $string_to_return = "";
- 
-    $self->header_props(-type => "text/csv",
-                        -content_disposition => "attachment;filename=active_projects_report.csv");
-
-    if ($csv_header) {
-      $string_to_return = 
- "\"Project ID\",\"Project Name\",\"Project Number\",\"Last Worked On Date\",\"Project Status\",\"Project Caretaker\",\"Hours Worked\"\n";
-    }	       
-
-    {
-
-	    no warnings 'uninitialized'; # this requires at least Perl 5.6; I put it here due to unneeded Apache log errors
-	    
-	    foreach (@$active_projects) {
-	       $hashref=$_;
-
-	       $string_to_return .=    "\"" . $$hashref{"pid"} .
-				    "\",\"" . $$hashref{"project_name"} .
-				    "\",\"" . $$hashref{"project_number"} .
-				    "\",\"" . $$hashref{"project_last_worked_on"} .
-				    "\",\"" . $$hashref{"project_status"} .
-				    "\",\"" . $$hashref{"caretaker_fullname"} .
-				    "\",\"" . PMT::Common::interval_to_hours($$hashref{"time_worked_on"}) .
-				    "\"\n";
-	       
-    }
-
-  }
-
-  return($string_to_return);
- 
 }
 
 1;
