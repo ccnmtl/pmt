@@ -2848,15 +2848,12 @@ sub active_projects_report {
     my $active_projects =
       PMT::Project->projects_active_between("$year1-$month1-$day_of_month1","$year2-$month2-$day_of_month2");
 
-    my @array_to_output;
-
     my $output = "";
     if ($cgi->param('csv')) {
     
         use Text::CSV_XS;
     
         my $csv = Text::CSV_XS->new();
-        my @columns;
 
 	$self->header_props(-type => "text/csv",
 			    -content_disposition => "attachment;filename=active_projects_report.csv");
@@ -2864,7 +2861,7 @@ sub active_projects_report {
 	    $output = qq{"Project ID","Project Name","Project Number","Last Worked On Date","Project Status","Project Caretaker","Hours Worked"} . "\n";
 	}	       
 	foreach my $project (@$active_projects) {
-	    @columns = ( $project->{pid}, $project->{project_name},
+	    my @columns = ( $project->{pid}, $project->{project_name},
 		      $project->{project_number}, $project->{project_last_worked_on},
 		      $project->{project_status}, $project->{caretaker_fullname},
 		      interval_to_hours($project->{time_worked_on}) );
