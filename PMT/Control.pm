@@ -2852,16 +2852,25 @@ sub active_projects_report {
 
     my $output = "";
     if ($cgi->param('csv')) {
+    
+        use Text::CSV_PP;
+    
+        my $csv = Text::CSV_PP->new();
+        my @columns;
+
 	$self->header_props(-type => "text/csv",
 			    -content_disposition => "attachment;filename=active_projects_report.csv");
 	if ($cgi->param('csv_header')) {
 	    $output = qq{"Project ID","Project Name","Project Number","Last Worked On Date","Project Status","Project Caretaker","Hours Worked"} . "\n";
 	}	       
 	foreach my $project (@$active_projects) {
-	    $output .= "\"" . join('","', $project->{pid}, $project->{project_name},
-				   $project->{project_number}, $project->{project_last_worked_on},
-				   $project->{project_status}, $project->{caretaker_fullname},
-				   interval_to_hours($project->{time_worked_on})) . "\"\n";
+	    @columns = ( $project->{pid}, $project->{project_name},
+		      $project->{project_number}, $project->{project_last_worked_on},
+		      $project->{project_status}, $project->{caretaker_fullname},
+		      interval_to_hours($project->{time_worked_on}) );
+		      
+            $csv->combine(@columns);    # combine columns into a string
+	    $output .= $csv->string() . "\n";
 	}
     } else {
 	my $total_hours = 0.0; # $total_hours = total hours worked _ever_ for all viewed projects, not just hours worked in the current "days"
