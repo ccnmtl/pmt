@@ -2853,9 +2853,9 @@ sub active_projects_report {
     my $output = "";
     if ($cgi->param('csv')) {
     
-        use Text::CSV_PP;
+        use Text::CSV_XS;
     
-        my $csv = Text::CSV_PP->new();
+        my $csv = Text::CSV_XS->new();
         my @columns;
 
 	$self->header_props(-type => "text/csv",
