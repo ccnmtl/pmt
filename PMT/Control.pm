@@ -1102,7 +1102,7 @@ sub add_client_form {
             $title =~ s/\s{2,}.*$//;
             
 	    my ($year,$mon,$mday) = todays_date();
-            my $users_select       = PMT::User->users_select($username);
+            my $users_select       = PMT::User::users_select($username);
 	    my $schools_select     = PMT::Client->all_schools_select($school);
 	    my $departments_select = PMT::Client->all_departments_select($department);
 	    my $existing_clients   = PMT::Client->existing_clients($uni,$lastname);
