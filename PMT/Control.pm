@@ -2845,7 +2845,6 @@ sub active_clients_report {
     $template->param(page_title => "Active Clients Report");
     
     return $template->output();
-    # return $output; # note from Abe to Anders: is this two-step really needed?  Can we just do "return $template->output();"?
 }
 
 sub active_projects_report {

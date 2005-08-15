@@ -549,7 +549,6 @@ sub active_clients {
 
     my $sth = $self->sql_active_clients;
     $sth->execute($clients_to_show);
-    # $sth->finish; # not needed here, I think; Anders, please take this out if it`s not needed
 
     return $sth->fetchall_arrayref({});
 }
