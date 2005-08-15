@@ -307,7 +307,7 @@ sub my_reports {
     my $self = shift;
     my $user = $self->{user};
     my $template = $self->template("my_reports.tmpl");
-    $template->param(page_title => "reports for $user->username");
+    $template->param(page_title => "reports for " . $user->username);
     $template->param(reports_mode => 1);
     return $template->output();
 }
