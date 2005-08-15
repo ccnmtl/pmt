@@ -103,6 +103,7 @@ sub setup {
         'project_weekly_report'  => 'project_weekly_report',
         'user_weekly_report'     => 'user_weekly_report',
         'active_projects_report' => 'active_projects_report',
+        'active_clients_report' => 'active_clients_report',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2830,6 +2831,22 @@ sub user_weekly_report {
     return $template->output();
 }
 
+sub active_clients_report {
+    my $self = shift;
+    my $cgi  = $self->query();
+    my $clients_to_show = $cgi->param('clients') || 25; # 25 is the default number of clients to request from the database
+
+    my $active_clients = PMT::Client->active_clients($clients_to_show);
+
+    my $template = $self->template("active_clients.tmpl");
+    $template->param('clients' => \@$active_clients);
+    $template->param('number_of_clients_requested' => $clients_to_show);
+    
+    $template->param(page_title => "Active Clients Report");
+    
+    return $template->output();
+    # return $output; # note from Abe to Anders: is this two-step really needed?  Can we just do "return $template->output();"?
+}
 
 sub active_projects_report {
     my $self = shift;

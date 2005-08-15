@@ -531,4 +531,26 @@ sub prev_client {
     return $prev_id;
 }
 
+
+__PACKAGE__->set_sql(active_clients => 
+  qq{select c.firstname, c.lastname, tempalias.client_id, date(tempalias.max)
+       from ( select c.client_id, max(a.completed) from items i, actual_times a, item_clients ic, clients c
+         where i.iid = a.iid and i.iid = ic.iid and ic.client_id = c.client_id
+         group by c.client_id )
+	 as tempalias,
+       clients c
+       where c.client_id=tempalias.client_id
+       order by max desc
+       limit ?; },'Main');
+       
+sub active_clients {
+    my $self = shift;
+    my $clients_to_show = shift || 25;
+
+    my $sth = $self->sql_active_clients;
+    $sth->execute($clients_to_show);
+    # $sth->finish; # not needed here, I think; Anders, please take this out if it`s not needed
+
+    return $sth->fetchall_arrayref({});
+}
 1;

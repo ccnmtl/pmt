@@ -1,0 +1,45 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECTS: Active Clients: <tmpl_var name="number_of_clients_requested"> clients requested</h1>
+
+<form type="GET" action="home.pl">
+  <input type="hidden" name="mode" value="active_clients_report">
+  Maximum number of clients to display: <input type="text" size="2" name="clients"> <input type="submit" value="Go!">
+</form>
+ 
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<thead>
+<tr>
+<th class="firstcell">First name</th>
+<th>Last name </th>
+<th>Last worked for on</th>
+<th>Client ID and link</th>
+</tr>
+</thead>
+
+<tbody>
+<tmpl_loop name="clients">
+<tr>
+<td><tmpl_var name="firstname"></td>
+<td><tmpl_var name="lastname"></td>
+<td><tmpl_var name="date"></td>
+<td class="firstcell"><a href="home.pl?mode=client;client_id=<tmpl_var name="client_id" escape="url">"><tmpl_var name="client_id"></a></td>
+</tr>
+</tmpl_loop>
+</tbody>
+<tfoot>
+<tr>
+<!-- ## Closing row --><td colspan="7" class="end">&nbsp;</td>
+</tr>
+</tfoot>
+</table>
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+<tmpl_include name="footer.tmpl">
