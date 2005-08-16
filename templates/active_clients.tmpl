@@ -13,8 +13,7 @@
   <input type="hidden" name="mode" value="active_clients_report">
   Employee to show clients for:
   <select class="xmedium" name="employee">
-    <option value="all"<tmpl_if name="all_selected">
-  selected="selected"</tmpl_if>>All Employees</option>
+    <option value="all"<tmpl_if name="all_selected"> selected="selected"</tmpl_if>>All Employees</option>
     <tmpl_loop name="users"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
   </select>
   <br/>
@@ -24,17 +23,20 @@
 <table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
 <thead>
 <tr>
-<th class="firstcell">Name</th>
+<th class="firstcell">First name</th>
+<th>Last name </th>
 <th>Latest activity</th>
+<th>Registered on</th>
 </tr>
 </thead>
 
 <tbody>
 <tmpl_loop name="clients">
 <tr>
-<td><a href="home.pl?mode=client;client_id=<tmpl_var name="client_id"
-escape="url">"><tmpl_var name="lastname">, <tmpl_var name="firstname"></a></td>
+<td><a href="home.pl?mode=client;client_id=<tmpl_var name="client_id" escape="url">"><tmpl_var name="firstname"><a></td>
+<td><a href="home.pl?mode=client;client_id=<tmpl_var name="client_id" escape="url">"><tmpl_var name="lastname"></a></td>
 <td><tmpl_var name="date"></td>
+<td><tmpl_var name="registration_date"></td>
 </tr>
 </tmpl_loop>
 </tbody>
