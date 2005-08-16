@@ -533,25 +533,29 @@ sub prev_client {
 
 
 __PACKAGE__->set_sql(active_clients_all_employees => 
-  qq{ select c.firstname, c.lastname, tempalias.client_id, date(tempalias.date), c.registration_date
+  qq{ select c.firstname, c.lastname, tempalias.client_id, date(tempalias.date), c.registration_date,
+             c.school, c.department, c.contact, u.fullname as contact_fullname
         from ( select ic.client_id, max(i.last_mod) as date 
            from clients c, items i, item_clients ic 
            where i.iid=ic.iid 
            group by ic.client_id 
            order by date desc 
            limit ? ) as tempalias,
-         clients c where tempalias.client_id=c.client_id ; 
+         clients c, users u
+	 where tempalias.client_id=c.client_id and c.contact = u.username ; 
        },'Main');
       
 __PACKAGE__->set_sql(active_clients_one_employee => 
-  qq{ select c.firstname, c.lastname, tempalias.client_id, date(tempalias.date), c.registration_date
+  qq{ select c.firstname, c.lastname, tempalias.client_id, date(tempalias.date), c.registration_date,
+             c.school, c.department, c.contact, u.fullname as contact_fullname
         from ( select ic.client_id, max(i.last_mod) as date 
            from clients c, items i, item_clients ic 
            where owner=? and i.iid=ic.iid 
            group by ic.client_id 
            order by date desc 
            limit ? ) as tempalias,
-         clients c where tempalias.client_id=c.client_id ; 
+         clients c, users u
+	 where tempalias.client_id=c.client_id and c.contact=u.username ; 
        },'Main');
       
 sub active_clients {
