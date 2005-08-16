@@ -2834,8 +2834,9 @@ sub user_weekly_report {
 sub active_clients_report {
     my $self = shift;
     my $cgi  = $self->query();
-    my $clients_to_show = $cgi->param('clients') || 25; # 25 is the default number of clients to request from the database
-    my $employee = $cgi->param('employee') || "all"; # "all" is the default employee ID to request from the database
+    
+    my $clients_to_show = $cgi->param('clients') || 25; 
+    my $employee = $cgi->param('employee') || "all"; 
 
     my $active_clients = PMT::Client->active_clients($clients_to_show,$employee);
 
@@ -2845,24 +2846,10 @@ sub active_clients_report {
     $template->param('employee' => $employee) if ($employee ne "all");
     
     $template->param('page_title' => "Active Clients Report");
-   
-    # add "all" to the list of users before sending it to the template
-    my $users_select; # $users_select will soon contain a reference to an array of hash refs
-    my %all_clients; # for the new entry to be added to the list
-    if ("all" eq $employee) {
-      $users_select = PMT::User::users_select();
-      %all_clients = ( value => "all", label => "All Employees", selected => "selected" );
-    } else { # the employee to display clients for is not "all"
-      $users_select = PMT::User::users_select( $employee );
-      %all_clients = ( value => "all", label => "All Employees", selected => "" ); # note - maybe the empty "selected" is unneeded
-    }
-    unshift @$users_select, \%all_clients;
     
-    $template->param('users' => $users_select );
+    $template->param(users => PMT::User::users_select($employee),
+		     all_selected => "all" eq $employee);
     
-    # warn("Abe testing: " . PMT::User::users_select( $self->{username} ) );
-    # warn("Abe testing: " . PMT::User::users_select( $self->{username} )->[0] );
-   
     return $template->output();
 }
 
