@@ -2853,7 +2853,7 @@ sub active_clients_report {
       $users_select = PMT::User::users_select();
       %all_clients = ( value => "all", label => "All Employees", selected => "selected" );
     } else { # the employee to display clients for is not "all"
-      $users_select = PMT::User::users_select( $self->{username} );
+      $users_select = PMT::User::users_select( $employee );
       %all_clients = ( value => "all", label => "All Employees", selected => "" ); # note - maybe the empty "selected" is unneeded
     }
     unshift @$users_select, \%all_clients;
