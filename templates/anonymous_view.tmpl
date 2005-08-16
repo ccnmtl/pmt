@@ -1,0 +1,209 @@
+<tmpl_include name="header.tmpl">
+<div class="pagecontent">
+<tmpl_if name="message">
+<div id="message"><tmpl_var name="message" escape="html"></div>
+</tmpl_if>
+<form action="anonymous_comment.pl" method="post">
+<input type="hidden" name="iid" value="<tmpl_var name="iid">"/>
+<table cellpadding="0" cellspacing="0" class="pmtform2"
+style="margin-top: 50px">
+<tr>
+<th class="firstcell" width="120">
+<tmpl_var name="type">
+</th>
+<td colspan="3">
+<b>#<tmpl_var name="iid"> <tmpl_var name="title"></b><br /><i>(Last modified: <tmpl_var name="last_mod">)</i>
+</td>
+</tr>
+<tr>
+<th class="firstcell" width="120">project:</th>
+<td width="240">
+<tmpl_var name="project">
+</td>
+<th class="firstcell" width="120">milestone:</th>
+<td width="235">
+<tmpl_var name="milestone">
+</td>
+</tr>
+<tr>
+<th class="firstcell" width="120">status:</th>
+<td class="<tmpl_var name="status">">
+<tmpl_var name="status">
+</td>
+<th class="firstcell" width="120">target date &amp;<br />priority:</th>
+<td><tmpl_var name="target_date">
+(<span class="pr<tmpl_var name="priority">"><tmpl_var name="priority_label"></span>)
+</td>
+</tr>
+<tr>
+<th class="firstcell" width="120">estimated time:</th>
+<td>
+<tmpl_var name="estimated_time" escape="html"> h</td>
+<th class="firstcell" width="120">assigned to:</th>
+<td>
+<tmpl_var name="assigned_to_fullname">
+</td>
+</tr>
+<tr>
+<tmpl_if name="can_resolve">
+<th class="firstcell" width="120">resolve time:</th>
+<td><input class="textform" type="text" name="resolve_time" size="15" /></td>
+<tmpl_else>
+<th class="firstcell" colspan="2">&#160;</th>
+</tmpl_if>
+<th class="firstcell" width="120">owner:</th>
+<td>
+<tmpl_var name="owner_fullname">
+</td>
+</tr>
+<tmpl_if name="resolve_times">
+<tr>
+<th class="firstcell" width="120">record of<br />times completed:</th>
+<td colspan="3">
+<table cellpadding="0" cellspacing="0" class="timescompleted">
+<tr>
+<th class="firstcell">time:</th>
+<th>by:</th>
+<th>at:</th>
+</tr>
+<tmpl_loop name="resolve_times">
+<tr>
+<td class="firstcell">
+<tmpl_var name="actual_time" escape="html">
+</td>
+<td>
+<tmpl_Var name="resolver_fullname" escape="html">
+</td>
+<td>
+<tmpl_var name="completed" escape="html">
+</td>
+</tr>
+</tmpl_loop>
+</table>
+</td>
+</tmpl_if>
+<tmpl_if name="clients">
+<tr>
+<th class="firstcell" width="120">clients:</th>
+<td colspan="3">
+<tmpl_loop name="clients">
+<tmpl_var name="firstname" escape="html">
+<tmpl_var name="lastname" escape="html">
+<tmpl_unless __LAST__>, </tmpl_unless>
+</tmpl_loop>
+</td>
+</tr>
+</tmpl_if>
+<tmpl_if name="url">
+<tr>
+<th class="firstcell" width="120">related url:</th>
+<td colspan="3">
+<a target="_blank" href="<tmpl_var name="url">"><tmpl_var name="url"></a>
+</td>
+</tr>
+</tmpl_if>
+<tmpl_if name="keywords">
+<tr>
+<th class="firstcell" width="120">keywords:</th>
+<td colspan="3">
+<tmpl_loop name="keywords">
+<tmpl_var name="keyword">
+</tmpl_loop>
+</td>
+</tr>
+</tmpl_if>
+<tmpl_if name="dependencies">
+<tr>
+<th class="firstcell" width="120">dependencies:</th>
+<td colspan="3">
+<tmpl_loop name="dependencies">
+<tmpl_var name="type">
+<a href="view.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid"> <tmpl_var name="title"></a>
+[<tmpl_var name="status">
+<tmpl_if name="r_status"> (<tmpl_var name="r_status">)</tmpl_if>]<br />
+</tmpl_loop>
+</td>
+</tr>
+</tmpl_if>
+
+<tmpl_if name="dependents">
+<tr>
+<th class="firstcell" width="120">dependents:</th>
+<td colspan="3">
+<tmpl_loop name="dependents">
+<tmpl_var name="type">
+<a href="view.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid"> <tmpl_var name="title"></a>
+[<tmpl_var name="status">
+<tmpl_if name="r_status"> (<tmpl_var name="r_status">)</tmpl_if>]<br />
+</tmpl_loop>
+</td>
+</tr>
+</tmpl_if>
+
+<tr>
+<th class="firstcell" width="120">description:</th>
+<td valign="top" colspan="3">
+<tmpl_var name="description_html">
+</td>
+</tr>
+<tr>
+<th class="firstcell" width="120">comment:</th>
+<td colspan="3">
+<label for="name">Name:</label><input type="text" name="name"
+size="60" class="textform"/><br />
+<label for="email">Email:</label><input type="text" name="email"
+size="60" class="textform" /><br />
+<div class="resizer" id="commentbox">
+<textarea class="textform" name="comment" wrap="virtual" cols="40" rows="5"></textarea>
+<img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20" height="20" alt="" />
+</div>
+</td>
+</tr>
+<tr>
+<!-- ## Submit button --><td colspan="4" class="firstcell"
+align="center"><input type="submit" class="button" value="add comment" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="4" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+
+<tmpl_if name="full_history">
+<h2>History</h2>
+<table cellpadding="0" cellspacing="0" class="itemlisting" style="width: 710px;">
+	<tr>
+		<th class="firstcell">status:</th>
+		<th>modified:</th>
+		<th>comment:</th>
+	</tr>
+<tmpl_loop name="full_history">
+<tr>
+<td class="<tmpl_var name="status">" style="border-left: 1px solid #ccf; width:90px;">
+<tmpl_if name="status">
+<nobr><tmpl_var name="status"></nobr>
+<tmpl_else>&nbsp;</tmpl_if>
+</td>
+
+<td>
+by <tmpl_var name="fullname"><br />
+<nobr>at <tmpl_var name="timestamp"></nobr>
+</p>
+</td>
+<td>
+<tmpl_var name="comment">
+</td>
+</tr>
+</tmpl_loop>
+<tr>
+<!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
+</tr>
+</table>
+</tmpl_if>
+
+
+<script type="text/javascript">
+SET_DHTML("commentbox"+RESIZABLE)
+</script>
+<tmpl_include name="footer.tmpl">
