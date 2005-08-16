@@ -5,11 +5,18 @@
 <!-- ===== PAGE MAIN CONTENT ===== -->
 <div class="pagecontent">
 
-<h1>PROJECTS: Active Clients: <tmpl_var name="number_of_clients_requested"> clients requested</h1>
+<h1>PROJECTS: Active Clients for <tmpl_if name="employee"><tmpl_var name="employee"><tmpl_else>all employees</tmpl_if>: <tmpl_var name="number_of_clients_requested"> clients requested</h1>
+
+<p>Note: this is based on activity on action items in the PMT database.</p>
 
 <form type="GET" action="home.pl">
   <input type="hidden" name="mode" value="active_clients_report">
-  Maximum number of clients to display: <input type="text" size="2" name="clients"> <input type="submit" value="Go!">
+  Employee to show clients for:
+  <select class="xmedium" name="employee">
+    <tmpl_loop name="users"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
+  </select>
+  <br/>
+  Maximum number of clients to display: <input type="text" size="2" name="clients" value="<tmpl_var name="number_of_clients_requested">"> <input type="submit" value="Go!">
 </form>
  
 <table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
@@ -17,7 +24,7 @@
 <tr>
 <th class="firstcell">First name</th>
 <th>Last name </th>
-<th>Last worked for on</th>
+<th>Latest activity</th>
 <th>Client ID and link</th>
 </tr>
 </thead>

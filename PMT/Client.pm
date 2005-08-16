@@ -532,24 +532,45 @@ sub prev_client {
 }
 
 
-__PACKAGE__->set_sql(active_clients => 
-  qq{select c.firstname, c.lastname, tempalias.client_id, date(tempalias.max)
-       from ( select c.client_id, max(a.completed) from items i, actual_times a, item_clients ic, clients c
-         where i.iid = a.iid and i.iid = ic.iid and ic.client_id = c.client_id
-         group by c.client_id )
-	 as tempalias,
-       clients c
-       where c.client_id=tempalias.client_id
-       order by max desc
-       limit ?; },'Main');
-       
+__PACKAGE__->set_sql(active_clients_all_employees => 
+  qq{ select c.firstname, c.lastname, tempalias.client_id, date(tempalias.date) 
+        from ( select ic.client_id, max(i.last_mod) as date 
+           from clients c, items i, item_clients ic 
+           where i.iid=ic.iid 
+           group by ic.client_id 
+           order by date desc 
+           limit ? ) as tempalias,
+         clients c where tempalias.client_id=c.client_id ; 
+       },'Main');
+      
+__PACKAGE__->set_sql(active_clients_one_employee => 
+  qq{ select c.firstname, c.lastname, tempalias.client_id, date(tempalias.date) 
+        from ( select ic.client_id, max(i.last_mod) as date 
+           from clients c, items i, item_clients ic 
+           where owner=? and i.iid=ic.iid 
+           group by ic.client_id 
+           order by date desc 
+           limit ? ) as tempalias,
+         clients c where tempalias.client_id=c.client_id ; 
+       },'Main');
+      
 sub active_clients {
     my $self = shift;
     my $clients_to_show = shift || 25;
+    my $employee = shift || "all";
 
-    my $sth = $self->sql_active_clients;
-    $sth->execute($clients_to_show);
+    if ("all" eq $employee) {
 
-    return $sth->fetchall_arrayref({});
+      my $sth = $self->sql_active_clients_all_employees;
+      $sth->execute($clients_to_show);
+      return $sth->fetchall_arrayref({});
+
+    } else {
+    
+      my $sth = $self->sql_active_clients_one_employee;
+      $sth->execute($employee,$clients_to_show);
+      return $sth->fetchall_arrayref({});
+
+    }
 }
 1;
