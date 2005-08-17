@@ -2861,7 +2861,14 @@ sub active_clients_report {
     my $template = $self->template("active_clients.tmpl");
     $template->param('clients' => \@$active_clients);
     $template->param('number_of_clients_requested' => $clients_to_show);
-    $template->param('employee' => $employee) if ($employee ne "all");
+    
+    if ($employee ne "all") {
+      my $user = PMT::User->retrieve($employee);
+      
+      # $template->param('employee' => $employee);
+      $template->param('employee' => $user->fullname);
+
+    }
     
     $template->param('page_title' => "Active Clients Report");
     
