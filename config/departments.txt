@@ -8,10 +8,6 @@ Applied Physics and Applied Mathematics
 Architecture
 Art History and Archaeology
 Arts & Humanities (TC) 
-Film Division(School of the Arts)
-Visual Arts Division(School of the Arts)
-Theatre Arts Division(School of the Arts)
-Writing Division(School of the Arts)
 Astronomy & Astrophysics
 Biobehavioral Sciences (TC)
 Biochemistry and Molecular Biophysics
@@ -19,9 +15,9 @@ Biological Sciences
 Biomedical Engineering
 Biomedical Informatics
 Biostatistics
-Business
-Finance & Economics Division
 Biotechnology
+Business
+Cardiology
 Chemical Engineering
 Chemistry
 Civil Engineering and Engineering Mechanics
@@ -32,21 +28,23 @@ Counseling & Clinical Psychology (TC)
 Curriculum & Teaching (TC)
 Dental and Oral Surgery
 Dermatology
-Earth and Environmental Engineering
-Earth & Environmental Sciences
 Earth & Environmental Science Journalism
+Earth & Environmental Sciences
+Earth and Environmental Engineering
 East Asian Languages and Cultures
 East Asian Regional Studies
 Ecology, Evolution, and Environmental Biology
 Economics
 Electrical Engineering
 English and Comparative Literature
-Undergraduate Writing Program
 Environmental Health Sciences
 Epidemiology
+Film Division(School of the Arts)
+Finance & Economics Division
 Finance (Mathematics of)
 French & Romance Philology
 French Cultural Studies in Paris
+Gastroenterology
 Genetics and Developement
 Germanic Languages
 Health & Behavior Studies (TC)
@@ -67,14 +65,11 @@ Mathematics
 Mathematics, Science & Technology (TC)
 Mechanical Engineering
 Medicine
-Cardiology
-Gastroenterology
-Nephrology
-Pulmonary, Allergy & Critical Care
 Microbiology
 Middle East & Asian Languages & Cultures
 Museum Anthropology
 Music
+Nephrology
 Neurobiology and Behavior
 Neurology
 Neurosurgery
@@ -84,8 +79,6 @@ Occupational Therapy
 Ophthalmology
 Organization & Leadership (TC)
 Orthopaedic Surgery
-Other - Columbia
-Other - External
 Otolaryngology/Head & Neck Surgery
 Pathology
 Pediatrics
@@ -101,6 +94,7 @@ Population and Family Health
 Psychiatry
 Psychology
 Public Health
+Pulmonary, Allergy & Critical Care
 Quantitative Methods in the Social Sciences
 Radiation Oncology
 Radiology
@@ -114,9 +108,15 @@ Sociology
 Sociomedical Sciences
 Spanish and Portuguese
 Statistics
-Swedish Program
 Surgery
+Swedish Program
+Theatre Arts Division(School of the Arts)
+Undergraduate Writing Program
 Urban Planning
 Urban Studies
 Urology
+Visual Arts Division(School of the Arts)
 Women's Studies
+Writing Division(School of the Arts)
+Other - Columbia
+Other - External
