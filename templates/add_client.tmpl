@@ -87,25 +87,33 @@ name="lastname" escape="html"></a></td>
 <tr>
 <th class="firstcell">title:</th>
 <td><input class="textform" size="30" type="text" name="title" value="<tmpl_var name="title" escape="html">" /></td></tr>
+
+<tr>
+  <th class="firstcell">LDAP OU:</th>
+  <td>
+    The LDAP database said that for this person, the Organizational Unit (OU) is "<b><tmpl_var name="ou"></b>".&emsp;This may be either a department, a school, or neither.&emsp;The PMT has pre-selected the menus for you using a "best guess" algorithm.&emsp;Please check the results and change them if needed.<br/>
+    <br/>
+    Please note that if the menus are both pre-selected with the same value, for example "Architecture", then it is up to you to decide whether this person is a student (i.e. school="Architecture") or professor or other departmental affiliate (i.e. department="Architecture") and change the non-relevant selection to "(none)".
+  </td>
+</tr>
+
 <tr>
 <th class="firstcell">department:</th>
 <td>
-(LDAP returned: <tmpl_var name="department" escape="html">)<br /><br />
 <select class="big" name="department">
 <tmpl_loop name='departments_select'><tmpl_include name="options_loop.tmpl">
 </tmpl_loop>
 </select>
 </td></tr>
+
 <tr>
 <th class="firstcell">school:</th>
 <td>
-(LDAP returned: <tmpl_var name="school" escape="html">)<br /><br />
 <select class="big" name="school">
 <tmpl_loop name='schools_select'><tmpl_include
 name="options_loop.tmpl"></tmpl_loop></select>
-</td></tr>
+</tr>
 
-<tr>
 <th class="firstcell">additional affiliations:</th>
 <td><input class="textform" size="40" type="text" name="add_affiliates" /></td></tr>
 <tr>
@@ -152,7 +160,5 @@ SET_DHTML("commentbox"+RESIZABLE)
 
 </div>
 <!-- ===== END PAGE MAIN CONTENT ===== -->
-
-
 
 <tmpl_include name="footer.tmpl">

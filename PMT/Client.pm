@@ -150,17 +150,34 @@ sub schools_select {
 
 sub all_schools_select {
     my $self = shift;
-    my $school = shift || "Arts & Sciences";
-    return selectify(\@SCHOOLS,[@SCHOOLS],[$school]);
+    my $school = shift || "(none)";
+
+    my @schools_plus_none = @SCHOOLS;
+    push @schools_plus_none, "(none)";
+    
+    my $num_matches = grep(/$school/,@SCHOOLS);
+ 
+    if ( $num_matches ) { 
+      return selectify(\@schools_plus_none,[@schools_plus_none],[$school]);
+    } else {
+      return selectify(\@schools_plus_none,[@schools_plus_none],["(none)"]);
+    }
 }
 
 sub all_departments_select {
     my $self = shift;
-    my $department = shift || "";
-    if ($department eq "nodepartment") {
-	$department = $self->department;
+    my $department = shift || "(none)";
+   
+    my @departments_plus_none = @DEPARTMENTS;
+    push @departments_plus_none, "(none)";
+ 
+    my $num_matches = grep(/$department/,@DEPARTMENTS);
+ 
+    if ( $num_matches ) { 
+      return selectify(\@departments_plus_none,[@departments_plus_none],[$department]);
+    } else {
+      return selectify(\@departments_plus_none,[@departments_plus_none],["(none)"]);
     }
-    return selectify(\@DEPARTMENTS,[@DEPARTMENTS],[$department]);
 }
 
 sub projects_data {
