@@ -1073,8 +1073,6 @@ sub add_client_form {
             my @entries = $mesg->all_entries();
             my $entry = $entries[0];
 
-            # warn("Abe testing: entry = " . $entry);
-
             my $ou = "not_retrieved";
             if($entry) {
                 $client_email = $entry->get_value("mail") || "";
@@ -1110,13 +1108,12 @@ sub add_client_form {
 	    my $departments_select = PMT::Client->all_departments_select($ou);
 	    
 	    my $schools_select;
-
-            # the plan for this block of code: if the OU matched a department, then give that priority, and make the school
-	    #   pre-selected as "(none)", but if the OU didn`t match a dept., then try matching it to a school
-	    #   for now, it just retries the OU on the school blindly, so if the OU is Architecture or Business, then it will double-match
-	    # if %$departments_select{
-	    # $schools_select = PMT::Client->all_schools_select("(none)");
-	    $schools_select = PMT::Client->all_schools_select($ou);
+	    warn("Abe testing: $ou recognized as a school = " . PMT::Client::is_a_recognized_school($ou) );
+	    if ( PMT::Client::is_a_recognized_school($ou) ) { # if the OU is a recognized school name...
+	      $schools_select = PMT::Client->all_schools_select($ou);
+	    } else {
+	      $schools_select = PMT::Client->all_schools_select("Arts & Sciences");
+	    }
 	    
 	    my $existing_clients   = PMT::Client->existing_clients($uni,$lastname);
             $template->param(client_email 	=> $client_email,
@@ -1159,9 +1156,6 @@ sub add_client {
     $title = substr($title,0,100);
     $phone = substr($phone,0,32);
     if ($client_email ne "" && $lastname ne "") {
-
-        $department = "" if $department eq "(none)"; # make sure the "(none)" placeholders go into the database
-        $school = "" if $department eq "(none)";     # as empty strings
     
         my $contact = PMT::User->retrieve($contact_username);
         my $client = PMT::Client->create({
