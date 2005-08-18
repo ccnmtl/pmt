@@ -208,7 +208,7 @@ sub email_reply {
     $Text::Wrap::columns = 72;
     my $body = Text::Wrap::wrap("","",$args->{body});
 
-    my $reply_to_node = PMT::Node($args->{reply_to});
+    my $reply_to_node = PMT::Node->retrieve($args->{reply_to});
 
     # don't bother sending a copy to the author
     # if they're just replying to their own node.
