@@ -666,7 +666,7 @@ sub edit_project {
     $project->clients()->delete_all;
     foreach my $client (@$cr) {
 	next if $client eq "";
-	my $p = PMT::ProjectClient->create({pid => $project->pid, client_id => $client});
+	my $p = PMT::ProjectClients->create({pid => $project->pid, client_id => $client});
     }
     $project->update();
 
