@@ -1081,7 +1081,6 @@ sub add_client_form {
                 $title = $entry->get_value("title") || "";
 		
                 $ou = $entry->get_value("ou") || "(not found)";
-                warn("Abe testing: ou = " . $ou);
 		
                 $phone = $entry->get_value("telephonenumber") || "";
             } else {
@@ -1108,7 +1107,7 @@ sub add_client_form {
 	    my $departments_select = PMT::Client->all_departments_select($ou);
 	    
 	    my $schools_select;
-	    warn("Abe testing: $ou recognized as a school = " . PMT::Client::is_a_recognized_school($ou) );
+
 	    if ( PMT::Client::is_a_recognized_school($ou) ) { # if the OU is a recognized school name...
 	      $schools_select = PMT::Client->all_schools_select($ou);
 	    } else {

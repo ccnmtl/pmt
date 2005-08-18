@@ -89,19 +89,13 @@ name="lastname" escape="html"></a></td>
 <td><input class="textform" size="30" type="text" name="title" value="<tmpl_var name="title" escape="html">" /></td></tr>
 
 <tr>
-  <th class="firstcell">LDAP OU:</th>
-  <td>
-    According to the LDAP database, this person`s Organizational Unit (OU) is "<b><tmpl_var name="ou"></b>".&emsp;This may be either a department, a school, or neither.&emsp;The PMT has pre-selected the menus for you using a "best guess" algorithm.&emsp;Please check the results and change them if needed.
-  </td>
-</tr>
-
-<tr>
 <th class="firstcell">department:</th>
 <td>
 <select class="big" name="department">
 <tmpl_loop name='departments_select'><tmpl_include name="options_loop.tmpl">
 </tmpl_loop>
 </select>
+<tmpl_if name="ou">(LDAP returned: <tmpl_var name="ou" escape="html">)</tmpl_if>
 </td></tr>
 
 <tr>
