@@ -116,7 +116,9 @@ sub interval_total {
     my $end = shift;
     my $sth = $self->sql_interval_total;
     $sth->execute($self->pid,$start,$end);
-    return $sth->fetchrow_hashref()->{total_time};
+    my $total_time = $sth->fetchrow_hashref()->{total_time};
+    $sth->finish;
+    return $total_time;
 }
 
 # }}}
@@ -204,7 +206,9 @@ sub upcoming_milestone  {
         # grab one. 
 	$sth = $self->sql_latest_milestone;
 	$sth->execute($pid);
-	return $sth->fetchrow_hashref()->{mid};
+	my $mid = $sth->fetchrow_hashref()->{mid};
+	$sth->finish;
+	return $mid;
     }
 }
 
@@ -300,7 +304,9 @@ sub group_hours {
 
     my $sth = $self->sql_group_hours;
     $sth->execute($self->pid,$group,$week_start,$week_end);
-    $sth->fetchrow_hashref()->{hours};
+    my $hours = $sth->fetchrow_hashref()->{hours};
+    $sth->finish;
+    return $hours;
 }
 
 __PACKAGE__->set_sql(all_users_in_project =>

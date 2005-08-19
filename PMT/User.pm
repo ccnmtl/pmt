@@ -566,7 +566,9 @@ sub total_completed_time {
     my $self = shift;
     my $sth = $self->sql_total_completed_time;
     $sth->execute($self->username);
-    return interval_to_hours($sth->fetchrow_hashref()->{time});
+    my $time = $sth->fetchrow_hashref()->{time};
+    $sth->finish;
+    return interval_to_hours($time);
 }
 
 __PACKAGE__->set_sql(total_group_time => 
