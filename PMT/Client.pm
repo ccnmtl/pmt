@@ -556,7 +556,7 @@ __PACKAGE__->set_sql(active_clients_one_employee =>
              c.school, c.department, c.contact, u.fullname as contact_fullname
         from ( select ic.client_id, max(i.last_mod) as date 
            from clients c, items i, item_clients ic 
-           where owner=? and i.iid=ic.iid 
+           where c.contact=? and i.iid=ic.iid and ic.client_id=c.client_id
            group by ic.client_id 
            order by date desc 
            limit ? ) as tempalias,

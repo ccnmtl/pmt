@@ -2857,10 +2857,7 @@ sub active_clients_report {
     
     if ($employee ne "all") {
       my $user = PMT::User->retrieve($employee);
-      
-      # $template->param('employee' => $employee);
       $template->param('employee' => $user->fullname);
-
     }
     
     $template->param('page_title' => "Active Clients Report");
