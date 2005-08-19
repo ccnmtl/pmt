@@ -212,7 +212,9 @@ sub interval_time {
     # calculate the total time spent on all projects by the user
     my $sth = $self->sql_interval_time;
     $sth->execute($self->username,$start,$end);
-    return $sth->fetchrow_hashref()->{time};
+    my $time = $sth->fetchrow_hashref()->{time};
+    $sth->finish;
+    return $time;
 }
 
 __PACKAGE__->set_sql(active_projects => qq{
@@ -549,7 +551,9 @@ sub project_completed_time_for_interval {
     my $end_date = shift;
     my $sth = $self->sql_project_completed_time_for_interval;
     $sth->execute($self->username,$pid,$start_date,$end_date);
-    return $sth->fetchrow_hashref()->{total_time};
+    my $total_time = $sth->fetchrow_hashref()->{total_time};
+    $sth->finish;
+    return $total_time;
 }
 
 __PACKAGE__->set_sql(total_completed_time =>
@@ -577,7 +581,9 @@ sub total_group_time {
     my $end = shift;
     my $sth = $self->sql_total_group_time;
     $sth->execute($self->username,$start,$end);
-    return $sth->fetchrow_hashref()->{time};
+    my $time = $sth->fetchrow_hashref()->{time};
+    $sth->finish;
+    return $time;
 }
 
 __PACKAGE__->set_sql(items_search => qq {
