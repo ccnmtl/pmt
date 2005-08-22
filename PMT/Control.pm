@@ -2855,9 +2855,7 @@ sub active_clients_report {
     $template->param('clients' => \@$active_clients);
     $template->param('number_of_clients_requested' => $clients_to_show);
     
-    if ($employee eq "all") {
-      $template->param('show_contacts' => 1);
-    } else {
+    if ($employee ne "all") {
       my $user = PMT::User->retrieve($employee);
       $template->param('employee' => $user->fullname);
     }
