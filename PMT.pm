@@ -101,6 +101,7 @@ sub add_item {
 
     # the milestone may need to be reopened
     $milestone->update_milestone($user);
+    return $item->iid;
 }
 
 # }}}
