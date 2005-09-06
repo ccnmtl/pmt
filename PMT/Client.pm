@@ -310,6 +310,7 @@ sub update_data {
 sub find_by_uni {
     my $self = shift;
     my $uni = shift;
+    return () if $uni eq "";
     my @clients = __PACKAGE__->search(email => $uni);
     if (@clients) { return @clients; }
     return __PACKAGE__->search(email => "$uni\@columbia.edu");
