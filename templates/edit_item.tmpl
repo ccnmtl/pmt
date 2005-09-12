@@ -175,6 +175,66 @@ SET_DHTML("descriptionbox"+RESIZABLE,"commentbox"+RESIZABLE)
 </script>
 
 
+<h2>Add Attachment</h2>
+<form action="home.pl" method="post" enctype="multipart/form-data">
+<input type="hidden" name="mode" value="add_attachment" />
+<input type="hidden" name="iid" value="<tmpl_var name="iid">" />
+
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 650px;">
+<tr><th class="firstcell">select file:</th><td><input type="file"
+name="attachment" /></td></tr>
+<tr><th class="firstcell">or enter url:</th><td><input type="text" class="textform" name="url"
+value="http://" size="30" /></td></tr>
+<tr><th class="firstcell">title:</th><td><input type="text"
+class="textform" name="title" size="30" /> (defaults to filename)</td></tr>
+<tr><th class="firstcell">description:</th><td><div class="resizer"
+id="attachmentdescriptionbox"><textarea wrap="virtual" class="textform" cols="40" rows="8"
+name="description"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
+height="20" alt="" /></div></td>
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" value="ADD ATTACHMENT" class="button" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+
+</table>
+
+
+</form>
+
+<tmpl_if name="attachments">
+<h2>Delete Attachments</h2>
+
+<form action="home.pl" method="post">
+<input type="hidden" name="mode" value="delete_attachments"/>
+<input type="hidden" name="iid" value="<tmpl_var name="iid">"/>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting" style="width: 650px;">
+<tr><th class="firstcell">&#160;</th>
+<th>attachment:</th>
+<th>description:</th>
+</tr>
+<tmpl_loop name="attachments">
+<tr><td class="firstcell"><input type="checkbox" name="del_<tmpl_var name="id" escape="html">" /></td>
+<td><a href="home.pl?mode=attachment;attachment_id=<tmpl_var name="id" escape="url">"><tmpl_var
+name="title" escape="html"></a> <i>[<tmpl_var name="last_mod" escape="html">]</i>
+</td>
+<td><tmpl_if name="description"><tmpl_var name="description" escape="html"></tmpl_if>
+</td>
+</tr>
+</tmpl_loop>
+<tr><td colspan="3" class="firstcell" align="center"><input type="submit" value="DELETE SELECTED ATTACHMENTS" /></td></tr>
+<tr>
+<!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+</tmpl_if>
+
+
 
 </div>
 <!-- ===== END PAGE MAIN CONTENT ===== -->

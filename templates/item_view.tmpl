@@ -192,6 +192,18 @@ name="label" escape="html"></option>
 </table>
 </form>
 
+<tmpl_if name="attachments">
+<h2>Attachments</h2>
+<ul>
+<tmpl_loop name="attachments">
+<li>
+<a href="home.pl?mode=attachment;attachment_id=<tmpl_var name="id" escape="url">"><tmpl_varname="title" escape="html"></a> <i>[<tmpl_var name="last_mod" escape="html">]</i></li>
+</tmpl_loop>
+</ul>
+</tmpl_if>
+
+
+
 <h2>History</h2>
 <table cellpadding="0" cellspacing="0" class="itemlisting" style="width: 710px;">
 	<tr>

@@ -198,6 +198,25 @@ CREATE TABLE documents (
 	  ON DELETE CASCADE
 );
 
+CREATE TABLE attachment (
+       id serial,
+       item_id integer not null,
+       
+       filename varchar(128),
+       title varchar(128),
+       type varchar(8),
+       url varchar(256),
+       description text,
+       author varchar(32) not null,
+       last_mod timestamp default CURRENT_TIMESTAMP,
+       FOREIGN KEY (item_id) REFERENCES items (iid)
+	  ON DELETE CASCADE,
+	FOREIGN KEY (author) REFERENCES users (username)
+	  ON DELETE CASCADE
+
+);
+
+
 CREATE TABLE clients (
 	client_id serial primary key,
 	lastname varchar(64),

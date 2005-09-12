@@ -63,6 +63,7 @@ eval {
     $data{comments}            = $item->get_comments();
     #Min's addition to implement email opt in/out
     $data{item_cc}             = $item->notify_item($username);
+    $data{attachments}         = [map {$_->data()} $item->attachments()];
 
     my @full_history = ();
 

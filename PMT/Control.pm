@@ -8,6 +8,7 @@ use PMT::User;
 use PMT::Project;
 use PMT::Milestone;
 use PMT::Document;
+use PMT::Attachment;
 use PMT::Group;
 use CGI;
 use HTML::Template;
@@ -46,6 +47,7 @@ sub setup {
         'watched_items'          => 'watched_items',
         'delete_client'          => 'delete_client',
         'delete_documents'       => 'delete_documents',
+        'delete_attachments'     => 'delete_attachments',
         'delete_item'            => 'delete_item',
         'delete_milestone'       => 'delete_milestone',
         'delete_node'            => 'delete_node',
@@ -62,6 +64,7 @@ sub setup {
         'edit_milestone_form'    => 'edit_milestone_form',
         'edit_milestone'         => 'edit_milestone',
         'add_document'           => 'add_document',
+        'add_attachment'         => 'add_attachment',
         'add_group'              => 'add_group',
         'edit_my_items_form'     => 'edit_my_items_form',
         'project_info'           => 'project_info',
@@ -77,6 +80,7 @@ sub setup {
         'search_forum'           => 'search_forum',
 	'keyword'                => 'keyword',
 	'document'               => 'document',
+        'attachment'             => 'attachment',
         'users'                  => 'users',
         'all_clients'            => 'all_clients',
         'all_groups'             => 'all_groups',
@@ -835,6 +839,25 @@ sub delete_documents {
     return "documents deleted";
 }
 
+sub delete_attachments {
+    my $self = shift;
+    my $q = $self->query();
+    my %vars = $q->Vars();
+    my @del = map {/^del_(\d+)$/; $1;} grep {/^del_\d+/} keys %vars;
+    my $iid = $q->param('iid');
+    my $user = undef;
+    foreach my $id (@del) {
+        my $attachment = PMT::Attachment->retrieve($id);
+        $user = $attachment->author();
+        $attachment->delete();
+    }
+
+    $self->header_type('redirect');
+    $self->header_props(-url => "item.pl?iid=$iid");
+    return "attachments deleted";
+}
+
+
 sub delete_item {
     my $self = shift;
     my $cgi = $self->query();
@@ -1437,6 +1460,29 @@ sub add_document {
     $self->header_props(-url => "home.pl?mode=project;pid=$pid");
 }
 
+sub add_attachment {
+    my $self        = shift;
+    my $cgi         = $self->query();
+    my $username    = $self->{username};
+    my $iid         = $cgi->param("iid")         || throw Error::NO_IID "no item specified";
+    my $filename    = $cgi->param('attachment')  || "";
+    my $title       = $cgi->param('title')       || $filename;
+    my $url         = $cgi->param('url')         || "";
+    my $description = $cgi->param('description') || "";
+    my $fh          = $cgi->upload('attachment');
+
+    my $id = PMT::Attachment->add_attachment(item_id     => $iid,
+					     title       => $title,
+					     url         => $url,
+					     filename    => $filename,
+					     fh          => $fh,
+					     description => $description,
+					     author      => $username);
+    $self->header_type("redirect");
+    $self->header_props(-url => "item.pl?iid=$iid");
+}
+
+
 sub add_group {
     my $self = shift;
     my $cgi = $self->query();
@@ -1772,6 +1818,31 @@ sub document {
     }
 }
 
+sub attachment {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $id = $cgi->param('attachment_id') || "";
+    my $attachment = PMT::Attachment->retrieve($id);
+
+    if($attachment->type eq "url") {
+	$self->header_type('redirect');
+	$self->header_props(-url => $attachment->url);
+	return "redirecting to url";
+    } else {
+        my $content_type = $attachment->content_type();
+        if($attachment->content_disposition()) {
+            my $filename = $attachment->filename;
+	    $self->header_props(-type => $content_type,
+                               -content_disposition => "attachment;filename=$filename");
+        } else {
+            $self->header_props(-type => $content_type);
+        }
+        return $attachment->contents();
+    }
+}
+
+
+
 sub update_item_form {
     my $self = shift;
     my $cgi = $self->query();
@@ -1785,6 +1856,7 @@ sub update_item_form {
     my %data = %$r;
     my $project = PMT::Project->retrieve($data{'pid'});
     $data{$project->project_role($user->username)} = 1;
+    $data{attachments}         = [map {$_->data()} $item->attachments()];
     my $template = $self->template("edit_item.tmpl");
     $template->param(\%data);
     $template->param(page_title => "Edit Item: $data{title}");

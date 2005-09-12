@@ -1,5 +1,5 @@
 use strict;
-use Test::More tests => 19;
+use Test::More tests => 20;
 
 BEGIN {
     use_ok("PMT");
@@ -12,6 +12,7 @@ BEGIN {
     use_ok("PMT::Config");
     use_ok("PMT::Control");
     use_ok("PMT::Document");
+    use_ok("PMT::Attachment");
     use_ok("PMT::Event");
     use_ok("PMT::Group");
     use_ok("PMT::Item");

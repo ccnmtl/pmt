@@ -19,6 +19,7 @@ __PACKAGE__->has_many(comments => 'PMT::Comment', 'item');
 __PACKAGE__->has_many(dependents => 'PMT::Dependency', 'dest');
 __PACKAGE__->has_many(dependencies => 'PMT::Dependency', 'source');
 __PACKAGE__->has_many(clients => 'PMT::ItemClients', 'iid');
+__PACKAGE__->has_many(attachments => 'PMT::Attachment', 'item_id');
 
 __PACKAGE__->add_constructor(assigned_to_user => qq{status in
 ('OPEN','INPROGRESS','UNASSIGNED') and assigned_to = ?});

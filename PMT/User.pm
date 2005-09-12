@@ -13,6 +13,7 @@ __PACKAGE__->columns (All              => qw/fullname email status grp password/
 __PACKAGE__->has_many(nodes            => 'PMT::Node', 'author');
 __PACKAGE__->has_many(projects         => 'PMT::Project', 'caretaker');
 __PACKAGE__->has_many(documents        => 'PMT::Document', 'author');
+__PACKAGE__->has_many(attachments      => 'PMT::Attachment', 'author');
 __PACKAGE__->has_many(owned_items      => 'PMT::Item', 'owner');
 __PACKAGE__->has_many(assigned_items   => 'PMT::Item', 'assigned_to');
 __PACKAGE__->has_many(actual_times     => 'PMT::ActualTime', 'resolver');
