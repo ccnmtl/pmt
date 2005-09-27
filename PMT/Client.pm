@@ -76,9 +76,7 @@ __PACKAGE__->set_sql(recent_items => qq{
 	from items i, milestones m, projects p 
 	where i.mid = m.mid and m.pid = p.pid
 	and 
-	((i.iid in (select ic.iid from item_clients ic where ic.client_id = ?)) 
-	 or 
-	 (p.pid in (select pc.pid from project_clients pc where pc.client_id = ?)))
+	(i.iid in (select ic.iid from item_clients ic where ic.client_id = ?))
 	order by i.last_mod desc limit 10;},
 		     'Main');
 
@@ -86,7 +84,7 @@ __PACKAGE__->set_sql(recent_items => qq{
 sub recent_items {
     my $self = shift;
     my $sth = $self->sql_recent_items;
-    $sth->execute($self->client_id,$self->client_id);
+    $sth->execute($self->client_id);
     return [map {
         $_->{type_class} = $_->{type};
         $_->{type_class} =~ s/\s//g;
