@@ -159,7 +159,7 @@ sub projects_by_auth {
 __PACKAGE__->set_sql(projects => qq{
 	SELECT p.pid,p.name FROM works_on w, projects p 
 	    WHERE w.pid = p.pid 
-	    AND p.status <> 'Complete'
+	    AND p.status <> 'Complete' AND p.status <> 'Deferred' AND p.status <> 'Maintenance'
 	    AND w.username = ?;
     }, 'Main');
 
