@@ -222,7 +222,7 @@ sub email_reply {
     my $current_user = $user->user_info();
 
     my $subject = "[PMT Forum] $args->{subject}";
-    if ($args->{pid} ne "") {
+    if ($args->{pid}) {
 	my $project = PMT::Project->retrieve($args->{pid});
         my $project_name = $project->name;
         my $subject = "[PMT Forum: $project_name] $args->{subject}";

@@ -7,26 +7,9 @@
 
 	<link rel="stylesheet" href="style/main.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="style/tablesort.css" type="text/css" media="screen" />
-
-	<script type="text/javascript" language="javascript" src="scripts/drop_down.js"></script>
-	<script type="text/javascript" language="javascript" src="scripts/pc_css_hack.js"></script>
-	<script type="text/javascript" language="javascript" src="scripts/browsersniff.js"></script>
-	<script type="text/javascript" language="javascript" src="scripts/datepicker.js"></script>
-	<script type="text/javascript" language="javascript" src="scripts/calendar.js"></script>
-
+	<tmpl_include name="js_common.tmpl">
 	<link rel="stylesheet" href="style/print.css" type="text/css" media="print" />
 
-	<script type="text/javascript" language="javascript" src="widget.js"></script>
-
-    <script type="text/javascript" language="javascript">
-
-function sendIt(fileName) {
-  if (fileName != "") {
-	document.location.href = fileName
-  }   
-}
-
-</script>
 <script type="text/javascript" language="javascript">
 function validate_pid(form) {
     var pid = form.pid[form.pid.selectedIndex].value;
@@ -36,25 +19,6 @@ function validate_pid(form) {
     return false;   
 }
 </script>
-<script type="text/javascript" language="javascript" src="cal.js"></script>
-<script type="text/javascript" language="javascript" src="http://www2.ccnmtl.columbia.edu/js/wz_dragdrop.js"></script> 
-<script type="text/javascript" language="javascript" src="http://www2.ccnmtl.columbia.edu/js/tablesort/tablesort.js"></script>
-<script type="text/javascript" language="javascript">
-
-            function edit_mode() {
-                if (document.getElementsByTagName) {
-                    document.getElementsByTagName('body')[0].className = "editmode"
-                }
-            }
-
-            function view_mode() {
-                if (document.getElementsByTagName) {
-                    document.getElementsByTagName('body')[0].className = "viewmode"
-                }
-            }
- 
-</script>
-
 
 <style type="text/css">
 /* just need a couple rules to make the resizer work properly */

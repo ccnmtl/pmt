@@ -1,19 +1,18 @@
 // JavaScript Document
 
-startList = function() {
-if (document.all&&document.getElementById) {
-navRoot = document.getElementById("nav");
-for (i=0; i<navRoot.childNodes.length; i++) {
-node = navRoot.childNodes[i];
-if (node.nodeName=="LI") {
-node.onmouseover=function() {
-this.className+=" over";
-  }
-  node.onmouseout=function() {
-  this.className=this.className.replace(" over", "");
-   }
-   }
-  }
- }
+var startList = function() {
+    if (document.all&&document.getElementById) {
+        var navRoot = $("nav");
+	var lis = navRoot.getElementsByTagName("li");	
+        for (var i=0; i<lis.length; i++) {
+            var node = lis[i];
+            node.onmouseover=function() {
+     	        addElementClass(this,"over");
+            }
+            node.onmouseout=function() {
+		removeElementClass(this,"over");
+            }
+        }
+    }
 }
-window.onload=startList;
+addLoadEvent(startList);
