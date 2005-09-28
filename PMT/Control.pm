@@ -1229,6 +1229,7 @@ sub post {
 
     if ($preview eq "preview") {
         my $tiki = new Text::Tiki;
+	$body =~ s/(\s+\S+\@\S+)\)/$1 )/g;
         my $formatted_body = $tiki->format($body);
         my $template = $self->template("preview.tmpl");
         $template->param(pid => $pid,

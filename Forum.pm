@@ -135,6 +135,7 @@ sub post {
     }
     
     my $tiki = new Text::Tiki;
+    $args{body} =~ s/(\s+\S+\@\S+)\)/$1 )/g;
     my $body = PMT::Common::escape($tiki->format($args{body}));
     $args{author} ||= $self->{user};
     my $author = PMT::User->retrieve($args{author});

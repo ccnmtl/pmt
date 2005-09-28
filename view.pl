@@ -26,7 +26,9 @@ $template->param(page_title => $item->title);
 
 use Text::Tiki;
 my $tiki = new Text::Tiki;
-$template->param(description_html => $tiki->format($item->description));
+my $description = $item->description;
+$description =~ s/(\s+\S+\@\S+)\)/$1 )/g;
+$template->param(description_html => $tiki->format($description);
 
 my @full_history = ();
 my %history_items = ();
