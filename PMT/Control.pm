@@ -78,8 +78,8 @@ sub setup {
         'update_project'         => 'update_project',
         'update_project_form'    => 'update_project_form',
         'search_forum'           => 'search_forum',
-	'keyword'                => 'keyword',
-	'document'               => 'document',
+        'keyword'                => 'keyword',
+        'document'               => 'document',
         'attachment'             => 'attachment',
         'users'                  => 'users',
         'all_clients'            => 'all_clients',
@@ -88,9 +88,9 @@ sub setup {
         'client'                 => 'client',
         'milestone'              => 'milestone',
         'user'                   => 'user',
-	'project'                => 'project',
+        'project'                => 'project',
         'forum'                  => 'forum',
-	'node'                   => 'node',
+        'node'                   => 'node',
         'staff_report'           => 'staff_report',
         'project_history'        => 'project_history',
         'new_clients'            => 'new_clients',
@@ -115,14 +115,14 @@ sub setup {
     my $password = $q->cookie('pmtpassword') || "";
 
     if ($username eq "") { throw Error::NO_USERNAME; }
-    
+
     $self->{user} = PMT::User->retrieve($username);
     $self->{user}->validate($username,$password);
-    
+
 
     $self->{pmt} = $pmt;
     $self->{sortby} = $q->param('sortby') || $q->cookie('pmtsort') || "";
-    
+
     $self->{password} = $password;
     $self->{username} = $username;
     $self->{message} = $q->param('message');
@@ -156,7 +156,7 @@ sub edit_my_items_form {
     $template->param($user->quick_edit_data());
     $template->param(page_title => "quick edit items");
     $template->param(items_mode => 1);
-    return $template->output();    
+    return $template->output();
 }
 
 sub user_settings_form {
@@ -174,40 +174,39 @@ sub update_user {
     my $self = shift;
     my $user = $self->{user};
     my $cgi = $self->query();
-    
+
     my $new_pass  = $cgi->param('new_pass')  || "";
     my $new_pass2 = $cgi->param('new_pass2') || "";
 
     my $fullname  = $cgi->param('fullname')  || "";
     my $email     = $cgi->param('email')     || "";
 
-		if ($new_pass ne $new_pass2) {
-			$self->header_props(-url => "home.pl?mode=user_settings_form;message=Sorry, your passwords did not match.");
-	    $self->header_type('redirect');
-	    return "redirecting back to form";	
-		}
-		if ($new_pass eq '') {
-			$self->header_props(-url => "home.pl?mode=user_settings_form;message=Please enter a password.");
-	    $self->header_type('redirect');
-	    return "redirecting back to form";
-		}
-		
+    if ($new_pass ne $new_pass2) {
+        $self->header_props(-url => "home.pl?mode=user_settings_form;message=Sorry,%20your%20passwords%20did%20not%20match.");
+        $self->header_type('redirect');
+        return "redirecting back to form";
+    }
+    if ($new_pass eq '') {
+        $self->header_props(-url => "home.pl?mode=user_settings_form;message=Please%20enter%20a%20password.");
+        $self->header_type('redirect');
+        return "redirecting back to form";
+    }
+
     $self->{pmt}->update_user($user->username,$self->{password},$new_pass,$new_pass2,$fullname,$email);
 
     my $lcookie = $cgi->cookie(-name =>  'pmtusername',
         -value => $user->username,
         -path => '/',
         -expires => '+10y');
-    
+
     my $pcookie = $cgi->cookie(-name => 'pmtpassword',
         -value => $new_pass,
         -path => '/',
         -expires => '+10y');
-    $self->header_props(-url =>
-        "home.pl?mode=user_settings_form;message=updated");
+    $self->header_props(-url => "home.pl?mode=user_settings_form;message=updated");
     $self->header_add(-cookie => [$lcookie,$pcookie]);
     $self->header_type('redirect');
-    
+
     return "redirecting back to form";
 
 }
@@ -224,10 +223,10 @@ sub my_projects {
     $data->{manager_projects} = [map {
         $seen{$_} = 1;
         {
-            pid      => $_, 
+            pid      => $_,
             name     => $manager_projects->{$_},
             last_mod => $last_mods->{$_},
-            proj_cc  => $user->notify_projects($_), 
+            proj_cc  => $user->notify_projects($_),
         };
     } sort {
         lc($manager_projects->{$a}) cmp lc($manager_projects->{$b});
@@ -237,10 +236,10 @@ sub my_projects {
     $data->{developer_projects} = [map {
         $seen{$_} = 1;
         {
-	            pid      => $_, 
-		    name     => $developer_projects->{$_},
+                    pid      => $_,
+                    name     => $developer_projects->{$_},
                     last_mod => $last_mods->{$_},
-                    proj_cc  => $user->notify_projects($_), 
+                    proj_cc  => $user->notify_projects($_),
         };
     } sort {
         lc($developer_projects->{$a}) cmp lc($developer_projects->{$b});
@@ -249,20 +248,20 @@ sub my_projects {
     my $guest_projects = $user->projects_by_auth('guest');
     $data->{guest_projects} = [map {
         {
-	            pid      => $_, 
-		    name     => $guest_projects->{$_},
+                    pid      => $_,
+                    name     => $guest_projects->{$_},
                     last_mod => $last_mods->{$_},
-                    proj_cc  => $user->notify_projects($_), 
+                    proj_cc  => $user->notify_projects($_),
         };
     } sort {
         lc($guest_projects->{$a}) cmp lc($guest_projects->{$b});
     } grep { !exists $seen{$_} } keys %{$guest_projects}];
 
-    
+
     $template->param($data);
     $template->param('projects_mode' => 1);
     $template->param(page_title => "my projects");
-    
+
     return $template->output();
 }
 
@@ -297,8 +296,8 @@ sub add_project {
     }
 
     my $project = PMT::Project->create({name => $name, pub_view => $pub_view,
-					caretaker => $self->{user}, description => $description,
-					status => 'planning', wiki_category => $wiki_category});
+                                        caretaker => $self->{user}, description => $description,
+                                        status => 'planning', wiki_category => $wiki_category});
     my $manager = PMT::WorksOn->create({username => $self->{user}->username, pid => $project->pid, auth => 'manager'});
 
     $project->add_milestone("Final Release",$target_date,"project completion");
@@ -375,7 +374,7 @@ sub add_item_form {
     my $cgi = $self->query();
     my $pid = $cgi->param('pid');
     my $type = $cgi->param('type');
-    
+
     my $template = $self->template("add_item.tmpl");
     my $project = PMT::Project->retrieve($pid);
     $template->param($project->add_item_form($type, $self->{username}));
@@ -410,11 +409,11 @@ sub add_item {
     my $pid          = $cgi->param('pid') || throw Error::NO_PID "no project specified";
     my $mid          = $cgi->param('mid') || "";
     if ($mid eq "") {
-	my $project = PMT::Project->retrieve($pid);
-	$mid = $project->upcoming_milestone();
+        my $project = PMT::Project->retrieve($pid);
+        $mid = $project->upcoming_milestone();
     }
     my $title = escape($cgi->param('title')) || "no title";
-    
+
     #Min's changes to implement multiple assignees to an action item
     #my $assigned_to  = $cgi->param('assigned_to') || "";
     my @assigned_to  = $cgi->param('assigned_to');
@@ -436,10 +435,10 @@ sub add_item {
     my $estimated_time = $cgi->param('estimated_time') || "";
 
     if($target_date =~ /(\d{4}-\d{2}-\d{2})/) {
-	$target_date = $1;
+        $target_date = $1;
     } else {
-	my $milestone = PMT::Milestone->retrieve($mid);
-	$target_date = $milestone->target_date;
+        my $milestone = PMT::Milestone->retrieve($mid);
+        $target_date = $milestone->target_date;
     }
     if ($estimated_time =~ /^(\d+)$/) {
         $estimated_time .= "h";
@@ -452,58 +451,58 @@ sub add_item {
 
     my @new_keywords;
     foreach my $k (@keywords) {
-	push @new_keywords, $k unless $k eq "";
+        push @new_keywords, $k unless $k eq "";
     }
 
     my @new_dependencies;
     foreach my $d (@dependencies) {
-	push @new_dependencies, $d unless $d eq "";
+        push @new_dependencies, $d unless $d eq "";
     }
     my @new_clients;
     foreach my $client (@clients) {
-	push @new_clients, $client unless $client eq "";
+        push @new_clients, $client unless $client eq "";
     }
 
     if($type eq "tracker") {
-	my $resolve_time = $cgi->param('time') || "1 hour";
-	if($resolve_time =~ /^(\d+)$/) {
-	    # default to hours if now unit is specified
-	    $resolve_time = "$1"."h";
-	}
-	$pmt->add_tracker(pid => $pid,
-			  mid => $mid,
-			  title => $title,
-			  'time' => $resolve_time,
-			  target_date => $target_date,
-			  owner => $username,
-			  completed => $completed,
-			  clients => \@new_clients);
+        my $resolve_time = $cgi->param('time') || "1 hour";
+        if($resolve_time =~ /^(\d+)$/) {
+            # default to hours if now unit is specified
+            $resolve_time = "$1"."h";
+        }
+        $pmt->add_tracker(pid => $pid,
+                          mid => $mid,
+                          title => $title,
+                          'time' => $resolve_time,
+                          target_date => $target_date,
+                          owner => $username,
+                          completed => $completed,
+                          clients => \@new_clients);
     } elsif ($type eq "todo") {
-	$pmt->add_todo(pid => $pid,
-		       mid => $mid,
-		       title => $title,
-		       target_date => $target_date,
-		       owner => $username);
+        $pmt->add_todo(pid => $pid,
+                       mid => $mid,
+                       title => $title,
+                       target_date => $target_date,
+                       owner => $username);
     } else {
-	foreach my $assignee (@assigned_to) {
+        foreach my $assignee (@assigned_to) {
 
-	    my %item = (type         => $type,
-	                pid          => $pid,
-		        mid          => $mid,
-		        title        => $title,
-		        assigned_to  => $assignee,
-		        owner        => $owner,
-		        priority     => $priority,
-		        target_date  => $target_date,
-		        url          => $url,
-		        description  => $description,
-		        keywords     => \@new_keywords,
-		        dependencies => \@new_dependencies,
-		        clients      => \@new_clients,
-		        estimated_time => $estimated_time);
-	    $pmt->add_item(\%item);
-	}
-	$type =~ s/\s/%20/g;
+            my %item = (type         => $type,
+                        pid          => $pid,
+                        mid          => $mid,
+                        title        => $title,
+                        assigned_to  => $assignee,
+                        owner        => $owner,
+                        priority     => $priority,
+                        target_date  => $target_date,
+                        url          => $url,
+                        description  => $description,
+                        keywords     => \@new_keywords,
+                        dependencies => \@new_dependencies,
+                        clients      => \@new_clients,
+                        estimated_time => $estimated_time);
+            $pmt->add_item(\%item);
+        }
+        $type =~ s/\s/%20/g;
     }
     # put the user back at the add item for for the same type/project
     # so they can conveniently add multiple items
@@ -551,7 +550,7 @@ sub add_trackers {
             mid => $mid, title => $t->{title}, "time" => $t->{time},
             target_date => $target_date, owner => $user->username,
             completed => "", clients => []);
-        
+
     }
     $self->header_type('redirect');
     $self->header_props(-url => "home.pl?mode=add_trackers_form");
@@ -571,7 +570,7 @@ sub get_end_date {
         $year  = $cgi->param('end_year')  || "";
         $month = $cgi->param('end_month') || "";
         $day   = $cgi->param('end_day')   || "";
-    
+
         unless ($year && $month && $day) {
             # otherwise, default to today
             ($year,$month,$day) = todays_date();
@@ -595,7 +594,7 @@ sub get_start_date {
         $year  = $cgi->param('start_year')  || "";
         $month = $cgi->param('start_month') || "";
         $day   = $cgi->param('start_day')   || "";
-    
+
         unless ($year && $month && $day) {
             # default to most recent monday
             ($year,$month,$day) = Monday_of_Week(Week_of_Year(todays_date()));
@@ -626,7 +625,7 @@ sub group_activity_summary {
     } keys %all_users;
     my $total_time = 0.0;
     my @users_info = map {
-        my $data = $_->data(); 
+        my $data = $_->data();
         my $report = $_->weekly_report($start_date,$end_date);
         $data->{active_projects}  = $report->{active_projects};
         $data->{total_time}       = $report->{total_time};
@@ -654,21 +653,21 @@ sub group_plate {
     my $cgi = $self->query();
     my $user = $self->{user};
     my $group_name = $cgi->param('group_name');
-    
+
     my $group = PMT::User->retrieve($group_name);
     my %all_users = %{$group->all_users_in_group()};
     my @users = map {
         PMT::User->retrieve($_);
     } keys %all_users;
     my $total_time = 0;
-    my $total_priorities = {"priority_0" => 0, 
-        "priority_1" => 0, "priority_2" => 0, 
+    my $total_priorities = {"priority_0" => 0,
+        "priority_1" => 0, "priority_2" => 0,
         "priority_3" => 0, "priority_4" => 0};
-    my $total_schedules = {  
+    my $total_schedules = {
         ok => 0, upcoming => 0, due => 0, overdue => 0, late => 0,
     };
     my $project_totals = {};
-    
+
     my @users_info = map {
         my $data = $_->data();
         my $priorities = $_->estimated_times_by_priority();
@@ -684,7 +683,7 @@ sub group_plate {
 
         $data->{total_time} = $_->total_estimated_time() || 0;
         $total_time += $data->{total_time};
-        
+
         my @items = map {$_->data()} PMT::Item->assigned_to_user($_->username);
         $data->{items} = \@items;
         my $projects = $_->estimated_times_by_project();
@@ -720,7 +719,7 @@ sub clients_summary {
     my $user = $self->{user};
     my $template = $self->template("clients_summary.tmpl");
     my ($year,$month,$day) = todays_date();
-    my @month_names  = ("January", "February", "March", "April", "May", 
+    my @month_names  = ("January", "February", "March", "April", "May",
         "June", "July", "August", "September", "October", "November", "December");
     my ($prev_month, $prev_year) = ($month - 1, $year);
     if ($prev_month < 1) {
@@ -729,7 +728,7 @@ sub clients_summary {
     }
     $prev_month = sprintf "%02d", $prev_month;
     #my $data = $client->new_clients_for_month($year,$month);
-    
+
     my $current_month_total = 0;
     my %current_month_totals = ();
     my $last_month_total = 0;
@@ -738,7 +737,7 @@ sub clients_summary {
     my %year_totals = ();
     my %totals = ();
     my $total = 0;
-    
+
     foreach my $r (@{PMT::Client->total_clients_by_school()}) {
         $total += $r->{count};
         $totals{$r->{school}} = $r->{count};
@@ -748,16 +747,16 @@ sub clients_summary {
         $current_month_total += $r->{count};
         $current_month_totals{$r->{school}} = $r->{count};
     }
-    
+
     foreach my $r (@{PMT::Client->total_clients_by_school_for_year($year)}) {
         $year_total += $r->{count};
         $year_totals{$r->{school}} = $r->{count};
     }
-    
+
     my @schools = ();
     foreach my $r (@{PMT::Client->total_clients_by_school_for_month($prev_year,$prev_month)}) {
         $last_month_total += $r->{count};
-        push @schools, {school => $r->{school}, 
+        push @schools, {school => $r->{school},
             current_month_clients => $current_month_totals{$r->{school}},
             last_month_clients => $r->{count},
             year_clients => $year_totals{$r->{school}},
@@ -765,7 +764,7 @@ sub clients_summary {
         };
     }
 
-    
+
     $template->param(year => $year);
     $template->param(current_month_name => $month_names[$month - 1]);
     $template->param(last_month_name => $month_names[$prev_month - 1]);
@@ -817,7 +816,7 @@ sub verify_delete_client {
 </head>
 <body>
 <h1>are you sure?</h1>
-<p>once a client is deleted, their information is lost permanently. it cannot be recovered. 
+<p>once a client is deleted, their information is lost permanently. it cannot be recovered.
 please be <em>very</em> sure that you should be deleting the entry.</p>
 <form action="home.pl" method="POST">
 <input type="hidden" name="mode" value="delete_client"/>
@@ -913,9 +912,9 @@ sub add_milestone {
 
     my $target_date = $cgi->param('target_date') || "";
     if($target_date =~ /(\d{4}-\d{2}-\d{2})/) {
-	$target_date = $1;
+        $target_date = $1;
     } else {
-	throw Error::INVALID_DATE "malformed date. a date must be specified in YYYY-MM-DD format.";
+        throw Error::INVALID_DATE "malformed date. a date must be specified in YYYY-MM-DD format.";
     }
 
     my $project = PMT::Project->retrieve($pid);
@@ -938,15 +937,15 @@ sub delete_item_verify {
     <input type="hidden" name="verify" value="ok" />
     <input type="hidden" name="iid" value="$iid" />
     <input type="submit" value="delete" /><br />
-    <p>(note: once you delete an item, it is GONE. poof! 
-    we can't bring it back. so you better be really sure 
+    <p>(note: once you delete an item, it is GONE. poof!
+    we can't bring it back. so you better be really sure
     that this is what you want to do.)</p>
 
     </form>
     </body>
     </html>
     }; #'
-    
+
 }
 
 sub delete_milestone {
@@ -955,12 +954,12 @@ sub delete_milestone {
     my $mid = $cgi->param('mid') || "";
     $mid =~ s/\D//g;
     unless($mid) {
-	print $cgi->redirect("home.pl");
-	exit(0);
+        print $cgi->redirect("home.pl");
+        exit(0);
     }
     my $milestone = PMT::Milestone->retrieve($mid);
     my $really = $cgi->param('verify') || "";
-    
+
     if ($really eq "") {
         return $self->delete_milestone_verify($mid);
     } else {
@@ -996,7 +995,7 @@ sub delete_node {
     my $cgi = $self->query();
     my $nid = $cgi->param('nid') || "";
     my $really = $cgi->param('verify') || "";
-    
+
     if ($really ne "ok") {
         return $self->delete_node_verify($nid);
     } else {
@@ -1034,7 +1033,7 @@ sub delete_project {
     my $pid = $cgi->param('pid') || "";
     my $project = PMT::Project->retrieve($pid);
     if($project->project_role($self->{username}) ne "manager") {
-	throw Error::PERMISSION_DENIED "only a manager may delete a project";
+        throw Error::PERMISSION_DENIED "only a manager may delete a project";
     }
 
     my $really = $cgi->param('verify') || "";
@@ -1100,7 +1099,7 @@ sub add_client_form {
             $uni = "";
         }
         if ($uni ne "") {
-            
+
             my $ldap = Net::LDAP->new('ldap.columbia.edu') or die "$@";
             $ldap->bind();
             my $mesg = $ldap->search(filter => "(uni=$uni)");
@@ -1113,9 +1112,9 @@ sub add_client_form {
                 $lastname = $entry->get_value("sn") || "";
                 $firstname = $entry->get_value("givenname") || "";
                 $title = $entry->get_value("title") || "";
-		
+
                 $ou = $entry->get_value("ou") || "(not found)";
-		
+
                 $phone = $entry->get_value("telephonenumber") || "";
             } else {
                 $lastname = $firstname = $title = $department = $school = $phone = "";
@@ -1123,47 +1122,47 @@ sub add_client_form {
 
             $school =~ s/\s+$//;
             $department =~ s/\s+$//;
-            
+
             $phone =~ s/[\n\r]/ /g;
             $phone =~ s/\s+$//;
             $client_email =~ s/\s//g;
             $lastname =~ s/\s+$//;
             $lastname =~ s/^(\w)(\w+)/"$1" . lc($2)/e;
-            
+
             $firstname =~ s/\s+$//;
             $firstname =~ s/^(\w)(\w+)/"$1" . lc($2)/e;
             # eliminate the duplication in the title
             $title =~ s/\s{2,}.*$//;
-            
-	    my ($year,$mon,$mday) = todays_date();
+
+            my ($year,$mon,$mday) = todays_date();
             my $users_select       = PMT::User::users_select($username);
 
-	    my $departments_select = PMT::Client->all_departments_select($ou);
-	    
-	    my $schools_select;
+            my $departments_select = PMT::Client->all_departments_select($ou);
 
-	    if ( PMT::Client::is_a_recognized_school($ou) ) { # if the OU is a recognized school name...
-	      $schools_select = PMT::Client->all_schools_select($ou);
-	    } else {
-	      $schools_select = PMT::Client->all_schools_select("Arts & Sciences");
-	    }
-	    
-	    my $existing_clients   = PMT::Client->existing_clients($uni,$lastname);
-            $template->param(client_email 	=> $client_email,
-			     lastname 		=> $lastname,
-			     firstname 		=> $firstname,
-			     title 		=> $title,
-			     department 	=> $department,
-			     school 		=> $school,
-			     schools_select 	=> $schools_select,
-			     departments_select => $departments_select,
-			     phone 		=> $phone,
-			     users_select 	=> $users_select,
-			     year 		=> $year,
-			     month 		=> $mon,
-			     day 		=> $mday,
-			     existing_clients 	=> $existing_clients,
-			     ou                 => $ou
+            my $schools_select;
+
+            if ( PMT::Client::is_a_recognized_school($ou) ) { # if the OU is a recognized school name...
+              $schools_select = PMT::Client->all_schools_select($ou);
+            } else {
+              $schools_select = PMT::Client->all_schools_select("Arts & Sciences");
+            }
+
+            my $existing_clients   = PMT::Client->existing_clients($uni,$lastname);
+            $template->param(client_email       => $client_email,
+                             lastname           => $lastname,
+                             firstname          => $firstname,
+                             title              => $title,
+                             department         => $department,
+                             school             => $school,
+                             schools_select     => $schools_select,
+                             departments_select => $departments_select,
+                             phone              => $phone,
+                             users_select       => $users_select,
+                             year               => $year,
+                             month              => $mon,
+                             day                => $mday,
+                             existing_clients   => $existing_clients,
+                             ou                 => $ou
             );
         }
     }
@@ -1189,22 +1188,22 @@ sub add_client {
     $title = substr($title,0,100);
     $phone = substr($phone,0,32);
     if ($client_email ne "" && $lastname ne "") {
-    
+
         my $contact = PMT::User->retrieve($contact_username);
         my $client = PMT::Client->create({
                 lastname          => $lastname,
                 firstname         => $firstname,
-                title             => $title, 
-                department        => $department, 
+                title             => $title,
+                department        => $department,
                 school            => $school,
                 add_affiliation   => $add_affiliation,
                 phone             => $phone,
-                email             => $client_email, 
+                email             => $client_email,
                 contact           => $contact,
                 comments          => $comments,
                 registration_date => $registration_date,
             });
-    } 
+    }
     $self->header_type('redirect');
     $self->header_props(-url => "home.pl?mode=add_client_form");
 }
@@ -1217,10 +1216,10 @@ sub post_form {
     $template->param(page_title => 'post to forum');
     $template->param(forum_mode => 1);
     my $projects = $user->projects_hash();
-    my $projs = [map {   
-        {pid => $_, name => $projects->{$_}};    
-    } sort {     
-        lc($projects->{$a}) cmp lc($projects->{$b});     
+    my $projs = [map {
+        {pid => $_, name => $projects->{$_}};
+    } sort {
+        lc($projects->{$a}) cmp lc($projects->{$b});
     } keys %{$projects}];
     $template->param(projects => $projs);
     return $template->output();
@@ -1240,7 +1239,7 @@ sub post {
 
     if ($preview eq "preview") {
         my $tiki = new Text::Tiki;
-	$body =~ s/(\s+\S+\@\S+)\)/$1 )/g;
+        $body =~ s/(\s+\S+\@\S+)\)/$1 )/g;
         my $formatted_body = $tiki->format($body);
         my $template = $self->template("preview.tmpl");
         $template->param(pid => $pid,
@@ -1266,7 +1265,7 @@ sub update_items {
     my $user = $self->{user};
     my $cgi = $self->query();
     my %params = $cgi->Vars();
-    my $u = PMT::User->retrieve($self->{username});    
+    my $u = PMT::User->retrieve($self->{username});
     foreach my $k (keys %params) {
         if ($k =~ /^title_(\d+)$/) {
             my $iid = $1;
@@ -1274,13 +1273,13 @@ sub update_items {
             my $priority = $params{"priority_$iid"};
             my $status = $params{"status_$iid"};
             my $assigned_to = $params{"assigned_to_$iid"};
-            my $ass_to = PMT::User->retrieve($assigned_to);                
+            my $ass_to = PMT::User->retrieve($assigned_to);
             my $target_date = $params{"target_date_$iid"};
             my $resolve_time = $params{"resolve_time_$iid"};
             my $i = PMT::Item->retrieve($iid);
             my $r_status = "";
             ($status,$r_status) = split /_/, $status;
-            
+
             if ($resolve_time =~ /^(\d+)$/) {
                 $resolve_time .= "h";
             }
@@ -1291,7 +1290,7 @@ sub update_items {
             my $comment = "";
 
             if (($assigned_to eq $i->owner->username) &&
-                ($assigned_to eq $self->{username}) && 
+                ($assigned_to eq $self->{username}) &&
                 ($status eq "RESOLVED")) {
                 $status = "VERIFIED";
                 $r_status = "";
@@ -1307,7 +1306,7 @@ sub update_items {
                 } else {
                     $comment .= "<b>reassigned to $assigned_to</b><br />\n";
                 }
-                
+
                 $i->assigned_to($ass_to);
             }
 
@@ -1362,7 +1361,7 @@ sub update_items {
                 my $milestone = $i->mid;
 
                 $milestone->update_milestone($u);
-		$i->update_email($i->type . " #$iid $title updated", 
+                $i->update_email($i->type . " #$iid $title updated",
                     $comment, $self->{user}->username);
                 $i->touch();
                 $i->update;
@@ -1440,7 +1439,7 @@ sub edit_milestone {
     my $target_date = $cgi->param('target_date') || "";
     my $description = escape($cgi->param('description')) || "";
 
-    $milestone->set(name => $name, target_date => $target_date, 
+    $milestone->set(name => $name, target_date => $target_date,
         description => $description);
     $milestone->update();
     $self->header_type("redirect");
@@ -1461,13 +1460,13 @@ sub add_document {
     my $version = $cgi->param('version') || "";
 
     my $did = PMT::Document->add_document(pid => $pid,
-					  title => $title,
-					  url => $url,
-					  filename => $filename,
-					  fh => $fh,
-					  description => $description,
-					  version => $version,
-					  author => $username);
+                                          title => $title,
+                                          url => $url,
+                                          filename => $filename,
+                                          fh => $fh,
+                                          description => $description,
+                                          version => $version,
+                                          author => $username);
     $self->header_type("redirect");
     $self->header_props(-url => "home.pl?mode=project;pid=$pid");
 }
@@ -1484,12 +1483,12 @@ sub add_attachment {
     my $fh          = $cgi->upload('attachment');
 
     my $id = PMT::Attachment->add_attachment(item_id     => $iid,
-					     title       => $title,
-					     url         => $url,
-					     filename    => $filename,
-					     fh          => $fh,
-					     description => $description,
-					     author      => $username);
+                                             title       => $title,
+                                             url         => $url,
+                                             filename    => $filename,
+                                             fh          => $fh,
+                                             description => $description,
+                                             author      => $username);
     $self->header_type("redirect");
     $self->header_props(-url => "item.pl?iid=$iid");
 }
@@ -1531,7 +1530,7 @@ sub project_info {
     $template->param(\%data);
     $template->param(page_title => "project: $data{name}");
     $template->param(projects_mode => 1);
-    
+
     return $template->output();
 }
 
@@ -1579,15 +1578,15 @@ sub add_services_item {
     my $pid = $cgi->param('pid');
     my $type = $cgi->param('type') || "tracker";
     my $client_id = $cgi->param('client_id') || die "no client specified";
-    
+
     my $template = $self->template("add_courseworks_item.tmpl");
 
     my $client = PMT::Client->retrieve($client_id);
     my $client_data = $client->data();
     my $project = PMT::Project->retrieve($pid);
     my %data = %{$project->data()};
-    
-    $data{developers}        	= [map {$_->data()} $project->developers()];
+
+    $data{developers}           = [map {$_->data()} $project->developers()];
     $data{keywords}             = $project->keywords();
 
 
@@ -1685,39 +1684,39 @@ sub update_project {
     my $projnum     = $cgi->param('projnum')    || "";
     my $type        = $cgi->param('type')       || "";
     my $area        = $cgi->param('area')       || "";
-    my $url 	    = $cgi->param('url')        || "";
+    my $url         = $cgi->param('url')        || "";
     my $restricted  = $cgi->param('restricted') || "";
     my $approach    = $cgi->param('approach')   || "";
     my $info_url    = $cgi->param('info_url')   || "";
     my $entry_rel   = $cgi->param('entry_rel')  || "";
     my $eval_url    = $cgi->param('eval_url')   || "";
-    my $scale 	    = $cgi->param('scale')      || "";
+    my $scale       = $cgi->param('scale')      || "";
     my $distrib     = $cgi->param('distrib')    || "";
     my $poster      = $cgi->param('poster')     || "";
 
-    $pmt->edit_project(pid 	   => $pid,
-		       name 	   => $name,
-		       description => $description,
-		       caretaker   => $caretaker,
-		       managers    => \@managers,
-		       developers  => \@developers,
-		       guests 	   => \@guests,
-		       clients     => \@clients,
-		       pub_view    => $pub_view,
-		       status 	   => $status,
-		       projnum 	   => $projnum,
-		       type 	   => $type,
-		       area 	   => $area,
-		       url 	   => $url,
-		       restricted  => $restricted,
-		       approach    => $approach,
-		       info_url    => $info_url,
-		       entry_rel   => $entry_rel,
-		       eval_url    => $eval_url,
-		       scale 	   => $scale,
-		       distrib 	   => $distrib,
-		       poster      => $poster,
-		       );
+    $pmt->edit_project(pid         => $pid,
+                       name        => $name,
+                       description => $description,
+                       caretaker   => $caretaker,
+                       managers    => \@managers,
+                       developers  => \@developers,
+                       guests      => \@guests,
+                       clients     => \@clients,
+                       pub_view    => $pub_view,
+                       status      => $status,
+                       projnum     => $projnum,
+                       type        => $type,
+                       area        => $area,
+                       url         => $url,
+                       restricted  => $restricted,
+                       approach    => $approach,
+                       info_url    => $info_url,
+                       entry_rel   => $entry_rel,
+                       eval_url    => $eval_url,
+                       scale       => $scale,
+                       distrib     => $distrib,
+                       poster      => $poster,
+                       );
 
     $self->header_type('redirect');
     $self->header_props(-url => "home.pl?mode=project;pid=$pid");
@@ -1763,8 +1762,8 @@ sub update_project_form {
     my $template = $self->template("edit_project.tmpl");
     $template->param(\%data);
     $template->param(page_title => "edit project: $data{name}",
-		     month      => $mon,
-		     year       => $year);
+                     month      => $mon,
+                     year       => $year);
     my $proj = PMT::Project->retrieve($pid);
     $template->param(documents => [map {$_->data()} $proj->documents()]);
     $template->param(projects_mode => 1);
@@ -1814,14 +1813,14 @@ sub document {
     my $document = PMT::Document->retrieve($did);
 
     if($document->type eq "url") {
-	$self->header_type('redirect');
-	$self->header_props(-url => $document->url);
-	return "redirecting to url";
+        $self->header_type('redirect');
+        $self->header_props(-url => $document->url);
+        return "redirecting to url";
     } else {
         my $content_type = $document->content_type();
         if($document->content_disposition()) {
             my $filename = $document->filename;
-	    $self->header_props(-type => $content_type,
+            $self->header_props(-type => $content_type,
                                -content_disposition => "attachment;filename=$filename");
         } else {
             $self->header_props(-type => $content_type);
@@ -1837,14 +1836,14 @@ sub attachment {
     my $attachment = PMT::Attachment->retrieve($id);
 
     if($attachment->type eq "url") {
-	$self->header_type('redirect');
-	$self->header_props(-url => $attachment->url);
-	return "redirecting to url";
+        $self->header_type('redirect');
+        $self->header_props(-url => $attachment->url);
+        return "redirecting to url";
     } else {
         my $content_type = $attachment->content_type();
         if($attachment->content_disposition()) {
             my $filename = $attachment->filename;
-	    $self->header_props(-type => $content_type,
+            $self->header_props(-type => $content_type,
                                -content_disposition => "attachment;filename=$filename");
         } else {
             $self->header_props(-type => $content_type);
@@ -1948,7 +1947,7 @@ sub update_item {
                 description  => $description,
                 keywords     => \@new_keywords,
                 dependencies => \@new_deps,
-                clients      => \@new_clients,  
+                clients      => \@new_clients,
                 client_uni   => $client_uni,
                 status       => $status,
                 r_status     => $r_status,
@@ -1967,7 +1966,7 @@ sub update_item {
 sub users {
     my $self = shift;
     my $template = $self->template("users.tmpl");
-    
+
     $template->param(users => PMT::User->users_hours());
     $template->param(page_title => "users");
     $template->param(users_mode => 1);
@@ -2041,10 +2040,10 @@ sub client {
                      contacts_select => $client->contacts_select(),
                      recent_items => $client->recent_items());
     $template->param(clients_mode => 1);
-    
+
     $template->param(client_prev => $client->prev_client());
     $template->param(client_next => $client->next_client());
-    
+
     return $template->output();
 }
 
@@ -2096,7 +2095,7 @@ sub user {
     delete $data->{fullname};
     delete $data->{email};
     delete $data->{status};
-    throw Error::NonexistantUser "user does not exist" 
+    throw Error::NonexistantUser "user does not exist"
         unless $data->{user_username};
     my $vu = PMT::User->retrieve($username);
     if ($data->{group}) {
@@ -2148,14 +2147,14 @@ sub project {
     $template->param(page_title => "project: $data{name}",
                      month      => $mon,
                      year       => $year);
-    
+
     my $proj = PMT::Project->retrieve($pid);
     $template->param(documents => [map {$_->data()} $proj->documents()]);
     $template->param(projects_mode => 1);
     $self->header_add(-cookie => [$cgi->cookie(-name => "pmtsort",
-					       -value => $sortby,
-					       -path => '/',
-					       -expires => "+10y")]);
+                                               -value => $sortby,
+                                               -path => '/',
+                                               -expires => "+10y")]);
     return $template->output();
 
 }
@@ -2169,7 +2168,7 @@ sub forum {
     my $forum = new Forum($username);
     my $template = $self->template("forum.tmpl");
     if($pid) {
-	my $project = PMT::Project->retrieve($pid);
+        my $project = PMT::Project->retrieve($pid);
         $template->param(posts => $forum->recent_project_posts($pid));
         $template->param(logs => $project->recent_project_logs());
         $template->param(items => $forum->recent_project_items($pid));
@@ -2239,8 +2238,8 @@ sub project_history {
     my $month = $cgi->param('month') || "";
     my $year  = $cgi->param('year')  || "";
     unless ($year && $month) {
-	my $day;
-	($year,$month,$day) = todays_date();
+        my $day;
+        ($year,$month,$day) = todays_date();
     }
     my $project = PMT::Project->retrieve($pid);
     my $c = HTML::CalendarMonth->new( month => $month, year => $year );
@@ -2269,7 +2268,7 @@ sub project_history {
     my $next = $month + 1;
     my $prev = $month - 1;
     my ($next_year,$prev_year) = ($year,$year);
-    
+
     if(13 == $next) {
         $next = 1;
         $next_year = $year + 1;
@@ -2351,20 +2350,20 @@ sub project_search {
 
     my $template = $self->template("project_search_results.tmpl");
     $template->param(results => PMT::Project->project_search(type => $type,
-							     area => $area,
-							     approach => $approach,
-							     scale => $scale,
-							     distrib => $distrib,
-							     manager => $manager,
-							     developer => $developer,
-							     guest => $guest,
-							     status => $status,
-							     )
-		     );
+                                                             area => $area,
+                                                             approach => $approach,
+                                                             scale => $scale,
+                                                             distrib => $distrib,
+                                                             manager => $manager,
+                                                             developer => $developer,
+                                                             guest => $guest,
+                                                             status => $status,
+                                                             )
+                     );
     $template->param($self->{user}->menu());
     $template->param(projects_mode => 1);
     return $template->output();
-}    
+}
 
 sub edit_client {
     my $self = shift;
@@ -2389,20 +2388,20 @@ sub edit_client {
 
 
     $client->update_data(
-			 lastname    => $lastname,
-			 firstname   => $firstname,
-			 title               => $title, 
-			 status          => $status,
-			 department          => $department, 
-			 school      => $school,
-			 add_affiliation => $add_affiliation,
-			 phone               => $phone,
-			 email               => $client_email, 
-			 contact     => $contact,
-			 comments    => $comments,
-			 registration_date => $registration_date,
-			 projects    => \@projects,
-			 );
+                         lastname    => $lastname,
+                         firstname   => $firstname,
+                         title               => $title,
+                         status          => $status,
+                         department          => $department,
+                         school      => $school,
+                         add_affiliation => $add_affiliation,
+                         phone               => $phone,
+                         email               => $client_email,
+                         contact     => $contact,
+                         comments    => $comments,
+                         registration_date => $registration_date,
+                         projects    => \@projects,
+                         );
     $client->update();
     my $letter = uc(substr($lastname,0,1));
     $self->header_type('redirect');
@@ -2469,48 +2468,48 @@ sub client_search {
 
     my $template = $self->template("client_search_results.tmpl");
     $template->param(results => [map {
-	$_->{inactive} = $_->{status} eq "inactive";
-	$_;
+        $_->{inactive} = $_->{status} eq "inactive";
+        $_;
     } @{PMT::Client->client_search(
-				   query => $q,
-				   status => $status,
-				   department => $department,
-				   school => $school,
-				   start_date => $start_date,
-				   end_date => $end_date,
-				   project => $project,
-				   limit => $limit,
-				   offset => $offset,
-				   contact => $contact,
-				   )}]);
+                                   query => $q,
+                                   status => $status,
+                                   department => $department,
+                                   school => $school,
+                                   start_date => $start_date,
+                                   end_date => $end_date,
+                                   project => $project,
+                                   limit => $limit,
+                                   offset => $offset,
+                                   contact => $contact,
+                                   )}]);
     my $results_count = PMT::Client->client_search_count(
-							 query => $q,
-							 status => $status,
-							 department => $department,
-							 school => $school,
-							 start_date => $start_date,
-							 end_date => $end_date,
-							 project => $project,
-							 contact => $contact,
-							 );
+                                                         query => $q,
+                                                         status => $status,
+                                                         department => $department,
+                                                         school => $school,
+                                                         start_date => $start_date,
+                                                         end_date => $end_date,
+                                                         project => $project,
+                                                         contact => $contact,
+                                                         );
     $template->param(results_count => $results_count);
     if ($results_count > ($offset + $limit)) {
-	$template->param('next' => 1);
-	$template->param('next_offset' => $offset + $limit);
+        $template->param('next' => 1);
+        $template->param('next_offset' => $offset + $limit);
     }
     if ($offset > 0) {
-	$template->param('prev' => 1);
-	$template->param('prev_offset' => $offset - $limit);
+        $template->param('prev' => 1);
+        $template->param('prev_offset' => $offset - $limit);
     }
     $template->param(limit => $limit,
-		     q => $q,
-		     status => $status,
-		     department => $department,
-		     school => $school,
-		     start_date => $start_date,
-		     end_date => $end_date,
-		     project => $project,
-		     contact => $contact);
+                     q => $q,
+                     status => $status,
+                     department => $department,
+                     school => $school,
+                     start_date => $start_date,
+                     end_date => $end_date,
+                     project => $project,
+                     contact => $contact);
     $template->param(page_title => "client search");
     $template->param(clients_mode => 1);
     return $template->output();
@@ -2526,7 +2525,7 @@ sub project_months_report {
 
     my ($year,$month,$mday) = $self->get_date();
 
-    my ($time_period, $time_title); 
+    my ($time_period, $time_title);
     if ($num_months == 1) {
         $time_period = "month";
         $time_title  = "Monthly";
@@ -2547,7 +2546,7 @@ sub project_months_report {
     my $start_day = 1;
     #calculate end day
     my ($end_year, $end_month, $end_day) = Add_Delta_Days($n_year, $n_month, $n_day, -1);
-  
+
     my $start = $year . "-" . "$month" . "-" . $start_day;
     my $end   = $end_year . "-" . "$end_month" . "-" . $end_day;
     #Min's addition to include forum posts in reports
@@ -2580,11 +2579,11 @@ sub user_history {
     my $month  = $cgi->param('month') || "";
     my $year   = $cgi->param('year')  || "";
     unless ($month && $year) {
-	my $day;
-	($year,$month,$day) = todays_date();
+        my $day;
+        ($year,$month,$day) = todays_date();
     }
     my @months = qw/January February March April May June
-	July August September October November December/;
+        July August September October November December/;
     my @days;
 
     my $c = HTML::CalendarMonth->new( month => $month, year => $year );
@@ -2626,7 +2625,7 @@ sub user_history {
     my $next = $month + 1;
     my $prev = $month - 1;
     my ($next_year,$prev_year) = ($year,$year);
-    
+
     if(13 == $next) {
         $next = 1;
         $next_year = $year + 1;
@@ -2684,11 +2683,11 @@ sub weekly_summary {
         # default to a couple
         @groups = qw/grp_programmers grp_webmasters
         grp_educationaltechnologists grp_video grp_management/;
-    } 
-    
+    }
+
     @groups = map { $pmt->group($_) } @groups;
     $template->param(groups => \@groups);
-    
+
     $template->param($pmt->weekly_summary("$mon_year-$mon_month-$mon_day",
                                           "$sun_year-$sun_month-$sun_day",
                                       \@groups));
@@ -2715,7 +2714,7 @@ sub monthly_summary {
 
     my ($mon_year,$mon_month,$mon_day) = ($year,$mon,1);
     my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,
-							Days_in_Month($mon_year,$mon_month) - 1);
+                                                        Days_in_Month($mon_year,$mon_month) - 1);
     my ($pm_year,$pm_month,$pm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,-1);
     my ($nm_year,$nm_month,$nm_day) = Add_Delta_Days($sun_year,$sun_month,$sun_day,1);
 
@@ -2823,7 +2822,7 @@ sub forum_archive {
                      next_limit  => $next_limit,
                      next_offset => $next_offset,
                      prev_offset => $prev_offset);
-          
+
     $template->param(page_title => 'forum archive');
     return $template->output();
 }
@@ -2831,24 +2830,24 @@ sub forum_archive {
 sub project_weekly_report {
     my $self = shift;
     my $cgi = $self->query();
-    
+
     my $pid = $cgi->param('pid') || "";
     my $project = PMT::Project->retrieve($pid);
-                                
+
     my ($year,$mon,$mday) = $self->get_date();
 
     my ($mon_year,$mon_month,$mon_day) = Monday_of_Week(Week_of_Year($year,$mon,$mday));
     my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,6);
     my ($pm_year,$pm_month,$pm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,-7);
     my ($nm_year,$nm_month,$nm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,7);
-                                
+
     #Min's addition to include forum posts in reports
-    my $start = $mon_year . "-" . $mon_month . "-" . $mon_day; 
-    my $end   = $sun_year . "-" . $sun_month . "-" . $sun_day; 
+    my $start = $mon_year . "-" . $mon_month . "-" . $mon_day;
+    my $end   = $sun_year . "-" . $sun_month . "-" . $sun_day;
     my $forum = new Forum($self->{user}->username);
-                                
+
     my $template = $self->template("project_weekly_report.tmpl");
-    $template->param(           
+    $template->param(
                      mon_year => $mon_year,
                      mon_month => $mon_month,
                      mon_day => $mon_day,
@@ -2866,7 +2865,7 @@ sub project_weekly_report {
                                              "$sun_year-$sun_month-$sun_day"));
     $template->param($project->data());
 
-    $template->param(posts => $forum->project_posts_by_time($pid, $start, $end)); 
+    $template->param(posts => $forum->project_posts_by_time($pid, $start, $end));
     return $template->output();
 }
 
@@ -2929,26 +2928,26 @@ sub user_weekly_report {
 sub active_clients_report {
     my $self = shift;
     my $cgi  = $self->query();
-    
-    my $clients_to_show = $cgi->param('clients') || 25; 
-    my $employee = $cgi->param('employee') || "all"; 
+
+    my $clients_to_show = $cgi->param('clients') || 25;
+    my $employee = $cgi->param('employee') || "all";
 
     my $active_clients = PMT::Client->active_clients($clients_to_show,$employee);
 
     my $template = $self->template("active_clients.tmpl");
     $template->param('clients' => \@$active_clients);
     $template->param('number_of_clients_requested' => $clients_to_show);
-    
+
     if ($employee ne "all") {
       my $user = PMT::User->retrieve($employee);
       $template->param('employee' => $user->fullname);
     }
-    
+
     $template->param('page_title' => "Active Clients Report");
-    
+
     $template->param(users => PMT::User::users_select($employee),
-		     all_selected => "all" eq $employee);
-    
+                     all_selected => "all" eq $employee);
+
     return $template->output();
 }
 
@@ -2971,42 +2970,42 @@ sub active_projects_report {
 
     my $output = "";
     if ($cgi->param('csv')) {
-    
+
         use Text::CSV_XS;
-    
+
         my $csv = Text::CSV_XS->new();
 
-	$self->header_props(-type => "text/csv",
-			    -content_disposition => "attachment;filename=active_projects_report.csv");
-	if ($cgi->param('csv_header')) {
-	    $output = qq{"Project ID","Project Name","Project Number","Last Worked On Date","Project Status","Project Caretaker","Hours Worked"} . "\n";
-	}	       
-	foreach my $project (@$active_projects) {
-	    my @columns = ( $project->{pid}, $project->{project_name},
-		      $project->{project_number}, $project->{project_last_worked_on},
-		      $project->{project_status}, $project->{caretaker_fullname},
-		      interval_to_hours($project->{time_worked_on}) );
-		      
+        $self->header_props(-type => "text/csv",
+                            -content_disposition => "attachment;filename=active_projects_report.csv");
+        if ($cgi->param('csv_header')) {
+            $output = qq{"Project ID","Project Name","Project Number","Last Worked On Date","Project Status","Project Caretaker","Hours Worked"} . "\n";
+        }
+        foreach my $project (@$active_projects) {
+            my @columns = ( $project->{pid}, $project->{project_name},
+                      $project->{project_number}, $project->{project_last_worked_on},
+                      $project->{project_status}, $project->{caretaker_fullname},
+                      interval_to_hours($project->{time_worked_on}) );
+
             $csv->combine(@columns);    # combine columns into a string
-	    $output .= $csv->string() . "\n";
-	}
+            $output .= $csv->string() . "\n";
+        }
     } else {
-	my $total_hours = 0.0; # $total_hours = total hours worked _ever_ for all viewed projects, not just hours worked in the current "days"
-	my @projects = map {
-	    $_->{time_worked_on} = interval_to_hours($_->{time_worked_on}); # _all_ hours ever worked on this project, not just in "days"
-	    $total_hours += $_->{time_worked_on};
-	    $_;
-	} @{$active_projects};
-	my $template = $self->template("active_projects.tmpl");
-	$template->param('projects' => \@projects);
-	$template->param('days' => $days);
-	$template->param('total_hours' => $total_hours);
-    
-	$template->param(page_title => "Active Projects Report");
-	$output = $template->output();
-    }    
+        my $total_hours = 0.0; # $total_hours = total hours worked _ever_ for all viewed projects, not just hours worked in the current "days"
+        my @projects = map {
+            $_->{time_worked_on} = interval_to_hours($_->{time_worked_on}); # _all_ hours ever worked on this project, not just in "days"
+            $total_hours += $_->{time_worked_on};
+            $_;
+        } @{$active_projects};
+        my $template = $self->template("active_projects.tmpl");
+        $template->param('projects' => \@projects);
+        $template->param('days' => $days);
+        $template->param('total_hours' => $total_hours);
+
+        $template->param(page_title => "Active Projects Report");
+        $output = $template->output();
+    }
     return $output;
-    
+
 }
 
 1;
