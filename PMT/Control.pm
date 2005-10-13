@@ -175,12 +175,23 @@ sub update_user {
     my $user = $self->{user};
     my $cgi = $self->query();
     
-    my $new_pass  = $cgi->param('new_pass')  || $self->{password};
-    my $new_pass2 = $cgi->param('new_pass2') || $self->{password};
+    my $new_pass  = $cgi->param('new_pass')  || "";
+    my $new_pass2 = $cgi->param('new_pass2') || "";
+
     my $fullname  = $cgi->param('fullname')  || "";
     my $email     = $cgi->param('email')     || "";
 
-
+		if ($new_pass ne $new_pass2) {
+			$self->header_props(-url => "home.pl?mode=user_settings_form;message=Sorry, your passwords did not match.");
+	    $self->header_type('redirect');
+	    return "redirecting back to form";	
+		}
+		if ($new_pass eq '') {
+			$self->header_props(-url => "home.pl?mode=user_settings_form;message=Please enter a password.");
+	    $self->header_type('redirect');
+	    return "redirecting back to form";
+		}
+		
     $self->{pmt}->update_user($user->username,$self->{password},$new_pass,$new_pass2,$fullname,$email);
 
     my $lcookie = $cgi->cookie(-name =>  'pmtusername',
