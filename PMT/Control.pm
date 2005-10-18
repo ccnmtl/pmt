@@ -2792,7 +2792,7 @@ sub forum_archive {
         $total = PMT::Node->num_logs();
     } else {
         $template->param(posts => PMT::Node->posts($self->{user}->username,$limit,$offset));
-        $total = PMT::Node->num_posts();
+        $total = PMT::Node->num_posts($user);
     }
 
     my $next_offset = $offset + $limit;
