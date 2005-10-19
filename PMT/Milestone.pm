@@ -14,8 +14,8 @@ __PACKAGE__->set_sql(estimated_time => qq{
          and i.status in ('OPEN','UNASSIGNED','INPROGRESS');
 });
 __PACKAGE__->set_sql(completed_time => qq{
-     select sum(a.actual_time) as completed_time 
-     from actual_times a, items i 
+     select sum(a.actual_time) as completed_time
+     from actual_times a, items i
      where a.iid  = i.iid and i.mid = ?;
 });
 __PACKAGE__->set_sql(milestones_on => qq{
@@ -25,7 +25,7 @@ where target_date = ? and pid = ?
 });
 
 __PACKAGE__->set_sql(num_unclosed_items,
-  qq{SELECT count(*) as num_unclosed FROM items i WHERE i.mid = ? and i.status 
+  qq{SELECT count(*) as num_unclosed FROM items i WHERE i.mid = ? and i.status
   in ('OPEN','RESOLVED','UNASSIGNED','INPROGRESS');},
   'Main');
 
@@ -33,7 +33,7 @@ __PACKAGE__->set_sql('num_items', qq{select count(*) as num_items from
 items i where i.mid = ?;}, 'Main');
 my %PRIORITIES = (4 => 'CRITICAL', 3 => 'HIGH', 2 => 'MEDIUM', 1 => 'LOW',
 0 => 'ICING');
-  
+
 sub num_unclosed_items {
   my $self = shift;
   my $sth = $self->sql_num_unclosed_items;
@@ -95,8 +95,8 @@ sub unclosed_items {
     } else {
         @items = sort {$b->{priority} <=> $a->{priority}} @items;
     }
-   
-    return \@items; 
+
+    return \@items;
 }
 
 sub update_milestone {
@@ -118,7 +118,7 @@ sub close_milestone {
         $self->status('CLOSED');
         $self->update();
         foreach my $i ($self->items()) {
-            $i->close($user); 
+            $i->close($user);
         }
     }
 
@@ -132,8 +132,8 @@ sub open_milestone {
 
 sub delete_milestone {
     my $self = shift;
-    throw Error::MILESTONE_NOT_EMPTY "milestone still has items attached to it." 
-	unless $self->num_items == 0;
+    throw Error::MILESTONE_NOT_EMPTY "milestone still has items attached to it."
+        unless $self->num_items == 0;
     my $pid = $self->pid->pid;
     $self->delete();
     return $pid;

@@ -19,7 +19,7 @@ use Text::Tiki;
 
 package PMT;
 
-# use PMT::Common inside the package so functions are exported to 
+# use PMT::Common inside the package so functions are exported to
 # the package namespace rather than to the global namespace.
 
 use PMT::Common;
@@ -65,17 +65,17 @@ sub add_item {
     my $user = PMT::User->retrieve($username);
     my $owner = PMT::User->retrieve($args{owner});
     my $assigned_to = PMT::User->retrieve($args{assigned_to});
-    
+
     if($args{'assigned_to'} eq 'caretaker') {
-	$args{'assigned_to'} = $project->caretaker->username;
-	$status = 'UNASSIGNED';
+        $args{'assigned_to'} = $project->caretaker->username;
+        $status = 'UNASSIGNED';
     }
     if(!$project->project_role($username)) {
         # if the person submitting the item isn't on the project
         # team, we need to add them as a guest on the project
-	my $w = PMT::WorksOn->create({username => $username,pid => $project->pid, auth => 'guest'});
+        my $w = PMT::WorksOn->create({username => $username,pid => $project->pid, auth => 'guest'});
         $status = 'UNASSIGNED';
-    }	    
+    }
 
     $status = $status || 'OPEN';
 
@@ -88,7 +88,7 @@ sub add_item {
             escape($args{description}), priority => $args{priority},
             target_date => $args{target_date}, estimated_time =>
             $args{estimated_time}});
-    
+
     $item->update_keywords($args{keywords});
     $item->update_dependencies($args{dependencies});
     $item->add_clients(@{$args{clients}});
@@ -105,7 +105,7 @@ sub add_item {
 }
 
 # }}}
-# {{{ add_tracker 
+# {{{ add_tracker
 
 sub add_tracker {
     my $self = shift;
@@ -117,7 +117,7 @@ sub add_tracker {
     my $item = PMT::Item->create({
             type => 'action item', owner => $user, assigned_to => $user,
             title => escape($args{title}), mid => $milestone, status =>
-            'VERIFIED', priority => 0, target_date => $args{'target_date'}, 
+            'VERIFIED', priority => 0, target_date => $args{'target_date'},
             estimated_time => $args{'time'}});
     my $iid = $item->iid;
 
@@ -126,7 +126,7 @@ sub add_tracker {
 }
 
 # }}}
-# {{{ add_todo 
+# {{{ add_todo
 
 sub add_todo {
     my $self = shift;
@@ -137,9 +137,9 @@ sub add_todo {
     my $item = PMT::Item->create({
             type => 'action item', owner => $user, assigned_to => $user,
             title => escape($args{title}), mid => $milestone, status =>
-            'OPEN', priority => 1, target_date => $args{'target_date'}, 
+            'OPEN', priority => 1, target_date => $args{'target_date'},
             estimated_time => '0h'});
-    
+
     # add history event
     $item->add_event('OPEN',"<b>$args{'type'} added</b>",$user);
 
@@ -162,15 +162,15 @@ sub compare_items {
     my $comment = "";
 
     # compare with new
-    ($item,$old,$changed,$add_notification,$comment,$message) 
-	= $self->compare_assigned_to($item,$old,$changed,$add_notification,$comment,$message,$project);
-    ($item,$old,$changed,$add_notification,$comment,$message) 
-	= $self->compare_owners($item,$old,$changed,$add_notification,$comment,$message,$project);
-    ($item,$old,$changed,$add_notification,$comment,$message) 
-	= $self->compare_statuses($item,$old,$changed,$add_notification,$comment,$message,$project);
+    ($item,$old,$changed,$add_notification,$comment,$message)
+        = $self->compare_assigned_to($item,$old,$changed,$add_notification,$comment,$message,$project);
+    ($item,$old,$changed,$add_notification,$comment,$message)
+        = $self->compare_owners($item,$old,$changed,$add_notification,$comment,$message,$project);
+    ($item,$old,$changed,$add_notification,$comment,$message)
+        = $self->compare_statuses($item,$old,$changed,$add_notification,$comment,$message,$project);
     ($changed,$comment,$message) = $self->compare_milestones($item,$old,$changed,$comment,$message);
-    ($item,$old,$changed,$add_notification,$comment,$message) 
-	= $self->compare_fields($item,$old,$changed,$add_notification,$comment,$message,$project);
+    ($item,$old,$changed,$add_notification,$comment,$message)
+        = $self->compare_fields($item,$old,$changed,$add_notification,$comment,$message,$project);
 
     ($changed,$comment,$message) = $self->compare_keywords($item,$old,$changed,$comment,$message);
     ($changed,$comment,$message) = $self->compare_dependencies($item,$old,$changed,$comment,$message);
@@ -193,30 +193,30 @@ sub compare_assigned_to {
     my $project = shift;
 
     if ($old->{assigned_to} ne $item->{assigned_to}){
-	$changed = 1;
-	$add_notification = 1;
-	if($old->{status} eq "UNASSIGNED") {
-	    $item->{status} = "OPEN";
-	    $comment .= "<b>assigned to " . $item->{assigned_to} . "</b><br />\n";
-	    $message .= "reassigned to " . $item->{assigned_to} . ". ";
-	    $old->{status} = "OPEN"; # keep it from matching again later
-	} else {
-	    $comment .= "<b>reassigned to " . $item->{assigned_to} . "</b><br />\n";
-	    $message = "reassigned to " . $item->{assigned_to} . ". ";
-	}
-	# if it's being reassigned from a group to a 
-	# user in the group,
-	# make sure that the person it's assigned to is
-	# added to the project in the same capacity
-	# that the group was.
-	my $old_assigned_to = PMT::User->retrieve($old->{assigned_to});
-	my $new_assigned_to = PMT::User->retrieve($item->{assigned_to});
+        $changed = 1;
+        $add_notification = 1;
+        if($old->{status} eq "UNASSIGNED") {
+            $item->{status} = "OPEN";
+            $comment .= "<b>assigned to " . $item->{assigned_to} . "</b><br />\n";
+            $message .= "reassigned to " . $item->{assigned_to} . ". ";
+            $old->{status} = "OPEN"; # keep it from matching again later
+        } else {
+            $comment .= "<b>reassigned to " . $item->{assigned_to} . "</b><br />\n";
+            $message = "reassigned to " . $item->{assigned_to} . ". ";
+        }
+        # if it's being reassigned from a group to a
+        # user in the group,
+        # make sure that the person it's assigned to is
+        # added to the project in the same capacity
+        # that the group was.
+        my $old_assigned_to = PMT::User->retrieve($old->{assigned_to});
+        my $new_assigned_to = PMT::User->retrieve($item->{assigned_to});
 
-	if($old_assigned_to->grp &&
-	   !$new_assigned_to->grp) {
-	    $project->add_user_from_group_to_project($item->{assigned_to},
+        if($old_assigned_to->grp &&
+           !$new_assigned_to->grp) {
+            $project->add_user_from_group_to_project($item->{assigned_to},
                 $old->{assigned_to});
-	}
+        }
     }
     return ($item,$old,$changed,$add_notification,$comment,$message);
 }
@@ -232,17 +232,17 @@ sub compare_owners {
     my $project = shift;
 
     if ($old->{owner} ne $item->{owner}) {
-	$changed = 1;
-	$add_notification = 1;
-	$comment .= "<b>changed ownership to " . $item->{owner} . "</b><br />\n";
-	$message .= "changed ownership to " . $item->{owner} . ". ";
-	
-	my $old_owner = PMT::User->retrieve($old->{owner});
-	my $new_owner = PMT::User->retrieve($item->{owner});
+        $changed = 1;
+        $add_notification = 1;
+        $comment .= "<b>changed ownership to " . $item->{owner} . "</b><br />\n";
+        $message .= "changed ownership to " . $item->{owner} . ". ";
 
-	if($old_owner->grp && !$new_owner->grp) {
-	    $project->add_user_from_group_to_project($item->{owner},$old->{owner});
-	}
+        my $old_owner = PMT::User->retrieve($old->{owner});
+        my $new_owner = PMT::User->retrieve($item->{owner});
+
+        if($old_owner->grp && !$new_owner->grp) {
+            $project->add_user_from_group_to_project($item->{owner},$old->{owner});
+        }
     }
     return ($item,$old,$changed,$add_notification,$comment,$message);
 }
@@ -258,33 +258,33 @@ sub compare_statuses {
     my $project = shift;
 
     if ($old->{status} ne $item->{status}) {
-	$changed = 1;
-	if($item->{status} eq "OPEN" && $old->{status} eq "UNASSIGNED") {
-	    $comment .= "<b>assigned to " . $item->{assigned_to} . "</b><br />\n";
-	    $message .= "assigned to " . $item->{assigned_to} . ". ";
-	    $add_notification = 1;
-	} elsif ($item->{status} eq "OPEN" && $old->{status} ne "OPEN") {
-	    $comment .= "<b>reopened</b><br />\n";
-	    $message .= "reopened. ";
-	} elsif ($item->{status} eq "RESOLVED" && $old->{status} ne "RESOLVED") {
-	    $comment .= "<b>resolved " . $item->{r_status} . "</b><br />\n";
-	    $message .= "resolved " . $item->{r_status} . ". ";
-	    $old->{r_status} = $item->{r_status}; # prevent it from re-matching later
-	} elsif ($item->{status} eq "VERIFIED" && $old->{status} ne "VERIFIED") {
-	    $comment .= "<b>verified</b><br />\n";
-	    $message .= "verified. ";
-	} elsif ($item->{status} eq "CLOSED" && $old->{status} ne "CLOSED") {
-	    $comment .= "<b>closed</b><br />\n";
-	    $message .= "closed. ";
-	} elsif ($item->{status} eq "INPROGRESS" && $old->{status} ne "INPROGRESS") {
-	    $comment .= "<b>marked in progress</b><br />\n";
-	    $message .= "marked in progress.  ";
-	} else {
-	    throw Error::INVALID_STATUS "invalid status";
-	}
-	if($old->{status} eq "RESOLVED" && $item->{status} ne "RESOLVED") {
-	    $old->{r_status} = ""; # prevent double matching
-	}
+        $changed = 1;
+        if($item->{status} eq "OPEN" && $old->{status} eq "UNASSIGNED") {
+            $comment .= "<b>assigned to " . $item->{assigned_to} . "</b><br />\n";
+            $message .= "assigned to " . $item->{assigned_to} . ". ";
+            $add_notification = 1;
+        } elsif ($item->{status} eq "OPEN" && $old->{status} ne "OPEN") {
+            $comment .= "<b>reopened</b><br />\n";
+            $message .= "reopened. ";
+        } elsif ($item->{status} eq "RESOLVED" && $old->{status} ne "RESOLVED") {
+            $comment .= "<b>resolved " . $item->{r_status} . "</b><br />\n";
+            $message .= "resolved " . $item->{r_status} . ". ";
+            $old->{r_status} = $item->{r_status}; # prevent it from re-matching later
+        } elsif ($item->{status} eq "VERIFIED" && $old->{status} ne "VERIFIED") {
+            $comment .= "<b>verified</b><br />\n";
+            $message .= "verified. ";
+        } elsif ($item->{status} eq "CLOSED" && $old->{status} ne "CLOSED") {
+            $comment .= "<b>closed</b><br />\n";
+            $message .= "closed. ";
+        } elsif ($item->{status} eq "INPROGRESS" && $old->{status} ne "INPROGRESS") {
+            $comment .= "<b>marked in progress</b><br />\n";
+            $message .= "marked in progress.  ";
+        } else {
+            throw Error::INVALID_STATUS "invalid status";
+        }
+        if($old->{status} eq "RESOLVED" && $item->{status} ne "RESOLVED") {
+            $old->{r_status} = ""; # prevent double matching
+        }
     }
     return ($item,$old,$changed,$add_notification,$comment,$message);
 }
@@ -298,9 +298,9 @@ sub compare_milestones {
     my $message = shift;
 
     if ($item->{mid} ne $old->{mid}) {
-	$changed = 1;
-	$comment .= "<b>changed milestone</b><br />\n";
-	$message .= "changed milestone. ";
+        $changed = 1;
+        $comment .= "<b>changed milestone</b><br />\n";
+        $message .= "changed milestone. ";
     }
 
     return ($changed,$comment,$message);
@@ -318,26 +318,26 @@ sub compare_fields {
 
     # normalize time representation
     if($old->{estimated_time} =~ /^\d+$/) {
-	$old->{estimated_time} .= "h";
+        $old->{estimated_time} .= "h";
     }
 
-    foreach my $field 
-	(qw/title description r_status url target_date type estimated_time/) 
+    foreach my $field
+        (qw/title description r_status url target_date type estimated_time/)
     {
-	$item->{$field} ||= "";
-	$old->{$field} ||= "";
-	if($item->{$field} ne $old->{$field}) { 
-	    $changed = 1;
-	    $comment .= "<b>$field updated</b><br />\n";
-	    $message .= "$field updated. ";
-	}
+        $item->{$field} ||= "";
+        $old->{$field} ||= "";
+        if($item->{$field} ne $old->{$field}) {
+            $changed = 1;
+            $comment .= "<b>$field updated</b><br />\n";
+            $message .= "$field updated. ";
+        }
     }
     $item->{priority} ||= 0;
     $old->{priority} ||= 0;
     if($item->{priority} != $old->{priority}) {
-	$changed = 1;
-	$comment .= "<b>priority changed</b><br />\n";
-	$message .= "priority changed. ";
+        $changed = 1;
+        $comment .= "<b>priority changed</b><br />\n";
+        $message .= "priority changed. ";
     }
 
     return ($item,$old,$changed,$add_notification,$comment,$message);
@@ -351,9 +351,9 @@ sub compare_keywords {
     my $comment = shift;
     my $message = shift;
     if (diff($item->{keywords},[map {$$_{keyword}} @{$old->{keywords}}])) {
-	$changed = 1;
-	$comment .= "<b>keywords changed</b><br />\n";
-	$message .= "keywords changed. ";
+        $changed = 1;
+        $comment .= "<b>keywords changed</b><br />\n";
+        $message .= "keywords changed. ";
     }
     return ($changed,$comment,$message);
 }
@@ -365,9 +365,9 @@ sub compare_dependencies {
     my $comment = shift;
     my $message = shift;
     if (diff($item->{dependencies},[map {$$_{iid}} @{$old->{dependencies}}])) {
-	$changed = 1;
-	$comment .= "<b>dependencies changed</b><br />\n";
-	$message .= "dependencies changed. ";
+        $changed = 1;
+        $comment .= "<b>dependencies changed</b><br />\n";
+        $message .= "dependencies changed. ";
     }
     return ($changed,$comment,$message);
 }
@@ -379,9 +379,9 @@ sub compare_clients {
     my $comment = shift;
     my $message = shift;
     if (diff($item->{clients}, [map {$_->{client_id}} @{$old->{clients}}]) || $item->{client_uni} ne "") {
-	$changed = 1;
-	$comment .= "<b>clients changed</b><br />\n";
-	$message .= "clients changed. ";
+        $changed = 1;
+        $comment .= "<b>clients changed</b><br />\n";
+        $message .= "clients changed. ";
     }
     return ($changed,$comment,$message);
 }
@@ -397,13 +397,13 @@ sub check_assigned_to_active {
     my $assigned_to = PMT::User->retrieve($item->{assigned_to});
 
     if ($assigned_to->status ne "active") {
-	# the assigned user is inactive, so 
-	# we need to reassign to the caretaker
-	$changed = 1;
-	my $old_user = $item->{'assigned_to'};
-	$item->{'assigned_to'} = $project->caretaker;
-	$comment .= "<b>reassigned to caretaker ($old_user is inactive)</b><br />\n";
-	$message .= "reassigned to caretaker ($old_user is inactive). ";
+        # the assigned user is inactive, so
+        # we need to reassign to the caretaker
+        $changed = 1;
+        my $old_user = $item->{'assigned_to'};
+        $item->{'assigned_to'} = $project->caretaker;
+        $comment .= "<b>reassigned to caretaker ($old_user is inactive)</b><br />\n";
+        $message .= "reassigned to caretaker ($old_user is inactive). ";
     }
     return ($item,$old,$changed,$comment,$message);
 }
@@ -419,11 +419,11 @@ sub check_owner_active {
     my $owner = PMT::User->retrieve($item->{owner});
 
     if ($owner->status ne "active") {
-	$changed = 1;
-	my $old_user = $item->{'owner'};
-	$item->{'owner'} = $project->caretaker;
-	$comment .= "<b>changed ownership to caretaker ($old_user is inactive)</b><br />\n";
-	$message .= "changed ownership to caretaker ($old_user is inactive). ";
+        $changed = 1;
+        my $old_user = $item->{'owner'};
+        $item->{'owner'} = $project->caretaker;
+        $comment .= "<b>changed ownership to caretaker ($old_user is inactive)</b><br />\n";
+        $message .= "changed ownership to caretaker ($old_user is inactive). ";
     }
     return ($item,$old,$changed,$comment,$message);
 }
@@ -446,68 +446,69 @@ sub update_item {
 
     # streamline the resolving of self-assigned items
     if(($item->{assigned_to} eq $old->{owner}) &&
-       ($old->{owner} eq $username) && 
+       ($old->{owner} eq $username) &&
        ($item->{status} eq "RESOLVED")) {
-	$item->{status} = "VERIFIED";
-	$item->{r_status} = "";
-    } 
+        $item->{status} = "VERIFIED";
+        $item->{r_status} = "";
+    }
 
     # changed if any fields have been changed
     my $changed = 0;
-    # changed if (re)assigned and we may need to add someone 
+    # changed if (re)assigned and we may need to add someone
     # to the notification list
     my $add_notification = 0;
     my $comment = "";
     my $message = "";
 
-    ($item,$old,$changed,$add_notification,$message,$comment) 
-	= $self->compare_items($item,$old,$project);
+    ($item,$old,$changed,$add_notification,$message,$comment)
+        = $self->compare_items($item,$old,$project);
     # update what needs it
 
     if($add_notification) {
         my $ass_to = $i->assigned_to;
-	$i->add_cc($ass_to);
+        $i->add_cc($ass_to);
     }
     if($item->{'resolve_time'} ne "") {
-	$i->add_resolve_time($user,$item->{'resolve_time'});
+        $i->add_resolve_time($user,$item->{'resolve_time'});
     }
 
     if($changed != 0) {
-	$i->title($item->{title});
-	$i->description($item->{description});
-	$i->priority($item->{priority});
-	$i->r_status($item->{r_status});
-	$i->url($item->{url});
-	$i->target_date($item->{target_date});
-	$i->type($item->{type});
-	$i->assigned_to(PMT::User->retrieve($item->{assigned_to}));
-	$i->owner(PMT::User->retrieve($item->{owner}));
-	$i->status($item->{status});
-	$i->mid($milestone);
-	$i->estimated_time($item->{estimated_time});
-	$i->update_keywords($item->{'keywords'});
-	$i->update_dependencies($item->{'dependencies'});
-	$i->update_clients($item->{'clients'});
-	$i->add_client_by_uni($item->{client_uni});
-	# add history event				 
-	$i->add_event($item->{'status'},"$comment " . $item->{comment},$user);
-	my $new_milestone = PMT::Milestone->retrieve($item->{mid});
-	$milestone->update_milestone($user);
-	if($item->{mid} != $old->{mid}) {
-	    my $old_milestone = PMT::Milestone->retrieve($old->{mid});
-	    $old_milestone->update_milestone($user);
-	}
-	$i->update_email($item->{'type'} . " #" . $item->{'iid'} . " " . $item->{'title'} . " updated",
-			 "$comment---------------\n" . $item->{'comment'},$username);
+        $i->title($item->{title});
+        $i->description($item->{description});
+        $i->priority($item->{priority});
+        $i->r_status($item->{r_status});
+        $i->url($item->{url});
+        $i->target_date($item->{target_date});
+        $i->type($item->{type});
+        $i->assigned_to(PMT::User->retrieve($item->{assigned_to}));
+        $i->owner(PMT::User->retrieve($item->{owner}));
+        $i->status($item->{status});
+        $i->mid($milestone);
+        $i->estimated_time($item->{estimated_time});
+        $i->update_keywords($item->{'keywords'});
+        $i->update_dependencies($item->{'dependencies'});
+        $i->update_clients($item->{'clients'});
+        $i->add_client_by_uni($item->{client_uni});
+        # add history event
+        $i->add_event($item->{'status'},"$comment " . $item->{comment},$user);
+        my $new_milestone = PMT::Milestone->retrieve($item->{mid});
+        $i->update();
+        $milestone->update_milestone($user);
+        if($item->{mid} != $old->{mid}) {
+            my $old_milestone = PMT::Milestone->retrieve($old->{mid});
+            $old_milestone->update_milestone($user);
+        }
+        $i->update_email($item->{'type'} . " #" . $item->{'iid'} . " " . $item->{'title'} . " updated",
+                         "$comment---------------\n" . $item->{'comment'},$username);
     } elsif ($item->{'comment'} ne "") {
-	# add comment if needed
-	$i->add_comment($user,$item->{'comment'});
-	if($changed == 0) {
-	    $i->update_email("comment added to " . $item->{'type'} . " #" . $item->{'iid'} . " " . $item->{'title'},
-			     $item->{'comment'},$username);
-	    $message .= "comment added. ";
-	}
-    } 
+        # add comment if needed
+        $i->add_comment($user,$item->{'comment'});
+        if($changed == 0) {
+            $i->update_email("comment added to " . $item->{'type'} . " #" . $item->{'iid'} . " " . $item->{'title'},
+                             $item->{'comment'},$username);
+            $message .= "comment added. ";
+        }
+    }
     $i->update();
     return $message;
 }
@@ -523,22 +524,22 @@ sub weekly_summary {
     my $grand_total = interval_to_hours(PMT::ActualTime->interval_total_time($week_start,$week_end));
 
     foreach my $p (@$projects) {
-	my $project = PMT::Project->retrieve($p->{pid});
+        my $project = PMT::Project->retrieve($p->{pid});
         $p->{group_times} = [map {{time =>
                 interval_to_hours($project->group_hours($_->{group},$week_start,$week_end))
                 || '-'};} @{$groups}];
-	$p->{total_time} = interval_to_hours($project->interval_total($week_start,$week_end));
+        $p->{total_time} = interval_to_hours($project->interval_total($week_start,$week_end));
     }
 
     my %data = (
-		total_time => $grand_total,
-		project_times => $projects,
-		);
+                total_time => $grand_total,
+                project_times => $projects,
+                );
     $data{group_totals} = [map {
-	my $gu = PMT::User->retrieve($_->{group});
-	{
-	    time => interval_to_hours($gu->total_group_time($week_start,$week_end)) || "-"
-	    };
+        my $gu = PMT::User->retrieve($_->{group});
+        {
+            time => interval_to_hours($gu->total_group_time($week_start,$week_end)) || "-"
+            };
     } @{$groups}];
 
     return \%data;
@@ -553,19 +554,19 @@ sub staff_report {
     my @group_reports = ();
 
     foreach my $grp (@GROUPS) {
-	my $group_user = PMT::User->retrieve("grp_$grp");
-	my %data = (group => $grp,
-		    total_time => interval_to_hours($group_user->total_group_time($start,$end)),
-		    );
+        my $group_user = PMT::User->retrieve("grp_$grp");
+        my %data = (group => $grp,
+                    total_time => interval_to_hours($group_user->total_group_time($start,$end)),
+                    );
         my $g = PMT::User->retrieve("grp_$grp");
         my @users = ();
-	foreach my $u (map {$_->data()} $g->users_in_group()) {
-	    my $user = PMT::User->retrieve($u->{username});
-	    $u->{user_time} = interval_to_hours($user->interval_time($start,$end)) || 0;
+        foreach my $u (map {$_->data()} $g->users_in_group()) {
+            my $user = PMT::User->retrieve($u->{username});
+            $u->{user_time} = interval_to_hours($user->interval_time($start,$end)) || 0;
             push @users, $u;
-	}
-	$data{user_times} = \@users;
-	push @group_reports, \%data;
+        }
+        $data{user_times} = \@users;
+        push @group_reports, \%data;
     }
 
     return {groups => \@group_reports};
@@ -578,8 +579,8 @@ sub edit_project {
     my $self        = shift;
     my %args = @_;
     my $pid         = $args{pid};
-    my $name        = escape($args{name}) 
-	|| throw Error::NO_NAME "no name specified in edit_project()";
+    my $name        = escape($args{name})
+        || throw Error::NO_NAME "no name specified in edit_project()";
     my $description = escape($args{description});
     my $caretaker   = untaint_username($args{caretaker});
     my $mr          = $args{managers};
@@ -619,7 +620,7 @@ sub edit_project {
     $project->distrib($distrib);
     $project->type($type);
     $project->poster($poster);
-    
+
     # clear users
     $project->works_on()->delete_all();
     my $got_caretaker = 0;
@@ -628,46 +629,46 @@ sub edit_project {
     # since people are bad about accidently selecting the same
     # person as both a manager and a developer, we want things
     # to fail gracefully if they do that. ie, we'll silently
-    # just not add them as the lower form. 
-    
+    # just not add them as the lower form.
+
     my %seen;
 
     foreach my $manager (@$mr) {
-	next if $manager eq "-1";
-	next if $manager eq "";
-	next if $seen{$manager};
-	my $w = PMT::WorksOn->create({username => $manager,
-				      pid => $project->pid, auth => 'manager'});
-	$seen{$manager} = 1;
-	$got_caretaker = 1 if $manager eq $caretaker;
+        next if $manager eq "-1";
+        next if $manager eq "";
+        next if $seen{$manager};
+        my $w = PMT::WorksOn->create({username => $manager,
+                                      pid => $project->pid, auth => 'manager'});
+        $seen{$manager} = 1;
+        $got_caretaker = 1 if $manager eq $caretaker;
     }
     # make sure that at least the caretaker is a manager.
     if(!$got_caretaker) {
-	my $w = PMT::WorksOn->create({username => $caretaker,
-				      pid => $project->pid, auth => 'manager'});
-	$seen{$caretaker} = 1;
+        my $w = PMT::WorksOn->create({username => $caretaker,
+                                      pid => $project->pid, auth => 'manager'});
+        $seen{$caretaker} = 1;
     }
     foreach my $developer (@$dr) {
-	next if $developer eq "";
-	next if $developer eq "-1";
-	next if $seen{$developer};
-	my $w = PMT::WorksOn->create({username => $developer,
-				      pid => $project->pid, auth => 'developer'});
-	$seen{$developer} = 1;
+        next if $developer eq "";
+        next if $developer eq "-1";
+        next if $seen{$developer};
+        my $w = PMT::WorksOn->create({username => $developer,
+                                      pid => $project->pid, auth => 'developer'});
+        $seen{$developer} = 1;
     }
     foreach my $guest (@$gr) {
-	next if $guest eq "";
-	next if $guest eq "-1";
-	next if $seen{$guest};
-	my $w = PMT::WorksOn->create({username => $guest,
-				      pid => $project->pid, auth => 'guest'});
-	$seen{$guest} = 1;
+        next if $guest eq "";
+        next if $guest eq "-1";
+        next if $seen{$guest};
+        my $w = PMT::WorksOn->create({username => $guest,
+                                      pid => $project->pid, auth => 'guest'});
+        $seen{$guest} = 1;
     }
 
     $project->clients()->delete_all;
     foreach my $client (@$cr) {
-	next if $client eq "";
-	my $p = PMT::ProjectClients->create({pid => $project->pid, client_id => $client});
+        next if $client eq "";
+        my $p = PMT::ProjectClients->create({pid => $project->pid, client_id => $client});
     }
     $project->update();
 
@@ -685,18 +686,18 @@ sub update_user {
     my $fullname  = escape(shift);
     my $email     = escape(shift);
 
-    throw Error::NO_EMAIL "email address is necessary." 
-	unless $email;
-    
+    throw Error::NO_EMAIL "email address is necessary."
+        unless $email;
+
     if ($new_pass eq "") { $new_pass = $password; $new_pass2 = $password; }
 
     if ($new_pass eq $new_pass2) {
-	my $u = PMT::User->retrieve($username);
-	$u->fullname($fullname);
-	$u->email($email);
-	$u->password($new_pass);
-	$u->update();
-    } 
+        my $u = PMT::User->retrieve($username);
+        $u->fullname($fullname);
+        $u->email($email);
+        $u->password($new_pass);
+        $u->update();
+    }
     return;
 }
 
@@ -717,8 +718,8 @@ sub add_group {
     my $email = 'nobody@localhost';
     my $password = 'nopassword';
 
-    my $u = PMT::User->create({username => $normalized, fullname => $group_name, email => $email, 
-			       password => $password});
+    my $u = PMT::User->create({username => $normalized, fullname => $group_name, email => $email,
+                               password => $password});
     $u->grp('t');
     $u->update();
     return $normalized;
@@ -755,18 +756,18 @@ sub group {
 sub group_users_select_list {
     my $self = shift;
     my $group = untaint_username(shift);
-    
+
     my $g = PMT::User->retrieve($group);
     my %in_group;
     foreach my $u ($g->users_in_group()) {
-	$in_group{$u->username} = 1;
+        $in_group{$u->username} = 1;
     }
     return [grep {$_->{value} ne $group}
-	    map {my %t = (value => $_->username,
-			  label => $_->fullname,
-			  selected => exists $in_group{$_->username});
-		 \%t;
-	     } PMT::User->all_active()];
+            map {my %t = (value => $_->username,
+                          label => $_->fullname,
+                          selected => exists $in_group{$_->username});
+                 \%t;
+             } PMT::User->all_active()];
 }
 
 # }}}
@@ -781,9 +782,9 @@ sub update_group {
 
     my @u = PMT::Group->search({grp => $group});
     foreach my $u (@u) {$u->delete()}
-    
+
     foreach my $u (@$users) {
-	my $g = PMT::Group->create({grp => $group, username => $u});
+        my $g = PMT::Group->create({grp => $group, username => $u});
     }
 
 }
@@ -800,18 +801,18 @@ sub redirect_with_cookie {
     my $password = shift || "";
 
     my $lcookie = $cgi->cookie(-name => 'pmtusername',
-			       -value => $username,
-			       -path => '/',
-			       -expires => '+10y');
+                               -value => $username,
+                               -path => '/',
+                               -expires => '+10y');
     my $pcookie = $cgi->cookie(-name => 'pmtpassword',
-			       -value => $password,
-			       -path => '/',
-			       -expires => '+10y');
+                               -value => $password,
+                               -path => '/',
+                               -expires => '+10y');
     if($url ne "") {
-	print $cgi->redirect(-location => $url, 
-			     -cookie => [$lcookie,$pcookie]);
+        print $cgi->redirect(-location => $url,
+                             -cookie => [$lcookie,$pcookie]);
     } else {
-	print $cgi->header(-cookie => [$lcookie,$pcookie]);
+        print $cgi->header(-cookie => [$lcookie,$pcookie]);
     }
 }
 
