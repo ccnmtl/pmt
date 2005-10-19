@@ -152,7 +152,9 @@ sub num_logs {
     my $self = shift;
     my $sth = $self->sql_num_logs;
     $sth->execute();
-    return $sth->fetchrow_hashref()->{cnt};
+    my $r = $sth->fetchrow_hashref()->{cnt};
+    $sth->finish();
+    return $r;
 }
 
 __PACKAGE__->set_sql(num_posts => qq{select count(*) as cnt
@@ -168,7 +170,9 @@ sub num_posts {
     my $username = shift;
     my $sth = $self->sql_num_posts;
     $sth->execute($username);
-    return $sth->fetchrow_hashref()->{cnt};
+    my $r = $sth->fetchrow_hashref()->{cnt};
+    $sth->finish();
+    return $r;
 }
 
 __PACKAGE__->set_sql(num_project_posts => qq{select count(*) as cnt from nodes n, projects p, users u
@@ -182,7 +186,9 @@ sub num_project_posts {
     my $pid = shift;
     my $sth = $self->sql_num_project_posts;
     $sth->execute($pid);
-    return $sth->fetchrow_hashref()->{cnt};
+    my $r = $sth->fetchrow_hashref()->{cnt};
+    $sth->finish();
+    return $r;
 }
 
 

@@ -26,21 +26,21 @@ close DEPS_FILE;
 
 
 __PACKAGE__->set_sql(all_clients_data => qq{
-	SELECT c.client_id,c.lastname,c.firstname,c.title,c.department,
-	       c.school,c.add_affiliation,c.phone,c.email,
-	       c.contact,c.comments,c.registration_date,u.fullname as contact_fullname,
-	       c.status, date_trunc('minute',max(i.last_mod)) as last_mod
-        FROM clients c 
+        SELECT c.client_id,c.lastname,c.firstname,c.title,c.department,
+               c.school,c.add_affiliation,c.phone,c.email,
+               c.contact,c.comments,c.registration_date,u.fullname as contact_fullname,
+               c.status, date_trunc('minute',max(i.last_mod)) as last_mod
+        FROM clients c
         LEFT OUTER JOIN item_clients ic on c.client_id = ic.client_id
         LEFT OUTER JOIN items i on ic.iid = i.iid
         JOIN users u on c.contact = u.username
-	WHERE
-	      upper(c.lastname) like upper(?)
+        WHERE
+              upper(c.lastname) like upper(?)
         GROUP BY c.client_id,c.lastname,c.firstname,c.title,c.department,
-	       c.school,c.add_affiliation,c.phone,c.email,
-	       c.contact,c.comments,c.registration_date,u.fullname,
-	       c.status
-	       ORDER BY upper(c.lastname) ASC, upper(c.firstname);
+               c.school,c.add_affiliation,c.phone,c.email,
+               c.contact,c.comments,c.registration_date,u.fullname,
+               c.status
+               ORDER BY upper(c.lastname) ASC, upper(c.firstname);
     }, 'Main');
 
 sub all_clients_data {
@@ -52,12 +52,12 @@ sub all_clients_data {
 }
 
 __PACKAGE__->set_sql(new_clients_data => qq{
-	SELECT c.client_id,c.lastname,c.firstname,c.title,c.department,
-	       c.school,c.add_affiliation,c.phone,c.email,
-	       c.contact,c.comments,c.registration_date,u.fullname as contact_fullname
+        SELECT c.client_id,c.lastname,c.firstname,c.title,c.department,
+               c.school,c.add_affiliation,c.phone,c.email,
+               c.contact,c.comments,c.registration_date,u.fullname as contact_fullname
         FROM clients c, users u
-	WHERE c.contact = u.username
-	AND c.registration_date >= ? AND c.registration_date <= ?
+        WHERE c.contact = u.username
+        AND c.registration_date >= ? AND c.registration_date <= ?
         ORDER BY c.registration_date ASC;
     }, 'Main');
 
@@ -73,12 +73,12 @@ sub new_clients_data {
 __PACKAGE__->set_sql(recent_items => qq{
     select i.iid, i.title, p.name as project, p.pid, i.status,i.type,
     date_trunc('minute',i.last_mod) as last_mod
-	from items i, milestones m, projects p 
-	where i.mid = m.mid and m.pid = p.pid
-	and 
-	(i.iid in (select ic.iid from item_clients ic where ic.client_id = ?))
-	order by i.last_mod desc limit 10;},
-		     'Main');
+        from items i, milestones m, projects p
+        where i.mid = m.mid and m.pid = p.pid
+        and
+        (i.iid in (select ic.iid from item_clients ic where ic.client_id = ?))
+        order by i.last_mod desc limit 10;},
+                     'Main');
 
 
 sub recent_items {
@@ -92,15 +92,15 @@ sub recent_items {
     } @{$sth->fetchall_arrayref({})}];
 }
 
-__PACKAGE__->set_sql(existing_clients => 
-		     qq{
-			 select c.client_id,c.email,c.lastname,c.firstname,
-			 c.school,c.department,c.contact as contact_username,u.fullname as contact_fullname
-			     from clients c, users u 
-			     where c.contact = u.username 
-			     and (c.email ilike ? 
-				  or upper(c.lastname) = upper(?));},
-		     'Main');
+__PACKAGE__->set_sql(existing_clients =>
+                     qq{
+                         select c.client_id,c.email,c.lastname,c.firstname,
+                         c.school,c.department,c.contact as contact_username,u.fullname as contact_fullname
+                             from clients c, users u
+                             where c.contact = u.username
+                             and (c.email ilike ?
+                                  or upper(c.lastname) = upper(?));},
+                     'Main');
 
 sub existing_clients {
     my $self = shift;
@@ -134,8 +134,8 @@ sub contacts_select {
     my $self = shift;
     my @values = ();
     my @labels = map {
-	push @values, $_->username;
-	$_->fullname;
+        push @values, $_->username;
+        $_->fullname;
     } PMT::User->all_active();
     return selectify(\@values,\@labels,[$self->contact->username]);
 }
@@ -160,28 +160,28 @@ sub is_a_recognized_school {
 
 sub all_departments_select {
     my $self = shift;
-    my $department = shift || ""; 
+    my $department = shift || "";
     if ($department eq "nodepartment") {
-      $department = $self->department; 
+      $department = $self->department;
     }
     return selectify(\@DEPARTMENTS,[@DEPARTMENTS],[$department]);
 }
-					
+
 sub projects_data {
     my $self = shift;
 
     return [map {
-	my $p = PMT::Project->retrieve($_->pid);
-	my $data = $p->data();
-	$data->{role} = $_->role;
-	$data;
+        my $p = PMT::Project->retrieve($_->pid);
+        my $data = $p->data();
+        $data->{role} = $_->role;
+        $data;
     } $self->projects()];
 }
 
 __PACKAGE__->set_sql(projects_select => qq{
     SELECT p.pid,p.name
-	FROM projects p
-	ORDER BY upper(p.name) ASC;
+        FROM projects p
+        ORDER BY upper(p.name) ASC;
     }, 'Main');
 
 
@@ -194,8 +194,8 @@ sub projects_select {
     my $sth = $self->sql_projects_select();
     $sth->execute();
     my @labels = map {
-	push @values, $_->{pid};
-	$_->{name};
+        push @values, $_->{pid};
+        $_->{name};
     } @{$sth->fetchall_arrayref({})};
     my @selected = map {$_->pid} $self->projects();
     return selectify(\@values,\@labels,\@selected);
@@ -210,11 +210,11 @@ sub total_clients_by_school {
     my $self = shift;
     my $sth = $self->sql_total_clients_by_school;
     $sth->execute();
-    my %counts = map { 
+    my %counts = map {
         $_->{school} => $_->{cnt};
     } @{$sth->fetchall_arrayref({})};
-    
-    my @schools = map { 
+
+    my @schools = map {
         my %data = ();
         $data{school} = $_;
         $data{count} = $counts{$_} || "0";
@@ -224,7 +224,7 @@ sub total_clients_by_school {
 }
 
 __PACKAGE__->set_sql(total_clients_by_school_for_date => qq{
-select school, count(*) as cnt from clients 
+select school, count(*) as cnt from clients
 where registration_date like ?
 group by school;}, 'Main');
 
@@ -232,14 +232,14 @@ sub total_clients_by_school_for_month {
     my $self = shift;
     my $year = shift;
     my $month = shift;
-    
-    my $sth = $self->sql_total_clients_by_school_for_date; 
+
+    my $sth = $self->sql_total_clients_by_school_for_date;
     $sth->execute("$year-$month-%");
-    my %counts = map { 
+    my %counts = map {
         $_->{school} => $_->{cnt};
     } @{$sth->fetchall_arrayref({})};
-    
-    my @schools = map { 
+
+    my @schools = map {
         my %data = ();
         $data{school} = $_;
         $data{count} = $counts{$_} || "0";
@@ -252,14 +252,14 @@ sub total_clients_by_school_for_month {
 sub total_clients_by_school_for_year {
     my $self = shift;
     my $year = shift;
-    
-    my $sth = $self->sql_total_clients_by_school_for_date; 
+
+    my $sth = $self->sql_total_clients_by_school_for_date;
     $sth->execute("$year-%");
-    my %counts = map { 
+    my %counts = map {
         $_->{school} => $_->{cnt};
     } @{$sth->fetchall_arrayref({})};
-    
-    my @schools = map { 
+
+    my @schools = map {
         my %data = ();
         $data{school} = $_;
         $data{count} = $counts{$_} || "0";
@@ -289,19 +289,19 @@ sub update_data {
     my %existing = ();
     # remove any that the client isn't on anymore
     foreach my $project ($self->projects()) {
-	if (!exists $pids{$project->pid}) {
-	    $project->delete();
-	} else {
-	    $existing{$project->pid} = 1;
-	}
+        if (!exists $pids{$project->pid}) {
+            $project->delete();
+        } else {
+            $existing{$project->pid} = 1;
+        }
     }
     # add any new ones
 
     foreach my $pid (@{$args{projects}}) {
-	if (!exists $existing{$pid}) {
-	    my $pc = PMT::ProjectClients->create({
-		pid => $pid, client_id => $self->client_id});
-	}
+        if (!exists $existing{$pid}) {
+            my $pc = PMT::ProjectClients->create({
+                pid => $pid, client_id => $self->client_id});
+        }
     }
 }
 
@@ -312,25 +312,25 @@ sub find_by_uni {
     my @clients = __PACKAGE__->search(email => $uni);
     if (@clients) { return @clients; }
     return __PACKAGE__->search(email => "$uni\@columbia.edu");
-    
+
 }
 
 sub client_search {
     my $self = shift;
     my %args = @_;
-    
+
     my $sql = "";
     my @vars = ("%$args{query}%","%$args{query}%","%$args{query}%",
         $args{department},$args{school},$args{contact},
         $args{start_date},$args{end_date},"$args{status}%");
     if ($args{project} eq "%" or $args{project} eq "") {
         $sql = qq{select c.client_id,c.lastname,c.firstname,c.registration_date as registered,
-        c.department,c.school,c.status,c.contact as contact_username,u.fullname as contact_fullname, 
+        c.department,c.school,c.status,c.contact as contact_username,u.fullname as contact_fullname,
         date_trunc('minute',max(i.last_mod)) as last_mod
         from clients c left outer join item_clients ic on c.client_id =
         ic.client_id left outer join items i on ic.iid = i.iid
         join users u on c.contact = u.username
-        where 
+        where
             (c.email ilike ? or c.lastname ilike ? or c.firstname ilike ?)
             and c.department ilike ?
             and c.school ilike ?
@@ -412,12 +412,14 @@ sub client_search_count {
     $self->set_sql(client_search_count => $sql);
     my $sth = $self->sql_client_search_count;
     $sth->execute(@vars);
-    return $sth->fetchrow_hashref()->{cnt};
+    my $r = $sth->fetchrow_hashref()->{cnt};
+    $sth->finish();
+    return $r;
 }
 
-__PACKAGE__->set_sql(all_schools => 
-		     qq{select distinct school,upper(school) as uschool from clients order by upper(school);},
-		     'Main');
+__PACKAGE__->set_sql(all_schools =>
+                     qq{select distinct school,upper(school) as uschool from clients order by upper(school);},
+                     'Main');
 
 sub all_schools {
     my $self = shift;
@@ -426,10 +428,10 @@ sub all_schools {
     return $sth->fetchall_arrayref({});
 }
 
-__PACKAGE__->set_sql(all_departments => 
-		     qq{select distinct department,upper(department) as udep 
-			    from clients order by upper(department);},
-		     'Main');
+__PACKAGE__->set_sql(all_departments =>
+                     qq{select distinct department,upper(department) as udep
+                            from clients order by upper(department);},
+                     'Main');
 sub all_departments {
     my $self = shift;
     my $sth = $self->sql_all_departments;
@@ -437,11 +439,11 @@ sub all_departments {
     return $sth->fetchall_arrayref({});
 }
 
-__PACKAGE__->set_sql(all_contacts => 
-		     qq{select distinct c.contact as contact_username,u.fullname as contact_fullname,
-			upper(u.fullname) as contact_ufullname from clients c, users u 
-			    where c.contact = u.username order by upper(u.fullname) ASC;},
-		     'Main');
+__PACKAGE__->set_sql(all_contacts =>
+                     qq{select distinct c.contact as contact_username,u.fullname as contact_fullname,
+                        upper(u.fullname) as contact_ufullname from clients c, users u
+                            where c.contact = u.username order by upper(u.fullname) ASC;},
+                     'Main');
 
 sub all_contacts {
     my $self = shift;
@@ -451,30 +453,32 @@ sub all_contacts {
 }
 
 __PACKAGE__->set_sql(min_registration =>
-		     qq{select min(registration_date) as minreg from clients;}, 'Main');
+                     qq{select min(registration_date) as minreg from clients;}, 'Main');
 
 sub min_registration {
     my $self = shift;
     my $sth = $self->sql_min_registration;
     $sth->execute();
-    return $sth->fetchrow_hashref()->{minreg};
+    my $r = $sth->fetchrow_hashref()->{minreg};
+    $sth->finish();
+    return $r;
 }
 
 __PACKAGE__->set_sql(clients_reg_date_count_next =>
-		     qq{SELECT count(*) as cnt from clients 
-			    WHERE registration_date = ? and client_id > ?;},'Main');
+                     qq{SELECT count(*) as cnt from clients
+                            WHERE registration_date = ? and client_id > ?;},'Main');
 
 # in this case, "normal" means the current client`s reg. date is unique
 __PACKAGE__->set_sql(next_client_normal =>
      qq{SELECT c1.client_id FROM clients c1, clients c2
-	    WHERE c2.client_id = ? AND c1.registration_date > c2.registration_date
-	    ORDER BY c1.registration_date ASC, c1.client_id ASC LIMIT 1;},'Main');
-     
-__PACKAGE__->set_sql(next_client_special => 
+            WHERE c2.client_id = ? AND c1.registration_date > c2.registration_date
+            ORDER BY c1.registration_date ASC, c1.client_id ASC LIMIT 1;},'Main');
+
+__PACKAGE__->set_sql(next_client_special =>
      qq{SELECT c1.client_id FROM clients c1, clients c2
-	    WHERE c2.client_id = ? AND c1.registration_date >= c2.registration_date 
-	    AND c1.client_id > c2.client_id
-	    ORDER BY c1.registration_date ASC, c1.client_id ASC LIMIT 1;},'Main');
+            WHERE c2.client_id = ? AND c1.registration_date >= c2.registration_date
+            AND c1.client_id > c2.client_id
+            ORDER BY c1.registration_date ASC, c1.client_id ASC LIMIT 1;},'Main');
 
 sub next_client {
     my $self = shift;
@@ -485,34 +489,35 @@ sub next_client {
     $sth->finish;
 
     if ($count >= 1) {
-	# non-unique registration date
-	$sth = $self->sql_next_client_special;
+        # non-unique registration date
+        $sth = $self->sql_next_client_special;
     } else {
-	# unique registration date
-	$sth = $self->sql_next_client_normal;
+        # unique registration date
+        $sth = $self->sql_next_client_normal;
     }
     $sth->execute($self->client_id);
     $result = $sth->fetchrow_hashref();
     my $next_id = 0;
     $next_id = $result->{client_id} if $result;
+    $sth->finish();
     return $next_id;
 }
 
 __PACKAGE__->set_sql(clients_reg_date_count_prev =>
-		     qq{SELECT count(*) as cnt from clients 
-			    WHERE registration_date = ? and client_id < ?;},'Main');
+                     qq{SELECT count(*) as cnt from clients
+                            WHERE registration_date = ? and client_id < ?;},'Main');
 
 # in this case, "normal" means the current client`s reg. date is unique
 __PACKAGE__->set_sql(prev_client_normal =>
-     qq{SELECT c1.client_id FROM clients c1, clients c2 
-	    WHERE c2.client_id = ? AND c1.registration_date < c2.registration_date 
-	    ORDER BY c1.registration_date DESC, c1.client_id DESC LIMIT 1;},'Main');
-     
+     qq{SELECT c1.client_id FROM clients c1, clients c2
+            WHERE c2.client_id = ? AND c1.registration_date < c2.registration_date
+            ORDER BY c1.registration_date DESC, c1.client_id DESC LIMIT 1;},'Main');
+
 __PACKAGE__->set_sql(prev_client_special =>
-     qq{SELECT c1.client_id FROM clients c1, clients c2 
-	    WHERE c2.client_id = ? AND c1.registration_date <= c2.registration_date 
-	    AND c1.client_id < c2.client_id
-	    ORDER BY c1.registration_date DESC, c1.client_id DESC LIMIT 1;},'Main');
+     qq{SELECT c1.client_id FROM clients c1, clients c2
+            WHERE c2.client_id = ? AND c1.registration_date <= c2.registration_date
+            AND c1.client_id < c2.client_id
+            ORDER BY c1.registration_date DESC, c1.client_id DESC LIMIT 1;},'Main');
 
 sub prev_client {
     my $self = shift;
@@ -523,46 +528,47 @@ sub prev_client {
     $sth->finish;
 
     if ($count >= 1) {
-	# non-unique registration date
-	$sth = $self->sql_prev_client_special;
+        # non-unique registration date
+        $sth = $self->sql_prev_client_special;
     } else {
-	# unique registration date
-	$sth = $self->sql_prev_client_normal;
+        # unique registration date
+        $sth = $self->sql_prev_client_normal;
     }
     $sth->execute($self->client_id);
     $result = $sth->fetchrow_hashref();
     my $prev_id = 0;
     $prev_id = $result->{client_id} if $result;
+    $sth->finish();
     return $prev_id;
 }
 
 
-__PACKAGE__->set_sql(active_clients_all_employees => 
+__PACKAGE__->set_sql(active_clients_all_employees =>
   qq{ select c.firstname, c.lastname, tempalias.client_id, date(tempalias.date), c.registration_date,
              c.school, c.department, c.contact, u.fullname as contact_fullname
-        from ( select ic.client_id, max(i.last_mod) as date 
-           from clients c, items i, item_clients ic 
-           where i.iid=ic.iid 
-           group by ic.client_id 
-           order by date desc 
+        from ( select ic.client_id, max(i.last_mod) as date
+           from clients c, items i, item_clients ic
+           where i.iid=ic.iid
+           group by ic.client_id
+           order by date desc
            limit ? ) as tempalias,
          clients c, users u
-	 where tempalias.client_id=c.client_id and c.contact = u.username ; 
+         where tempalias.client_id=c.client_id and c.contact = u.username ;
        },'Main');
-      
-__PACKAGE__->set_sql(active_clients_one_employee => 
+
+__PACKAGE__->set_sql(active_clients_one_employee =>
   qq{ select c.firstname, c.lastname, tempalias.client_id, date(tempalias.date), c.registration_date,
              c.school, c.department, c.contact, u.fullname as contact_fullname
-        from ( select ic.client_id, max(i.last_mod) as date 
-           from clients c, items i, item_clients ic 
+        from ( select ic.client_id, max(i.last_mod) as date
+           from clients c, items i, item_clients ic
            where c.contact=? and i.iid=ic.iid and ic.client_id=c.client_id
-           group by ic.client_id 
-           order by date desc 
+           group by ic.client_id
+           order by date desc
            limit ? ) as tempalias,
          clients c, users u
-	 where tempalias.client_id=c.client_id and c.contact=u.username ; 
+         where tempalias.client_id=c.client_id and c.contact=u.username ;
        },'Main');
-      
+
 sub active_clients {
     my $self = shift;
     my $clients_to_show = shift || 25;
@@ -575,7 +581,7 @@ sub active_clients {
       return $sth->fetchall_arrayref({});
 
     } else {
-    
+
       my $sth = $self->sql_active_clients_one_employee;
       $sth->execute($employee,$clients_to_show);
       return $sth->fetchall_arrayref({});

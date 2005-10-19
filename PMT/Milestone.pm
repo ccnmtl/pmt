@@ -38,28 +38,36 @@ sub num_unclosed_items {
   my $self = shift;
   my $sth = $self->sql_num_unclosed_items;
   $sth->execute($self->mid);
-  return $sth->fetchrow_hashref()->{num_unclosed};
+  my $r = $sth->fetchrow_hashref()->{num_unclosed};
+  $sth->finish();
+  return $r;
 }
 
 sub estimated_time {
     my $self = shift;
     my $sth = $self->sql_estimated_time;
     $sth->execute($self->mid);
-    return $sth->fetchrow_hashref()->{estimated_time};
+    my $r = $sth->fetchrow_hashref()->{estimated_time};
+    $sth->finish();
+    return $r;
 }
 
 sub completed_time {
     my $self = shift;
     my $sth = $self->sql_completed_time;
     $sth->execute($self->mid);
-    return $sth->fetchrow_hashref()->{completed_time};
+    my $r = $sth->fetchrow_hashref()->{completed_time};
+    $sth->finish();
+    return $r;
 }
 
 sub num_items {
     my $self = shift;
     my $sth = $self->sql_num_items;
     $sth->execute($self->mid);
-    return $sth->fetchrow_hashref()->{num_items};
+    my $r = $sth->fetchrow_hashref()->{num_items};
+    $sth->finish();
+    return $r;
 }
 
 __PACKAGE__->set_sql(count_all => "SELECT COUNT(*) as cnt FROM __TABLE__");
