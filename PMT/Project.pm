@@ -42,7 +42,7 @@ __PACKAGE__->has_many(notifies => 'PMT::NotifyProject', 'pid');
 
 
 __PACKAGE__->set_sql(all_items_in_project => qq{
-SELECT i.iid, i.type, i.owner, uo.fullname as owner_fullname, i.assigned_to, 
+SELECT i.iid, i.type, i.owner, uo.fullname as owner_fullname, i.assigned_to,
 ua.fullname as assigned_to_fullname,
 i.title, i.mid, m.name as milestone, i.url, i.status, i.description, i.priority,
 i.r_status, i.last_mod, i.target_date, i.estimated_time
@@ -52,7 +52,7 @@ AND uo.username = i.owner AND ua.username = i.assigned_to;
 }, 'Main');
 
 __PACKAGE__->set_sql(estimated_time => qq{
-SELECT sum(i.estimated_time) as estimated_time 
+SELECT sum(i.estimated_time) as estimated_time
 from items i, milestones m
 where i.mid = m.mid and m.pid = ?
     and i.status in ('OPEN','UNASSIGNED','INPROGRESS');});
@@ -62,52 +62,52 @@ from items i, milestones m
 where i.mid = m.mid and m.pid = ?;});
 
 __PACKAGE__->set_sql(completed_time => qq{
-SELECT sum(a.actual_time) as completed_time 
+SELECT sum(a.actual_time) as completed_time
 from actual_times a, items i, milestones m
 where a.iid = i.iid and i.mid = m.mid
     and m.pid = ?;});
 
 
-__PACKAGE__->set_sql(total_time_in_interval => 
+__PACKAGE__->set_sql(total_time_in_interval =>
 qq{select sum(a.actual_time)  from actual_times a, items i, milestones m
 where a.iid = i.iid and i.mid = m.mid and m.pid = ?
     and a.completed > ? and a.completed <= ?;}, 'Main');
 
-__PACKAGE__->set_sql(user_time_in_interval => 
+__PACKAGE__->set_sql(user_time_in_interval =>
 qq{select sum(a.actual_time) from actual_times a, items i, milestones m
-            where a.resolver = ? 
+            where a.resolver = ?
             and a.iid = i.iid and i.mid = m.mid and m.pid = ?
             and a.completed > ? and a.completed <= ?;}, 'Main');
 __PACKAGE__->set_sql(project_milestones =>
-		     qq{SELECT mid,name,target_date,pid,status,
-			description FROM milestones where pid = ?
-			    ORDER BY target_date ASC;},
-		     'Main');
+                     qq{SELECT mid,name,target_date,pid,status,
+                        description FROM milestones where pid = ?
+                            ORDER BY target_date ASC;},
+                     'Main');
 
-__PACKAGE__->set_sql(upcoming_milestone => 
-		     qq{SELECT mid, current_date - target_date as delta_t 
-			    FROM milestones 
-			    WHERE pid = ? AND (current_date - target_date) < 1 
-			    AND status = 'OPEN'
-			    ORDER BY delta_t DESC 
-			    LIMIT 1;},
-		     'Main');
+__PACKAGE__->set_sql(upcoming_milestone =>
+                     qq{SELECT mid, current_date - target_date as delta_t
+                            FROM milestones
+                            WHERE pid = ? AND (current_date - target_date) < 1
+                            AND status = 'OPEN'
+                            ORDER BY delta_t DESC
+                            LIMIT 1;},
+                     'Main');
 __PACKAGE__->set_sql(latest_milestone =>
-		     qq{SELECT mid FROM milestones WHERE pid = ? 
-			    ORDER BY target_date DESC;},
-		     'Main');
+                     qq{SELECT mid FROM milestones WHERE pid = ?
+                            ORDER BY target_date DESC;},
+                     'Main');
 
 
 __PACKAGE__->set_sql(interval_total =>
-		     qq{	
-			 select sum(a.actual_time) as total_time from actual_times a, items i, milestones m, in_group g
-			     where a.iid = i.iid and i.mid = m.mid and m.pid = ?
-			     and a.resolver = g.username and g.grp in 
-			     ('grp_programmers','grp_webmasters','grp_video',
-			      'grp_educationaltechnologists','grp_management')
-			     and a.completed > ? and a.completed <= ?;
-		     },
-		     'Main');
+                     qq{
+                         select sum(a.actual_time) as total_time from actual_times a, items i, milestones m, in_group g
+                             where a.iid = i.iid and i.mid = m.mid and m.pid = ?
+                             and a.resolver = g.username and g.grp in
+                             ('grp_programmers','grp_webmasters','grp_video',
+                              'grp_educationaltechnologists','grp_management')
+                             and a.completed > ? and a.completed <= ?;
+                     },
+                     'Main');
 # {{{ interval_total
 
 sub interval_total {
@@ -130,12 +130,12 @@ sub add_user_from_group_to_project {
     my $group = untaint_username(shift);
     my @wo = PMT::WorksOn->search(pid => $self->pid, username => $username);
     if (!scalar @wo) {
-	# add 'em
-	my $auth = $self->project_role($group);
-	PMT::WorksOn->create({pid => $self->pid, username => $username, auth => $auth});
+        # add 'em
+        my $auth = $self->project_role($group);
+        PMT::WorksOn->create({pid => $self->pid, username => $username, auth => $auth});
     } else {
-	# they are already on the project so we
-	# don't need to add them.
+        # they are already on the project so we
+        # don't need to add them.
     }
 }
 
@@ -157,9 +157,9 @@ sub add_item_form {
         };
     } $self->all_personnel_in_project()];
     $data{'type'}         = $type;
-    $data{'on_project'}   = $self->project_role($username); 
+    $data{'on_project'}   = $self->project_role($username);
     $data{'clients_select'} = $self->clients_data();
-    $data{'owner_select'} = $self->owner_select($user); 
+    $data{'owner_select'} = $self->owner_select($user);
     $data{'milestone_select'} = $self->project_milestones_select();
     $data{$type}          = 1;
     return \%data;
@@ -203,12 +203,12 @@ sub upcoming_milestone  {
         return $res->{mid};
     } else {
         # there aren't any upcoming open milestones, so instead we just
-        # grab one. 
-	$sth = $self->sql_latest_milestone;
-	$sth->execute($pid);
-	my $mid = $sth->fetchrow_hashref()->{mid};
-	$sth->finish;
-	return $mid;
+        # grab one.
+        $sth = $self->sql_latest_milestone;
+        $sth->execute($pid);
+        my $mid = $sth->fetchrow_hashref()->{mid};
+        $sth->finish;
+        return $mid;
     }
 }
 
@@ -228,27 +228,27 @@ sub project_milestones {
     my $has_open = 0;
     foreach my $m (@milestones) {
         my $milestone = PMT::Milestone->retrieve($m->{mid});
-	$m->{items} = $milestone->unclosed_items($sortby, $username);
-	$m->{total_estimated_time} = interval_to_hours($milestone->estimated_time) || "0";
-	$m->{total_completed_time} = interval_to_hours($milestone->completed_time) || "0";
-	if(!$set) {
-	    if($m->{status} eq 'OPEN') {
-		$m->{next} = 1;
-		$set = 1;
-		$has_open = 1;
-	    }
-	} 
+        $m->{items} = $milestone->unclosed_items($sortby, $username);
+        $m->{total_estimated_time} = interval_to_hours($milestone->estimated_time) || "0";
+        $m->{total_completed_time} = interval_to_hours($milestone->completed_time) || "0";
+        if(!$set) {
+            if($m->{status} eq 'OPEN') {
+                $m->{next} = 1;
+                $set = 1;
+                $has_open = 1;
+            }
+        }
     }
     if(!$has_open) {
-	$milestones[0]->{next} = 1;
+        $milestones[0]->{next} = 1;
     }
     return \@milestones;
 }
 
-__PACKAGE__->set_sql(events_on => qq{  
+__PACKAGE__->set_sql(events_on => qq{
 SELECT e.status,e.event_date_time as date_time,e.item,i.title,c.comment,c.username
 FROM events e, items i, milestones m, comments c
-WHERE e.item = i.iid AND c.event = e.eid AND i.mid = m.mid AND m.pid = ? 
+WHERE e.item = i.iid AND c.event = e.eid AND i.mid = m.mid AND m.pid = ?
 AND date_trunc('day',e.event_date_time) = ?
 ORDER BY e.event_date_time ASC;},'Main');
 
@@ -274,7 +274,7 @@ sub recent_events {
     return $sth->fetchall_arrayref({});
 }
 
-__PACKAGE__->set_sql(recent_items => 
+__PACKAGE__->set_sql(recent_items =>
 qq{select i.iid,i.type,i.title,i.status,p.name as project,p.pid
 from items i, milestones m, projects p
 where i.mid = m.mid AND m.pid = ?
@@ -289,13 +289,13 @@ sub recent_items {
     return $sth->fetchall_arrayref({});
 }
 __PACKAGE__->set_sql(group_hours =>
-		     qq{
-			 select sum(a.actual_time) as hours from actual_times a, in_group g, 
-			 milestones m, items i
-			     where a.iid = i.iid and i.mid = m.mid and m.pid = ? and
-			     a.resolver = g.username and g.grp  = ?
-			     and a.completed > ? and a.completed <= ?;},
-		     'Main');
+                     qq{
+                         select sum(a.actual_time) as hours from actual_times a, in_group g,
+                         milestones m, items i
+                             where a.iid = i.iid and i.mid = m.mid and m.pid = ? and
+                             a.resolver = g.username and g.grp  = ?
+                             and a.completed > ? and a.completed <= ?;},
+                     'Main');
 sub group_hours {
     my $self = shift;
     my $group = shift;
@@ -310,13 +310,13 @@ sub group_hours {
 }
 
 __PACKAGE__->set_sql(all_users_in_project =>
-		     qq{SELECT u.username,u.fullname,u.email
-			    FROM users u, works_on w
-			    WHERE u.username = w.username 
-			    AND u.status = 'active'
-			    AND u.username not like 'grp_%'
-			    AND w.pid = ?;},
-		     'Main');
+                     qq{SELECT u.username,u.fullname,u.email
+                            FROM users u, works_on w
+                            WHERE u.username = w.username
+                            AND u.status = 'active'
+                            AND u.username not like 'grp_%'
+                            AND w.pid = ?;},
+                     'Main');
 
 sub all_users_in_project {
     my $self = shift;
@@ -325,7 +325,7 @@ sub all_users_in_project {
     return $sth->fetchall_arrayref({});
 }
 
-__PACKAGE__->set_sql(keywords => 
+__PACKAGE__->set_sql(keywords =>
 qq{SELECT distinct k.keyword from keywords k, items i, milestones m where
 k.iid = i.iid AND i.mid = m.mid AND m.pid = ? ORDER BY k.keyword ASC;}, 'Main');
 
@@ -336,7 +336,7 @@ sub keywords {
     return $sth->fetchall_arrayref({});
 }
 
-__PACKAGE__->set_sql(active_users_in_interval => 
+__PACKAGE__->set_sql(active_users_in_interval =>
 qq{SELECT distinct a.resolver as username, u.fullname from actual_times a, items i, milestones m, users u
 where a.iid = i.iid and a.resolver = u.username and i.mid = m.mid and m.pid
 = ? and a.completed > ? and a.completed <= ?;}, 'Main');
@@ -350,8 +350,8 @@ sub active_users_in_interval {
     return $sth->fetchall_arrayref({});
 }
 
-__PACKAGE__->set_sql(completed_times_in_interval => 
-qq{select a.actual_time, date_trunc('second',a.completed) as completed, 
+__PACKAGE__->set_sql(completed_times_in_interval =>
+qq{select a.actual_time, date_trunc('second',a.completed) as completed,
           a.iid, i.title as item, a.resolver as username, u.fullname
           from actual_times a, items i, users u, milestones m
           where a.iid = i.iid
@@ -376,7 +376,7 @@ sub add_milestone {
     my $name = shift;
     my $target_date = untaint_date(shift);
     my $description = shift;
-    throw Error::INVALID_TARGET_DATE "invalid target date" 
+    throw Error::INVALID_TARGET_DATE "invalid target date"
         unless $target_date =~ /^\d{4}-\d{1,2}-\d{1,2}$/;
     my $milestone = $self->add_to_milestones({
             name => $name, target_date => $target_date, description =>
@@ -427,7 +427,7 @@ sub user_time_in_interval {
     my $user = shift;
     my $start = shift;
     my $end = shift;
-    
+
     my $sth = $self->sql_user_time_in_interval;
     $sth->execute($user,$self->pid,$start,$end);
     my $res = $sth->fetchrow_array();
@@ -435,7 +435,7 @@ sub user_time_in_interval {
     return $res;
 }
 
-__PACKAGE__->set_sql(items_on => 
+__PACKAGE__->set_sql(items_on =>
 qq{SELECT i.iid,i.title,i.type,i.status
 FROM items i, milestones m
 WHERE i.target_date = ? AND i.mid = m.mid
@@ -476,7 +476,7 @@ sub status_select {
         return selectify([@PROJECT_STATUSES], [@PROJECT_STATUSES],
             [$self->status]);
     } else {
-        return selectify([@PROJECT_STATUSES], [@PROJECT_STATUSES],[]);        
+        return selectify([@PROJECT_STATUSES], [@PROJECT_STATUSES],[]);
     }
 }
 
@@ -539,7 +539,7 @@ sub managers {
 sub developers {
     my $self = shift;
     return grep { $_->status eq "active"} map {PMT::User->retrieve($_->username) }
-    PMT::WorksOn->search(pid => $self->pid, 
+    PMT::WorksOn->search(pid => $self->pid,
         auth => 'developer');
 }
 
@@ -555,7 +555,7 @@ sub personnel_in_project {
     return grep {
         $_->status eq "active";
     }  map {
-	PMT::User->retrieve($_->username);
+        PMT::User->retrieve($_->username);
     } PMT::WorksOn->search({pid => $self->pid});
 }
 
@@ -575,7 +575,7 @@ sub all_personnel_in_project {
                 next if exists $unique{$u->username};
                 $unique{$u->username} = $u;
             }
-        } 
+        }
     }
 
     return sort {uc($a->fullname) cmp uc($b->fullname) } map {$unique{$_}} keys %unique;
@@ -603,11 +603,11 @@ sub assigned_to_select {
     my $self        = shift;
     my $assigned_to = shift;
     return [map {
-	{
-	    value => $_->username,
-	    label => $_->fullname,
-	    selected => ($_->username eq $assigned_to->username),
-	}
+        {
+            value => $_->username,
+            label => $_->fullname,
+            selected => ($_->username eq $assigned_to->username),
+        }
     } $self->all_personnel_in_project()];
 }
 
@@ -620,7 +620,7 @@ sub all_items_in_project {
     my $skip = shift || 0;
     my $sth = $self->sql_all_items_in_project;
     $sth->execute($self->pid);
-    
+
     return [sort {
         $b->{'type'} cmp $a->{'type'}
     } grep {
@@ -637,12 +637,12 @@ sub dependencies_select {
     my %selected = map {$_->{iid} => 1} @$selected;
     my $r = $self->all_items_in_project($skip);
     return [map {
-	my $iid = $_->{iid};
-	{ 
-	    value => $iid,
-	    label => "$_->{type} #$_->{iid} $_->{title} [$_->{status}]",
-	    selected => exists $selected{$iid},
-	};
+        my $iid = $_->{iid};
+        {
+            value => $iid,
+            label => "$_->{type} #$_->{iid} $_->{title} [$_->{status}]",
+            selected => exists $selected{$iid},
+        };
     } @$r];
 }
 
@@ -673,11 +673,11 @@ sub caretaker_select {
     my $self      = shift;
     my $caretaker = $self->caretaker;
     return [map {
-	{
-	    value => $_->username,
-	    label => $_->fullname,
-	    selected => ($_->username eq $caretaker->username),
-	}
+        {
+            value => $_->username,
+            label => $_->fullname,
+            selected => ($_->username eq $caretaker->username),
+        }
     } $self->managers()];
 }
 
@@ -691,10 +691,10 @@ sub all_non_personnel_select {
     @users = grep {!exists $selected{$_->username}} @users;
 
     return [map {
-	{
-	    value => $_->username,
-	    label => $_->fullname,
-	}
+        {
+            value => $_->username,
+            label => $_->fullname,
+        }
     } @users];
 }
 
@@ -707,10 +707,10 @@ sub all_non_clients_select {
     @clients = grep {!exists $selected{$_->client_id}} @clients;
 
     return [map {
-	{
-	    value => $_->client_id,
-	    label => $_->lastname . ", " . $_->firstname,
-	}
+        {
+            value => $_->client_id,
+            label => $_->lastname . ", " . $_->firstname,
+        }
     } @clients];
 }
 
@@ -725,8 +725,8 @@ sub clients_select {
     my $selected = [map {$_->client_id} $self->clients()];
     my @labels = ();
     my $values = [map {
-	push @labels, $_->firstname . " " . $_->lastname;
-	$_->client_id;
+        push @labels, $_->firstname . " " . $_->lastname;
+        $_->client_id;
     } PMT::Client->all_active()];
     return selectify($values,\@labels,$selected);
 }
@@ -736,7 +736,7 @@ sub interval_report {
     my $interval_start = shift;
     my $interval_end = shift;
 
-    
+
     # figure out which users have been active during the interval
     my $active_users = $self->active_users_in_interval($interval_start,$interval_end);
 
@@ -745,18 +745,18 @@ sub interval_report {
     interval_to_hours($self->total_time_in_interval($interval_start, $interval_end));
 
     foreach my $user (@$active_users) {
-	$user->{time} = $self->user_time_in_interval($user->{username},
+        $user->{time} = $self->user_time_in_interval($user->{username},
             $interval_start,$interval_end);
-	$user->{hours} = interval_to_hours($user->{time});
+        $user->{hours} = interval_to_hours($user->{time});
     }
     # get individual times
-    
+
     my $indivs = $self->completed_times_in_interval($interval_start,$interval_end);
-    
+
     return {active_users => $active_users,
-	    total_time => $total_time,
-	    individual_times => $indivs,
-	};
+            total_time => $total_time,
+            individual_times => $indivs,
+        };
 }
 
 
@@ -777,7 +777,7 @@ sub add_cc {
 
     #     b) foreach item under this project, add user and item in notify
     foreach my $item (@$iids) {
-       my $i = PMT::Notify->find_or_create({iid => $item->{iid}, 
+       my $i = PMT::Notify->find_or_create({iid => $item->{iid},
             username => $user->username});
     }
 
@@ -797,15 +797,15 @@ sub drop_cc {
     #     a) extract all iid under this pid
     my $iids = $self->all_items_in_project();
 
-    #     b) foreach item under this project, check which user 
-    #        is not assigned to the item 
+    #     b) foreach item under this project, check which user
+    #        is not assigned to the item
     foreach my $i (@$iids) {
-        my $item = PMT::Item->retrieve($i->{iid}); 
+        my $item = PMT::Item->retrieve($i->{iid});
         $item->drop_cc($user);
-#        my @res = PMT::Item->search(iid => $i->{iid}, 
+#        my @res = PMT::Item->search(iid => $i->{iid},
 #                             assigned_to => $user->username);
 #       # remove user from notify if he is not assigned to the item
-#	#  ie if @res is empty
+#       #  ie if @res is empty
 #        if (@res < 1) {
 #            PMT::Notify->retrieve(iid => $i->{iid}, username =>
 #                $user->username)->delete;
@@ -813,7 +813,7 @@ sub drop_cc {
     }
 
     # 2) remove pid and username from notify_project table
-    my @res = PMT::NotifyProject->search(pid => $self->pid, 
+    my @res = PMT::NotifyProject->search(pid => $self->pid,
                  username => $user->username);
     if (@res > 0) {
         PMT::NotifyProject->retrieve(pid => $self->pid, username =>
@@ -831,7 +831,7 @@ sub cc {
     my $self     = shift;
     my $user     = shift;
 
-    my @res = PMT::NotifyProject->search(pid => $self->pid, 
+    my @res = PMT::NotifyProject->search(pid => $self->pid,
         username => $user->username);
     if (scalar @res) {
         return 1;
@@ -851,21 +851,21 @@ sub estimate_graph {
 
     my ($done,$todo,$free,$behind, $completed_behind) = (0,0,0,0,0);
     if (($remaining + $completed) <= $estimated) {
-	# ahead of or on schedule
-	$free = int($estimated - ($remaining + $completed));
-	$done = $completed;
-	$todo = $remaining;
+        # ahead of or on schedule
+        $free = int($estimated - ($remaining + $completed));
+        $done = $completed;
+        $todo = $remaining;
     } else {
-	# behind schedule
-	$behind = int(($remaining + $completed) - $estimated);
-	if ($completed <= $estimated) {
-	    # remaining is what puts us behind schedule
-	    $todo = int($estimated - $completed);
-	} else {
-	    # we're behind schedule on completed alone
-	    $done = int($estimated);
-	    $completed_behind = int($completed - $estimated);
-	}
+        # behind schedule
+        $behind = int(($remaining + $completed) - $estimated);
+        if ($completed <= $estimated) {
+            # remaining is what puts us behind schedule
+            $todo = int($estimated - $completed);
+        } else {
+            # we're behind schedule on completed alone
+            $done = int($estimated);
+            $completed_behind = int($completed - $estimated);
+        }
     }
     my $total = ($done + $todo + $free + $behind + $completed_behind);
     if ($total == 0) { $total = 1; } # guard against divide by zero errors
@@ -884,7 +884,7 @@ __PACKAGE__->set_sql(all_projects_by_last_mod => qq{
     SELECT m.pid,date_trunc('minute',max(i.last_mod)) as last_mod
     FROM milestones m LEFT OUTER JOIN items i on m.mid = i.mid
     GROUP BY m.pid;},
-		     'Main');
+                     'Main');
 
 sub all_projects_by_last_mod {
     my $self = shift;
@@ -905,12 +905,12 @@ sub projects_active_during {
     my $groups     = shift;
     my $groups_string = join ',', map {"'$_'"} @{$groups};
     my $sql = qq{ select distinct p.pid,p.name,p.projnum
-		      from projects p, milestones m, items i, actual_times a, in_group g
-		      where p.pid = m.pid and m.mid = i.mid and i.iid = a.iid
-		      and a.resolver = g.username and g.grp in 
-		      ($groups_string)
-		      and a.completed > ? and a.completed <= ?
-		      order by p.projnum
+                      from projects p, milestones m, items i, actual_times a, in_group g
+                      where p.pid = m.pid and m.mid = i.mid and i.iid = a.iid
+                      and a.resolver = g.username and g.grp in
+                      ($groups_string)
+                      and a.completed > ? and a.completed <= ?
+                      order by p.projnum
 ;};
     $self->set_sql(projects_active_during => $sql, 'Main');
     my $sth = $self->sql_projects_active_during;
@@ -923,19 +923,19 @@ sub projects_active_between {
     my $self       = shift;
     my $date_start = shift;
     my $date_end   = shift;
-    
+
     my $sql = qq{
-      select p.pid, p.name as project_name, p.projnum as project_number, 
-      date(tempalias.max) as project_last_worked_on, p.status as project_status, 
+      select p.pid, p.name as project_name, p.projnum as project_number,
+      date(tempalias.max) as project_last_worked_on, p.status as project_status,
       u.fullname as caretaker_fullname, u.username as caretaker_username, tempalias.sum as time_worked_on
-	  from 
-        ( select p.pid, max(completed), sum(a.actual_time) 
-	  from projects p, milestones m, items i, actual_times a 
-          where p.pid = m.pid and m.mid = i.mid and i.iid = a.iid 
-	  and a.completed >= ? and a.completed <= ? group by p.pid
-	) as tempalias, projects p, users u 
-	where tempalias.pid=p.pid and p.caretaker=u.username 
-	order by max desc;
+          from
+        ( select p.pid, max(completed), sum(a.actual_time)
+          from projects p, milestones m, items i, actual_times a
+          where p.pid = m.pid and m.mid = i.mid and i.iid = a.iid
+          and a.completed >= ? and a.completed <= ? group by p.pid
+        ) as tempalias, projects p, users u
+        where tempalias.pid=p.pid and p.caretaker=u.username
+        order by max desc;
     };
 
     $self->set_sql(projects_active_between => $sql, 'Main');
@@ -950,19 +950,19 @@ sub project_search {
     my $self = shift;
     my %args = @_;
 
-    my $sql = qq{select p.pid,p.projnum,p.name,p.status,p.area,p.caretaker,u.fullname as caretaker_fullname 
-		     from projects p, users u where u.username = p.caretaker };
+    my $sql = qq{select p.pid,p.projnum,p.name,p.status,p.area,p.caretaker,u.fullname as caretaker_fullname
+                     from projects p, users u where u.username = p.caretaker };
     my @values = ();
     my @conditions = ();
     foreach my $k (qw/type area approach scale distrib status/) {
-	next unless $args{$k};
-	push @conditions, "p.$k = ?";
-	push @values, $args{$k};
+        next unless $args{$k};
+        push @conditions, "p.$k = ?";
+        push @values, $args{$k};
     }
     foreach my $k (qw/manager developer guest/) {
-	next unless $args{$k};
-	push @conditions, "p.pid in (select w.pid from works_on w where w.username = ? and w.auth = '$k')";
-	push @values, $args{$k};
+        next unless $args{$k};
+        push @conditions, "p.pid in (select w.pid from works_on w where w.username = ? and w.auth = '$k')";
+        push @values, $args{$k};
     }
     $sql .= " AND " if @conditions;
     $sql .= join " AND ", @conditions;
@@ -973,14 +973,14 @@ sub project_search {
     return $sth->fetchall_arrayref({});
 }
 
-__PACKAGE__->set_sql(recent_project_logs => 
-		     qq{select n.nid,n.replies,
-			to_char(added,'FMMonth FMDDth, YYYY') AS added_informal,
-			n.author,u.fullname as author_fullname
-			    from nodes n, users u where n.type = 'log'
-			    and n.author = u.username
-			    and n.author in (select username from works_on where pid = ?)
-			    order by modified desc limit 10;}, 'Main');
+__PACKAGE__->set_sql(recent_project_logs =>
+                     qq{select n.nid,n.replies,
+                        to_char(added,'FMMonth FMDDth, YYYY') AS added_informal,
+                        n.author,u.fullname as author_fullname
+                            from nodes n, users u where n.type = 'log'
+                            and n.author = u.username
+                            and n.author in (select username from works_on where pid = ?)
+                            order by modified desc limit 10;}, 'Main');
 
 sub recent_project_logs {
     my $self = shift;
@@ -989,6 +989,26 @@ sub recent_project_logs {
     return $sth->fetchall_arrayref({});
 }
 
+sub someday_maybe_milestone {
+    my $self = shift;
+    my @milestones = PMT::Milestone->search(pid => $self->pid, name => 'Someday/Maybe');
+    if (scalar (@milestones)) {
+        print STDERR "returning existing\n";
+        print STDERR $milestones[0]->mid;
+        return $milestones[0];
+    } else {
+        print STDERR "creating new one\n";
+        # no existing someday/maybe milestone. need to add one.
+        my $m = $self->add_to_milestones({
+            name        => 'Someday/Maybe',
+            target_date => '2010-01-01',
+            status      => 'OPEN',
+            description => qq{A milestone for items that will not be immediately worked on. Items in this milestone
+                                  will not appear on a homepage or in time estimates. },
+            });
+        return $m;
+    }
+}
 
 
 1;

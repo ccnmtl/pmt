@@ -443,6 +443,16 @@ sub update_item {
     my $project = $milestone->pid;
     my $user = PMT::User->retrieve($username);
 
+    # handle someday/maybe items
+
+    if ($item->{status} eq "someday") {
+        # change the milestone and reset the status
+        $item->{mid} = $project->someday_maybe_milestone()->mid;
+        $item->{status} = $i->status;
+        $item->{r_status} = $i->r_status;
+        $milestone = PMT::Milestone->retrieve($item->{mid});
+    }
+
 
     # streamline the resolving of self-assigned items
     if(($item->{assigned_to} eq $old->{owner}) &&

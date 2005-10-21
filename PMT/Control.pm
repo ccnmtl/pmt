@@ -108,6 +108,7 @@ sub setup {
         'user_weekly_report'     => 'user_weekly_report',
         'active_projects_report' => 'active_projects_report',
         'active_clients_report' => 'active_clients_report',
+        'someday_maybe'          => 'someday_maybe',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -145,6 +146,16 @@ sub home {
     $template->param(clients => $user->clients_data());
     $template->param(page_title => "homepage for " . $user->username);
     my $cgi = $self->query();
+    $template->param(items_mode => 1);
+    return $template->output();
+}
+
+sub someday_maybe {
+    my $self = shift;
+    my $template = $self->template("someday_maybe.tmpl");
+    my $user = $self->{user};
+    $template->param($user->someday_maybe());
+    $template->param(page_title => "Someday/Maybe items for " . $user->username);
     $template->param(items_mode => 1);
     return $template->output();
 }

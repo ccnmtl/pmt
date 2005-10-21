@@ -26,11 +26,13 @@ __PACKAGE__->has_many(project_notifies => 'PMT::NotifyProject', 'username');
 __PACKAGE__->add_constructor(all_active => qq{status = 'active' order by
 upper(fullname) ASC});
 
-__PACKAGE__->set_sql(total_estimated_time =>  
-		     qq{select sum(i.estimated_time) as total from items i where
-			    i.assigned_to = ? 
-			    and i.status IN ('OPEN','UNASSIGNED','INPROGRESS');
-		    },'Main');
+__PACKAGE__->set_sql(total_estimated_time =>
+                     qq{select sum(i.estimated_time) as total from items i, milestones m where
+                            i.assigned_to = ?
+                            and i.mid = m.mid
+                            and m.name <> 'Someday/Maybe'
+                            and i.status IN ('OPEN','UNASSIGNED','INPROGRESS');
+                    },'Main');
 
 sub data {
     my $self = shift;
@@ -40,7 +42,7 @@ sub data {
         email => $self->email,
         status => $self->status,
         grp => $self->grp,
-	password => $self->password,
+        password => $self->password,
     };
 }
 
@@ -57,13 +59,13 @@ sub validate {
 
 
     if($self->password eq $password) {
-	if($self->status ne "active") {
-	    throw Error::InactiveUser "user is inactive and may not login";
-	} else {
-	    return;
-	}
+        if($self->status ne "active") {
+            throw Error::InactiveUser "user is inactive and may not login";
+        } else {
+            return;
+        }
     } else {
-	throw Error::INCORRECT_PASSWORD "incorrect password";
+        throw Error::INCORRECT_PASSWORD "incorrect password";
     }
 }
 
@@ -80,50 +82,50 @@ sub user_info {
     delete $data->{email};
     delete $data->{status};
 
-    throw Error::NonexistantUser "user does not exist" 
+    throw Error::NonexistantUser "user does not exist"
         unless $data->{user_username};
     return $data;
 }
 
 __PACKAGE__->set_sql(user_groups => qq{
     select u.username as group,u.fullname as group_name
-	from users u, in_group i 
-	where u.username = i.grp and i.username = ?;},
-		     'Main');
+        from users u, in_group i
+        where u.username = i.grp and i.username = ?;},
+                     'Main');
 
 # lists the group that a specified user is part of
 sub user_groups {
     my $self = shift;
     my $sth = $self->sql_user_groups;
     $sth->execute($self->username);
-    
+
     return [map {
-	$_->{group_name} =~ s/ \(group\)$//;
-	$_;
+        $_->{group_name} =~ s/ \(group\)$//;
+        $_;
     } @{$sth->fetchall_arrayref({})}];
 }
 
 
 __PACKAGE__->set_sql(projects_by_auth => qq{
-	SELECT p.pid,p.name 
+        SELECT p.pid,p.name
         FROM works_on w, projects p
-	    WHERE  w.pid = p.pid
-	    AND p.status <> 'Complete'
-	    AND w.username = ?
-	    AND w.auth = ?;
+            WHERE  w.pid = p.pid
+            AND p.status <> 'Complete'
+            AND w.username = ?
+            AND w.auth = ?;
     }, 'Main');
 
 
 sub projects_by_auth {
     my $self = shift;
     my $auth = shift;
-    my $seen = shift; 
+    my $seen = shift;
 
     if(!$seen) {
-	$seen = {};
+        $seen = {};
     }
     if (exists $seen->{$self->username}) {
-	return {};
+        return {};
     }
 
     $seen->{$self->username} = 1;
@@ -136,20 +138,20 @@ sub projects_by_auth {
     # get the list of projects that this user
     # is explicitly attached to
     foreach my $p (@{$sth->fetchall_arrayref({})}) {
-	$projects{$p->{pid}} = $p->{name};
+        $projects{$p->{pid}} = $p->{name};
     }
 
     # then, add in the projects for the groups that
-    # the user is part of. 
+    # the user is part of.
     foreach my $g (@{$self->user_groups()}) {
-	my $group_user = PMT::User->retrieve($g->{group});
-	my $group_projects = $group_user->projects_by_auth($auth,$seen);
-	foreach my $pid (keys %{$group_projects}) {
-	    $projects{$pid} = $group_projects->{$pid};
-	}
+        my $group_user = PMT::User->retrieve($g->{group});
+        my $group_projects = $group_user->projects_by_auth($auth,$seen);
+        foreach my $pid (keys %{$group_projects}) {
+            $projects{$pid} = $group_projects->{$pid};
+        }
     }
     return \%projects;
-   
+
 }
 
 # returns a reference to a hashtable of projects that
@@ -157,23 +159,23 @@ sub projects_by_auth {
 # groups that the user is in. key is pid, value is project name.
 
 __PACKAGE__->set_sql(projects => qq{
-	SELECT p.pid,p.name FROM works_on w, projects p 
-	    WHERE w.pid = p.pid 
-	    AND p.status <> 'Complete' AND p.status <> 'Deferred' AND p.status <> 'Maintenance'
-	    AND w.username = ?;
+        SELECT p.pid,p.name FROM works_on w, projects p
+            WHERE w.pid = p.pid
+            AND p.status <> 'Complete' AND p.status <> 'Deferred' AND p.status <> 'Maintenance'
+            AND w.username = ?;
     }, 'Main');
 
 sub projects_hash {
     my $self = shift;
-    # hash of usernames 
+    # hash of usernames
     # prevents loops
-    my $seen = shift; 
+    my $seen = shift;
     if(!$seen) {
-	$seen = {};
+        $seen = {};
     }
 
     if (exists $seen->{$self->username}) {
-	return {};
+        return {};
     }
 
     $seen->{$self->username} = 1;
@@ -186,25 +188,25 @@ sub projects_hash {
     # get the list of projects that this user
     # is explicitly attached to
     foreach my $p (@{$sth->fetchall_arrayref({})}) {
-	$projects{$p->{pid}} = $p->{name};
+        $projects{$p->{pid}} = $p->{name};
     }
 
     # then, add in the projects for the groups that
-    # the user is part of. 
+    # the user is part of.
     foreach my $g (@{$self->user_groups()}) {
-	my $group_user = PMT::User->retrieve($g->{group});
-	my $group_projects = $group_user->projects_hash($seen);
-	foreach my $pid (keys %{$group_projects}) {
-	    $projects{$pid} = $group_projects->{$pid};
-	}
+        my $group_user = PMT::User->retrieve($g->{group});
+        my $group_projects = $group_user->projects_hash($seen);
+        foreach my $pid (keys %{$group_projects}) {
+            $projects{$pid} = $group_projects->{$pid};
+        }
     }
     return \%projects;
 }
 
 __PACKAGE__->set_sql(interval_time => qq{
-    select sum(a.actual_time) as time from actual_times a 
-	where a.resolver = ?
-	and a.completed > ? and a.completed <= date(?) + interval '1 day';}, 'Main');
+    select sum(a.actual_time) as time from actual_times a
+        where a.resolver = ?
+        and a.completed > ? and a.completed <= date(?) + interval '1 day';}, 'Main');
 
 sub interval_time {
     my $self = shift;
@@ -219,12 +221,12 @@ sub interval_time {
 }
 
 __PACKAGE__->set_sql(active_projects => qq{
-	select distinct p.pid,p.name from actual_times a,
-	items i, milestones m, projects p  
-	    where a.iid = i.iid 
-	    and a.resolver = ?
-	    and i.mid = m.mid and m.pid = p.pid
-	    and a.completed > ? and a.completed <= date(?) + interval '1 day';
+        select distinct p.pid,p.name from actual_times a,
+        items i, milestones m, projects p
+            where a.iid = i.iid
+            and a.resolver = ?
+            and i.mid = m.mid and m.pid = p.pid
+            and a.completed > ? and a.completed <= date(?) + interval '1 day';
     }, 'Main');
 
 sub active_projects {
@@ -238,16 +240,16 @@ sub active_projects {
 
 __PACKAGE__->set_sql(total_breakdown => qq{
     select p.pid,p.name,sum(a.actual_time) as time
-	from projects p, milestones m, items i, actual_times a
-	where a.resolver = ? and a.iid = i.iid and i.mid = m.mid and m.pid =
-	p.pid
-	group by p.pid,p.name order by time desc;}, 'Main');
+        from projects p, milestones m, items i, actual_times a
+        where a.resolver = ? and a.iid = i.iid and i.mid = m.mid and m.pid =
+        p.pid
+        group by p.pid,p.name order by time desc;}, 'Main');
 
 sub total_breakdown {
     my $self = shift;
     my $sth = $self->sql_total_breakdown;
     $sth->execute($self->username);
-    my @projects = map { 
+    my @projects = map {
         $_->{'time'} = interval_to_hours($_->{'time'});
         $_;
     } @{$sth->fetchall_arrayref({})};
@@ -263,43 +265,43 @@ sub weekly_report {
     # figure out which projects have been taking up time self week
     my $active_projects = $self->active_projects($week_start,$week_end);
     foreach my $project (@$active_projects) {
-	$project->{time} = $self->project_completed_time_for_interval($project->{pid},$week_start, $week_end);
-	$project->{hours} = interval_to_hours($project->{time});
+        $project->{time} = $self->project_completed_time_for_interval($project->{pid},$week_start, $week_end);
+        $project->{hours} = interval_to_hours($project->{time});
     }
     # get individual resolve times
 
     return {active_projects => $active_projects,
-	    total_time => interval_to_hours($self->interval_time($week_start,$week_end)),
-	    individual_times => $self->resolve_times_for_interval($week_start, $week_end),
-	};
+            total_time => interval_to_hours($self->interval_time($week_start,$week_end)),
+            individual_times => $self->resolve_times_for_interval($week_start, $week_end),
+        };
 }
 
 __PACKAGE__->set_sql(all_projects => qq{
     SELECT p.pid, p.name, p.status, p.caretaker,
     u.fullname, date_trunc('minute',max(i.last_mod)) as modified
-	FROM projects p LEFT OUTER JOIN milestones m 
-	ON p.pid = m.pid
-	LEFT OUTER JOIN items i on m.mid = i.mid 
-	JOIN users u on p.caretaker = u.username
-	WHERE 
-	(p.pub_view = 'true' 
-	 OR p.pid in (SELECT w.pid 
-		      FROM works_on w
-		      WHERE w.username = ?))	    
-	GROUP BY
-	p.pid,p.name,p.status,p.caretaker,u.fullname
-	ORDER BY upper(p.name) ASC;}, 'Main');
+        FROM projects p LEFT OUTER JOIN milestones m
+        ON p.pid = m.pid
+        LEFT OUTER JOIN items i on m.mid = i.mid
+        JOIN users u on p.caretaker = u.username
+        WHERE
+        (p.pub_view = 'true'
+         OR p.pid in (SELECT w.pid
+                      FROM works_on w
+                      WHERE w.username = ?))
+        GROUP BY
+        p.pid,p.name,p.status,p.caretaker,u.fullname
+        ORDER BY upper(p.name) ASC;}, 'Main');
 
 __PACKAGE__->set_sql(project_estimated_times => qq{
     select m.pid, sum(i.estimated_time) as
-	estimated from items i, milestones m 
-	where i.mid = m.mid and i.status in
-	('OPEN','UNASSIGNED', 'INPROGRESS') group by m.pid;}, 'Main');
+        estimated from items i, milestones m
+        where i.mid = m.mid and i.status in
+        ('OPEN','UNASSIGNED', 'INPROGRESS') group by m.pid;}, 'Main');
 
 __PACKAGE__->set_sql(project_completed_times => qq{
     select m.pid, sum(a.actual_time) as completed from
-	actual_times a, items i, milestones m where a.iid = i.iid
-	and i.mid = m.mid group by m.pid;}, 'Main');
+        actual_times a, items i, milestones m where a.iid = i.iid
+        and i.mid = m.mid group by m.pid;}, 'Main');
 
 sub all_projects {
     my $self = shift;
@@ -332,7 +334,7 @@ sub all_projects {
         } else {
             $p->{total_completed} = "-";
         }
-	push @projects, $p;
+        push @projects, $p;
     }
     return \@projects;
 }
@@ -341,7 +343,7 @@ sub notify_projects {
     my $self = shift;
     my $pid  = shift;
 
-    my @res = PMT::NotifyProject->search(pid => $pid, 
+    my @res = PMT::NotifyProject->search(pid => $pid,
                    username => $self->username);
 
     if (scalar @res) {
@@ -395,14 +397,14 @@ sub total_estimated_time {
     return $res;
 }
 
-__PACKAGE__->set_sql(watched_items => 
-		     qq{
+__PACKAGE__->set_sql(watched_items =>
+                     qq{
     select i.iid,i.type,i.title,i.priority,i.status,i.r_status,p.name as project,
        m.pid,i.target_date,date_trunc('minute',i.last_mod) as last_mod,
        current_date - i.target_date as overdue, i.description, i.assigned_to,
        ua.fullname as assigned_to_fullname, i.owner, uo.fullname as owner_fullname
        from items i, notify n, milestones m, projects p, users ua, users uo
-       where i.iid = n.iid 
+       where i.iid = n.iid
            and m.mid = i.mid
            and m.pid = p.pid
            and uo.username = i.owner
@@ -423,17 +425,17 @@ sub watched_items {
         } @{$sth->fetchall_arrayref({})}]);
 }
 
-__PACKAGE__->set_sql(events_on => 
-		     qq{SELECT e.status,e.event_date_time as date_time,e.item as iid,i.title,c.comment,c.username
-			    FROM events e, items i, milestones m, comments c, projects p
-			    WHERE c.username = ? AND e.item = i.iid AND c.event = e.eid 
-			    AND m.pid = p.pid
-			    AND i.mid = m.mid AND (p.pid in (select w.pid from works_on w 
-							     where username = ?) 
-						   OR p.pub_view = 'true')
-			    AND date_trunc('day',e.event_date_time) = ?
-			    ORDER BY e.event_date_time ASC;
-		    }, 'Main');
+__PACKAGE__->set_sql(events_on =>
+                     qq{SELECT e.status,e.event_date_time as date_time,e.item as iid,i.title,c.comment,c.username
+                            FROM events e, items i, milestones m, comments c, projects p
+                            WHERE c.username = ? AND e.item = i.iid AND c.event = e.eid
+                            AND m.pid = p.pid
+                            AND i.mid = m.mid AND (p.pid in (select w.pid from works_on w
+                                                             where username = ?)
+                                                   OR p.pub_view = 'true')
+                            AND date_trunc('day',e.event_date_time) = ?
+                            ORDER BY e.event_date_time ASC;
+                    }, 'Main');
 
 
 sub events_on {
@@ -446,11 +448,13 @@ sub events_on {
 }
 
 __PACKAGE__->set_sql(estimated_times_by_priority =>
-		     qq{select sum(i.estimated_time) as time, i.priority from items i where
-			    i.assigned_to = ?
-			    and i.status in ('OPEN','UNASSIGNED','INPROGRESS')
-			    GROUP BY i.priority;
-		    }, 'Main');
+                     qq{select sum(i.estimated_time) as time, i.priority from items i, milestones m where
+                            i.assigned_to = ?
+                            and i.mid = m.mid
+                            and m.name <> 'Someday/Maybe'
+                            and i.status in ('OPEN','UNASSIGNED','INPROGRESS')
+                            GROUP BY i.priority;
+                    }, 'Main');
 
 sub estimated_times_by_priority {
     my $self = shift;
@@ -468,11 +472,13 @@ sub estimated_times_by_priority {
 }
 
 __PACKAGE__->set_sql(estimated_times_by_schedule_status =>
-		qq{select i.estimated_time, 
-		   current_date - i.target_date as overdue
-		       from items i where assigned_to = ?
-		       and i.status in ('OPEN','UNASSIGNED','INPROGRESS');
-	       }, 'Main');     
+                qq{select i.estimated_time,
+                   current_date - i.target_date as overdue
+                       from items i, milestones m where assigned_to = ?
+                       and i.mid = m.mid
+                       and m.name <> 'Someday/Maybe'
+                       and i.status in ('OPEN','UNASSIGNED','INPROGRESS');
+               }, 'Main');
 
 sub estimated_times_by_schedule_status {
     my $self = shift;
@@ -497,13 +503,13 @@ sub estimated_times_by_schedule_status {
     return \%statuses;
 }
 
-__PACKAGE__->set_sql(estimated_times_by_project => 
-		     qq{select sum(i.estimated_time) as time,p.pid,p.name as project
-			    from items i, milestones m, projects p
-			    where i.mid = m.mid and m.pid = p.pid and i.assigned_to = ?
-			    and i.status in ('OPEN','INPROGRESS','UNASSIGNED')
-			    GROUP BY p.pid,p.name;},
-		     'Main');
+__PACKAGE__->set_sql(estimated_times_by_project =>
+                     qq{select sum(i.estimated_time) as time,p.pid,p.name as project
+                            from items i, milestones m, projects p
+                            where i.mid = m.mid and m.pid = p.pid and i.assigned_to = ?
+                            and i.status in ('OPEN','INPROGRESS','UNASSIGNED')
+                            GROUP BY p.pid,p.name;},
+                     'Main');
 
 sub estimated_times_by_project {
     my $self = shift;
@@ -516,16 +522,16 @@ sub estimated_times_by_project {
 }
 
 __PACKAGE__->set_sql(resolve_times_for_interval =>
-		     qq{select a.actual_time, date_trunc('second',a.completed) as completed, 
-			a.iid, i.title, p.pid, p.name as project
-			    from actual_times a, items i, milestones m, projects p
-			    where a.iid = i.iid
-			    and i.mid = m.mid
-			    and m.pid = p.pid
-			    and a.resolver = ?
-			    and a.completed > ? and a.completed <= date(?) + interval '1 day'
-			    order by a.completed ASC;},
-		     'Main');
+                     qq{select a.actual_time, date_trunc('second',a.completed) as completed,
+                        a.iid, i.title, p.pid, p.name as project
+                            from actual_times a, items i, milestones m, projects p
+                            where a.iid = i.iid
+                            and i.mid = m.mid
+                            and m.pid = p.pid
+                            and a.resolver = ?
+                            and a.completed > ? and a.completed <= date(?) + interval '1 day'
+                            order by a.completed ASC;},
+                     'Main');
 
 sub resolve_times_for_interval {
     my $self       = shift;
@@ -537,12 +543,12 @@ sub resolve_times_for_interval {
 }
 
 __PACKAGE__->set_sql(project_completed_time_for_interval =>
-		     qq{	
-			 select sum(a.actual_time) as total_time from actual_times a, items i, milestones m
-			     where a.resolver = ? 
-			     and a.iid = i.iid and i.mid = m.mid and m.pid = ?
-			     and a.completed > ? and a.completed <= date(?) + interval '1 day';
-		     }, 'Main');
+                     qq{
+                         select sum(a.actual_time) as total_time from actual_times a, items i, milestones m
+                             where a.resolver = ?
+                             and a.iid = i.iid and i.mid = m.mid and m.pid = ?
+                             and a.completed > ? and a.completed <= date(?) + interval '1 day';
+                     }, 'Main');
 
 
 sub project_completed_time_for_interval {
@@ -558,10 +564,10 @@ sub project_completed_time_for_interval {
 }
 
 __PACKAGE__->set_sql(total_completed_time =>
-		     qq{
-			 select sum(actual_time) as time
-			     from actual_times where resolver = ?;},
-		     'Main');
+                     qq{
+                         select sum(actual_time) as time
+                             from actual_times where resolver = ?;},
+                     'Main');
 
 sub total_completed_time {
     my $self = shift;
@@ -572,11 +578,11 @@ sub total_completed_time {
     return interval_to_hours($time);
 }
 
-__PACKAGE__->set_sql(total_group_time => 
-		     qq{select sum(a.actual_time) as time from actual_times a, in_group g
-			    where a.resolver = g.username and g.grp = ?
-			    and a.completed > ? and a.completed <= ?;},
-		     'Main');
+__PACKAGE__->set_sql(total_group_time =>
+                     qq{select sum(a.actual_time) as time from actual_times a, in_group g
+                            where a.resolver = g.username and g.grp = ?
+                            and a.completed > ? and a.completed <= ?;},
+                     'Main');
 
 sub total_group_time {
     my $self = shift;
@@ -594,17 +600,18 @@ SELECT i.iid,i.type,i.title,i.priority,i.status,i.r_status,p.name as project,
        m.pid,i.target_date,date_trunc('minute',i.last_mod) as last_mod,
        current_date - i.target_date as overdue,i.description
 FROM   items i, milestones m, projects p
-WHERE  i.mid = m.mid 
-  AND  m.pid = p.pid 
-  AND ((i.assigned_to = ? 
-       AND i.status IN ('OPEN','UNASSIGNED','INPROGRESS')) 
-       OR 
+WHERE  i.mid = m.mid
+  AND  m.pid = p.pid
+  AND ((i.assigned_to = ?
+       AND i.status IN ('OPEN','UNASSIGNED','INPROGRESS')
+        AND m.name <> 'Someday/Maybe')
+       OR
        (i.owner = ? AND i.status = 'RESOLVED') )
-  AND ((p.pub_view = 'true') 
-       OR  (p.pid in (SELECT w.pid 
+  AND ((p.pub_view = 'true')
+       OR  (p.pid in (SELECT w.pid
                       FROM   works_on w
-		      WHERE  w.username = ?))
-       OR (i.assigned_to = ?) 
+                      WHERE  w.username = ?))
+       OR (i.assigned_to = ?)
        OR (i.owner = ?))
   ORDER BY i.priority DESC, i.type DESC, i.target_date ASC;}, 'Main');
 
@@ -618,11 +625,44 @@ sub items {
     my $sth = $self->sql_items_search;
     $sth->execute($self->username,$self->username,$viewer,$viewer,$viewer);
 
-    return make_classes([map 
+    return make_classes([map
         {
-            $_->{priority_label} = $PRIORITIES{$_->{priority}}; 
+            $_->{priority_label} = $PRIORITIES{$_->{priority}};
             $_;
-	} @{$sth->fetchall_arrayref({})}]);
+        } @{$sth->fetchall_arrayref({})}]);
+}
+
+__PACKAGE__->set_sql(someday_maybe_items_search => qq {
+SELECT i.iid,i.type,i.title,i.priority,i.status,i.r_status,p.name as project,
+       m.pid,i.target_date,date_trunc('minute',i.last_mod) as last_mod,
+       current_date - i.target_date as overdue,i.description
+FROM   items i, milestones m, projects p
+WHERE  i.mid = m.mid
+  AND  m.pid = p.pid
+  AND ((i.assigned_to = ?
+       AND i.status IN ('OPEN','UNASSIGNED','INPROGRESS')
+        AND m.name = 'Someday/Maybe'))
+  AND ((p.pub_view = 'true')
+       OR  (p.pid in (SELECT w.pid
+                      FROM   works_on w
+                      WHERE  w.username = ?))
+       OR (i.assigned_to = ?)
+       OR (i.owner = ?))
+  ORDER BY i.priority DESC, i.type DESC, i.target_date ASC;}, 'Main');
+
+sub someday_maybe_items {
+    my $self = shift;
+    my $username = $self->username;
+    my $viewer = shift;
+
+    my $sth = $self->sql_someday_maybe_items_search;
+    $sth->execute($self->username,$viewer,$viewer,$viewer);
+
+    return make_classes([map
+        {
+            $_->{priority_label} = $PRIORITIES{$_->{priority}};
+            $_;
+        } @{$sth->fetchall_arrayref({})}]);
 }
 
 
@@ -632,26 +672,26 @@ sub quick_edit_data {
     my $sort = shift || "";
     my %data = %{$self->data()};
     $data{items}                = [
-				   map {
-				       if ($_->{overdue} < -7) {
-					   $_->{schedule_status} = 'ok';
-				       } elsif ($_->{overdue} < -1) {
-					   $_->{schedule_status} = 'upcoming';
-				       } elsif ($_->{overdue} < 1) {
-					   $_->{schedule_status} = 'due';
-				       } elsif ($_->{overdue} < 7) {
-					   $_->{schedule_status} = 'overdue';
-				       } else {
-					   $_->{schedule_status} = 'late';
-				       }
+                                   map {
+                                       if ($_->{overdue} < -7) {
+                                           $_->{schedule_status} = 'ok';
+                                       } elsif ($_->{overdue} < -1) {
+                                           $_->{schedule_status} = 'upcoming';
+                                       } elsif ($_->{overdue} < 1) {
+                                           $_->{schedule_status} = 'due';
+                                       } elsif ($_->{overdue} < 7) {
+                                           $_->{schedule_status} = 'overdue';
+                                       } else {
+                                           $_->{schedule_status} = 'late';
+                                       }
                                        my $i = PMT::Item->retrieve($_->{iid});
                                        $_->{status_select} = $i->status_select();
                                        $_->{priority_select} = $i->priority_select();
                                        my $p = $i->mid->pid;
                                        $_->{assigned_to_select} = $p->assigned_to_select($i->assigned_to);
-				       $_;
-				   }
-				   @{$self->items($self->username,$sort)}];
+                                       $_;
+                                   }
+                                   @{$self->items($self->username,$sort)}];
     return \%data;
 }
 
@@ -665,30 +705,30 @@ sub home {
     my $sort = shift || "";
     my %data = %{$self->data()};
     $data{items}                = [
-				   map {
-				       if ($_->{overdue} < -7) {
-					   $_->{schedule_status} = 'ok';
-				       } elsif ($_->{overdue} < -1) {
-					   $_->{schedule_status} = 'upcoming';
-				       } elsif ($_->{overdue} < 1) {
-					   $_->{schedule_status} = 'due';
-				       } elsif ($_->{overdue} < 7) {
-					   $_->{schedule_status} = 'overdue';
-				       } else {
-					   $_->{schedule_status} = 'late';
-				       }
+                                   map {
+                                       if ($_->{overdue} < -7) {
+                                           $_->{schedule_status} = 'ok';
+                                       } elsif ($_->{overdue} < -1) {
+                                           $_->{schedule_status} = 'upcoming';
+                                       } elsif ($_->{overdue} < 1) {
+                                           $_->{schedule_status} = 'due';
+                                       } elsif ($_->{overdue} < 7) {
+                                           $_->{schedule_status} = 'overdue';
+                                       } else {
+                                           $_->{schedule_status} = 'late';
+                                       }
                                        $_->{priority_label} = $PRIORITIES{$_->{priority}};
-				       $_;
-				   }
-				   @{$self->items($username,$sort)}];
+                                       $_;
+                                   }
+                                   @{$self->items($username,$sort)}];
 
     $data{total_estimated_time} = $self->total_estimated_time();
     $data{groups}               = $self->user_groups();
     my $est_priority = $self->estimated_times_by_priority();
     my $est_sched = $self->estimated_times_by_schedule_status();
-    my $scheds = scale_array(150.0,[$est_sched->{ok}, $est_sched->{upcoming}, 
-				    $est_sched->{due}, $est_sched->{overdue}, 
-				    $est_sched->{late}]);
+    my $scheds = scale_array(150.0,[$est_sched->{ok}, $est_sched->{upcoming},
+                                    $est_sched->{due}, $est_sched->{overdue},
+                                    $est_sched->{late}]);
 
     $data{ok} = $scheds->[0];
     $data{upcoming} = $scheds->[1];
@@ -697,14 +737,40 @@ sub home {
     $data{late} = $scheds->[4];
 
     my $priorities = scale_array(150.0, [$est_priority->{priority_4}, $est_priority->{priority_3},
-					 $est_priority->{priority_2}, $est_priority->{priority_1},
-					 $est_priority->{priority_0}]);
+                                         $est_priority->{priority_2}, $est_priority->{priority_1},
+                                         $est_priority->{priority_0}]);
 
     $data{critical} = $priorities->[0];
     $data{high} = $priorities->[1];
     $data{medium} = $priorities->[2];
     $data{low} = $priorities->[3];
     $data{icing} = $priorities->[4];
+
+    return \%data;
+}
+
+sub someday_maybe {
+    my $self = shift;
+    my $username = $self->username;
+
+    my %data = %{$self->data()};
+    $data{items}                = [
+                                   map {
+                                       if ($_->{overdue} < -7) {
+                                           $_->{schedule_status} = 'ok';
+                                       } elsif ($_->{overdue} < -1) {
+                                           $_->{schedule_status} = 'upcoming';
+                                       } elsif ($_->{overdue} < 1) {
+                                           $_->{schedule_status} = 'due';
+                                       } elsif ($_->{overdue} < 7) {
+                                           $_->{schedule_status} = 'overdue';
+                                       } else {
+                                           $_->{schedule_status} = 'late';
+                                       }
+                                       $_->{priority_label} = $PRIORITIES{$_->{priority}};
+                                       $_;
+                                   }
+                                   @{$self->someday_maybe_items($username)}];
 
     return \%data;
 }
@@ -728,12 +794,12 @@ sub users_select {
     my $default = shift || "";
     my @values = ();
     my @labels = map {
-	push @values, $_->username;
-	$_->fullname;
+        push @values, $_->username;
+        $_->fullname;
     } PMT::User->all_active();
     my @defaults = [];
     if ($default ne "") {
-	@defaults = ($default);
+        @defaults = ($default);
     }
     return selectify(\@values,\@labels,\@defaults);
 }
@@ -746,19 +812,19 @@ sub groups {
 
 
 __PACKAGE__->set_sql(users_hours_1 => qq{
-	SELECT u.username,u.fullname,count(i.iid) as open_items,sum(i.estimated_time) as hours
+        SELECT u.username,u.fullname,count(i.iid) as open_items,sum(i.estimated_time) as hours
         FROM   users u, items i
         WHERE  u.status <> 'inactive'
                AND (i.status IN ('OPEN','INPROGRESS','UNASSIGNED'))
                AND u.username = i.assigned_to
-	GROUP BY u.username,u.fullname;
+        GROUP BY u.username,u.fullname;
     },'Main');
 
 __PACKAGE__->set_sql(users_hours_2 => qq{
-	SELECT u.username,u.fullname
+        SELECT u.username,u.fullname
         FROM   users u
         WHERE  u.username NOT IN (select distinct assigned_to from items)
-	       AND u.status <> 'inactive';
+               AND u.status <> 'inactive';
     }, 'Main');
 
 __PACKAGE__->set_sql(users_hours_3 => qq{
@@ -775,8 +841,8 @@ sub users_hours {
     $sth->execute();
     my %users = ();
     foreach my $user (@{$sth->fetchall_arrayref({})}) {
-	$user->{hours} = interval_to_hours($user->{'hours'});
-	$users{$user->{username}} = $user;
+        $user->{hours} = interval_to_hours($user->{'hours'});
+        $users{$user->{username}} = $user;
     }
 
     # also get the users who don't have any open items
@@ -784,9 +850,9 @@ sub users_hours {
     $sth = $self->sql_users_hours_2;
     $sth->execute();
     foreach my $user (@{$sth->fetchall_arrayref({})}) {
-	$user->{hours} = 0;
-	$user->{open_items} = 0;
-	$users{$user->{username}} = $user;
+        $user->{hours} = 0;
+        $user->{open_items} = 0;
+        $users{$user->{username}} = $user;
     }
 
     # get the resolved times in the last month
@@ -803,12 +869,12 @@ sub users_hours {
     }
 
     return [
-	    map {
-		$users{$_};
-	    } sort {
-		lc($users{$a}->{fullname}) cmp lc($users{$b}->{fullname});
-	    } keys %users
-	    ];
+            map {
+                $users{$_};
+            } sort {
+                lc($users{$a}->{fullname}) cmp lc($users{$b}->{fullname});
+            } keys %users
+            ];
 }
 
 
