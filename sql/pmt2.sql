@@ -45,8 +45,8 @@ CREATE TABLE projects (
 	projnum integer,
 	scale varchar(20),
 	distrib varchar(20),
-	poster boolean DEFAULT 'false'
-       FOREIGN KEY (caretaker) REFERENCES users (username)
+	poster boolean DEFAULT 'false',
+        FOREIGN KEY (caretaker) REFERENCES users (username)
 );
 
 CREATE TABLE milestones (
@@ -126,7 +126,7 @@ CREATE TABLE notify (
 );
 
 CREATE TABLE notify_project (
-       iid integer NOT NULL,
+       pid integer NOT NULL,
        username varchar(32) NOT NULL,
        PRIMARY KEY (pid,username),
        FOREIGN KEY (username)     REFERENCES users (username) 
@@ -251,4 +251,5 @@ CREATE TABLE item_clients (
 	foreign key (iid) references items (iid)
 		on delete cascade,
 	foreign key (client_id) references clients (client_id)
-);		on delete cascade
+		on delete cascade
+);
