@@ -1294,11 +1294,20 @@ sub update_items {
             if ($resolve_time =~ /^(\d+)$/) {
                 $resolve_time .= "h";
             }
-
             my $changed = 0;
+            my $comment = "";
+
+            if ($status eq "someday") {
+                $status = $i->status;
+                $r_status = $i->r_status;
+                my $m = $i->mid->pid->someday_maybe_milestone();
+                $i->mid($m->mid);
+                $changed = 1;
+                $comment = "milestone changed";
+            }
+
             my $add_notification = 0;
             my $email = 0;
-            my $comment = "";
 
             if (($assigned_to eq $i->owner->username) &&
                 ($assigned_to eq $self->{username}) &&
