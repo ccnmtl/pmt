@@ -1,5 +1,10 @@
 use strict;
 use Test::More tests => 20;
+use PMT::Config;
+my $config = new PMT::Config();
+my $dbname = $config->{database};
+my $dbuser = $config->{database_username};
+my $dbpass = $config->{database_password};
 
 BEGIN {
     use_ok("PMT");
@@ -25,7 +30,7 @@ BEGIN {
 }
 
 use DBI;
-my $dbh = DBI->connect("DBI:Pg:dbname=pmt2","anders","",{RaiseError =>
+my $dbh = DBI->connect("DBI:Pg:dbname=$dbname",$dbuser,$dbpass,{RaiseError =>
 1, AutoCommit => 0});
 
 
