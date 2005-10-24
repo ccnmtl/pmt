@@ -1,0 +1,61 @@
+# overview of sky's install process for PMT
+# not as complete as they should be...
+
+* install the following CPAN modules (e.g.  perl -MCPAN -e'install Text::Tiki' )
+
+Text::Tiki
+Time::Piece
+HTML::Template
+Date::Calc
+Net::LDAP
+Class::DBI
+Net::ICal
+Error
+# (yes, CPAN Error module)
+DBD::Pg
+CGI::Application
+HTML::CalendarMonth
+Text::CSV_XS
+
+
+* EDIT config/settings.xml: dbname, user, password
+createuser pmt2 -P #or  s/pmt2/$user/
+#if necessary: 
+dropdb pmt2
+
+createdb pmt2 --owner pmt2        #or createdb [dbname] --owner [user]
+psql pmt2 -f sql/pmt2.sql -U pmt2
+
+install on apache:
+Options ExecCGI Includes ???
+AddHandler cgi-script .pl
+
+Mod_perl 2
+------------------------
+http://gentoo-wiki.com/Apache_Modules_mod_perl
+http://perl.apache.org/docs/2.0/user/porting/compat.html#C_Apache__Registry___C_Apache__PerlRun__and_Friends
+
+* added 2 lines to /etc/portage/package.keywords:
+www-apache/mod_perl     ~x86
+perl-core/CGI           ~x86
+
+emerge mod_perl
+
+* appended "-D PERL" to APACHE2_OPTS in /etc/conf.d/apache2
+
+* added the following lines to my apache conf file (/etc/apache2/vhosts.d/00_default_vhost.conf )
+# replace "/home/sky/pmt" with wherever your pmt code is
+# RegistryPreFork chdir's to the script's directory like in mod_perl1. ModPerl::Registry doesn't....
+Alias /pmt /home/sky/pmt
+
+<Directory "/home/sky/pmt">
+ Options Indexes ExecCGI
+ Order allow,deny
+ Allow from all
+  AddHandler perl-script .pl
+  PerlResponseHandler ModPerl::RegistryPrefork
+  PerlSendHeader On
+  DirectoryIndex home.pl
+</Directory>
+
+* /etc/init.d/apache2 restart
