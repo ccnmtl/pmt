@@ -46,6 +46,7 @@ CREATE TABLE projects (
 	scale varchar(20),
 	distrib varchar(20),
 	poster boolean DEFAULT 'false',
+        wiki_category character varying(256),
         FOREIGN KEY (caretaker) REFERENCES users (username)
 );
 
