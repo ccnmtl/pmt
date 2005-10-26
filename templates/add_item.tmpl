@@ -162,13 +162,13 @@ delete it like you would any other action item or bug.</p>
 <table cellpadding="0" cellspacing="0" class="pmtform">
 <tr>
 <th class="firstcell">title:</th>
-<td>
+<td colspan="3">
 <input class="textform" type="text" size="40" name="title" />
 </td>
 </tr>
 <tr>
 <th class="firstcell">milestone:</th>
-<td>
+<td colspan="3">
 <select class="big" name="mid">
 <tmpl_loop name="milestone_select">
 <tmpl_include name="options_loop.tmpl"></option>
@@ -179,16 +179,14 @@ delete it like you would any other action item or bug.</p>
 
 <tmpl_if name="on_project">
 <tr>
-<th class="firstcell">assign to:</th>
-<td>
+<th rowspan="2" class="firstcell">assign to:</th>
+<td rowspan="2">
 <select class="available" style="width: 290px;" name="assigned_to" multiple size="6">
 <tmpl_loop name="developers">
 <option value="<tmpl_var name="username">"<tmpl_if name="caretaker"> selected="selected"</tmpl_if>><tmpl_var name="fullname"></option>
 </tmpl_loop>
 </select>
 </td>
-</tr>
-<tr>
 <th class="firstcell">owner:</th>
 <td>
 <select class="big" name="owner">
@@ -197,7 +195,17 @@ delete it like you would any other action item or bug.</p>
 </tmpl_loop>
 </select>
 </td>
+
 </tr>
+
+<tr>
+<th class="firstcell">estimated time:</th>
+<td colspan="3">
+<input class="textform" type="text" name="estimated_time" value="1 hour" size="15" />
+</td>
+</tr>
+
+
 <tmpl_else>
   <input type="hidden" name="assigned_to" value="<tmpl_var   name="caretaker" escape="html">" />
   <input type="hidden" name="owner" value="<tmpl_var name="username" escape="html">" />
@@ -214,8 +222,7 @@ delete it like you would any other action item or bug.</p>
 <option value="0">ICING</option>
 </select>
   </td>
-</tr>
-<tr>
+
 <th class="firstcell">target date:<br />(YYYY-MM-DD)</th>
 <td>
 <!-- <input class="textform" type="text" name="target_date" value="" onclick="getCalN(this,1)" size="15" /><br /> -->
@@ -224,23 +231,24 @@ delete it like you would any other action item or bug.</p>
 <br />
 (leave blank to inherit target date from milestone)</td>
 </tr>
-<tr>
-<th class="firstcell">estimated time:</th>
-<td>
-<input class="textform" type="text" name="estimated_time" value="1 hour" size="15" />
-</td>
-</tr>
+
 <tr>
 <th class="firstcell">description:</th>
-<td>
+<td colspan="3">
 <div class="resizer" id="descriptionbox">
 <textarea class="textform" name="description" wrap="virtual" cols="40" rows="10"></textarea>
 <img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20" height="20" alt="" />
 </div>
 </td>
 </tr>
-<tmpl_if name="clients_select">
 <tr>
+<th class="firstcell">keywords:</th>
+<td<tmpl_unless name="clients_select"> colspan="3"</tmpl_unless>>
+keywords (one per line): <br />
+<textarea class="textform" name="new_keywords" cols="5" rows="5" style="width: 90%;"></textarea>
+  </td>
+
+<tmpl_if name="clients_select">
 <th class="firstcell">client(s):</th>
 <td>
 <select class="activated" name="clients" multiple="multiple" size="5">
@@ -253,19 +261,14 @@ name="firstname" escape="html"> <tmpl_var name="lastname" escape="html">
 </tmpl_loop>
 </select>
 </td>
-</tr>
 </tmpl_if>
-<tr>
-<th class="firstcell">keywords:</th>
-<td>
-keywords (one per line): <br />
-<textarea class="textform" name="new_keywords" cols="5" rows="5" style="width: 50%;"></textarea>
-  </td>
+
+
 </tr>
 
 <tr>
   <th class="firstcell">attachment:</th>
-  <td>
+  <td colspan="3">
     <table cellpadding="0" cellspacing="0" class="pmtform" style="width: 650px;">
       <tr>
         <th class="firstcell">select file:</th>
@@ -291,7 +294,7 @@ keywords (one per line): <br />
     </td>
 
 <tr>
-<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="ADD <tmpl_if name="bug">BUG<tmpl_else>ACTION ITEM</tmpl_if>"" /></td>
+<!-- ## Submit button --><td colspan="5" class="firstcell" align="center"><input type="submit" class="button" value="ADD <tmpl_if name="bug">BUG<tmpl_else>ACTION ITEM</tmpl_if>"" /></td>
 </tr>
 
 <tr>
