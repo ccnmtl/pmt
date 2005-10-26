@@ -1201,5 +1201,6 @@ table#progressbar .behind {
 	     background-color: #f00;
 }
 
-
+.hs-hide {display: none;}
+.hs-show {display: block;}
 

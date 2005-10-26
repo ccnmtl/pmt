@@ -235,10 +235,10 @@ delete it like you would any other action item or bug.</p>
 <tr>
 <th class="firstcell">description:</th>
 <td colspan="3">
-<div class="resizer" id="descriptionbox">
+
 <textarea class="textform" name="description" wrap="virtual" cols="40" rows="10"></textarea>
-<img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20" height="20" alt="" />
-</div>
+
+
 </td>
 </tr>
 <tr>
@@ -267,9 +267,11 @@ name="firstname" escape="html"> <tmpl_var name="lastname" escape="html">
 </tr>
 
 <tr>
-  <th class="firstcell">attachment:</th>
+  <th class="firstcell"><a href="#attachment-table"
+  class="hs-control">add attachment</a>:</th>
   <td colspan="3">
-    <table cellpadding="0" cellspacing="0" class="pmtform" style="width: 650px;">
+    <table cellpadding="0" cellspacing="0" class="pmtform
+  hs-init-hide" id="attachment-table" width="95%">
       <tr>
         <th class="firstcell">select file:</th>
         <td><input type="file" name="attachment" /></td>
