@@ -473,14 +473,14 @@ sub add_item {
     foreach my $client (@clients) {
         push @new_clients, $client unless $client eq "";
     }
-
+    my $iid = "";
     if($type eq "tracker") {
         my $resolve_time = $cgi->param('time') || "1 hour";
         if($resolve_time =~ /^(\d+)$/) {
             # default to hours if now unit is specified
             $resolve_time = "$1"."h";
         }
-        $pmt->add_tracker(pid => $pid,
+        $iid = $pmt->add_tracker(pid => $pid,
                           mid => $mid,
                           title => $title,
                           'time' => $resolve_time,
@@ -489,7 +489,7 @@ sub add_item {
                           completed => $completed,
                           clients => \@new_clients);
     } elsif ($type eq "todo") {
-        $pmt->add_todo(pid => $pid,
+        $iid = $pmt->add_todo(pid => $pid,
                        mid => $mid,
                        title => $title,
                        target_date => $target_date,
@@ -511,10 +511,27 @@ sub add_item {
                         dependencies => \@new_dependencies,
                         clients      => \@new_clients,
                         estimated_time => $estimated_time);
-            $pmt->add_item(\%item);
+            $iid = $pmt->add_item(\%item);
         }
         $type =~ s/\s/%20/g;
     }
+
+    # if there was an attachment, we put that on there now:
+
+    my $filename    = $cgi->param('attachment')  || "";
+    my $attachmenttitle       = $cgi->param('attachmenttitle')       || $filename;
+    my $attachmenturl         = $cgi->param('attachmenturl')         || "";
+    my $attachmentdescription = $cgi->param('attachmentdescription') || "";
+    my $fh          = $cgi->upload('attachment');
+
+    my $id = PMT::Attachment->add_attachment(item_id     => $iid,
+                                             title       => $attachmenttitle,
+                                             url         => $attachmenturl,
+                                             filename    => $filename,
+                                             fh          => $fh,
+                                             description => $attachmentdescription,
+                                             author      => $username);
+
     # put the user back at the add item for for the same type/project
     # so they can conveniently add multiple items
     $self->header_type('redirect');

@@ -15,7 +15,7 @@
 <span class="hide">PROJECTS:</span> &#62; Add To Do
 </h1>
 
-<form action="home.pl" method="POST">
+<form action="home.pl" method="POST" enctype="multipart/form-data">
 <input type="hidden" name="mode" value="add_item"/>
 <input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
 <tmpl_loop name="milestone_select">
@@ -63,7 +63,7 @@ for yourself.</p>
 <span class="hide">PROJECTS:</span> &#62; Add Tracker
 </h1>
 
-<form action="home.pl" method="POST">
+<form action="home.pl" method="POST" enctype="multipart/form-data">
 <input type="hidden" name="mode" value="add_item" />
 <input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
 <tmpl_loop name="milestone_select">
@@ -154,7 +154,7 @@ delete it like you would any other action item or bug.</p>
 <span class="hide">PROJECTS:</span> &#62; <tmpl_if name="bug">Add A Bug <tmpl_else>Add An Action Item </tmpl_if>
 </h1>
 
-<form action="home.pl" method="post">
+<form action="home.pl" method="post" enctype="multipart/form-data">
 <input type="hidden" name="mode" value="add_item" />
 <input type="hidden" name="pid" value="<tmpl_var name="pid">" />
 <input type="hidden" name="type" <tmpl_if name="bug">value="bug"<tmpl_else>value="action item" </tmpl_if> />
@@ -297,6 +297,32 @@ name="firstname" escape="html"> <tmpl_var name="lastname" escape="html">
 </tr>
 </tmpl_if>
 
+<tr>
+  <th class="firstcell">attachment:</th>
+  <td>
+    <table cellpadding="0" cellspacing="0" class="pmtform" style="width: 650px;">
+      <tr>
+        <th class="firstcell">select file:</th>
+        <td><input type="file" name="attachment" /></td>
+      </tr>
+      <tr>
+         <th class="firstcell">or enter url:</th>
+         <td><input type="text" class="textform" name="attachmenturl" value="http://" size="30" /></td>
+      </tr>
+      <tr>
+         <th class="firstcell">title:</th>
+         <td><input type="text" class="textform" name="attachmenttitle" size="30" /> (defaults to filename)</td> 
+      </tr>
+      <tr>
+         <th class="firstcell">description:</th>
+         <td><div class="resizer" id="attachmentdescriptionbox">
+             <textarea wrap="virtual" class="textform" cols="40" rows="8"
+              name="attachmentdescription"></textarea>
+             <img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"  height="20" alt="" /></div>
+         </td>
+      </tr>
+     </table>
+    </td>
 
 <tr>
 <!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="ADD <tmpl_if name="bug">BUG<tmpl_else>ACTION ITEM</tmpl_if>"" /></td>
