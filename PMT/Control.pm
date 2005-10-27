@@ -519,21 +519,24 @@ sub add_item {
     # if there was an attachment, we put that on there now:
 
     my $filename    = $cgi->param('attachment')  || "";
-    my $attachmenttitle       = $cgi->param('attachmenttitle')       || $filename;
-    my $attachmenturl         = $cgi->param('attachmenturl')         || "";
-    my $attachmentdescription = $cgi->param('attachmentdescription') || "";
-    my $fh          = $cgi->upload('attachment');
+    if ($filename) {
+        my $attachmenttitle       = $cgi->param('attachmenttitle')       || $filename;
+        my $attachmenturl         = $cgi->param('attachmenturl')         || "";
+        my $attachmentdescription = $cgi->param('attachmentdescription') || "";
+        my $fh          = $cgi->upload('attachment');
 
-    my $id = PMT::Attachment->add_attachment(item_id     => $iid,
-                                             title       => $attachmenttitle,
-                                             url         => $attachmenturl,
-                                             filename    => $filename,
-                                             fh          => $fh,
-                                             description => $attachmentdescription,
-                                             author      => $username);
 
+        my $id = PMT::Attachment->add_attachment(item_id     => $iid,
+                                                 title       => $attachmenttitle,
+                                                 url         => $attachmenturl,
+                                                 filename    => $filename,
+                                                 fh          => $fh,
+                                                 description => $attachmentdescription,
+                                                 author      => $username);
+    }
     # put the user back at the add item for for the same type/project
     # so they can conveniently add multiple items
+
     $self->header_type('redirect');
     $self->header_props(-url => "home.pl?mode=add_item_form;type=$type;pid=$pid");
     return "redirecting back to add item form";
