@@ -307,7 +307,7 @@ sub all_projects {
     my $self = shift;
     my $sth = $self->sql_all_projects;
     $sth->execute($self->username);
-    my $projects = $sth->fetchall_arrayref({});
+    my $all_projects = $sth->fetchall_arrayref({});
 
     my %estimated_times = ();
     my %completed_times = ();
@@ -323,7 +323,7 @@ sub all_projects {
     }
 
     my @projects;
-    foreach my $p (@$projects) {
+    foreach my $p (@$all_projects) {
         if (exists $estimated_times{$p->{pid}}) {
             $p->{total_estimated} = $estimated_times{$p->{pid}};
         } else {
@@ -334,9 +334,9 @@ sub all_projects {
         } else {
             $p->{total_completed} = "-";
         }
-        push @projects, $p;
+        push @all_projects, $p;
     }
-    return \@projects;
+    return \@all_projects;
 }
 
 sub notify_projects {

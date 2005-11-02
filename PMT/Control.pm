@@ -322,7 +322,7 @@ sub all_projects {
     my $self = shift;
     my $user = $self->{user};
     my $template = $self->template("projects.tmpl");
-    $template->param(projects => $user->all_projects());
+    $template->param(all_projects => $user->all_projects());
     $template->param(projects_mode => 1);
     $template->param(page_title => 'All Projects');
     return $template->output();
