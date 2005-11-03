@@ -60,8 +60,9 @@ name="total_time" escape="html"> hours.</p>
 <th>project:</th></tr>
 <tmpl_loop name="individual_times">
 <tr><td class="firstcell"><tmpl_var name="actual_time" escape="html"></td>
-<td><a href="item.pl?iid=<tmpl_var name="iid" escape="url">"><tmpl_var
-name="item" escape="html"></a></td>
+<td><a href="item.pl?iid=<tmpl_var name="iid" escape="url">">#<tmpl_var
+name="iid" escape="html">: <tmpl_var
+name="title" escape="html"></a></td>
 <td><nobr><tmpl_var name="completed" escape="html"></nobr></td>
 <td><a href="home.pl?mode=project;pid=<tmpl_var name="pid"
 escape="url">"><tmpl_var name="project" escape="html"></a></td>
