@@ -512,11 +512,11 @@ sub add_item {
                         clients      => \@new_clients,
                         estimated_time => $estimated_time);
             $iid = $pmt->add_item(\%item);
-            
+
             #By default, add the owner of an action item to its notify list.
-						my $add_cc_item = PMT::Item->retrieve($iid);
-		        $add_cc_item->add_cc(PMT::User->retrieve($owner));
-		        
+                                                my $add_cc_item = PMT::Item->retrieve($iid);
+                        $add_cc_item->add_cc(PMT::User->retrieve($owner));
+
         }
         $type =~ s/\s/%20/g;
     }
@@ -567,7 +567,7 @@ sub add_trackers {
         my $pid = $cgi->param("pid$i") || "";
         my $title = $cgi->param("title$i") || "";
         my $time = $cgi->param("time$i") || "1 hour";
-
+        $title = substr $title, 0, 255;
         if ($time =~ /^(\d+)$/) {
             $time = "$1"."h";
         }
