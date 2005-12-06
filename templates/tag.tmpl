@@ -3,7 +3,11 @@
 <tmpl_include name="menu_local_items.tmpl">
 <div class="pagecontent">
 
-<b>tag:</b> <tmpl_var name="tag"><br />
+
+<h1><b>tag:</b> <tmpl_var name="tag"></h1>
+
+<tmpl_if name="items">
+<h2>items</h2>
 <table>
 <tr>
 <th>item</th>
@@ -18,7 +22,7 @@
 <tmpl_loop name="items">
 <tr>
 <td class="<tmpl_var name="type_class">"><a href="item.pl?iid=<tmpl_var name="iid">"><tmpl_var name="type"># <tmpl_var name="iid">: <tmpl_var name="title"></a></td>
-<td class="pr<tmpl_var name="priority">"><tmpl_var name="priority"></td>
+<td class="pr<tmpl_var name="priority">"><tmpl_var name="priority_label"></td>
 <td class="<tmpl_var name="status">"><tmpl_var name="status"> <tmpl_if name="r_status">(<tmpl_var name="r_status">)</tmpl_if></td>
 <td><a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td>
 <td><a href="home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="milestone"></a></td>
@@ -27,5 +31,31 @@
 </tr>
 </tmpl_loop>
 </table> 
+</tmpl_if>
+
+<tmpl_if name="nodes">
+<br />
+<br />
+<h2>forum posts</h2>
+<table>
+<tr>
+<th>post</th>
+<th>author</th>
+<th>date</th>
+</tr>
+
+<tmpl_loop name="nodes">
+<tr>
+<td><a href="home.pl?mode=node;nid=<tmpl_var name="nid">"><tmpl_var
+name="subject" escape="html"></a></td>
+<td><a href="home.pl?mode=user;username=<tmpl_var name="author"
+escape="url">"><tmpl_var name="author_fullname" escape="html"></a></td>
+<td><tmpl_var name="added_informal"></td>
+</tr>
+</tmpl_loop>
+</table>
+</tmpl_if>
+
+
 </div>
 <tmpl_include name="footer.tmpl">

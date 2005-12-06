@@ -1838,12 +1838,20 @@ sub set_tags {
     my $user = $self->{user};
     my $username = $user->username;
     my $iid = $cgi->param('iid') || "";
+    my $nid = $cgi->param('nid') || "";
     my $tags = $cgi->param('tags') || "";
     my @tags = split /[\n\r\,+]/, $tags;
     @tags = map {s/^\s+//; s/\s+$//; $_;} @tags;
-    my $item = PMT::Item->retrieve($iid);
-    $item->update_tags(\@tags,$username);
-    return objToJson($item->tags());
+    if ($iid) {
+        my $item = PMT::Item->retrieve($iid);
+        $item->update_tags(\@tags,$username);
+        return objToJson($item->tags());
+    }
+    if ($nid) {
+        my $node = PMT::Node->retrieve($nid);
+        $node->update_tags(\@tags,$username);
+        return objToJson($node->tags());
+    }
 }
 
 sub tag {
@@ -1864,16 +1872,25 @@ sub tag {
     }
     my $r = tasty_get($url);
 
-    my @items = map {
-        my $i = PMT::Item->retrieve($_);
-        $i->data();
-    } map {
-        my $item = $_->{item};
+    my @items = ();
+    my @nodes = ();
+
+    foreach my $el (@{$r->{items}}) {
+        my $item = $el->{item};
         my @parts = split "_", $item;
-        $parts[1];
-    } @{$r->{items}};
+        my $id = $parts[1];
+        if ($parts[0] eq "item") {
+            my $i = PMT::Item->retrieve($id);
+            push @items, $i->data();
+        }
+        if ($parts[0] eq "node") {
+            my $n = PMT::Node->retrieve($id);
+            push @nodes, $n->data($username);
+        }
+    }
 
     $template->param(items => \@items,
+                     nodes => \@nodes,
                      tag => $tag);
 
     return $template->output();
@@ -2268,8 +2285,11 @@ sub node {
     my $pmt = $self->{pmt};
     my $nid = $cgi->param('nid') || "";
     my $template = $self->template("node.tmpl");
-    $template->param(PMT::Node->retrieve($nid)->data($self->{user}));
-    $template->param(page_title => "Forum Node: " . $template->param('subject'));
+    my $node = PMT::Node->retrieve($nid);
+    $template->param($node->data($self->{user}));
+    $template->param(page_title => "Forum Node: " . $template->param('subject'),
+                     tags => $node->tags(),
+                     user_tags => $node->user_tags($self->{user}->{username}));
     return $template->output();
 }
 

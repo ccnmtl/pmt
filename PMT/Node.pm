@@ -78,6 +78,112 @@ sub data {
     return $d;
 }
 
+sub tags {
+    my $self = shift;
+    my $nid = $self->{nid};
+    my $url = "item/node_$nid/";
+    my $r = tasty_get($url);
+    if ($r->{tags}) {
+        return [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
+    } else {
+        return [];
+    }
+}
+
+sub user_tags {
+    # return only the tags that the specified user has tagged the node with
+    my $self = shift;
+    my $username = shift;
+    my $nid = $self->{nid};
+    my $url = "item/node_$nid/user/user_$username/";
+    my $r = tasty_get($url);
+    if ($r->{tags}) {
+        return [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
+    } else {
+        return [];
+    }
+}
+
+
+sub update_tags {
+    my $self     = shift;
+    my $r        = shift;
+    my $username = shift || "";
+    my @tags = @$r;
+    # clear out old ones first
+    $self->clear_tags($username);
+    # put the new ones back in
+    foreach my $t (@tags) {
+        next if $t eq "";
+        $self->add_tag($t,$username);
+    }
+}
+
+sub clear_tags {
+    my $self = shift;
+    my $username = shift;
+    my $nid = $self->{nid};
+
+
+    my @unique_tags = ();
+
+    if ($self->project) {
+        my $tags = tasty_get("item/node_$nid/");
+        my @tagusers = @{$tags->{tag_users}};
+        my %mytags = ();
+        my %otherstags = ();
+        foreach my $o (@tagusers) {
+            my $t = $o->[0]->{tag};
+            my $u = $o->[1]->{user};
+            if ($u eq "user_$username") {
+                $mytags{$t} = 1;
+            } elsif ($u =~ /^user_/) {
+                $otherstags{$t} = 1;
+            } else {
+                # it's a project tag
+            }
+        }
+
+        foreach my $t (keys %mytags) {
+            if (!defined $otherstags{$t}) {
+                push @unique_tags, $t;
+            }
+        }
+    }
+
+    my $url = "item/node_$nid/user/user_$username/";
+    tasty_delete($url);
+    # delete an project associations if the project is the
+    # only user left with that tag for the node
+
+    if ($self->project) {
+        $url = "item/node_$nid/";
+        foreach my $t (@unique_tags) {
+            tasty_delete($url . "tag/$t/");
+        }
+    }
+}
+
+use URI::Escape;
+sub add_tag {
+    my $self = shift;
+    my $tag = shift;
+    $tag =~ s/[\r\n]+//g;
+    $tag =~ s/^\s+//;
+    $tag =~ s/\s+$//;
+    $tag =~ s/\s+/ /g;
+    return if $tag eq "";
+    $tag = uri_escape($tag);
+    my $username = shift;
+    my $nid = $self->{nid};
+    my $url = "item/node_$nid/tag/$tag/user/user_$username/";
+    if ($self->project) {
+        $url .= "user/project_" . $self->project;
+    }
+    tasty_put($url);
+}
+
+
 # returns reference to an array strings which are the
 # html for the nested comments
 sub comment_html {

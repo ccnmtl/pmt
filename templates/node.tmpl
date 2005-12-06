@@ -22,6 +22,20 @@ escape="url">"><tmpl_var name="author_fullname" escape="html"></a> @
 <div class="nodebody">
 <tmpl_var name="body">
 </div>
+<div id="tags">
+Tags: <div id="viewtags">
+<tmpl_loop name="tags">
+<a href="home.pl?mode=tag;tag=<tmpl_var name="tag" escape="url">"><tmpl_var name="tag"></a>
+</tmpl_loop>
+</div>
+<a href="#edittags" class="hs-control"><tmpl_unless name="user_tags">Add<tmpl_else>Edit</tmpl_unless> Tags</a>
+<div id="edittags" class="hs-init-hide">
+<textarea id="usertags" name="usertags" cols="5" rows="5"><tmpl_loop name="user_tags"><tmpl_var name="tag"
+escape="html"><tmpl_unless __LAST__>, </tmpl_unless></tmpl_loop></textarea><br />
+(seperate tags with commas or newlines)
+<input type="submit" value="save tags" id="tagsave"/>
+</div>
+</div>
 
 <tmpl_if name="can_delete">
 <div style="padding: 6px; border-top: 1px solid #ccf; text-align: left;">
@@ -34,7 +48,7 @@ escape="url">"><tmpl_var name="author_fullname" escape="html"></a> @
 <br />
 
 <a name="addcomment"></a><h2>add a comment:</h2>
-<form action="home.pl" method="post">
+<form action="home.pl" method="post" id="replyform">
 <input type="hidden" name="mode" value="post" />
 <input type="hidden" name="reply_to" value="<tmpl_Var name="nid">" />
 <input type="hidden" name="pid" value="<tmpl_var name="pid">" />

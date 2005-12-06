@@ -1,5 +1,23 @@
-function getIid() {
-	 return $("submitform")['iid'].value;
+var item_type = "item";
+
+function setItemType() {
+	 var body = document.getElementsByTagName('body')[0];
+
+	 if (body.id == "sectionforum") {
+	    item_type = "node";
+	    log("set item type to node");
+	 } else {
+	    log("item type is item");
+	 }
+}
+
+function getId() {
+	 if (item_type == "item") {
+	 	 return $("submitform")['iid'].value;
+         } else {
+                 // get the nid from the reply form
+	         return $("replyform")['reply_to'].value;
+	 }
 }
 
 function updateTags(data) {
@@ -21,8 +39,9 @@ function saveFailed(err) {
 
 function saveTags() {
 	 var tags = $("usertags").value;
-	 var iid = getIid();
-	 var url = "home.pl?mode=set_tags;iid=" + iid + ";tags=" + urlEncode(tags);
+	 var id = getId();
+	 var idname = item_type == "item" ? "iid" : "nid";
+	 var url = "home.pl?mode=set_tags;" + idname + "=" + id + ";tags=" + urlEncode(tags);
 	 var d = loadJSONDoc(url);
 	 var submit = $("tagsave");
 	 submit.value = "saving...";
@@ -31,6 +50,7 @@ function saveTags() {
 
 
 function initTagsForm() {
+	 setItemType();
 	 var submit = $("tagsave");
 	 if (!submit) return;
 	 submit.onclick = function () { saveTags(); return false; }
