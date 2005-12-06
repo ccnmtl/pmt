@@ -1,5 +1,5 @@
 use strict;
-use Test::More tests => 20;
+use Test::More tests => 19;
 use PMT::Config;
 my $config = new PMT::Config();
 my $dbname = $config->{database};
