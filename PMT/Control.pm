@@ -1887,8 +1887,12 @@ sub my_tags {
     my $username = $user->username;
     my $url = "user/user_$username/";
     my $template = $self->template("my_tags.tmpl");
-
-    $template->param(tags => [sort {lc($a->{tag}) cmp lc($b->{tag})} @{tasty_get($url)->{tags}}],
+    my $r = tasty_get($url);
+    my $tags = [];
+    if ($r->{tags}) {
+        $tags = [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
+    }
+    $template->param(tags => $tags,
                      page_title => 'My Tags');
     return $template->output();
 }
