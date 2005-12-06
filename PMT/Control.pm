@@ -1885,7 +1885,7 @@ sub tag {
         }
         if ($parts[0] eq "node") {
             my $n = PMT::Node->retrieve($id);
-            push @nodes, $n->data($username);
+            push @nodes, $n->data($user);
         }
     }
 
