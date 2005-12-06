@@ -129,10 +129,10 @@ name="label" escape="html"></option>
 </td>
 </tr>
 </tmpl_if>
-<tmpl_if name="tags">
 <tr>
 <th class="firstcell" width="120">tags:<br />
-<a href="#edittags" class="hs-control">(edit)</a></th>
+<a href="#edittags" class="hs-control"><tmpl_if name="tags">(edit)<tmpl_else>(add)</tmpl_if></a>
+</th>
 <td colspan="3">
 
 <div id="viewtags">
@@ -148,10 +148,9 @@ __LAST__>, </tmpl_unless></tmpl_loop></textarea><br />
 (seperate tags with commas or newlines)
 <input type="submit" value="save tags" id="tagsave"/>
 </div>
-
 </td>
 </tr>
-</tmpl_if>
+
 <tmpl_if name="dependencies">
 <tr>
 <th class="firstcell" width="120">dependencies:</th>
