@@ -570,8 +570,6 @@ sub clear_tags {
     foreach my $t (@unique_tags) {
         tasty_delete($url . "tag/$t/");
     }
-    tasty_delete($url);
-
 }
 
 use URI::Escape;
