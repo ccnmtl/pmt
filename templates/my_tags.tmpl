@@ -1,0 +1,22 @@
+<tmpl_include name="header_items.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_items.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>TAGS: My Tags</h1>
+<h1 class="print">Tags for <tmpl_var name="username"></h1>
+
+<ul><tmpl_loop name="tags"><li><a href="home.pl?mode=tag;tag=<tmpl_var
+name="tag" escape="url">"><tmpl_var name="tag"
+escape="html"></a></li></tmpl_loop>
+</ul>
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

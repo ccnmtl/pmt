@@ -110,13 +110,6 @@ CREATE TABLE actual_times (
 	ON DELETE CASCADE
 );
 
-CREATE TABLE keywords (
-       keyword VARCHAR(255) NOT NULL,
-       iid integer NOT NULL,
-       PRIMARY KEY (keyword,iid),
-       FOREIGN KEY (iid) REFERENCES items (iid)
-         ON DELETE CASCADE
-);
 
 CREATE TABLE notify (
        iid integer NOT NULL,

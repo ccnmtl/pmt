@@ -216,19 +216,10 @@ maxlength="254" /></td></tr>
 </td></tr>
 
 <tr>
-<th class="firstcell">keywords:</th>
+<th class="firstcell">tags:</th>
 <td>
-<tmpl_if name="keywords">
-<select class="activated" name="keywords" multiple size="5">
-<option value="">no keywords</option>
-<tmpl_loop name="keywords">
-<option value="<tmpl_var name="keyword">"><tmpl_var name="keyword"></option>
-</tmpl_loop></select>
-</tmpl_if>
- <br />
- <br />
- new keywords (one per line): <br />
-<textarea class="textform" name="new_keywords" cols="5" rows="5" style="width: 50%;"></textarea>
+(one per line): <br />
+<textarea class="textform" name="tags" cols="5" rows="5" style="width: 50%;"></textarea>
   </td>
 </tr>
 <tmpl_if name="dependencies">

@@ -44,16 +44,16 @@ convenient overview of the progress of their projects.  </para>
  <para>
  Rather than the hierarchy of project/division/milestone/bug|action
 item that version 1 of the PMT used, the PMT2 removes the "division"
-level, replacing it with a more flexible and powerful "keyword" system
+level, replacing it with a more flexible and powerful "tag" system
 for grouping tasks. The new hierarchy has projects each
 consisting of a set of milestones. Each item (an action item or bug) is 
 associated with a single milestone. In addition, an item may have
-one or more keywords. These can be things like "video", "content",
+one or more tags. These can be things like "video", "content",
 or any other grouping. This facilitates the sorting or searching
 of the items. Eg, a manager can easily have the PMT2 display only
-items tagged with a "graphics" keyword. The advantage of this new
+items tagged with a "graphics" tag. The advantage of this new
 architecture is that it requires fewer levels of navigation than the
-old divisions, allows items to be classified with multiple keywords
+old divisions, allows items to be classified with multiple tags
 rather than being assigned to a single division, and it allows for a
 more chronological, milestone based approach to project management.
  </para>
@@ -449,10 +449,10 @@ The date and time of the last modification to the item. Includes actions such as
 </listitem>
 </varlistentry>
 
-<varlistentry><term>Keywords</term>
+<varlistentry><term>Tags</term>
 <listitem>
 <para>
-A fairly free-form way of classifying and grouping items. Any item can have zero or more keywords associated with it. A user can then filter the list of items in a project by keyword, showing only items that have been tagged with that keyword.
+A fairly free-form way of classifying and grouping items. Any item can have zero or more tags associated with it. A user can then filter the list of items in a project by tag, showing only items that have been tagged with that tag.
 </para>
 </listitem>
 </varlistentry>

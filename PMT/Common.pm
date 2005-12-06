@@ -3,16 +3,17 @@ package PMT::Common;
 require Exporter;
 @PMT::Common::ISA = qw(Exporter);
 @PMT::Common::EXPORT = qw(interval_to_hours make_classes
-			  untaint_date untaint_ascii 
-			  untaint_ascii_with_default
-			  untaint_w untaint_w_with_default
-			  untaint_iid untaint_pid untaint_keyword
-			  untaint_username untaint_password
-			  untaint_mid untaint_sort untaint_status
-			  untaint_d untaint_d_with_default
-			  paragraphize selectify escape get_template
+                          untaint_date untaint_ascii
+                          untaint_ascii_with_default
+                          untaint_w untaint_w_with_default
+                          untaint_iid untaint_pid
+                          untaint_username untaint_password
+                          untaint_mid untaint_sort untaint_status
+                          untaint_d untaint_d_with_default
+                          paragraphize selectify escape get_template
                           todays_date scale_array ld diff diff_order
-			  lists_diff truncate_string
+                          lists_diff truncate_string tasty_get
+                          tasty_delete tasty_put
                           );
 
 sub scale_array {
@@ -34,13 +35,13 @@ sub interval_to_hours {
     return 0 unless $interval;
 
     my ($days,$hours,$minutes) = (0,0,0);
-    
+
     if($interval =~ /(\d\d):(\d\d)/) {
-	$hours = $1;
-	$minutes = $2;
-    } 
+        $hours = $1;
+        $minutes = $2;
+    }
     if ($interval =~ /^(\d+)\sday(s\s+\d\d:\d\d)?/) {
-	$days = $1;
+        $days = $1;
     }
     $hours = ($days * 24) + $hours + ($minutes/60);
     $hours =~ s/\.(\d\d)\d*/.$1/g;
@@ -52,7 +53,7 @@ sub interval_to_hours {
 sub make_classes {
     my $r = shift;
     my %classes = ('bug' => "bug",
-		   'action item' => "actionitem");
+                   'action item' => "actionitem");
     # using map just cause i can
     return [map {$$_{type_class} = $classes{$$_{type}};$_;} @$r];
 }
@@ -64,12 +65,12 @@ sub untaint_date {
     my $date = shift;
 
     eval {
-	$date = untaint_ascii($date);
-	throw Error::INVALID_DATE 
-	    unless $date =~ /^\d{4}-\d{1,2}-\d{1,2}$/;
+        $date = untaint_ascii($date);
+        throw Error::INVALID_DATE
+            unless $date =~ /^\d{4}-\d{1,2}-\d{1,2}$/;
     };
     if ($@) {
-	throw Error::INVALID_DATE "invalid or nonexistant date";
+        throw Error::INVALID_DATE "invalid or nonexistant date";
     }
     return $date;
 }
@@ -83,9 +84,9 @@ sub untaint_ascii {
     $text ||= "";
     $text =~ s/\0//g;
     if($text =~ /([[:ascii:]]+)/) {
-	$text = $1;
+        $text = $1;
     } else {
-	throw Error::NO_TEXT "text contained no valid ascii characters";
+        throw Error::NO_TEXT "text contained no valid ascii characters";
     }
     return $text;
 }
@@ -97,15 +98,15 @@ sub untaint_ascii_with_default {
     my ($text, $default) = @_;
 
     eval {
-	$text = untaint_ascii($text);
+        $text = untaint_ascii($text);
     };
     if($@) {
-	my $E = $@;
-	if($E->isa('Error::NO_TEXT')) {
-	    $text = $default;
-	} else {
-	    throw $E;
-	}
+        my $E = $@;
+        if($E->isa('Error::NO_TEXT')) {
+            $text = $default;
+        } else {
+            throw $E;
+        }
     }
     return $text;
 }
@@ -116,17 +117,17 @@ sub untaint_ascii_with_default {
 sub untaint_username {
     my $username = shift;
     eval {
-	$username = untaint_w($username);
+        $username = untaint_w($username);
     };
     if ($@) {
-	my $E = $@;
-	if($E->isa('Error::NO_TEXT')) {
-	    throw Error::NO_USERNAME "username: '$username' is not valid"; 	    
-	} else {
-	    throw Error::INVALID_USERNAME "bad username";
-	}
+        my $E = $@;
+        if($E->isa('Error::NO_TEXT')) {
+            throw Error::NO_USERNAME "username: '$username' is not valid";
+        } else {
+            throw Error::INVALID_USERNAME "bad username";
+        }
     } else {
-	return untaint_w($username);
+        return untaint_w($username);
     }
 }
 
@@ -136,15 +137,15 @@ sub untaint_username {
 sub untaint_password {
     my $password = shift;
     eval {
-	$password = untaint_ascii($password);
+        $password = untaint_ascii($password);
     };
     if($@) {
-	my $E = $@;
-	if($E->isa('Error::NO_TEXT')) {
-	    throw Error::NO_PASSWORD "no password was specified";
-	} else {
-	    throw Error::AUTHENTICATION_FAILURE "error in password";
-	}
+        my $E = $@;
+        if($E->isa('Error::NO_TEXT')) {
+            throw Error::NO_PASSWORD "no password was specified";
+        } else {
+            throw Error::AUTHENTICATION_FAILURE "error in password";
+        }
     }
     return $password;
 }
@@ -158,24 +159,16 @@ sub untaint_sort {
 }
 
 # }}}
-# {{{ untaint_keyword
-
-sub untaint_keyword {
-    my $keyword = shift;
-    return untaint_ascii($keyword);
-}
-
-# }}}
 # {{{ untaint_iid
 
 sub untaint_iid {
     my $iid = shift;
 
     eval {
-	$iid = untaint_d($iid);
+        $iid = untaint_d($iid);
     };
     if ($@) {
-	throw Error::NO_IID "invalid or nonexistant item id";
+        throw Error::NO_IID "invalid or nonexistant item id";
     }
     return $iid;
 }
@@ -186,10 +179,10 @@ sub untaint_pid {
     my $pid = shift;
 
     eval {
-	$pid = untaint_d($pid);
+        $pid = untaint_d($pid);
     };
     if ($@) {
-	throw Error::NO_PID "invalid or nonexistant project id";
+        throw Error::NO_PID "invalid or nonexistant project id";
     }
     return $pid;
 }
@@ -199,10 +192,10 @@ sub untaint_mid {
     my $mid = shift;
 
     eval {
-	$mid = untaint_d($mid);
+        $mid = untaint_d($mid);
     };
     if ($@) {
-	throw Error::NO_MID "invalid or nonexistant milestone id";
+        throw Error::NO_MID "invalid or nonexistant milestone id";
     }
     return $mid;
 }
@@ -213,12 +206,12 @@ sub untaint_mid {
 sub untaint_status {
     my $status = shift;
     eval {
-	$status = untaint_w($status);
+        $status = untaint_w($status);
     };
     if ($@) {
-	throw Error::NO_STATUS "invalid or nonexistant status";
+        throw Error::NO_STATUS "invalid or nonexistant status";
     } else {
-	return $status;
+        return $status;
     }
 }
 
@@ -228,16 +221,16 @@ sub untaint_status {
 sub untaint_w_with_default {
     my ($text, $default) = @_;
     eval {
-	$text = untaint_w($text);
+        $text = untaint_w($text);
     };
     if($@) {
-	my $E = $@;
-	if ($E->isa('Error::NO_TEXT')) {
-	    $text = $default;
-	} else {
-	    throw $E;
-	}
-    } 
+        my $E = $@;
+        if ($E->isa('Error::NO_TEXT')) {
+            $text = $default;
+        } else {
+            throw $E;
+        }
+    }
     return $text;
 }
 
@@ -247,9 +240,9 @@ sub untaint_w_with_default {
 sub untaint_w {
     my $text = shift || "";
     if($text =~ /(\w+)/) {
-	$text = $1;
+        $text = $1;
     } else {
-	throw Error::NO_TEXT "text contained no valid characters";
+        throw Error::NO_TEXT "text contained no valid characters";
     }
     return $text;
 }
@@ -260,15 +253,15 @@ sub untaint_w {
 sub untaint_d_with_default {
     my ($text, $default) = @_;
     eval {
-	$text = untaint_d($text);
+        $text = untaint_d($text);
     };
     if($@) {
-	my $E = $@;
-	if($E->isa('Error::NO_TEXT')) {
-	    $text = $default;
-	} else {
-	    throw $E;
-	}
+        my $E = $@;
+        if($E->isa('Error::NO_TEXT')) {
+            $text = $default;
+        } else {
+            throw $E;
+        }
     }
     return $text;
 }
@@ -280,9 +273,9 @@ sub untaint_d {
     my ($this, $text) = @_;
     $text ||= "";
     if($text =~ /(\d+)/) {
-	$text = $1;
+        $text = $1;
     } else {
-	throw Error::NO_TEXT "text contained no digits";
+        throw Error::NO_TEXT "text contained no digits";
     }
     return $text;
 }
@@ -291,7 +284,7 @@ sub untaint_d {
 
 # {{{ paragraphize
 
-# takes text that someone entered in a textarea 
+# takes text that someone entered in a textarea
 # and converts it to html that should be fairly
 # close to what they intended it to look like.
 
@@ -306,14 +299,14 @@ sub paragraphize {
     $text =~ s{</p>\s*<p>}{\n\n}gs;
     $text =~ s{</?p>}{}g;
     $text =~ s{<br />}{\n}g;
-    
+
     my @pars = split /\n{2,}/, $text;
 
     $text = "";
     foreach my $par (@pars) {
-	next if $par =~ /^\s*$/;
-	$par =~ s{\n}{<br />}g;
-	$text .= "<p>$par</p>\n";
+        next if $par =~ /^\s*$/;
+        $par =~ s{\n}{<br />}g;
+        $text .= "<p>$par</p>\n";
     }
     return $text;
 }
@@ -326,11 +319,11 @@ sub selectify {
     my %selected = map {$_ => 1} @{$selected};
 
     return [map {
-	{
-	    value => $_,
-	    label => shift @{$labels},
-	    selected => $selected{$_} || "",
-	}
+        {
+            value => $_,
+            label => shift @{$labels},
+            selected => $selected{$_} || "",
+        }
     } @{$values}];
 }
 
@@ -364,7 +357,7 @@ sub escape {
 # }}}
 # {{{ safe_encode
 
-sub safe_encode { 
+sub safe_encode {
     my $str = shift || "";
     $str =~ s{([\xC0-\xDF].|[\xE0-\xEF]..|[\xF0-\xFF]...)}
     {XmlUtf8Decode ($1)}egs;
@@ -381,7 +374,7 @@ sub XmlUtf8Decode
 
     if ($len == 2)
       { my @n = unpack "C2", $str;
-	$n = (($n[0] & 0x3f) << 6) + ($n[1] & 0x3f);
+        $n = (($n[0] & 0x3f) << 6) + ($n[1] & 0x3f);
       }
     elsif ($len == 3)
     { my @n = unpack "C3", $str;
@@ -392,7 +385,7 @@ sub XmlUtf8Decode
       $n = (($n[0] & 0x0f) << 18) + (($n[1] & 0x3f) << 12)
          + (($n[2] & 0x3f) << 6) + ($n[3] & 0x3f);
     }
-    elsif ($len == 1)	# just to be complete...
+    elsif ($len == 1)   # just to be complete...
     { $n = ord ($str); }
     else
     { die "bad value [$str] for XmlUtf8Decode"; }
@@ -406,14 +399,14 @@ sub get_template {
     use HTML::Template;
     my $file = shift || throw Error::Simple "no template specified";
     my $template = HTML::Template->new(filename => "templates/$file",
-				       die_on_bad_params => 0,
-				       loop_context_vars => 1);    
+                                       die_on_bad_params => 0,
+                                       loop_context_vars => 1);
     return $template;
 }
 
 sub todays_date {
     my ($sec,$min,$hour,$mday,$mon,
-        $year,$wday,$yday,$isdst) = localtime(time); 
+        $year,$wday,$yday,$isdst) = localtime(time);
     $year += 1900;
     $mon += 1;
     $mon = sprintf "%02d", $mon;
@@ -423,7 +416,7 @@ sub todays_date {
 
 # recursively compares two lists by value
 # works for damn near any reasonably complex structure
-# including: lists of scalars, lists of lists, lists of hashes, 
+# including: lists of scalars, lists of lists, lists of hashes,
 # lists of hashes of lists of arrays of scalars, etc, etc.
 # arguably should be called data_structures_diff
 # argument $order == 1 means that we don't care about the order
@@ -444,68 +437,68 @@ sub ld {
     my @ys = @$r2;
 
     if(!$sorted && $order) {
-	@xs = sort @xs;
-	@ys = sort @ys;
-	$sorted = 1;
+        @xs = sort @xs;
+        @ys = sort @ys;
+        $sorted = 1;
     }
 
     if ($#xs != $#ys) {
-	# lists are different lengths, so we know right off that
-	# they must not be the same.
-	return $DIFFERENT;
+        # lists are different lengths, so we know right off that
+        # they must not be the same.
+        return $DIFFERENT;
     } else {
 
-	# lists are the same length, so we compare $x and $y
-	# based on what they are
-	if (!ref $x) {
+        # lists are the same length, so we compare $x and $y
+        # based on what they are
+        if (!ref $x) {
 
-	    # make sure $y isn't a reference either
-	    return $DIFFERENT if ref $y;
+            # make sure $y isn't a reference either
+            return $DIFFERENT if ref $y;
 
-	    # both scalars, compare them
-	    return $DIFFERENT if $x ne $y;
-	} else {
+            # both scalars, compare them
+            return $DIFFERENT if $x ne $y;
+        } else {
 
-	    # we're dealing with references now
-	    if (ref $x ne ref $y) {
+            # we're dealing with references now
+            if (ref $x ne ref $y) {
 
-		# they're entirely different data types
-		return $DIFFERENT;
-	    } elsif ("SCALAR" eq ref $x) {
+                # they're entirely different data types
+                return $DIFFERENT;
+            } elsif ("SCALAR" eq ref $x) {
 
-		# some values that we can actually compare
-		return $DIFFERENT if $$x ne $$y;
-	    } elsif ("REF" eq ref $x) {
+                # some values that we can actually compare
+                return $DIFFERENT if $$x ne $$y;
+            } elsif ("REF" eq ref $x) {
 
-		# yes, we even handle references to references to references...
-		return $DIFFERENT if ld($$x,$$y,[],[],0,$order);
-	    } elsif ("HASH" eq ref $x) {
+                # yes, we even handle references to references to references...
+                return $DIFFERENT if ld($$x,$$y,[],[],0,$order);
+            } elsif ("HASH" eq ref $x) {
 
-		# references to hashes are a little tricky
-		# we make arrays of keys and values (keeping
-		# the values in order relative to the keys)
-		# and compare those.
-		my @kx = sort keys %$x;
-		my @ky = sort keys %$y;
-		my @vx = map {$$x{$_}} @kx;
-		my @vy = map {$$y{$_}} @ky;
-		return $DIFFERENT
-		    if ld("", "", \@kx,\@ky,1,$order) || 
-			ld("", "", \@vx,\@vy,1,$order);
-	    } elsif ("ARRAY" eq ref $x) {
-		return $DIFFERENT if ld("","",$x,$y,0,$order);
-	    } else {
-		# don't know how to compare anything else
-		throw Error::UNKNOWN_TYPE "sorry, can't compare type " . ref $x;
-	    }
-	}
-	if (-1 == $#xs) {
+                # references to hashes are a little tricky
+                # we make arrays of keys and values (keeping
+                # the values in order relative to the keys)
+                # and compare those.
+                my @kx = sort keys %$x;
+                my @ky = sort keys %$y;
+                my @vx = map {$$x{$_}} @kx;
+                my @vy = map {$$y{$_}} @ky;
+                return $DIFFERENT
+                    if ld("", "", \@kx,\@ky,1,$order) ||
+                        ld("", "", \@vx,\@vy,1,$order);
+            } elsif ("ARRAY" eq ref $x) {
+                return $DIFFERENT if ld("","",$x,$y,0,$order);
+            } else {
+                # don't know how to compare anything else
+                throw Error::UNKNOWN_TYPE "sorry, can't compare type " . ref $x;
+            }
+        }
+        if (-1 == $#xs) {
 
-	    # no elements left in list, this is the base case.
-	    return $SAME;
-	} else {
-	    return ld(shift @xs,shift @ys,\@xs,\@ys,$sorted,$order);
-	}
+            # no elements left in list, this is the base case.
+            return $SAME;
+        } else {
+            return ld(shift @xs,shift @ys,\@xs,\@ys,$sorted,$order);
+        }
 
     }
 }
@@ -515,10 +508,10 @@ sub diff {
     my $r2 = shift;
     # ld expects references to lists
     if ("ARRAY" eq ref $r1 && "ARRAY" eq ref $r2) {
-	return ld("","",$r1,$r2,0,1);
+        return ld("","",$r1,$r2,0,1);
     } else {
-	# if they're not references to lists, we just make them
-	return ld("","",[$r1],[$r2],0,1);
+        # if they're not references to lists, we just make them
+        return ld("","",[$r1],[$r2],0,1);
     }
 }
 
@@ -529,16 +522,16 @@ sub diff_order {
     my $r2 = shift;
     # ld expects references to lists
     if ("ARRAY" eq ref $r1 && "ARRAY" eq ref $r2) {
-	return ld("","",$r1,$r2,0,0);
+        return ld("","",$r1,$r2,0,0);
     } else {
-	# if they're not references to arrays, we just make them
-	return ld("","",[$r1],[$r2],0,0);
+        # if they're not references to arrays, we just make them
+        return ld("","",[$r1],[$r2],0,0);
     }
-}   
+}
 
 # recursively compares two lists
 # works for damn near any reasonably complex structure
-# lists of scalars, lists of lists, lists of hashes, 
+# lists of scalars, lists of lists, lists of hashes,
 # lists of hashes of lists of arrays of scalars, etc, etc.
 # doesn't take order into account.
 
@@ -553,32 +546,32 @@ sub lists_diff {
     my @l2 = sort @$r2;
 
     if ($#l1 != $#l2) {
-	# lists are different lengths, so we know right off that
-	# they must not be the same.
-	return $DIFFERENT;
+        # lists are different lengths, so we know right off that
+        # they must not be the same.
+        return $DIFFERENT;
     } else {
-	for(my $i = 0; $i <= $#l1; $i++) {
-	    if (ref $l1[$i] eq ref $l2[$i]) {
-		if (ref $l1[$i] eq "SCALAR") {
-		    return $DIFFERENT if $l1[$i] ne $l2[$i];
-		} elsif (ref $l1[$i] eq "HASH") {
-		    return $DIFFERENT 
-			if (lists_diff([keys %{$l1[$i]}],
-				       [keys %{$l2[$i]}]) 
-			    == $DIFFERENT ||
-			    lists_diff([values %{$l1[$i]}],
-				       [values %{$l2[$i]}])
-			    == $DIFFERENT);
-		} elsif (ref $l1[$i] eq "ARRAY") {
-		    return $DIFFERENT 
-			if (lists_diff($l1[$i],$l2[$i]) == $DIFFERENT);
-		} else {
-		    # don't know how to compare anything else
-		}
-	    } else {
-		return $DIFFERENT;
-	    }
-	}
+        for(my $i = 0; $i <= $#l1; $i++) {
+            if (ref $l1[$i] eq ref $l2[$i]) {
+                if (ref $l1[$i] eq "SCALAR") {
+                    return $DIFFERENT if $l1[$i] ne $l2[$i];
+                } elsif (ref $l1[$i] eq "HASH") {
+                    return $DIFFERENT
+                        if (lists_diff([keys %{$l1[$i]}],
+                                       [keys %{$l2[$i]}])
+                            == $DIFFERENT ||
+                            lists_diff([values %{$l1[$i]}],
+                                       [values %{$l2[$i]}])
+                            == $DIFFERENT);
+                } elsif (ref $l1[$i] eq "ARRAY") {
+                    return $DIFFERENT
+                        if (lists_diff($l1[$i],$l2[$i]) == $DIFFERENT);
+                } else {
+                    # don't know how to compare anything else
+                }
+            } else {
+                return $DIFFERENT;
+            }
+        }
     }
     return $SAME;
 }
@@ -586,12 +579,12 @@ sub lists_diff {
 
 # extract first x chars of a string
 # input 0: string to be truncated
-# input 1: max length of string 
+# input 1: max length of string
 sub truncate_string {
-  
+
     my $full_string = shift;
     my $len = shift || 20;
-    my $truncated_string;  
+    my $truncated_string;
 
     #checks for length of title first
     if ( length($full_string) > $len ) {
@@ -599,6 +592,48 @@ sub truncate_string {
     } else {
         $truncated_string = $full_string;
     }
-}    
+}
+
+sub tasty_get {
+    use LWP::Simple;
+    use JSON;
+    use PMT::Config;
+    my $config = new PMT::Config;
+    my $base = $config->{tasty_base};
+    my $service = $config->{tasty_service};
+    my $url = shift;
+    my $full = "http://$base/service/$service/$url";
+    my $r = get $full;
+    my $json = new JSON;
+    my $obj = $json->jsonToObj($r);
+    if (!$obj) {
+        $obj = {};
+    }
+    return $obj;
+}
+
+use LWP::UserAgent;
+use HTTP::Request;
+use HTTP::Request::Common qw(POST);
+
+sub tasty_put {
+    my $url = shift;
+    my $ua = LWP::UserAgent->new;
+    my $config = new PMT::Config;
+    my $base = $config->{tasty_base};
+    my $service = $config->{tasty_service};
+    my $req = POST "http://$base/service/$service/$url", [];
+    return $ua->request($req)->as_string;
+}
+
+sub tasty_delete {
+    my $url = shift;
+    my $ua = LWP::UserAgent->new;
+    my $config = new PMT::Config;
+    my $base = $config->{tasty_base};
+    my $service = $config->{tasty_service};
+    my $req = HTTP::Request->new(DELETE => "http://$base/service/$service/$url");
+    my $res = $ua->request($req);
+}
 
 1;

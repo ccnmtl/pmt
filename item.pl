@@ -13,10 +13,10 @@ eval {
     my $message = $cgi->param('message') || "";
 
     eval {
-	$iid = $pmt->untaint_d($iid);
+        $iid = $pmt->untaint_d($iid);
     };
     if($@) {
-	throw Error::NO_IID "no iid specified";
+        throw Error::NO_IID "no iid specified";
     }
 
     my $username = $cgi->cookie('pmtusername') || "";
@@ -52,12 +52,12 @@ eval {
     $data{description} =~ s/(\s+\S+\@\S+)\)/$1 )/g;
     $data{description_html} = $tiki->format($data{description});
     $data{$data{type}}         = 1;
-    $data{keywords}            = [map {$_->data()} $item->keywords()];
-    $data{can_resolve}         = ($data{status} eq 'OPEN' || 
-				  $data{status} eq 'INPROGRESS' || 
-				  $data{status} eq 'RESOLVED');
+    $data{tags}                = $item->tags();
+    $data{user_tags}           = $item->user_tags($username);
+    $data{can_resolve}         = ($data{status} eq 'OPEN' ||
+                                  $data{status} eq 'INPROGRESS' ||
+                                  $data{status} eq 'RESOLVED');
     $data{resolve_times}       = $item->resolve_times();
-    $data{keywords_select}     = $item->keywords_select($data{keywords});
     $data{dependencies}        = [map {PMT::Item->retrieve($_->dest)->data()} $item->dependencies()];
     $data{dependents}          = [map {PMT::Item->retrieve($_->source)->data()} $item->dependents()];
     $data{history}             = $item->history();
@@ -71,24 +71,24 @@ eval {
     my %history_items = ();
 
     foreach my $h (@{$data{history}}) {
-	$history_items{$h->{event_date_time}} = $h;
+        $history_items{$h->{event_date_time}} = $h;
     }
     foreach my $c (@{$data{comments}}) {
-	$history_items{$c->{add_date_time}} = $c;
+        $history_items{$c->{add_date_time}} = $c;
     }
 
     foreach my $i (sort keys %history_items) {
-	my $t = $history_items{$i};
-	$t->{timestamp} = $i;
-	push @full_history, $t; 
+        my $t = $history_items{$i};
+        $t->{timestamp} = $i;
+        push @full_history, $t;
     }
 
     $data{full_history}        = \@full_history;
     $data{status_select}       = $item->status_select();
     if(exists $data{pub_view}) {
-	$data{pub_view}            = $data{pub_view} == 1; 
+        $data{pub_view}            = $data{pub_view} == 1;
     } else {
-	$data{pub_view} = 0;
+        $data{pub_view} = 0;
     }
 
     $data{clients}        = $item->clients_data();
@@ -112,18 +112,18 @@ eval {
 if($@) {
     my $E = $@;
     if($E->isa('Error::Simple')) {
-	if ($E->isa('Error::NO_USERNAME') || 
-	    $E->isa('Error::NO_PASSWORD') ||
-	    $E->isa('Error::AUTHENTICATION_FAILURE')) {
-	    print $cgi->redirect('login.pl');
-	} elsif ($E->isa('Error::NO_IID')) {
-	    print $cgi->redirect('home.pl');
-	} else {
-	    print $cgi->header(), "<h1>error:</h1><p>$E->{-text}</p>";
-	}
+        if ($E->isa('Error::NO_USERNAME') ||
+            $E->isa('Error::NO_PASSWORD') ||
+            $E->isa('Error::AUTHENTICATION_FAILURE')) {
+            print $cgi->redirect('login.pl');
+        } elsif ($E->isa('Error::NO_IID')) {
+            print $cgi->redirect('home.pl');
+        } else {
+            print $cgi->header(), "<h1>error:</h1><p>$E->{-text}</p>";
+        }
     } else {
         print $cgi->header(), "unknown error: $E";
-	die "unknown error: $E";
+        die "unknown error: $E";
     }
 }
 

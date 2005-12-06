@@ -4,4 +4,6 @@
   <database_password>foo</database_password>
   <document_repository>/var/www/pmt/data</document_repository>
   <attachment_repository>/var/www/pmt/attachments</attachment_repository>
+  <tasty_base>tasty.ccnmtl.columbia.edu</tasty_base>
+  <tasty_service>pmt_test</tasty_service>
 </settings>

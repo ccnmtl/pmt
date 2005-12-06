@@ -148,7 +148,7 @@ sub add_item_form {
     my %data = %{$self->data()};
     my $user = PMT::User->retrieve($username);
 
-    $data{'keywords'}     = $self->keywords();
+    $data{'tags'}         = $self->tags();
     $data{'dependencies'} = $self->all_items_in_project();
     my $caretaker = $self->caretaker->username;
     $data{'developers'}   = [map {{
@@ -325,15 +325,15 @@ sub all_users_in_project {
     return $sth->fetchall_arrayref({});
 }
 
-__PACKAGE__->set_sql(keywords =>
-qq{SELECT distinct k.keyword from keywords k, items i, milestones m where
-k.iid = i.iid AND i.mid = m.mid AND m.pid = ? ORDER BY k.keyword ASC;}, 'Main');
-
-sub keywords {
+sub tags {
     my $self = shift;
-    my $sth = $self->sql_keywords;
-    $sth->execute($self->pid);
-    return $sth->fetchall_arrayref({});
+    my $pid = $self->pid;
+    my $r = tasty_get("user/project_$pid/");
+    if ($r->{tags}) {
+        return [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
+    } else {
+        return [];
+    }
 }
 
 __PACKAGE__->set_sql(active_users_in_interval =>

@@ -35,7 +35,7 @@ my $owner    = $cgi->param('owner')       || $project->caretaker->username;
 my $priority     = $cgi->param('priority') || "1";
 my $url          = escape($cgi->param('url')) || "";
 
-my @keywords     = $cgi->param('keywords');
+my @tags     = $cgi->param('tags');
 my @clients      = $cgi->param('clients');
 
 my $target_date = $cgi->param('target_date') || "";
@@ -54,9 +54,9 @@ if ($estimated_time eq "") {
     $estimated_time = "0h";
 }
 
-my @new_keywords;
-foreach my $k (@keywords) {
-    push @new_keywords, $k unless $k eq "";
+my @new_tags;
+foreach my $k (@tags) {
+    push @new_tags, $k unless $k eq "";
 }
 
 my @new_clients;
@@ -65,25 +65,25 @@ foreach my $client (@clients) {
 }
 
 my %item = (type         => $type,
-	    pid          => $pid,
-	    mid          => $mid,
-	    title        => $title,
-	    assigned_to  => $assignee,
-	    owner        => $owner,
-	    priority     => $priority,
-	    target_date  => $target_date,
-	    url          => $url,
-	    description  => $description,
-	    keywords     => \@new_keywords,
-	    dependencies => [],
-	    clients      => \@new_clients,
-	    estimated_time => $estimated_time);
+            pid          => $pid,
+            mid          => $mid,
+            title        => $title,
+            assigned_to  => $assignee,
+            owner        => $owner,
+            priority     => $priority,
+            target_date  => $target_date,
+            url          => $url,
+            description  => $description,
+            tags         => \@new_tags,
+            dependencies => [],
+            clients      => \@new_clients,
+            estimated_time => $estimated_time);
 my $pmt = new PMT();
 my $iid = $pmt->add_item(\%item);
 
 if ($redirect_url) {
     if ($append_iid) {
-	$redirect_url .= "iid=$iid";
+        $redirect_url .= "iid=$iid";
     }
     print $cgi->redirect($redirect_url);
 } else {

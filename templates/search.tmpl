@@ -26,7 +26,7 @@ id="searchresults" onclick="sortColumn(event)">
 <tmpl_if name="show_owner"><th>owner:</th></tmpl_if>
 <tmpl_if name="show_assigned"><th>assigned to:</th></tmpl_if>
 <tmpl_if name="show_url"><th>url:</th></tmpl_if>
-<tmpl_if name="show_keywords"><th>keywords:</th></tmpl_if>
+<tmpl_if name="show_tags"><th>tags:</th></tmpl_if>
 <tmpl_if name="show_dependencies"><th>dependencies:</th></tmpl_if>
 <tmpl_if name="show_dependents"><th>dependents:</th></tmpl_if>
 <tmpl_if name="show_comments"><th>comments:</th></tmpl_if>
@@ -46,7 +46,7 @@ name="priority">"><tmpl_var name="priority_label"></td></tmpl_if>
 <tmpl_if name="show_owner"><td><a href="home.pl?mode=user;username=<tmpl_var name="owner">"><tmpl_var name="owner_fullname"></a></td></tmpl_if>
 <tmpl_if name="show_assigned"><td><a href="home.pl?mode=user;username=<tmpl_var name="assigned_to">"><tmpl_var name="assigned_to_fullname"></a></td></tmpl_if>
 <tmpl_if name="show_url"><td><tmpl_if name="url"><a target="_blank" href="<tmpl_var name="url">"><tmpl_var name="url"></a><tmpl_else>&nbsp;</tmpl_if></td></tmpl_if>
-<tmpl_if name="show_keywords"><td><tmpl_loop name="keywords"><tmpl_var name="keyword">, </tmpl_loop></td></tmpl_if>
+<tmpl_if name="show_tags"><td><tmpl_loop name="tags"><tmpl_var name="tag">, </tmpl_loop></td></tmpl_if>
 <tmpl_if name="show_dependencies"><td><tmpl_loop name="dependencies">
 <a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid">
 <tmpl_var name="title"> [<tmpl_if name="r_status"><tmpl_var
@@ -221,7 +221,7 @@ title<br />
 <input type="checkbox" name="show" value="owner"> owner <br />
 <input type="checkbox" name="show" value="assigned"> assigned to <br />
 <input type="checkbox" name="show" value="url"> url<br />
-<input type="checkbox" name="show" value="keywords"> keywords<br />
+<input type="checkbox" name="show" value="tags"> tags<br />
 </td>
 <td style="border: 0px; padding: 0 10px 0 0;">
 <input type="checkbox" name="show" value="dependencies">

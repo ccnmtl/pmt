@@ -945,8 +945,8 @@ slowly eliminate the need for the filemaker code.</para>
 <title>Indexed Task Descriptions</title>
 <sect1><title>description</title>
 
-<para>global keywords. there will be a certain set of 
-keywords that should be defined for all projects.
+<para>global tags. there will be a certain set of 
+tags that should be defined for all projects.
 </para>
 
 </sect1>
@@ -964,17 +964,17 @@ keywords that should be defined for all projects.
 
 <sect1><title>implementation notes/plan</title>
 
-<para>should be able to just add the desired global keywords
+<para>should be able to just add the desired global tags
 to the html templates at the beginning of any
 templates multi-select. then modify the perl code that
-gets the rest of the keywords for a project to skip
+gets the rest of the tags for a project to skip
 those (so they only appear once).</para>
 
 </sect1>
 
 <sect1><title>status</title>
 <para>this has not been implemented (mostly because no one has
-actually given me a list of the keywords yet).</para>
+actually given me a list of the tags yet).</para>
 </sect1>
 
 </chapter>

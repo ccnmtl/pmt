@@ -49,12 +49,12 @@
 </tmpl_if>
 
 <table cellspacing="0" cellpadding="0" class="default">
-	<tmpl_if name="keywords">
+	<tmpl_if name="tags">
 	<tr>
-		<th>Keywords:</th>
+		<th>Tags:</th>
 		<td>
-		<tmpl_loop name="keywords">
-		<a href="home.pl?mode=keyword;keyword=<tmpl_var name="keyword" escape="url">"><tmpl_var name="keyword"></a><tmpl_unless __LAST__>,</tmpl_unless>
+		<tmpl_loop name="tags">
+		<a href="home.pl?mode=tag;tag=<tmpl_var name="tag" escape="url">"><tmpl_var name="tag"></a><tmpl_unless __LAST__>,</tmpl_unless>
 		</tmpl_loop>
 		</td>
 	</tr>

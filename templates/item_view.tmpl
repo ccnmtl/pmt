@@ -1,4 +1,5 @@
-<form action="home.pl" method="post">
+
+<form action="home.pl" method="post" id="submitform">
 <input type="hidden" name="mode" value="update_item" />
 <input type="hidden" name="iid" value="<tmpl_var name="iid">" />
 <input type="hidden" name="mid" value="<tmpl_var name="mid">" />
@@ -11,9 +12,7 @@
 <input type="hidden" name="description" value="<tmpl_var escape="html" name="description">" />
 <input type="hidden" name="url" value="<tmpl_var escape="html" name="url">" />
 <input type="hidden" name="estimated_time" value="<tmpl_var name="estimated_time" escape="html">" />
-<tmpl_loop name="keywords">
-<input type="hidden" name="keywords" value="<tmpl_var escape="html" name="keyword">" />
-</tmpl_loop>
+
 <tmpl_loop name="dependencies">
 <input type="hidden" name="depends" value="<tmpl_var name="iid">" />
 </tmpl_loop>
@@ -130,13 +129,26 @@ name="label" escape="html"></option>
 </td>
 </tr>
 </tmpl_if>
-<tmpl_if name="keywords">
+<tmpl_if name="tags">
 <tr>
-<th class="firstcell" width="120">keywords:</th>
+<th class="firstcell" width="120">tags:<br />
+<a href="#edittags" class="hs-control">(edit)</a></th>
 <td colspan="3">
-<tmpl_loop name="keywords">
-<a href="home.pl?mode=keyword;keyword=<tmpl_var name="keyword" escape="url">"><tmpl_var name="keyword"></a>
+
+<div id="viewtags">
+<tmpl_loop name="tags">
+<a href="home.pl?mode=tag;tag=<tmpl_var name="tag" escape="url">"><tmpl_var name="tag"></a>
 </tmpl_loop>
+</div>
+
+<div id="edittags" class="hs-init-hide">
+<textarea id="usertags" name="usertags" cols="5" rows="5"><tmpl_loop
+name="user_tags"><tmpl_var name="tag" escape="html"><tmpl_unless
+__LAST__>, </tmpl_unless></tmpl_loop></textarea><br />
+(seperate tags with commas or newlines)
+<input type="submit" value="save tags" id="tagsave"/>
+</div>
+
 </td>
 </tr>
 </tmpl_if>
@@ -239,3 +251,5 @@ by <a href="home.pl?mode=user;username=<tmpl_var name="username">"><tmpl_var nam
 <script type="text/javascript">
 SET_DHTML("commentbox"+RESIZABLE)
 </script>
+
+

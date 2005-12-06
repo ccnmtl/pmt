@@ -22,7 +22,6 @@ BEGIN {
     use_ok("PMT::Group");
     use_ok("PMT::Item");
     use_ok("PMT::ItemClients");
-    use_ok("PMT::Keyword");
     use_ok("PMT::Notify");
     use_ok("PMT::ProjectClients");
     use_ok("PMT::WorksOn");

@@ -113,18 +113,7 @@ name="label" escape="html"></option></tmpl_loop>
 <th class="firstcell">related url:</th>
 <td><tmpl_if name="url"><a target="_blank" href="<tmpl_var name="url">"><tmpl_var name="url"></a> (change: </tmpl_if><input 
 class="textform" type="text" name="url" size="40" value="<tmpl_var name="url">" /><tmpl_if name="url">)</tmpl_if></td></tr>
-<tr>
-<th class="firstcell">keywords:</th>
-<td>
-<select class="activated" name="keywords" size="5" multiple="multiple">
-<tmpl_loop name="keywords_select">
-<option value="<tmpl_var name="value" escape="html">"<tmpl_if
-name="selected"> selected="selected"</tmpl_if>><tmpl_var name="label" escape="html"></option></tmpl_loop>
-</select>
-<br />
- <br />
- new keywords (one per line): <br />
-<textarea class="textform" name="new_keywords" cols="5" rows="5" style="width: 50%;"></textarea></div></td></tr>
+
 <tr>
 <th class="firstcell">dependencies:</th>
 <td>

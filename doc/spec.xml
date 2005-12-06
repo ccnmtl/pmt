@@ -62,7 +62,7 @@ up. </para>
 
  <para>Changes to the PMT for version 2 include a simplified
 architecture that removes the concept of "divisions" in the
-heierarchy, replacing it with more flexable "keyword" based
+heierarchy, replacing it with more flexable "tag" based
 categorization, a "user-centric" modal interface and numerous
 additions to the fields available for bugs, action items, milestones,
 and projects.</para>
@@ -74,16 +74,16 @@ and projects.</para>
  <para>
  Rather than the heirarchy of project/division/milestone/bug|action
 item that version 1 of the PMT used, the PMT2 removes the "division"
-level, replacing it with a more flexable and powerful "keyword" system
+level, replacing it with a more flexable and powerful "tag" system
 for grouping tasks. The new heierarchy will have projects each
 consisting of a set of milestones. Each task (action item or bug) will
 be associated with a single milestone. In addition, a task may have
-one or more keywords. These could be things like "video", "content",
+one or more tags. These could be things like "video", "content",
 or any other grouping. This will then facilitate sorting or searching
 of the tasks. Eg, a manager could easily have the PMT2 display only
-tasks tagged with a "graphics" keyword. The advantage of this new
+tasks tagged with a "graphics" tag. The advantage of this new
 architecture is that it requires fewer levels of navigation than the
-old divisions, allows tasks to be classified with multiple keywords
+old divisions, allows tasks to be classified with multiple tags
 rather than being assigned to a single division, and it allows for a
 more chronological, milestone based approach to project management.
  </para>

@@ -89,7 +89,7 @@ sub add_item {
             target_date => $args{target_date}, estimated_time =>
             $args{estimated_time}});
 
-    $item->update_keywords($args{keywords});
+    $item->update_tags($args{tags},$username);
     $item->update_dependencies($args{dependencies});
     $item->add_clients(@{$args{clients}});
 
@@ -172,7 +172,6 @@ sub compare_items {
     ($item,$old,$changed,$add_notification,$comment,$message)
         = $self->compare_fields($item,$old,$changed,$add_notification,$comment,$message,$project);
 
-    ($changed,$comment,$message) = $self->compare_keywords($item,$old,$changed,$comment,$message);
     ($changed,$comment,$message) = $self->compare_dependencies($item,$old,$changed,$comment,$message);
     ($changed,$comment,$message) = $self->compare_clients($item,$old,$changed,$comment,$message);
 
@@ -343,20 +342,6 @@ sub compare_fields {
     return ($item,$old,$changed,$add_notification,$comment,$message);
 }
 
-sub compare_keywords {
-    my $self = shift;
-    my $item = shift;
-    my $old = shift;
-    my $changed = shift;
-    my $comment = shift;
-    my $message = shift;
-    if (diff($item->{keywords},[map {$$_{keyword}} @{$old->{keywords}}])) {
-        $changed = 1;
-        $comment .= "<b>keywords changed</b><br />\n";
-        $message .= "keywords changed. ";
-    }
-    return ($changed,$comment,$message);
-}
 sub compare_dependencies {
     my $self = shift;
     my $item = shift;
@@ -495,7 +480,6 @@ sub update_item {
         $i->status($item->{status});
         $i->mid($milestone);
         $i->estimated_time($item->{estimated_time});
-        $i->update_keywords($item->{'keywords'});
         $i->update_dependencies($item->{'dependencies'});
         $i->update_clients($item->{'clients'});
         $i->add_client_by_uni($item->{client_uni});

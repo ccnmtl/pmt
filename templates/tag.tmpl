@@ -1,7 +1,9 @@
-<tmpl_include name="header.tmpl">
-<tmpl_include name="menu.tmpl">
+<tmpl_include name="header_items.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_items.tmpl">
 <div class="pagecontent">
-<b>keyword:</b> <tmpl_var name="keyword"><br />
+
+<b>tag:</b> <tmpl_var name="tag"><br />
 <table>
 <tr>
 <th>item</th>
@@ -24,6 +26,6 @@
 <td><tmpl_var name="last_mod"></td>
 </tr>
 </tmpl_loop>
-</table>
+</table> 
 </div>
 <tmpl_include name="footer.tmpl">

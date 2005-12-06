@@ -10,8 +10,8 @@
 <input type="hidden" name="target_date" value="<tmpl_var name="target_date">" />
 <input type="hidden" name="assigned_to" value="<tmpl_var name="assigned_to">" />
 <input type="hidden" name="description" value="<tmpl_var name="description">" />
-<tmpl_loop name="keywords">
-<input type="hidden" name="keywords" value="<tmpl_var name="keyword">"
+<tmpl_loop name="tags">
+<input type="hidden" name="tags" value="<tmpl_var name="tag">"
 />
 </tmpl_loop>
 <tmpl_loop name="dependencies">
@@ -37,8 +37,8 @@ name="label" escape="html"></option></tmpl_loop>
 <tr><th>owner</th><td><tmpl_var name="owner_fullname"></td></tr>
 <tr><th>last modified</th><td><tmpl_var name="last_mod"></td></tr>
 <tmpl_if name="url"><tr><th>url</th><td><a href="<tmpl_var name="url">"><tmpl_var name="url"></a></td></tr></tmpl_if>
-<tmpl_if name="keywords"><tr><th>keywords</th><td><tmpl_loop name="keywords">
-<a href="home.pl?mode=keyword;keyword=<tmpl_var name="keyword" escape="url">"><tmpl_var name="keyword"></a>
+<tmpl_if name="tags"><tr><th>tags</th><td><tmpl_loop name="tags">
+<a href="home.pl?mode=tag;tag=<tmpl_var name="tag" escape="url">"><tmpl_var name="tag"></a>
 </tmpl_loop></td></tr></tmpl_if>
 <tmpl_if name="dependencies"><tr><th>dependencies</th><td><tmpl_loop name="dependencies">
 <a href="admin_view.pl?iid=<tmpl_var name="iid">"><tmpl_var name="type">

@@ -13,7 +13,6 @@ __PACKAGE__->has_a(owner => 'PMT::User');
 __PACKAGE__->has_a(assigned_to => 'PMT::User');
 __PACKAGE__->has_many(actual_times => 'PMT::ActualTime', 'iid');
 __PACKAGE__->has_many(notifies => 'PMT::Notify', 'iid');
-__PACKAGE__->has_many(keywords => 'PMT::Keyword', 'iid');
 __PACKAGE__->has_many(events => 'PMT::Event', 'item');
 __PACKAGE__->has_many(comments => 'PMT::Comment', 'item');
 __PACKAGE__->has_many(dependents => 'PMT::Dependency', 'dest');
@@ -34,6 +33,32 @@ my %PRIORITIES = (4 => 'CRITICAL', 3 => 'HIGH', 2 => 'MEDIUM', 1 => 'LOW',
 0 => 'ICING');
 
 
+sub tags {
+    my $self = shift;
+    my $iid = $self->{iid};
+    my $url = "item/item_$iid/";
+    my $r = tasty_get($url);
+    if ($r->{tags}) {
+        return [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
+    } else {
+        return [];
+    }
+}
+
+sub user_tags {
+    # return only the tags that the specified user has tagged the item with
+    my $self = shift;
+    my $username = shift;
+    my $iid = $self->{iid};
+    my $url = "item/item_$iid/user/user_$username/";
+    my $r = tasty_get($url);
+    if ($r->{tags}) {
+        return [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
+    } else {
+        return [];
+    }
+}
+
 sub is_notifying_user {
     my $self     = shift;
     my $username = shift;
@@ -45,14 +70,14 @@ sub is_notifying_user {
     return $res[0];
 }
 
-__PACKAGE__->set_sql(resolve_times => qq{select 
+__PACKAGE__->set_sql(resolve_times => qq{select
     to_char(date_part('day',a.actual_time)*24 + date_part('hour',a.actual_time),'FM00') || ':' || to_char(date_part('minute',a.actual_time),'FM00') as actual_time,
     date_trunc('minute',a.completed) as completed,
     a.resolver as resolver_username,
     u.fullname as resolver_fullname
-    from   actual_times a, users u 
+    from   actual_times a, users u
     where  a.iid = ?
-    and  u.username = a.resolver 
+    and  u.username = a.resolver
     order by completed ASC;}, 'Main');
 
 sub resolve_times {
@@ -77,7 +102,7 @@ sub history {
     my $tiki = new Text::Tiki();
     return [map {
         $_->{comment} = $_->{comment} || "";
-	$_->{comment} =~ s/(\s+\S+\@\S+)\)/$1 )/g;
+        $_->{comment} =~ s/(\s+\S+\@\S+)\)/$1 )/g;
         $_->{comment} = $tiki->format($_->{comment});
         $_->{comment} =~ s{&lt;br /&gt;\s*}{\n}g;
         $_->{comment} =~ s{&lt;(/?)b&gt;}{<$1b>}g;
@@ -100,9 +125,9 @@ sub get_comments {
     my $tiki = new Text::Tiki();
     return [map {
         $_->{comment} = $_->{comment} || "";
-	$_->{comment} =~ s/(\s+\S+\@\S+)\)/$1 )/g;
-	$_->{comment} = $tiki->format($_->{comment});
-	$_;
+        $_->{comment} =~ s/(\s+\S+\@\S+)\)/$1 )/g;
+        $_->{comment} = $tiki->format($_->{comment});
+        $_;
     } @{$sth->fetchall_arrayref({})}];
 }
 
@@ -114,33 +139,33 @@ sub data {
     my %type_classes = (bug => 'bug', 'action item' => 'actionitem');
     my $notify = "";
     if ($username ne "") {
-	$notify = $self->is_notifying_user($username);
+        $notify = $self->is_notifying_user($username);
     }
     return {
-        iid                  => $self->iid, 
-	type                 => $self->type, 
-	owner                => $self->owner->username,
-        assigned_to          => $self->assigned_to->username, 
+        iid                  => $self->iid,
+        type                 => $self->type,
+        owner                => $self->owner->username,
+        assigned_to          => $self->assigned_to->username,
         owner_fullname       => $self->owner->fullname,
         assigned_to_fullname => $self->assigned_to->fullname,
-        title                => $self->title, 
-        mid                  => $self->mid->mid, 
+        title                => $self->title,
+        mid                  => $self->mid->mid,
         milestone            => $self->mid->name,
         pid                  => $self->mid->pid->pid,
         project              => $self->mid->pid->name,
-        url                  => $self->url, 
-	status               => $self->status,
-        description          => $self->description, 
-	priority             => $self->priority,
+        url                  => $self->url,
+        status               => $self->status,
+        description          => $self->description,
+        priority             => $self->priority,
         priority_label       => $PRIORITIES{$self->priority},
-        r_status             => $self->r_status, 
-	last_mod             => $self->last_mod_clean,
-        target_date          => $self->target_date, 
+        r_status             => $self->r_status,
+        last_mod             => $self->last_mod_clean,
+        target_date          => $self->target_date,
         estimated_time       => PMT::Common::interval_to_hours($self->estimated_time),
         type_class           => $type_classes{$self->type},
-        priority_select      => $self->priority_select(), 
+        priority_select      => $self->priority_select(),
         status_select        => $self->status_select(),
-	notify               => $notify,
+        notify               => $notify,
     };
 }
 
@@ -155,9 +180,9 @@ sub clients_select {
     my @labels = ();
     my %seen_clients = ();
     my @values = map {
-	push @labels, "$_->{firstname} $_->{lastname}";
+        push @labels, "$_->{firstname} $_->{lastname}";
         $seen_clients{$_->{client_id}} = "1";
-	$_->{client_id};
+        $_->{client_id};
     } @{$self->mid->pid->clients_data()};
     # handle the special case of services projects where
     # items may have a client that hasn't been added
@@ -215,7 +240,7 @@ sub status_select {
                                            'RESOLVED_INVALID','RESOLVED_WONTFIX',
                                            'RESOLVED_DUPLICATE','RESOLVED_WORKSFORME',
                                            'RESOLVED_NEEDINFO'],
-                   UNASSIGNED          => ['UNASSIGNED', 'OPEN', 'INPROGRESS', 
+                   UNASSIGNED          => ['UNASSIGNED', 'OPEN', 'INPROGRESS',
                                            'RESOLVED_FIXED', 'RESOLVED_INVALID',
                                            'RESOLVED_WONTFIX', 'RESOLVED_DUPLICATE',
                                            'RESOLVED_NEEDINFO', 'RESOLVED_WORKSFORME'],
@@ -257,26 +282,12 @@ sub status_select {
     }
 
     return [map {
-        { 
+        {
             value => $_,
             label => $labels{$_},
             selected => ($_ eq $combined),
         }
     } @{$options{$combined}}]
-}
-
-sub keywords_select {
-    my $self     = shift;
-    my $selected = shift;
-    my %selected = map {$_->{keyword} => 1} @$selected;
-    my $project = $self->mid->pid;
-    return [map {
-	{
-	    value => $_->{keyword},
-	    label => $_->{keyword},
-	    selected => exists $selected{$_->{keyword}},
-	}
-    } @{$project->keywords()}];
 }
 
 # returns 1 if any of the item's dependencies are still open
@@ -285,8 +296,8 @@ sub check_dependencies {
     my $self = shift;
     foreach my $d ($self->dependencies()) {
         my $dest = PMT::Item->retrieve($d->dest);
-	return 1 if $dest->status eq "OPEN" || $dest->status eq "UNASSIGNED" 
-	    || $dest->status eq "INPROGRESS";
+        return 1 if $dest->status eq "OPEN" || $dest->status eq "UNASSIGNED"
+            || $dest->status eq "INPROGRESS";
     }
     return 0;
 }
@@ -307,8 +318,8 @@ sub add_event {
     my $comment = shift;
     my $user = shift;
     my $event = $self->add_to_events({status => $status});
-    my $c = $event->add_to_comments({comment => $comment, 
-            username => $user}); 
+    my $c = $event->add_to_comments({comment => $comment,
+            username => $user});
 }
 
 sub add_comment {
@@ -335,21 +346,21 @@ sub add_resolve_time {
     return unless $resolve_time;
     if(!$completed) {
         my ($sec,$min,$hour,$mday,$mon,
-            $year,$wday,$yday,$isdst) = localtime(time); 
+            $year,$wday,$yday,$isdst) = localtime(time);
         $year += 1900;
         $mon += 1;
         $completed = "$year-$mon-$mday $hour:$min:$sec";
-    } 
+    }
     my $at = PMT::ActualTime->create({
             iid => $self->iid, resolver => $user->username, actual_time =>
             $resolve_time, completed => $completed});
-    
+
 }
 
 sub add_cc {
     my $self     = shift;
     my $user     = shift;
-    my $n = PMT::Notify->find_or_create({iid => $self->iid, 
+    my $n = PMT::Notify->find_or_create({iid => $self->iid,
             username => $user->username});
 }
 
@@ -358,21 +369,21 @@ sub drop_cc {
     my $user     = shift;
 
     #check first if user is assigned to the item
-    my @notifies = PMT::Item->search(iid => $self->iid, 
+    my @notifies = PMT::Item->search(iid => $self->iid,
         assigned_to => $user->username);
 
-    #if the user is not assigned to the item, delete from notify table 
+    #if the user is not assigned to the item, delete from notify table
     unless (scalar @notifies) {
         PMT::Notify->search(iid => $self->iid, username =>
             $user->username)->delete_all;
-    } 
+    }
 }
 
 # returns boolean on whether or not $username is on notify list for item $iid
 sub cc {
     my $self     = shift;
     my $user     = shift;
-    my @res = PMT::Notify->search(iid => $self->iid, 
+    my @res = PMT::Notify->search(iid => $self->iid,
         username => $user->username);
     if (scalar @res) {
         return 1;
@@ -396,7 +407,7 @@ sub prioritize_dependent {
     }
     foreach my $d ($self->dependencies()) {
         my $dest = PMT::Item->retrieve($d->dest);
-	$dest->prioritize_dependent($priority,$target_date);
+        $dest->prioritize_dependent($priority,$target_date);
     }
 }
 
@@ -405,12 +416,12 @@ sub prioritize_dependent {
 # are added by default (without duplication)
 sub add_notification {
     my $self = shift;
-    
+
     my $owner = $self->owner;
     my $assigned_to = $self->assigned_to;
     my %notified;
 
-    #check if the owner wants to be notified of anything about this item 
+    #check if the owner wants to be notified of anything about this item
     if ($self->project_notification($owner) > 0) {
         $notified{$owner->username} = 1;
     }
@@ -420,10 +431,10 @@ sub add_notification {
 
     my $project = $self->mid->pid;
     foreach my $m ($project->managers()) {
-        #check if manager wants to be notified of anything about this item 
-        if ($self->project_notification($m) > 0) {  
-	    $notified{$m->username} = 1;
-	}
+        #check if manager wants to be notified of anything about this item
+        if ($self->project_notification($m) > 0) {
+            $notified{$m->username} = 1;
+        }
     }
 
     my @notify = keys %notified;
@@ -436,7 +447,7 @@ sub project_notification {
     my $self = shift;
     my $user = shift;
 
-    my @notifies = PMT::NotifyProject->search(pid => $self->mid->pid->pid, 
+    my @notifies = PMT::NotifyProject->search(pid => $self->mid->pid->pid,
         username => $user->username);
     return scalar @notifies;
 }
@@ -446,7 +457,7 @@ sub notify_item {
     my $self     = shift;
     my $username = shift;
 
-    my @notifies = PMT::Notify->search(iid => $self->iid, 
+    my @notifies = PMT::Notify->search(iid => $self->iid,
         username => $username);
 
     if (scalar @notifies) {
@@ -478,47 +489,106 @@ sub update_dependencies {
     for my $d ($self->dependencies()) {
         $d->delete;
     }
-    
+
     # put the new ones back in
     foreach my $d (@dependencies) {
-	next unless $d;
+        next unless $d;
         my $item = PMT::Item->retrieve($d);
-	# skip it if it will create a cycle
+        # skip it if it will create a cycle
 
-	next if $item->cycle([$self->iid]);
+        next if $item->cycle([$self->iid]);
         $self->add_to_dependencies({ dest => $item->iid });
 
-	# make sure priorities are in order
-    	$item->prioritize_dependent($self->priority,$self->target_date);
+        # make sure priorities are in order
+        $item->prioritize_dependent($self->priority,$self->target_date);
     }
 }
 
-# recursively goes through the dependency tree and looks 
+# recursively goes through the dependency tree and looks
 # for cycles.
 sub cycle {
     my $self = shift;
     my $seen = shift;
     return 1 if grep {$_ == $self->iid} @$seen;
     foreach my $d ($self->dependencies()) {
-	my @trail = @$seen;
-	push @trail, $self->iid;
+        my @trail = @$seen;
+        push @trail, $self->iid;
         my $dest = PMT::Item->retrieve($d->dest);
-	return 1 if $dest->cycle(\@trail);
+        return 1 if $dest->cycle(\@trail);
     }
     return 0;
 }
 
-sub update_keywords {
-    my $self = shift;
-    my $r    = shift;
-    my @keywords = @$r;
+sub update_tags {
+    my $self     = shift;
+    my $r        = shift;
+    my $username = shift || "";
+    my @tags = @$r;
     # clear out old ones first
-    $self->keywords()->delete_all;
+    $self->clear_tags($username);
     # put the new ones back in
-    foreach my $k (@keywords) {
-	next if $k eq "";
-        $self->add_to_keywords({keyword => $k});
+    foreach my $t (@tags) {
+        next if $t eq "";
+        $self->add_tag($t,$username);
     }
+}
+
+sub clear_tags {
+    my $self = shift;
+    my $username = shift;
+    my $iid = $self->{iid};
+
+    my @unique_tags = ();
+    my $tags = tasty_get("item/item_$iid/");
+    my @tagusers = @{$tags->{tag_users}};
+    my %mytags = ();
+    my %otherstags = ();
+    foreach my $o (@tagusers) {
+        my $t = $o->[0]->{tag};
+        my $u = $o->[1]->{user};
+        if ($u eq "user_$username") {
+            $mytags{$t} = 1;
+        } elsif ($u =~ /^user_/) {
+            $otherstags{$t} = 1;
+        } else {
+            # it's a project tag
+        }
+    }
+
+    foreach my $t (keys %mytags) {
+        if (!defined $otherstags{$t}) {
+            push @unique_tags, $t;
+        }
+    }
+
+    my $url = "item/item_$iid/user/user_$username/";
+    tasty_delete($url);
+    # delete an project associations if the project is the
+    # only user left with that tag for the item
+
+    $url = "item/item_$iid/";
+    foreach my $t (@unique_tags) {
+        tasty_delete($url . "tag/$t/");
+    }
+    tasty_delete($url);
+
+}
+
+use URI::Escape;
+sub add_tag {
+    my $self = shift;
+    my $tag = shift;
+    $tag =~ s/[\r\n]+//g;
+    $tag =~ s/^\s+//;
+    $tag =~ s/\s+$//;
+    $tag =~ s/\s+/ /g;
+    return if $tag eq "";
+    $tag = uri_escape($tag);
+    my $username = shift;
+    my $iid = $self->{iid};
+    my $pid = $self->mid->pid->pid;
+    my $url = "item/item_$iid/tag/$tag/user/user_$username/user/project_$pid/";
+    tasty_put($url);
 }
 
 
@@ -539,7 +609,7 @@ sub add_clients {
     my $self = shift;
     my @clients = @_;
     foreach my $client (@clients) {
-	$self->add_to_clients({client_id => $client});
+        $self->add_to_clients({client_id => $client});
     }
 }
 
@@ -548,13 +618,13 @@ sub add_client_by_uni {
     my $uni = shift;
     my @clients = PMT::Client->find_by_uni($uni);
     return unless $clients[0];
-    
+
     my @ics = PMT::ItemClients->search(iid => $self->iid, client_id => $clients[0]->client_id);
     return if @ics;
 
     my $ic = PMT::ItemClients->create({iid => $self->iid,
-				       client_id => $clients[0]->client_id});
-    
+                                       client_id => $clients[0]->client_id});
+
 }
 
 
@@ -578,12 +648,11 @@ sub full_data {
     $data{description} =~ s/(\s+\S+\@\S+)\)/$1 )/g;
     $data{description_html} = $tiki->format($data{description});
     $data{$data{type}}         = 1;
-    $data{keywords}            = [map {$_->data()} $item->keywords()];
-    $data{can_resolve}         = ($data{status} eq 'OPEN' || 
-				  $data{status} eq 'INPROGRESS' || 
-				  $data{status} eq 'RESOLVED');
+    $data{tags}                = $item->tags();
+    $data{can_resolve}         = ($data{status} eq 'OPEN' ||
+                                  $data{status} eq 'INPROGRESS' ||
+                                  $data{status} eq 'RESOLVED');
     $data{resolve_times}       = $item->resolve_times();
-    $data{keywords_select}     = $item->keywords_select($data{keywords});
     $data{dependencies}        = [map {PMT::Item->retrieve($_->dest)->data()} $item->dependencies()];
     $data{dependents}          = [map {PMT::Item->retrieve($_->source)->data()} $item->dependents()];
     $data{history}             = $item->history();
@@ -594,16 +663,16 @@ sub full_data {
     my %history_items = ();
 
     foreach my $h (@{$data{history}}) {
-	$history_items{$h->{event_date_time}} = $h;
+        $history_items{$h->{event_date_time}} = $h;
     }
     foreach my $c (@{$data{comments}}) {
-	$history_items{$c->{add_date_time}} = $c;
+        $history_items{$c->{add_date_time}} = $c;
     }
 
     foreach my $i (sort keys %history_items) {
-	my $t = $history_items{$i};
-	$t->{timestamp} = $i;
-	push @full_history, $t; 
+        my $t = $history_items{$i};
+        $t->{timestamp} = $i;
+        push @full_history, $t;
     }
 
     $data{full_history}        = \@full_history;
@@ -614,9 +683,9 @@ sub full_data {
     $data{priority_select}     = $item->priority_select();
     $data{dependencies_select} = $project->dependencies_select($data{'iid'}, $data{dependencies});
     if(exists $data{pub_view}) {
-	$data{pub_view}            = $data{pub_view} == 1; 
+        $data{pub_view}            = $data{pub_view} == 1;
     } else {
-	$data{pub_view} = 0;
+        $data{pub_view} = 0;
     }
 
     $data{clients}        = $item->clients_data();
@@ -625,13 +694,13 @@ sub full_data {
     return \%data;
 }
 
-__PACKAGE__->set_sql(users_to_email => 
-		     qq{SELECT u.username,u.email 
-			    FROM notify n, users u
-			    WHERE n.username = u.username
-			    AND u.status = 'active' AND u.grp = 'f'
-			    AND n.iid = ? AND u.username <> ?;},
-		     'Main');
+__PACKAGE__->set_sql(users_to_email =>
+                     qq{SELECT u.username,u.email
+                            FROM notify n, users u
+                            WHERE n.username = u.username
+                            AND u.status = 'active' AND u.grp = 'f'
+                            AND n.iid = ? AND u.username <> ?;},
+                     'Main');
 
 # emails relevant parties with info for an item
 sub email {
@@ -642,12 +711,12 @@ sub email {
     my $r = $self->full_data();
     my %item = %$r;
 
-    my $project_title = &truncate_string($item{'project'});  
-    my $subject_title = &truncate_string($item{'title'});  
+    my $project_title = &truncate_string($item{'project'});
+    my $subject_title = &truncate_string($item{'title'});
 
     if ($subject =~ /^new/) {
-        $subject_title = $subject_title . "(NEW)";  
-    } 
+        $subject_title = $subject_title . "(NEW)";
+    }
 
     my $email_subj = "[PMT:$project_title] Attn:$item{'assigned_to_fullname'}-$subject_title";
     my $send_to;
@@ -658,22 +727,22 @@ sub email {
     my $sth = $self->sql_users_to_email;
     $sth->execute($self->iid,$skip);
     my @users = @{$sth->fetchall_arrayref({})};
-    $r = $item{keywords};
-    my @keywords = map {$$_{'keyword'};} @$r;
-    my $keywords = join ', ', @keywords;
+    $r = $item{tags};
+    my @tags = map {$_->{tag};} @$r;
+    my $tags = join ', ', @tags;
     $r = $item{dependencies};
     my @dependencies = map {$$_{'dest'};} @$r;
     my $dependencies = '';
     if($#dependencies >= 0) {
-	my $dependencies = join ', ', @dependencies;
+        my $dependencies = join ', ', @dependencies;
     }
 
     foreach my $user (@users) {
-	$ENV{PATH} = "/usr/sbin";
-	open(MAIL,"|/usr/sbin/sendmail -t");
-	print MAIL <<END_MESSAGE;
+        $ENV{PATH} = "/usr/sbin";
+        open(MAIL,"|/usr/sbin/sendmail -t");
+        print MAIL <<END_MESSAGE;
 To: $$user{'email'}
-From: $owner_email 
+From: $owner_email
 Subject: $email_subj
 
 $item{'type'} #: $item{'iid'}
@@ -687,9 +756,9 @@ target date:\t$item{'target_date'}
 milestone:\t$item{'milestone'}
 last modified:\t$item{'last_mod'}\n
 url:\t\t$item{'url'}
-keywords:\t$keywords
+tags:\t$tags
 dependencies:\t$dependencies
-description: 
+description:
 $item{'description'}
 
 view $item{'type'}: http://pmt.ccnmtl.columbia.edu/item.pl?iid=$item{'iid'}
@@ -718,7 +787,7 @@ sub update_email {
     $Text::Wrap::columns = 72;
     my $body = Text::Wrap::wrap("","",$comment);
 
-    my $updater = $skip; 
+    my $updater = $skip;
 
     if ($skip eq "") {
        $updater = "pmt\@www2.ccnmtl.columbia.edu (Project Management Tool)";
@@ -739,15 +808,15 @@ sub update_email {
     my @users = @{$sth->fetchall_arrayref({})};
 
     foreach my $user (@users) {
-	$ENV{PATH} = "/usr/sbin";
-	open(MAIL,"|/usr/sbin/sendmail -t");
-	print MAIL <<END_MESSAGE;
+        $ENV{PATH} = "/usr/sbin";
+        open(MAIL,"|/usr/sbin/sendmail -t");
+        print MAIL <<END_MESSAGE;
 To: $$user{'email'}
-From: $updater_info 
+From: $updater_info
 Subject: $email_subj
 
 updater: $updater
-updater: $updater_info 
+updater: $updater_info
 project:\t$project
 by:\t\t$skip
 $item{'type'}:\t$item{'iid'}
@@ -774,7 +843,6 @@ sub search_items {
     my $owner       = $args{owner};
     my $assigned_to = $args{assigned_to};
     my @status      = @{$args{status}};
-    my $keyword     = $args{keyword};
     my @show        = $args{show};
     my $number      = $args{number};
     my $sortby      = $args{sortby};
@@ -786,138 +854,135 @@ sub search_items {
 
     # ignore non iso8601 dates
     if($max_date !~ /\d{4}-\d{2}-\d{2}/) {
-	$max_date = "";
+        $max_date = "";
     }
 
     if($min_date !~ /\d{4}-\d{2}-\d{2}/) {
-	$min_date = "";
+        $min_date = "";
     }
-    
+
 
     my $rows = 0;
 
     my %show;
     foreach my $show (@show) {
-	$show{$show} = 1;
+        $show{$show} = 1;
     }
 
 
 
-    if ($pid ne "" || $q ne "" || $type ne "" || $owner ne "" 
-	|| $assigned_to ne "" || $number ne "" || $sortby ne "" || $order ne "") 
+    if ($pid ne "" || $q ne "" || $type ne "" || $owner ne ""
+        || $assigned_to ne "" || $number ne "" || $sortby ne "" || $order ne "")
     {
-	$pid = $pid || "%";
-	$owner = $owner || "%";
-	$assigned_to = $assigned_to || "%";
-	if($q ne "") {
-	    $q = "%$q%";
-	} else {
-	    $q = "%";
-	}
+        $pid = $pid || "%";
+        $owner = $owner || "%";
+        $assigned_to = $assigned_to || "%";
+        if($q ne "") {
+            $q = "%$q%";
+        } else {
+            $q = "%";
+        }
 
-	
-	my %orders = (type => "i.type DESC, i.priority $order",
-		      priority => "i.priority $order, i.target_date ASC",
-		      target_date => "i.target_date $order, i.priority DESC",
-		      project => "upper(p.name) $order, i.priority DESC, i.target_date ASC",
-		      owner => "upper(uo.fullname) $order, i.priority DESC, i.target_date ASC",
-		      assigned_to => "upper(ua.fullname) $order, i.priority DESC, i.target_date ASC",
-		      status => "i.status $order, i.r_status $order, i.priority DESC, i.target_date ASC",
-		      last_mod => "i.last_mod $order",
-		      milestone => "upper(m.name) $order, i.priority DESC, i.target_date ASC",
-		      created => "i.iid $order",
-		      );
 
-	my $order_string = $orders{$sortby} || die "bad sortby";
-	my $query_string;
-	$query_string = qq{
-	    SELECT i.iid,i.title,i.description,i.type,i.owner,i.assigned_to,uo.fullname as owner_fullname,
+        my %orders = (type => "i.type DESC, i.priority $order",
+                      priority => "i.priority $order, i.target_date ASC",
+                      target_date => "i.target_date $order, i.priority DESC",
+                      project => "upper(p.name) $order, i.priority DESC, i.target_date ASC",
+                      owner => "upper(uo.fullname) $order, i.priority DESC, i.target_date ASC",
+                      assigned_to => "upper(ua.fullname) $order, i.priority DESC, i.target_date ASC",
+                      status => "i.status $order, i.r_status $order, i.priority DESC, i.target_date ASC",
+                      last_mod => "i.last_mod $order",
+                      milestone => "upper(m.name) $order, i.priority DESC, i.target_date ASC",
+                      created => "i.iid $order",
+                      );
+
+        my $order_string = $orders{$sortby} || die "bad sortby";
+        my $query_string;
+        $query_string = qq{
+            SELECT i.iid,i.title,i.description,i.type,i.owner,i.assigned_to,uo.fullname as owner_fullname,
                    ua.fullname as assigned_to_fullname,i.priority,i.target_date,i.url,i.last_mod,
-	           i.mid,m.name as milestone,m.pid,p.name as project,i.status,i.r_status
-		FROM items i, milestones m, projects p, users uo, users ua
-		WHERE i.mid = m.mid
-		AND m.pid = p.pid 
-		AND i.owner = uo.username 
-		AND i.assigned_to = ua.username
-	    };
-	my @args;
-	if($type ne '%') {
-	    $query_string .= qq{ AND i.type = ? };
-	    push @args, $type;
-	}
+                   i.mid,m.name as milestone,m.pid,p.name as project,i.status,i.r_status
+                FROM items i, milestones m, projects p, users uo, users ua
+                WHERE i.mid = m.mid
+                AND m.pid = p.pid
+                AND i.owner = uo.username
+                AND i.assigned_to = ua.username
+            };
+        my @args;
+        if($type ne '%') {
+            $query_string .= qq{ AND i.type = ? };
+            push @args, $type;
+        }
 
-	if($max_date ne "") {
-	    $query_string .= qq{ AND i.target_date <= ? };
-	    push @args, $max_date;
-	}
+        if($max_date ne "") {
+            $query_string .= qq{ AND i.target_date <= ? };
+            push @args, $max_date;
+        }
 
-	if($min_date ne "") {
-	    $query_string .= qq{ AND i.target_date >= ? };
-	    push @args, $min_date;
-	}
+        if($min_date ne "") {
+            $query_string .= qq{ AND i.target_date >= ? };
+            push @args, $min_date;
+        }
 
-	my $status_string = "";
-	foreach my $stat (@status) {
-	    if ($stat =~ /_/) {
-		my ($s,$r) = split /_/, $stat;
-		$status_string .= "OR (i.status = 'RESOLVED' AND i.r_status like ?) ";
-		push @args, $r;
-	    } else {
-		$status_string .= "OR i.status = ? ";
-		push @args, $stat;
-	    }
-	}
-	# remove the extra "OR" at the beginning
-	if($status_string ne "") { 
-	    $status_string = substr($status_string,2);
-	    $query_string .= qq{ AND ($status_string) };
-	}
-	if($pid ne '%') {
-	    $query_string .= qq{ AND p.pid = ? };
-	    push @args, $pid;
-	}
-	if($owner ne "%") {
-	    $query_string .= qq{ AND uo.username = ? };
-	    push @args, $owner;
-	}
-	if($assigned_to ne "%") {
-	    $query_string .= qq{ AND ua.username = ? };
-	    push @args, $assigned_to;
-	}
-	if($q ne "%") {
-	    $query_string .= qq{
-		AND ( (i.iid IN (select k.iid 
-				 from keywords k 
-				 where upper(k.keyword) like upper(?)
-				 )) OR
-		      upper(i.title) LIKE upper(?) 
-		      OR upper(i.description) LIKE upper(?))	    
-		};
-	    push @args, ($q,$q,$q);
-	}
-	$query_string .= qq{
-		AND (p.pid IN (select w.pid 
-			       from works_on w 
-			       where username = ?) 
-		     OR p.pub_view = 'true')
-		ORDER BY $order_string
-		LIMIT $limit OFFSET $offset;
-	};
-	push @args, $username;
-	$self->set_sql(items_search => $query_string, 'Main');
-	my $sth = $self->sql_items_search;
-	$sth->execute(@args);
-	return $sth->fetchall_arrayref({});
+        my $status_string = "";
+        foreach my $stat (@status) {
+            if ($stat =~ /_/) {
+                my ($s,$r) = split /_/, $stat;
+                $status_string .= "OR (i.status = 'RESOLVED' AND i.r_status like ?) ";
+                push @args, $r;
+            } else {
+                $status_string .= "OR i.status = ? ";
+                push @args, $stat;
+            }
+        }
+        # remove the extra "OR" at the beginning
+        if($status_string ne "") {
+            $status_string = substr($status_string,2);
+            $query_string .= qq{ AND ($status_string) };
+        }
+        if($pid ne '%') {
+            $query_string .= qq{ AND p.pid = ? };
+            push @args, $pid;
+        }
+        if($owner ne "%") {
+            $query_string .= qq{ AND uo.username = ? };
+            push @args, $owner;
+        }
+        if($assigned_to ne "%") {
+            $query_string .= qq{ AND ua.username = ? };
+            push @args, $assigned_to;
+        }
+        if($q ne "%") {
+            $query_string .= qq{
+                AND (
+                      upper(i.title) LIKE upper(?)
+                      OR upper(i.description) LIKE upper(?))
+                };
+            push @args, ($q,$q);
+        }
+        $query_string .= qq{
+                AND (p.pid IN (select w.pid
+                               from works_on w
+                               where username = ?)
+                     OR p.pub_view = 'true')
+                ORDER BY $order_string
+                LIMIT $limit OFFSET $offset;
+        };
+        push @args, $username;
+        $self->set_sql(items_search => $query_string, 'Main');
+        my $sth = $self->sql_items_search;
+        $sth->execute(@args);
+        return $sth->fetchall_arrayref({});
     }
 }
 
-__PACKAGE__->set_sql(recent_items => qq{select i.iid,i.type,i.title,i.status,p.name as project,p.pid 
-		     from items i, projects p, milestones m 
-		     where i.mid = m.mid AND m.pid = p.pid
-		     AND (p.pid in (select w.pid from works_on w 
-				    where username = ?) 
-			  OR p.pub_view = 'true')
-		     order by last_mod desc limit 10;}, 'Main');
+__PACKAGE__->set_sql(recent_items => qq{select i.iid,i.type,i.title,i.status,p.name as project,p.pid
+                     from items i, projects p, milestones m
+                     where i.mid = m.mid AND m.pid = p.pid
+                     AND (p.pid in (select w.pid from works_on w
+                                    where username = ?)
+                          OR p.pub_view = 'true')
+                     order by last_mod desc limit 10;}, 'Main');
 
 sub recent_items {
     my $self = shift;

@@ -78,7 +78,9 @@ sub setup {
         'update_project'         => 'update_project',
         'update_project_form'    => 'update_project_form',
         'search_forum'           => 'search_forum',
-        'keyword'                => 'keyword',
+        'set_tags'               => 'set_tags',
+        'tag'                    => 'tag',
+        'my_tags'                => 'my_tags',
         'document'               => 'document',
         'attachment'             => 'attachment',
         'users'                  => 'users',
@@ -435,8 +437,7 @@ sub add_item {
     my $day          = $cgi->param('day') || "";
     my $url          = escape($cgi->param('url')) || "";
     my $description  = $cgi->param('description') || "";
-    my $new_keywords = $cgi->param('new_keywords') || "";
-    my @keywords     = $cgi->param('keywords');
+    my $tags         = $cgi->param('tags') || "";
     my @dependencies = $cgi->param('depends');
     my @clients      = $cgi->param('clients');
     my $completed    = $cgi->param('completed') || "";
@@ -457,13 +458,9 @@ sub add_item {
     if ($estimated_time eq "") {
         $estimated_time = "0h";
     }
-    push @keywords, split /\n/, $new_keywords;
-    @keywords = map {escape($_);} @keywords;
-
-    my @new_keywords;
-    foreach my $k (@keywords) {
-        push @new_keywords, $k unless $k eq "";
-    }
+    my @tags = ();
+    push @tags, split /\n/, $tags;
+    @tags = grep {$_ ne ""} map {escape($_);} @tags;
 
     my @new_dependencies;
     foreach my $d (@dependencies) {
@@ -507,7 +504,7 @@ sub add_item {
                         target_date  => $target_date,
                         url          => $url,
                         description  => $description,
-                        keywords     => \@new_keywords,
+                        tags         => \@tags,
                         dependencies => \@new_dependencies,
                         clients      => \@new_clients,
                         estimated_time => $estimated_time);
@@ -1560,12 +1557,12 @@ sub project_info {
         $data{$works_on} = 1;
     }
 
-    $data{caretaker_fullname} = $caretaker->fullname;
+    $data{caretaker_fullname}   = $caretaker->fullname;
     $data{managers}             = [map {$_->data()} $project->managers()];
     $data{developers}           = [map {$_->data()} $project->developers()];
     $data{guests}               = [map {$_->data()} $project->guests()];
     $data{clients}              = $project->clients_data();
-    $data{keywords}             = $project->keywords();
+    $data{tags}                 = $project->tags();
     $data{total_remaining_time} = interval_to_hours($project->estimated_time);
     $data{total_completed_time} = interval_to_hours($project->completed_time);
     $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
@@ -1632,11 +1629,9 @@ sub add_services_item {
     my %data = %{$project->data()};
 
     $data{developers}           = [map {$_->data()} $project->developers()];
-    $data{keywords}             = $project->keywords();
-
 
     $data{'milestone_select'} = $project->project_milestones_select();
-    $data{'keywords'}     = $project->keywords();
+    $data{'tags'}     = $project->tags();
     $data{'dependencies'} = $project->all_items_in_project();
     my $caretaker = $project->caretaker->username;
     $data{'developers'}   = [map {{
@@ -1787,7 +1782,6 @@ sub update_project_form {
     $data{guests}               = [map {$_->data()} $project->guests()];
     $data{caretaker_select}     = $project->caretaker_select();
     $data{all_non_personnel}    = $project->all_non_personnel_select();
-    $data{keywords}             = $project->keywords();
     $data{statuses}             = $project->status_select();
     $data{approaches}           = $project->approaches_select();
     $data{scales}               = $project->scales_select();
@@ -1834,21 +1828,69 @@ sub search_forum {
 
 }
 
-sub keyword {
+use URI::Escape;
+use JSON;
+
+sub set_tags {
+    # meant to be called via AJAX
+    my $self = shift;
+    my $cgi = $self->query();
+    my $user = $self->{user};
+    my $username = $user->username;
+    my $iid = $cgi->param('iid') || "";
+    my $tags = $cgi->param('tags') || "";
+    my @tags = split /[\n\r\,+]/, $tags;
+    @tags = map {s/^\s+//; s/\s+$//; $_;} @tags;
+    my $item = PMT::Item->retrieve($iid);
+    $item->update_tags(\@tags,$username);
+    return objToJson($item->tags());
+}
+
+sub tag {
     my $self = shift;
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
     my $user = $self->{user};
     my $username = $user->username;
-    my $keyword = $cgi->param('keyword') || "";
-    my $pid     = $cgi->param('pid')     || "";
+    my $tag     = $cgi->param('tag') || "";
+    my $pid     = $cgi->param('pid') || "";
+    my $u = $cgi->param('username') || "";
 
-    my $template = $self->template("keyword.tmpl");
+    my $template = $self->template("tag.tmpl");
+    $tag = uri_escape($tag);
+    my $url = "tag/$tag/";
+    if ($pid ne "") {
+        $url .= "user/project_$pid/";
+    }
+    my $r = tasty_get($url);
 
-    $template->param(PMT::Keyword::keyword_data($keyword,$pid));
+    my @items = map {
+        my $i = PMT::Item->retrieve($_);
+        $i->data();
+    } map {
+        my $item = $_->{item};
+        my @parts = split "_", $item;
+        $parts[1];
+    } @{$r->{items}};
+
+    $template->param(items => \@items,
+                     tag => $tag);
 
     return $template->output();
 
+}
+
+sub my_tags {
+    # display a user's tags (ideally as a cloud)
+    my $self = shift;
+    my $user = $self->{user};
+    my $username = $user->username;
+    my $url = "user/user_$username/";
+    my $template = $self->template("my_tags.tmpl");
+
+    $template->param(tags => [sort {lc($a->{tag}) cmp lc($b->{tag})} @{tasty_get($url)->{tags}}],
+                     page_title => 'My Tags');
+    return $template->output();
 }
 
 sub document {
@@ -1942,8 +1984,6 @@ sub update_item {
     my $priority     = $cgi->param('priority') || "";
     my $url          = escape($cgi->param('url')) || "";
     my $description  = $cgi->param('description') || "";
-    my $new_keywords = $cgi->param('new_keywords') || "";
-    my @keywords     = $cgi->param('keywords');
     my @dependencies = $cgi->param('depends');
     my @clients      = $cgi->param('clients');
     my $target_date  = $cgi->param('target_date') || PMT::Milestone->retrieve($mid)->target_date;
@@ -1958,16 +1998,6 @@ sub update_item {
     my $estimated_time = $cgi->param('estimated_time') || "01:00";
     if($estimated_time =~ /^(\d+)$/) {
         $estimated_time .= "h";
-    }
-
-
-
-    push @keywords, split /\n/, $new_keywords;
-    @keywords = map {escape($_);} @keywords;
-
-    my @new_keywords;
-    foreach my $k (@keywords) {
-        push @new_keywords, $k unless $k eq "";
     }
 
     my @new_deps;
@@ -1990,7 +2020,6 @@ sub update_item {
                 target_date  => $target_date,
                 url          => $url,
                 description  => $description,
-                keywords     => \@new_keywords,
                 dependencies => \@new_deps,
                 clients      => \@new_clients,
                 client_uni   => $client_uni,
@@ -2175,7 +2204,6 @@ sub project {
     $data{managers}             = [map {$_->data()} $project->managers()];
     $data{developers}           = [map {$_->data()} $project->developers()];
     $data{guests}               = [map {$_->data()} $project->guests()];
-    $data{keywords}             = $project->keywords();
     $data{total_remaining_time} = interval_to_hours($project->estimated_time);
     $data{total_completed_time} = interval_to_hours($project->completed_time);
     $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
