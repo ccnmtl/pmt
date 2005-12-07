@@ -3,7 +3,7 @@
 # File: view.pl
 # Time-stamp: <Tue Aug 16 16:14:04 2005>
 #
-# anonymous view of an item. 
+# anonymous view of an item.
 use strict;
 
 use lib qw(.);
@@ -27,12 +27,12 @@ $template->param(page_title => $item->title);
 use Text::Tiki;
 my $tiki = new Text::Tiki;
 my $description = $item->description;
-$description =~ s/(\s+\S+\@\S+)\)/$1 )/g;
+$description =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
 $template->param(description_html => $tiki->format($description);
 
 my @full_history = ();
 my %history_items = ();
- 
+
 foreach my $h (@{$item->history()}) {
     $history_items{$h->{event_date_time}} = $h;
 }
@@ -43,7 +43,7 @@ foreach my $c (@{$item->get_comments()}) {
 foreach my $i (sort keys %history_items) {
     my $t = $history_items{$i};
     $t->{timestamp} = $i;
-    push @full_history, $t; 
+    push @full_history, $t;
 }
 
 $template->param(full_history => \@full_history);

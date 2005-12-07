@@ -49,7 +49,7 @@ eval {
     $data{project}              = $project->name;
     my $tiki = new Text::Tiki;
     $data{description} = $data{description} || "";
-    $data{description} =~ s/(\s+\S+\@\S+)\)/$1 )/g;
+    $data{description} =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
     $data{description_html} = $tiki->format($data{description});
     $data{$data{type}}         = 1;
     $data{tags}                = $item->tags();

@@ -26,9 +26,9 @@ sub new {
     my $user = shift;
 
     my $member_vars = {
-	user => $user,
-	u => PMT::User->retrieve($user),
-	};
+        user => $user,
+        u => PMT::User->retrieve($user),
+        };
     return bless $member_vars, $pkg;
 }
 
@@ -104,7 +104,7 @@ sub project_posts_by_time {
     my $start = shift;
     my $end   = shift;
 
-    
+
     return [map {$_->data($self->{u})} PMT::Node->pid_posts_in_range($pid,
          $start, $end)];
 }
@@ -129,32 +129,32 @@ sub post {
     my %args = @_;
 
     if($args{reply_to}) {
-	$args{type} = 'comment';
+        $args{type} = 'comment';
     } else {
-	$args{reply_to} = 0;
+        $args{reply_to} = 0;
     }
-    
+
     my $tiki = new Text::Tiki;
-    $args{body} =~ s/(\s+\S+\@\S+)\)/$1 )/g;
+    $args{body} =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
     my $body = PMT::Common::escape($tiki->format($args{body}));
     $args{author} ||= $self->{user};
     my $author = PMT::User->retrieve($args{author});
 
     if(("log" eq $args{type}) || ("comment" eq $args{type})) {
-	$args{pid} = 0;
-    } 
+        $args{pid} = 0;
+    }
 
     my $p = PMT::Node->create({type=>$args{type},author => $author->username,
-			       subject => $args{subject}, body =>$body,
-			       reply_to => $args{reply_to}, project => $args{pid}});
+                               subject => $args{subject}, body =>$body,
+                               reply_to => $args{reply_to}, project => $args{pid}});
 
     $self->reply_to_node($args{reply_to});
 
 
     if($args{type} eq "post") {
-	$self->email_post($p->nid,\%args);
+        $self->email_post($p->nid,\%args);
     } elsif($args{type} eq "comment") {
-	$self->email_reply($p->nid,\%args);
+        $self->email_reply($p->nid,\%args);
     }
 
     return $p->nid;
@@ -169,7 +169,7 @@ sub email_post {
     $Text::Wrap::columns = 72;
     my $body = Text::Wrap::wrap("","",$args->{body});
 
-    $body .= "\n\n-- \nthis message sent automatically by the PMT forum. 
+    $body .= "\n\n-- \nthis message sent automatically by the PMT forum.
 to reply, please visit <http://pmt.ccnmtl.columbia.edu/home.pl?mode=node;nid=$nid>\n";
 
     my $username = $self->user();
@@ -185,20 +185,20 @@ to reply, please visit <http://pmt.ccnmtl.columbia.edu/home.pl?mode=node;nid=$ni
     if ($args->{pid} ne "") {
         my $project_name = $project->name;
         my $subject = "[PMT Forum: $project_name] $args->{subject}";
-        $body = "project: $project_name\nauthor: $current_user->{user_fullname}\n" . $body; 
+        $body = "project: $project_name\nauthor: $current_user->{user_fullname}\n" . $body;
     }
 
     foreach my $u (@users) {
 
-	# the author doesn't need a copy
-	next if $u->username eq $current_user->{user_username};
+        # the author doesn't need a copy
+        next if $u->username eq $current_user->{user_username};
 
-	my %mail = (To => $u->email,
-		    From => "$current_user->{user_fullname} <$current_user->{user_email}>",
-		    #Subject => "[PMT Forum: ]$args->{subject}",
-		    Subject => $subject,
-		    Message => $body);
-	Mail::Sendmail::sendmail(%mail) or die $Mail::Sendmail::error;
+        my %mail = (To => $u->email,
+                    From => "$current_user->{user_fullname} <$current_user->{user_email}>",
+                    #Subject => "[PMT Forum: ]$args->{subject}",
+                    Subject => $subject,
+                    Message => $body);
+        Mail::Sendmail::sendmail(%mail) or die $Mail::Sendmail::error;
     }
 }
 
@@ -224,20 +224,20 @@ sub email_reply {
 
     my $subject = "[PMT Forum] $args->{subject}";
     if ($args->{pid}) {
-	my $project = PMT::Project->retrieve($args->{pid});
+        my $project = PMT::Project->retrieve($args->{pid});
         my $project_name = $project->name;
         my $subject = "[PMT Forum: $project_name] $args->{subject}";
-        $body = "project: $project_name\nauthor: $current_user->{user_fullname}\n\n--\n" . $body;  
+        $body = "project: $project_name\nauthor: $current_user->{user_fullname}\n\n--\n" . $body;
     }
-    
-    $body .= "\n\n-- \nthis message sent automatically by the PMT forum. 
+
+    $body .= "\n\n-- \nthis message sent automatically by the PMT forum.
 to reply, please visit <http://pmt.ccnmtl.columbia.edu/home.pl?mode=node;nid=$nid>\n";
 
 
     my %mail = (To => $user_info->{user_email},
-		From => "$current_user->{user_fullname} <$current_user->{user_email}>",
-		Subject => $subject,
-		Message => $body);
+                From => "$current_user->{user_fullname} <$current_user->{user_email}>",
+                Subject => $subject,
+                Message => $body);
 
     Mail::Sendmail::sendmail(%mail) or die $Mail::Sendmail::error;
 
@@ -285,8 +285,8 @@ sub paragraphize {
     my @pars = split /[\n\r]+/, $text;
     $text = "";
     foreach my $line (@pars) {
-	next if $line =~ /^\s+$/;
-	$text .= "<p>$line</p>\n";
+        next if $line =~ /^\s+$/;
+        $text .= "<p>$line</p>\n";
     }
     return $text;
 }

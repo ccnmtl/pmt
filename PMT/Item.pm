@@ -102,7 +102,7 @@ sub history {
     my $tiki = new Text::Tiki();
     return [map {
         $_->{comment} = $_->{comment} || "";
-        $_->{comment} =~ s/(\s+\S+\@\S+)\)/$1 )/g;
+        $_->{comment} =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
         $_->{comment} = $tiki->format($_->{comment});
         $_->{comment} =~ s{&lt;br /&gt;\s*}{\n}g;
         $_->{comment} =~ s{&lt;(/?)b&gt;}{<$1b>}g;
@@ -125,7 +125,7 @@ sub get_comments {
     my $tiki = new Text::Tiki();
     return [map {
         $_->{comment} = $_->{comment} || "";
-        $_->{comment} =~ s/(\s+\S+\@\S+)\)/$1 )/g;
+        $_->{comment} =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
         $_->{comment} = $tiki->format($_->{comment});
         $_;
     } @{$sth->fetchall_arrayref({})}];
@@ -643,7 +643,7 @@ sub full_data {
     $data{project}              = $project->name;
     my $tiki = new Text::Tiki;
     $data{description} = $data{description} || "";
-    $data{description} =~ s/(\s+\S+\@\S+)\)/$1 )/g;
+    $data{description} =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
     $data{description_html} = $tiki->format($data{description});
     $data{$data{type}}         = 1;
     $data{tags}                = $item->tags();
