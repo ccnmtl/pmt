@@ -1931,17 +1931,20 @@ sub cloud {
     my @thresholds = ();
     my $t = $min;
     if ($max == $min) {$stepsize = 1;}
-    while ($t < $max) {
-        push @thresholds, $t;
-        $t += $stepsize;
+
+    foreach my $i (0..$levels - 1) {
+        my $percent = $i / $levels;
+        my $size = ($max - $min + 1) ** $percent;
+
+        push @thresholds, $size;
     }
 
     my $level_from_weight = sub {
         my $w = shift;
         my $i = 0;
         foreach my $thr (@thresholds) {
-            return $i if ($w < $thr);
             $i++;
+            return $i if ($w <= $thr);
         }
         return $i;
     };
