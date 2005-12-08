@@ -81,6 +81,7 @@ sub setup {
         'set_tags'               => 'set_tags',
         'tag'                    => 'tag',
         'my_tags'                => 'my_tags',
+        'all_tags'               => 'all_tags',
         'document'               => 'document',
         'attachment'             => 'attachment',
         'users'                  => 'users',
@@ -1897,22 +1898,95 @@ sub tag {
 
 }
 
+# why does perl not come with min() and max() functions? grr.
+
+sub max {
+    my @list = @_;
+    return () if (scalar(@list) < 1);
+    my $max = $list[0];
+    foreach my $i (@list) {
+        $max = $i if ($i > $max);
+    }
+    return $max;
+}
+
+sub min {
+    my @list = @_;
+    return () if (scalar(@list) < 1);
+    my $min = $list[0];
+    foreach my $i (@list) {
+        $min = $i if ($i < $min);
+    }
+    return $min;
+}
+
+sub cloud {
+    my $tags = shift;
+    my $levels = 5;
+
+    my $max = max(map {$_->{count}} @$tags);
+    my $min = min(map {$_->{count}} @$tags);
+
+    my $stepsize = ($max - $min) / $levels;
+    my @thresholds = ();
+    my $t = $min;
+    if ($max == $min) {$stepsize = 1;}
+    while ($t < $max) {
+        push @thresholds, $t;
+        $t += $stepsize;
+    }
+
+    my $level_from_weight = sub {
+        my $w = shift;
+        my $i = 0;
+        foreach my $thr (@thresholds) {
+            return $i if ($w < $thr);
+            $i++;
+        }
+        return $i;
+    };
+
+    foreach my $tag (@$tags) {
+        $tag->{level} = $level_from_weight->($tag->{count});
+    }
+
+    return $tags;
+}
+
 sub my_tags {
     # display a user's tags (ideally as a cloud)
     my $self = shift;
     my $user = $self->{user};
     my $username = $user->username;
-    my $url = "user/user_$username/";
+    my $url = "user/user_$username/cloud";
     my $template = $self->template("my_tags.tmpl");
     my $r = tasty_get($url);
     my $tags = [];
     if ($r->{tags}) {
         $tags = [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
     }
+    $tags = cloud($tags);
     $template->param(tags => $tags,
                      page_title => 'My Tags');
     return $template->output();
 }
+
+sub all_tags {
+    my $self = shift;
+    my $url = "cloud";
+    my $template = $self->template("all_tags.tmpl");
+    my $r = tasty_get($url);
+    my $tags = [];
+    if ($r->{tags}) {
+        $tags = [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
+    }
+
+    $tags = cloud($tags);
+    $template->param(tags => $tags,
+                     page_title => 'All Tags');
+    return $template->output();
+}
+
 
 sub document {
     my $self = shift;
