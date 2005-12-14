@@ -30,6 +30,10 @@ package Error::PASSWORD_MISMATCH;
 @Error::PASSWORD_MISMATCH::ISA = qw(Error::Simple);
 1;
 
+package Error::INCORRECT_PASSWORD;
+@Error::INCORRECT_PASSWORD::ISA = qw(Error::Simple);
+1;
+
 package Error::NO_IID;
 @Error::NO_IID::ISA = qw(Error::Simple);
 1;
