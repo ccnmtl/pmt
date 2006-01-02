@@ -39,7 +39,8 @@ display: none;
 display: none;
 }
 
-tr.screenshow
+tr.screenshow,
+div.screenshow
 {
 display: none;
 }
