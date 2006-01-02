@@ -39,7 +39,10 @@ display: none;
 display: none;
 }
 
-
+tr.screenshow
+{
+display: none;
+}
 
 
 
