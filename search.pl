@@ -86,49 +86,49 @@ eval {
                                 description => $i->{description});
             }
             print $cgi->header("text/xml"),$feed->as_string();
-            exit(0);
-        }
-
-        if ((exists $shows{tags}) || (exists $shows{dependencies}) ||
-            (exists $shows{dependents}) || (exists $shows{comments}) ||
-            (exists $shows{history})) {
-            foreach my $i (@$r) {
-                $pmt->debug("fetching item: " . time());
-                my $item = PMT::Item->retrieve($i->{iid});
-                my $r = $item->full_data();
-                my %data = %$r;
-                foreach my $k (keys %shows) {$data{$k} = 1;}
-                push @items, \%data;
-                $pmt->debug("done fetching item: " . time());
-            }
         } else {
-            foreach my $i (@$r) {
-                my %data = %$i;
-                foreach my $k (keys %shows) {$data{$k} = 1;}
-                push @items, \%data;
-            }
-        }
-        my %PRIORITIES = (4 => 'CRITICAL', 3 => 'HIGH', 2 => 'MEDIUM', 1 => 'LOW',
-            0 => 'ICING');
 
-        @items = map {
-            $_->{priority_label} = $PRIORITIES{$_->{priority}};
-            $_->{type_class} = $_->{type};
-            $_->{type_class} =~ s/\s//g;
-            $_;} @items;
-        $template->param(\%shows);
-        $template->param(results => 1,
-                         page_title => $results_title || 'search results',
-                         results_title => $results_title,
-                         hide_menu => $hide_menu,
-                         found_items => ($#items >= 0),
-                         items => \@items);
-        if($csv) {
-            print $cgi->header("application/vnd.ms-excel");
-        } else {
-            print $cgi->header();
+            if ((exists $shows{tags}) || (exists $shows{dependencies}) ||
+                (exists $shows{dependents}) || (exists $shows{comments}) ||
+                (exists $shows{history})) {
+                foreach my $i (@$r) {
+                    $pmt->debug("fetching item: " . time());
+                    my $item = PMT::Item->retrieve($i->{iid});
+                    my $r = $item->full_data();
+                    my %data = %$r;
+                    foreach my $k (keys %shows) {$data{$k} = 1;}
+                    push @items, \%data;
+                    $pmt->debug("done fetching item: " . time());
+                }
+            } else {
+                foreach my $i (@$r) {
+                    my %data = %$i;
+                    foreach my $k (keys %shows) {$data{$k} = 1;}
+                    push @items, \%data;
+                }
+            }
+            my %PRIORITIES = (4 => 'CRITICAL', 3 => 'HIGH', 2 => 'MEDIUM', 1 => 'LOW',
+                              0 => 'ICING');
+
+            @items = map {
+                $_->{priority_label} = $PRIORITIES{$_->{priority}};
+                $_->{type_class} = $_->{type};
+                $_->{type_class} =~ s/\s//g;
+                $_;} @items;
+            $template->param(\%shows);
+            $template->param(results => 1,
+                             page_title => $results_title || 'search results',
+                             results_title => $results_title,
+                             hide_menu => $hide_menu,
+                             found_items => ($#items >= 0),
+                             items => \@items);
+            if($csv) {
+                print $cgi->header("application/vnd.ms-excel");
+            } else {
+                print $cgi->header();
+            }
+            print $template->output();
         }
-        print $template->output();
     } else {
         $template->param(users => [map {$_->data()}
             PMT::User->all_active()]);
