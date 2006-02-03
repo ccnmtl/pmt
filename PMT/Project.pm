@@ -186,7 +186,7 @@ sub project_milestones_select {
     my @milestones = map {$_->data()} $self->milestones();
     my $upcoming = $self->upcoming_milestone();
     my @values = map {$_->{mid}} @milestones;
-    my @labels = map {$_->{name}} @milestones;
+    my @labels = map {$_->{name} . " (" . $_->{target_date} . ")" } @milestones;
     return selectify(\@values,\@labels,[$upcoming]);
 }
 
@@ -457,7 +457,7 @@ sub milestone_select {
         return [map {
         {
             value => $_->mid,
-            label => $_->name,
+            label => $_->name . " (" . $_->target_date . ")",
             selected => ($_->mid == $milestone->mid),
         }
     } $self->milestones()];
