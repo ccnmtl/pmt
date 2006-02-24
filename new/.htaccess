@@ -1,4 +1,4 @@
-AuthUserFile /home/httpd/htpasswd
+AuthUserFile /var/www/htpasswd
 AuthGroupFile /dev/null
 AuthName "CCNMTL Key"
 AuthType Basic
