@@ -98,7 +98,6 @@ eval {
                     my $item = PMT::Item->retrieve($i->{iid});
                     my $r = $item->full_data();
                     my %data = %$r;
-                    print STDERR Data::Dumper::Dumper($data{history});
                     foreach my $k (keys %shows) {$data{$k} = 1;}
                     push @items, \%data;
                     $pmt->debug("done fetching item: " . time());
