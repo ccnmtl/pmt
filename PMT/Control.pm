@@ -13,7 +13,6 @@ use PMT::Group;
 use CGI;
 use HTML::Template;
 use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days Days_in_Month Add_Delta_YM/;
-use Net::LDAP;
 use Text::Tiki;
 use Forum;
 use HTML::CalendarMonth;
@@ -1133,23 +1132,16 @@ sub add_client_form {
             $uni = "";
         }
         if ($uni ne "") {
-
-            my $ldap = Net::LDAP->new('ldap.columbia.edu') or die "$@";
-            $ldap->bind();
-            my $mesg = $ldap->search(filter => "(uni=$uni)");
-            my @entries = $mesg->all_entries();
-            my $entry = $entries[0];
+            my $d = ldap_lookup($uni);
 
             my $ou = "not_retrieved";
-            if($entry) {
-                $client_email = $entry->get_value("mail") || "";
-                $lastname = $entry->get_value("sn") || "";
-                $firstname = $entry->get_value("givenname") || "";
-                $title = $entry->get_value("title") || "";
-
-                $ou = $entry->get_value("ou") || "(not found)";
-
-                $phone = $entry->get_value("telephonenumber") || "";
+            if ($d->{found}) {
+                $client_email  = $d->{mail}            || "";
+                $lastname      = $d->{lastname}        || "";
+                $firstname     = $d->{firstname}       || "";
+                $title         = $d->{title}           || "";
+                $ou            = $d->{ou}              || "(not found)";
+                $phone         = $d->{telephonenumber} || "";
             } else {
                 $lastname = $firstname = $title = $department = $school = $phone = "";
             }

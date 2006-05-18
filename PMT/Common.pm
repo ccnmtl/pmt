@@ -13,7 +13,7 @@ require Exporter;
                           paragraphize selectify escape get_template
                           todays_date scale_array ld diff diff_order
                           lists_diff truncate_string tasty_get
-                          tasty_delete tasty_put
+                          tasty_delete tasty_put ldap_lookup
                           );
 
 sub scale_array {
@@ -592,6 +592,14 @@ sub truncate_string {
     } else {
         $truncated_string = $full_string;
     }
+}
+
+sub ldap_lookup {
+    use LWP::Simple;
+    use JSON;
+    my $uni = shift;
+    my $json = new JSON;
+    return $json->jsonToObj(get "http://cdap.ccnmtl.columbia.edu/?uni=$uni");
 }
 
 sub tasty_get {
