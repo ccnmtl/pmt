@@ -60,10 +60,12 @@ eval {
 
         my $current_time = time();
         $pmt->debug("starting main query: $current_time");
+
         my $r = PMT::Item->search_items(pid => $pid, q => $q, type => $type, owner => $owner,
-                                       assigned_to => $assigned_to, status => \@status, tag => $tag,
-                                       number => $number, sortby => $sortby, order => $order, limit => $limit,
-                                       offset => $offset, max_date => $max_date, min_date => $min_date);
+                                        assigned_to => $assigned_to, status => \@status, tag => $tag,
+                                        number => $number, sortby => $sortby, order => $order, limit => $limit,
+                                        offset => $offset, max_date => $max_date, min_date => $min_date,
+                                        show => \@show);
         $current_time = time();
         $pmt->debug("finished main query: $current_time");
         my @items;
@@ -88,14 +90,15 @@ eval {
             print $cgi->header("text/xml"),$feed->as_string();
         } else {
 
-            if ((exists $shows{tags}) || (exists $shows{dependencies}) ||
-                (exists $shows{dependents}) || (exists $shows{comments}) ||
-                (exists $shows{history})) {
+            if ((exists $shows{show_tags}) || (exists $shows{show_dependencies}) ||
+                (exists $shows{show_dependents}) || (exists $shows{show_comments}) ||
+                (exists $shows{show_history})) {
                 foreach my $i (@$r) {
                     $pmt->debug("fetching item: " . time());
                     my $item = PMT::Item->retrieve($i->{iid});
                     my $r = $item->full_data();
                     my %data = %$r;
+                    print STDERR Data::Dumper::Dumper($data{history});
                     foreach my $k (keys %shows) {$data{$k} = 1;}
                     push @items, \%data;
                     $pmt->debug("done fetching item: " . time());

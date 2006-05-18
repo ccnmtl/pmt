@@ -841,7 +841,7 @@ sub search_items {
     my $owner       = $args{owner};
     my $assigned_to = $args{assigned_to};
     my @status      = @{$args{status}};
-    my @show        = $args{show};
+    my @show        = @{$args{show}};
     my $number      = $args{number};
     my $sortby      = $args{sortby};
     my $order       = $args{order};
@@ -862,12 +862,11 @@ sub search_items {
 
     my $rows = 0;
 
-    my %show;
-    foreach my $show (@show) {
-        $show{$show} = 1;
+    my %show = ();
+
+    foreach my $s (@show) {
+        $show{$s} = 1;
     }
-
-
 
     if ($pid ne "" || $q ne "" || $type ne "" || $owner ne ""
         || $assigned_to ne "" || $number ne "" || $sortby ne "" || $order ne "")
