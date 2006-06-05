@@ -34,80 +34,80 @@ eval {
     if ($@) {
         print $cgi->header(), qq{there is no item in the system with this id.
         it may have been deleted or you may have followed a bad link.};
-        exit;
-    }
-
-    my $owner       = PMT::User->retrieve($data{owner});
-    my $assigned_to = PMT::User->retrieve($data{assigned_to});
-    my $milestone   = $item->mid;
-    my $project     = $milestone->pid;
-    $data{message}              = $message;
-    $data{owner_fullname}       = $owner->fullname;
-    $data{assigned_to_fullname} = $assigned_to->fullname;
-    $data{milestone}            = $milestone->name;
-    $data{pid}                  = $milestone->pid->pid;
-    $data{project}              = $project->name;
-    my $tiki = new Text::Tiki;
-    $data{description} = $data{description} || "";
-    $data{description} =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
-    $data{description_html} = $tiki->format($data{description});
-    $data{$data{type}}         = 1;
-    $data{tags}                = $item->tags();
-    $data{user_tags}           = $item->user_tags($username);
-    $data{can_resolve}         = ($data{status} eq 'OPEN' ||
-                                  $data{status} eq 'INPROGRESS' ||
-                                  $data{status} eq 'RESOLVED');
-    $data{resolve_times}       = $item->resolve_times();
-    $data{dependencies}        = [map {PMT::Item->retrieve($_->dest)->data()} $item->dependencies()];
-    $data{dependents}          = [map {PMT::Item->retrieve($_->source)->data()} $item->dependents()];
-    $data{history}             = $item->history();
-    $data{comments}            = $item->get_comments();
-    #Min's addition to implement email opt in/out
-    $data{item_cc}             = $item->notify_item($username);
-    $data{attachments}         = [map {$_->data()} $item->attachments()];
-
-    my @full_history = ();
-
-    my %history_items = ();
-
-    foreach my $h (@{$data{history}}) {
-        $history_items{$h->{event_date_time}} = $h;
-    }
-    foreach my $c (@{$data{comments}}) {
-        $history_items{$c->{add_date_time}} = $c;
-    }
-
-    foreach my $i (sort keys %history_items) {
-        my $t = $history_items{$i};
-        $t->{timestamp} = $i;
-        push @full_history, $t;
-    }
-
-    $data{full_history}        = \@full_history;
-    $data{status_select}       = $item->status_select();
-    if(exists $data{pub_view}) {
-        $data{pub_view}            = $data{pub_view} == 1;
     } else {
-        $data{pub_view} = 0;
+
+        my $owner       = PMT::User->retrieve($data{owner});
+        my $assigned_to = PMT::User->retrieve($data{assigned_to});
+        my $milestone   = $item->mid;
+        my $project     = $milestone->pid;
+        $data{message}              = $message;
+        $data{owner_fullname}       = $owner->fullname;
+        $data{assigned_to_fullname} = $assigned_to->fullname;
+        $data{milestone}            = $milestone->name;
+        $data{pid}                  = $milestone->pid->pid;
+        $data{project}              = $project->name;
+        my $tiki = new Text::Tiki;
+        $data{description} = $data{description} || "";
+        $data{description} =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
+        $data{description_html} = $tiki->format($data{description});
+        $data{$data{type}}         = 1;
+        $data{tags}                = $item->tags();
+        $data{user_tags}           = $item->user_tags($username);
+        $data{can_resolve}         = ($data{status} eq 'OPEN' ||
+                                      $data{status} eq 'INPROGRESS' ||
+                                      $data{status} eq 'RESOLVED');
+        $data{resolve_times}       = $item->resolve_times();
+        $data{dependencies}        = [map {PMT::Item->retrieve($_->dest)->data()} $item->dependencies()];
+        $data{dependents}          = [map {PMT::Item->retrieve($_->source)->data()} $item->dependents()];
+        $data{history}             = $item->history();
+        $data{comments}            = $item->get_comments();
+        #Min's addition to implement email opt in/out
+        $data{item_cc}             = $item->notify_item($username);
+        $data{attachments}         = [map {$_->data()} $item->attachments()];
+
+        my @full_history = ();
+
+        my %history_items = ();
+
+        foreach my $h (@{$data{history}}) {
+            $history_items{$h->{event_date_time}} = $h;
+        }
+        foreach my $c (@{$data{comments}}) {
+            $history_items{$c->{add_date_time}} = $c;
+        }
+
+        foreach my $i (sort keys %history_items) {
+            my $t = $history_items{$i};
+            $t->{timestamp} = $i;
+            push @full_history, $t;
+        }
+
+        $data{full_history}        = \@full_history;
+        $data{status_select}       = $item->status_select();
+        if(exists $data{pub_view}) {
+            $data{pub_view}            = $data{pub_view} == 1;
+        } else {
+            $data{pub_view} = 0;
+        }
+
+        $data{clients}        = $item->clients_data();
+        #$data{clients_select} = $item->clients_select();
+
+        $data{$project->project_role($username)} = 1;
+        $data{total_remaining_time} = interval_to_hours($project->estimated_time);
+        $data{total_completed_time} = interval_to_hours($project->completed_time);
+        $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
+
+        ($data{done},$data{todo},$data{free},$data{completed_behind},$data{behind}) = $project->estimate_graph(150);
+
+        my $template = get_template("item.tmpl");
+        $template->param(\%data);
+
+        $template->param(page_title => "Item: $data{title}");
+        $template->param($user->menu());
+        $template->param(cc => $item->cc($user));
+        print $cgi->header(-charset => 'utf-8'), $template->output();
     }
-
-    $data{clients}        = $item->clients_data();
-    #$data{clients_select} = $item->clients_select();
-
-    $data{$project->project_role($username)} = 1;
-    $data{total_remaining_time} = interval_to_hours($project->estimated_time);
-    $data{total_completed_time} = interval_to_hours($project->completed_time);
-    $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
-
-    ($data{done},$data{todo},$data{free},$data{completed_behind},$data{behind}) = $project->estimate_graph(150);
-
-    my $template = get_template("item.tmpl");
-    $template->param(\%data);
-
-    $template->param(page_title => "Item: $data{title}");
-    $template->param($user->menu());
-    $template->param(cc => $item->cc($user));
-    print $cgi->header(-charset => 'utf-8'), $template->output();
 };
 if($@) {
     my $E = $@;
@@ -127,4 +127,4 @@ if($@) {
     }
 }
 
-exit(0);
+

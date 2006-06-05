@@ -3,7 +3,7 @@
 # File: view.pl
 # Time-stamp: <Tue Aug 16 16:14:04 2005>
 #
-# anonymous view of an item. 
+# anonymous view of an item.
 use strict;
 
 use lib qw(.);
@@ -23,13 +23,13 @@ my $comment = $cgi->param('comment') || "";
 
 if ("" eq $comment) {
     print $cgi->redirect("view.pl?iid=$iid");
-    exit 0;
+} else {
+
+    $comment .= "\n----\n\ncomment added by $name <$email>";
+
+    $item->add_comment($user,$comment);
+    $item->update_email("comment added to " . $item->type . " #" . $item->iid . " " . $item->title,
+                        $comment,"anonymous");
+
+    print $cgi->redirect("view.pl?iid=$iid;message=comment%20added");
 }
-
-$comment .= "\n----\n\ncomment added by $name <$email>";
-
-$item->add_comment($user,$comment);
-$item->update_email("comment added to " . $item->type . " #" . $item->iid . " " . $item->title,
-		    $comment,"anonymous");
-
-print $cgi->redirect("view.pl?iid=$iid;message=comment%20added");

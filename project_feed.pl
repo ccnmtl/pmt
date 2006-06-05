@@ -15,18 +15,18 @@ my $cgi = new CGI();
 eval {
     my $pid = $cgi->param('pid') || "";
     my $project = PMT::Project->retrieve($pid);
-    
+
     my $items = $project->recent_events();
 
     my $rss = new XML::RSS(version => '1.0');
     $rss->channel(
-		  title        => "PMT project feed",
-		  link         => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=project;pid=$pid",
-		  );
+                  title        => "PMT project feed",
+                  link         => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=project;pid=$pid",
+                  );
     for my $i (@{$items}) {
-	$rss->add_item(title => "$i->{title} ($i->{status})",
-		       link => "http://pmt.ccnmtl.columbia.edu/item.pl?iid=$i->{iid}",
-		       description => "$i->{comment}");
+        $rss->add_item(title => "$i->{title} ($i->{status})",
+                       link => "http://pmt.ccnmtl.columbia.edu/item.pl?iid=$i->{iid}",
+                       description => "$i->{comment}");
     }
 
     print $cgi->header('text/xml'), $rss->as_string();
@@ -36,16 +36,16 @@ eval {
 if($@) {
     my $E = $@;
     if($E->isa('Error::Simple')) {
-	if ($E->isa('Error::NO_USERNAME') || 
-	    $E->isa('Error::NO_PASSWORD') ||
-	    $E->isa('Error::AUTHENTICATION_FAILURE')) {
-	    print $cgi->redirect('login.pl');
-	} else {
-	    print $cgi->header(), "<h1>error:</h1><p>$E->{-text}</p>";
-	}
+        if ($E->isa('Error::NO_USERNAME') ||
+            $E->isa('Error::NO_PASSWORD') ||
+            $E->isa('Error::AUTHENTICATION_FAILURE')) {
+            print $cgi->redirect('login.pl');
+        } else {
+            print $cgi->header(), "<h1>error:</h1><p>$E->{-text}</p>";
+        }
     } else {
-	die "unknown error: $E";
+        die "unknown error: $E";
     }
 }
 
-exit(0);
+

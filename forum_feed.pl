@@ -19,13 +19,13 @@ eval {
 
     my $rss = new XML::RSS(version => '1.0');
     $rss->channel(
-		  title        => "PMT Forum",
-		  link         => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=forum",
-		  );
+                  title        => "PMT Forum",
+                  link         => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=forum",
+                  );
     for my $n (@{$nodes}) {
-	$rss->add_item(title => "$n->{subject}",
-		       link => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=node;nid=$n->{nid}",
-		       description => "<b>$n->{fullname}</b><br />$n->{body}");
+        $rss->add_item(title => "$n->{subject}",
+                       link => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=node;nid=$n->{nid}",
+                       description => "<b>$n->{fullname}</b><br />$n->{body}");
     }
 
     print $cgi->header('text/xml'), $rss->as_string();
@@ -35,16 +35,15 @@ eval {
 if($@) {
     my $E = $@;
     if($E->isa('Error::Simple')) {
-	if ($E->isa('Error::NO_USERNAME') || 
-	    $E->isa('Error::NO_PASSWORD') ||
-	    $E->isa('Error::AUTHENTICATION_FAILURE')) {
-	    print $cgi->redirect('login.pl');
-	} else {
-	    print $cgi->header(), "<h1>error:</h1><p>$E->{-text}</p>";
-	}
+        if ($E->isa('Error::NO_USERNAME') ||
+            $E->isa('Error::NO_PASSWORD') ||
+            $E->isa('Error::AUTHENTICATION_FAILURE')) {
+            print $cgi->redirect('login.pl');
+        } else {
+            print $cgi->header(), "<h1>error:</h1><p>$E->{-text}</p>";
+        }
     } else {
-	die "unknown error: $E";
+        die "unknown error: $E";
     }
 }
 
-exit(0);

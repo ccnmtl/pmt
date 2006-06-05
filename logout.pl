@@ -8,4 +8,4 @@ eval {
     $pmt->redirect_with_cookie("login.pl","","");
 };
 
-exit(0);
+

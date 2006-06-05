@@ -987,19 +987,20 @@ sub delete_milestone {
     my $mid = $cgi->param('mid') || "";
     $mid =~ s/\D//g;
     unless($mid) {
-        print $cgi->redirect("home.pl");
-        exit(0);
-    }
-    my $milestone = PMT::Milestone->retrieve($mid);
-    my $really = $cgi->param('verify') || "";
-
-    if ($really eq "") {
-        return $self->delete_milestone_verify($mid);
-    } else {
-        my $pid = $milestone->delete_milestone();
         $self->header_type('redirect');
-        $self->header_props(-url => "home.pl?mode=project;pid=$pid");
-        return "milestone deleted\n";
+        $self->header_props(-url => "home.pl");
+    } else {
+        my $milestone = PMT::Milestone->retrieve($mid);
+        my $really = $cgi->param('verify') || "";
+
+        if ($really eq "") {
+            return $self->delete_milestone_verify($mid);
+        } else {
+            my $pid = $milestone->delete_milestone();
+            $self->header_type('redirect');
+            $self->header_props(-url => "home.pl?mode=project;pid=$pid");
+            return "milestone deleted\n";
+        }
     }
 }
 

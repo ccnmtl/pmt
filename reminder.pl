@@ -21,30 +21,30 @@ END_MESSAGE
 
 
     my %mail = (To => $data{'user_email'},
-		From => "Project Management Tool <pmt2\@pmt.ccnmtl.columbia.edu>",
-		Subject => "PMT password reminder",
-		Message => $body,
-		smtp => 'oldsmtp.columbia.edu');
+                From => "Project Management Tool <pmt2\@pmt.ccnmtl.columbia.edu>",
+                Subject => "PMT password reminder",
+                Message => $body,
+                smtp => 'oldsmtp.columbia.edu');
     Mail::Sendmail::sendmail(%mail) or die $Mail::Sendmail::error;
 
 
-	print $cgi->header, "reminder sent to $data{'user_email'}";
+        print $cgi->header, "reminder sent to $data{'user_email'}";
 };
 if($@) {
     my $E = $@;
     if($E->isa('Error::Simple')) {
-	if ($E->isa('Error::NO_USERNAME') || 
-	    $E->isa('Error::NO_PASSWORD') ||
-	    $E->isa('Error::AUTHENTICATION_FAILURE')) {
-	    print $cgi->redirect('login.pl');
-	} elsif ($E->isa('Error::NO_USER')) {
-	    print $cgi->header(), "that user doesn't appear to exist";
-	} else {
-	    print $cgi->header(), "<h1>error:</h1><p>$E->{-text}</p>";
-	}
+        if ($E->isa('Error::NO_USERNAME') ||
+            $E->isa('Error::NO_PASSWORD') ||
+            $E->isa('Error::AUTHENTICATION_FAILURE')) {
+            print $cgi->redirect('login.pl');
+        } elsif ($E->isa('Error::NO_USER')) {
+            print $cgi->header(), "that user doesn't appear to exist";
+        } else {
+            print $cgi->header(), "<h1>error:</h1><p>$E->{-text}</p>";
+        }
     } else {
-	die "unknown error: $E";
+        die "unknown error: $E";
     }
 }
 
-exit 0;
+
