@@ -2594,7 +2594,7 @@ sub edit_client_form {
                      projects_select => $client->projects_select(),
                      contacts_select => $client->contacts_select(),
                      schools_select => $client->schools_select(),
-                     departments_select => $client->all_departments_select());
+                     departments_select => $client->departments_select());
     $template->param(clients_mode => 1);
     return $template->output();
 }

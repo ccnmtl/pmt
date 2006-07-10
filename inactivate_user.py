@@ -24,5 +24,5 @@ for name in sys.argv[1:]:
     if no_projects == 1:
         cursor.execute("""update users set status = 'inactive' where username
         = '%s';""" % username)
-        
 
+conn.commit()

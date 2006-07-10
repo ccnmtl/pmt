@@ -158,6 +158,12 @@ sub is_a_recognized_school {
   return ($matches > 0);
 }
 
+sub departments_select {
+    my $self = shift;
+    my $department = $self->department;
+    return selectify(\@DEPARTMENTS,[@DEPARTMENTS],[$department]);
+}
+
 sub all_departments_select {
     my $self = shift;
     my $department = shift || "";
