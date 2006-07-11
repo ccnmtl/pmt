@@ -2303,6 +2303,7 @@ sub project {
     my $caretaker = $project->caretaker;
 
     $data{caretaker_fullname}   = $caretaker->fullname;
+    $data{caretaker_username}   = $caretaker->username;
     $data{milestones}           = $project->project_milestones($sortby, $username);
     $data{managers}             = [map {$_->data()} $project->managers()];
     $data{developers}           = [map {$_->data()} $project->developers()];
