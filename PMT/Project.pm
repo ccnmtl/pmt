@@ -687,8 +687,8 @@ sub all_non_personnel_select {
     my %selected = map {$_->username => 1} @selected;
 
     my @users = PMT::User->all_active();
-
     @users = grep {!exists $selected{$_->username}} @users;
+    @users = grep {$_->status eq "active"} @users;
 
     return [map {
         {
