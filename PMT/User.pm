@@ -810,6 +810,13 @@ sub groups {
     return [map {{group => $_->username, group_name => $_->fullname}} PMT::User->search(grp => 't')];
 }
 
+sub remove_from_all_groups {
+    my $self = shift;
+    foreach my $g (PMT::Group->search(username => $self->username)) {
+        $g->delete();
+    }
+}
+
 
 __PACKAGE__->set_sql(users_hours_1 => qq{
         SELECT u.username,u.fullname,count(i.iid) as open_items,sum(i.estimated_time) as hours

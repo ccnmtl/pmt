@@ -111,6 +111,7 @@ sub setup {
         'active_projects_report' => 'active_projects_report',
         'active_clients_report' => 'active_clients_report',
         'someday_maybe'          => 'someday_maybe',
+        'deactivate_user'        => 'deactivate_user',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -3186,6 +3187,91 @@ sub active_projects_report {
     }
     return $output;
 
+}
+
+sub deactivate_user {
+    my $self = shift;
+    my $q = $self->query();
+    my $username = $q->param('username') || "";
+    my $template = $self->template("deactivate_user.tmpl");
+    if ($username) {
+        my $deactivate_user = PMT::User->retrieve($username);
+        my $deactivate_fullname = $deactivate_user->fullname || "";
+        my $user = $self->{user};
+        my $complete = $q->param('complete') || "";
+        if ($complete) {
+            # do the deactivation and reassignments
+            my %params = $q->Vars();
+            foreach my $k (keys %params) {
+                # - do caretaker reassignments
+                if ($k =~ /^caretaker_(\d+)$/) {
+                    my $project = PMT::Project->retrieve($1);
+                    my $caretaker = PMT::User->retrieve($params{$k});
+                    $project->set_caretaker($caretaker);
+                    $project->update();
+                }
+                # - do reassignments
+                if ($k =~ /assigned_to_(\d+)/) {
+                    my $item = PMT::Item->retrieve($1);
+                    my $assignee = PMT::User->retrieve($params{$k});
+                    $item->assigned_to($assignee);
+                    $item->add_event($item->status,"Deactivating user " . $deactivate_user->fullname,$user);
+                    $item->update();
+                }
+                if ($k =~ /owner_(\d+)/) {
+                    my $item = PMT::Item->retrieve($1);
+                    my $owner = PMT::User->retrieve($params{$k});
+                    $item->owner($owner);
+                    $item->add_event($item->status,"Deactivating user " . $deactivate_user->fullname,$user);
+                    $item->update();
+                }
+            }
+            # - remove user from any groups
+            $deactivate_user->remove_from_all_groups();
+
+            # - deactivate user
+            $deactivate_user->status("inactive");
+            $deactivate_user->update();
+
+        } else {
+            # present them with a list of items and projects
+            # to reassign
+            $template->param(caretaker_projects => [map {
+                {
+                    name             => $_->name,
+                    pid              => $_->pid,
+                    caretaker_select => $_->new_caretaker_select($user)
+                    }
+            } $deactivate_user->projects()]);
+
+            $template->param(assigned_items => [map {
+                my $i = $_;
+                my $item = PMT::Item->retrieve($i->{iid});
+                if ($item->assigned_to->username eq $deactivate_user->username) {
+                    # reassign item
+                    $i->{assigned_to_select} = $item->mid->pid->new_assigned_to_or_owner_select($deactivate_user,$user);
+                } else {
+                    $i->{assigned_to_fullname} = $item->assigned_to->fullname;
+                }
+                if ($item->owner->username eq $deactivate_user->username) {
+                    # change owner
+                    $i->{owner_select} = $item->mid->pid->new_assigned_to_or_owner_select($deactivate_user,$user);
+                } else {
+                    $i->{owner_fullname} = $item->owner->fullname;
+                }
+                $i;
+            } @{$deactivate_user->items($user->username)}]);
+
+
+        }
+        $template->param(complete => $complete);
+        $template->param(deactivate_username => $deactivate_user->username);
+        $template->param(deactivate_fullname => $deactivate_user->fullname);
+        return $template->output();
+    } else {
+        $template->param(users_select => PMT::User::users_select());
+        return $template->output();
+    }
 }
 
 1;

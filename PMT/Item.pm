@@ -131,7 +131,6 @@ sub get_comments {
     } @{$sth->fetchall_arrayref({})}];
 }
 
-
 sub data {
     my $self = shift;
     my $username = shift || "";

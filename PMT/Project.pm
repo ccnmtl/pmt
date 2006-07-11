@@ -613,6 +613,27 @@ sub assigned_to_select {
 
 # }}}
 
+sub new_assigned_to_or_owner_select {
+    my $self        = shift;
+    my $exclude     = shift;
+    my $default     = shift;
+    my $users = [map {
+        {
+            value => $_->username,
+            label => $_->fullname,
+            selected => ($_->username eq $default->username),
+        }
+    } grep {
+        $_->username ne $exclude->username
+    } $self->all_personnel_in_project()];
+    if (!@$users) {
+        $users = [{value => $default->username, label => $default->fullname, selected => 1}];
+    }
+    return $users;
+}
+
+
+
 # {{{ all_items_in_project
 
 sub all_items_in_project {
@@ -680,6 +701,26 @@ sub caretaker_select {
         }
     } $self->managers()];
 }
+
+sub new_caretaker_select {
+    my $self      = shift;
+    my $potential = shift;
+    my $caretaker = $self->caretaker;
+    my $managers = [map {
+        {
+            value => $_->username,
+            label => $_->fullname,
+            selected => ($_->username eq $potential->username),
+        }
+    } grep {$_->username ne $caretaker->username} $self->managers()];
+
+    if (!@$managers) {
+        $managers = [{value => $potential->username, label => $potential->fullname,
+                      selected => 1}];
+    }
+    return $managers;
+}
+
 
 sub all_non_personnel_select {
     my $self = shift;
@@ -896,6 +937,12 @@ sub all_projects_by_last_mod {
     return \%results;
 }
 
+sub set_caretaker {
+    my $self = shift;
+    my $caretaker = shift;
+    $self->caretaker($caretaker);
+    # TODO: make sure caretaker is at least a manager on the project
+}
 
 sub projects_active_during {
     my $self       = shift;
