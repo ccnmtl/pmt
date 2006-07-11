@@ -3236,15 +3236,16 @@ sub deactivate_user {
         } else {
             # present them with a list of items and projects
             # to reassign
-            $template->param(caretaker_projects => [map {
+            my $caretaker_projects = [map {
                 {
                     name             => $_->name,
                     pid              => $_->pid,
                     caretaker_select => $_->new_caretaker_select($user)
                     }
-            } $deactivate_user->projects()]);
+            } $deactivate_user->projects()];
+            $template->param(caretaker_projects => $caretaker_projects);
 
-            $template->param(assigned_items => [map {
+            my $assigned_items = [map {
                 my $i = $_;
                 my $item = PMT::Item->retrieve($i->{iid});
                 if ($item->assigned_to->username eq $deactivate_user->username) {
@@ -3260,9 +3261,18 @@ sub deactivate_user {
                     $i->{owner_fullname} = $item->owner->fullname;
                 }
                 $i;
-            } @{$deactivate_user->items($user->username)}]);
+            } @{$deactivate_user->items($user->username)}];
+            $template->param(assigned_items => $assigned_items);
 
+            if (!@$caretaker_projects && !@$assigned_items) {
+                # - remove user from any groups
+                $deactivate_user->remove_from_all_groups();
 
+                # - deactivate user
+                $deactivate_user->status("inactive");
+                $deactivate_user->update();
+                $complete = 1;
+            }
         }
         $template->param(complete => $complete);
         $template->param(deactivate_username => $deactivate_user->username);
