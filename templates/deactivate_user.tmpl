@@ -1,0 +1,105 @@
+<tmpl_include name="header_usergroup.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_usergroup.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>DEACTIVATE USER</h1>
+
+<form action="home.pl" method="post">
+<fieldset>
+<input type="hidden" name="mode" value="deactivate_user"/>
+<tmpl_if name="users_select">
+<!-- no user has been selected yet -->
+
+<p>select a user:</p>
+
+<select name="username">
+<tmpl_loop name="users_select">
+  <tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+</select><br />
+<input type="submit" value="deactivate"/>
+
+<tmpl_else>
+<!-- a user is selected -->
+
+<tmpl_if name="complete">
+<!-- user has been deactivated -->
+
+<p>The user account has been deactivated.</p>
+
+<tmpl_else>
+<!-- need to reassign stuff -->
+
+<p>Before a user can be deactivated, all Action Items and Bugs
+belonging to them must be reassigned and new caretakers must be
+selected for any projects that they were running.</p>
+
+<input type="hidden" name="username" value="<tmpl_var name="deactivate_username">"/>
+
+<tmpl_if name="caretaker_projects">
+<h2>Projects</h2>
+<p><tmpl_var name="deactivate_fullname"> is listed as the caretaker on
+the following projects. New caretakers must be chosen for them:</p>
+<table>
+<tr><th>project</th><th>choose new caretaker</th></tr>
+<tmpl_loop name="caretaker_projects">
+<tr><td><a href="home.pl?mode=project;pid=<tmpl_var
+name="pid">"><tmpl_var name="name"></a></td>
+<td><select name="caretaker_<tmpl_var name="pid">">
+<tmpl_loop name="caretaker_select">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+</select></td></tr>
+</tmpl_loop>
+</table>
+</tmpl_if>
+
+<tmpl_if name="assigned_items">
+<h2>Items</h2>
+<p><tmpl_var name="deactivate_fullname"> has open items which need to
+be reassigned before deactivation:</p>
+
+<table>
+<tr><th>item</th><th>project</th><th>status</th><th>owner</th><th>assigned to</th></tr>
+<tmpl_loop name="assigned_items">
+<tr>
+
+		<td><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="item.pl?iid=<tmpl_var name="iid" escape="url">">#<tmpl_var name="iid" escape="html">: <tmpl_var name="title" escape="html"></a></td>
+		<td><a href="home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="project" escape="html"></a></td>
+		<td class="<tmpl_var name="status" escape="html">"><tmpl_if
+                name="r_status"><tmpl_var name="r_status"
+                escape="html"><tmpl_else><tmpl_var name="status"
+                escape="html"></tmpl_if></td>
+		<td><tmpl_if name="owner_select"><select
+		name="owner_<tmpl_var name="iid">"><tmpl_loop
+		name="owner_select"><tmpl_include name="options_loop.tmpl"></tmpl_loop></select><tmpl_else><tmpl_var name="owner_fullname"></tmpl_if></td>
+		<td><tmpl_if
+		name="assigned_to_select"><select
+		name="assigned_to_<tmpl_var name="iid">"><tmpl_loop
+		name="assigned_to_select"><tmpl_include name="options_loop.tmpl"></tmpl_loop></select><tmpl_else><tmpl_var name="assigned_to_fullname"></tmpl_if></td>
+
+
+
+</tr>
+</tmpl_loop>
+</table>
+</tmpl_if>
+
+<input type="hidden" name="complete" value="1"/>
+<input type="submit" value="deactivate"/>
+
+</tmpl_if>
+
+</tmpl_if>
+</fieldset>
+</form>
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">
