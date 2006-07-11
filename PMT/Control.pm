@@ -1518,15 +1518,21 @@ sub add_attachment {
     my $description = $cgi->param('description') || "";
     my $fh          = $cgi->upload('attachment');
 
-    my $id = PMT::Attachment->add_attachment(item_id     => $iid,
-                                             title       => $title,
-                                             url         => $url,
-                                             filename    => $filename,
-                                             fh          => $fh,
-                                             description => $description,
-                                             author      => $username);
-    $self->header_type("redirect");
-    $self->header_props(-url => "item.pl?iid=$iid");
+    eval {
+        my $id = PMT::Attachment->add_attachment(item_id     => $iid,
+                                                 title       => $title,
+                                                 url         => $url,
+                                                 filename    => $filename,
+                                                 fh          => $fh,
+                                                 description => $description,
+                                                 author      => $username);
+        $self->header_type("redirect");
+        $self->header_props(-url => "item.pl?iid=$iid");
+    };
+    if ($@) {
+        my $E = $@;
+        return $E->{-text};
+    }
 }
 
 

@@ -19,7 +19,8 @@ my %content_types = (html => 'text/html',
                      pdf => 'application/pdf',
                      gif => 'image/gif',
                      jpg => 'image/jpg',
-                     png => 'image/png');
+                     png => 'image/png',
+                     mov => 'video/quicktime');
 
 sub data {
     my $self = shift;
@@ -46,13 +47,14 @@ sub content_disposition {
                         doc => 1,
                         xls => 1,
                         xml => 1,
-                        pdf => 1);
+                        pdf => 1,
+                        mov => 1);
     return $dispositions{$self->type};
 }
 
 sub contents {
     my $self = shift;
-    
+
     my $repository = $self->config->{attachment_repository};
     my $id = $self->id;
     my $type = $self->type;
@@ -62,7 +64,7 @@ sub contents {
     my $data = join '', <FILE>;
     close FILE;
     return $data;
-}            
+}
 
 sub add_attachment {
     my $self = shift;
@@ -72,19 +74,19 @@ sub add_attachment {
 
     if($params{filename}) {
         # uploaded file
-        
+
         # make sure it is a valid type
         if($params{filename} =~ /\.(\w{3,4})$/ ) {
             my $ext = lc($1);
             if (exists $content_types{$ext}) {
                 $type = $ext;
             } else {
-                throw Error::Simple "not a legal filetype";
+                throw Error::Simple "this file is not an allowed type for attachments";
             }
         } else {
-            throw Error::Simple 
-                "file does not have a legal extension.";
-        }    
+            throw Error::Simple
+                "The file must have a correct extension";
+        }
     } else {
         # url
         $type = "url";
@@ -102,7 +104,7 @@ sub add_attachment {
     my $attachment = PMT::Attachment->create({item_id => $item, author => $author, filename =>
         "$filename", title => $title, type => $type, url=>
         $url, description => $description});
-    
+
     my $id = $attachment->id;
 
     # if it's a file, we write it to the repository
@@ -112,7 +114,7 @@ sub add_attachment {
         if ($filename =~ m{^([\/\w\.]+)$}) {
             $filename = $1;
         }
-        open(FILE,">$filename") 
+        open(FILE,">$filename")
             or throw Error::Simple "couldn't write to attachment repository: $!";
         my $fh = $params{fh};
         while(<$fh>) {
