@@ -48,10 +48,10 @@ size="40" /></td></tr>
 name="target_date" size="15" value="" onclick="javascript:NewCal('datebox','yyyymmdd')"
 /> <a href="javascript:NewCal('datebox','yyyymmdd')"><i>select date</i></a>
 </td></tr>
-<tr><th class="firstcell">description:<br />(accepts HTML)</th><td><div class="resizer"
-id="milestonedescriptionbox"><textarea class="textform" name="description"
-wrap="virtual" cols="40" rows="8"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
-height="20" alt="" /></div></td></tr>
+<tr><th class="firstcell">description:<br />(accepts HTML)</th><td>
+<textarea class="textform resizable" name="description"
+wrap="virtual" cols="40" rows="8"></textarea>
+</td></tr>
 
 <tr>
 <!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" value="ADD MILESTONE" class="button" /></td>
@@ -62,11 +62,6 @@ height="20" alt="" /></div></td></tr>
 </tr>
 </table>
 </form>
-
-<script type="text/javascript">
-SET_DHTML("milestonedescriptionbox"+RESIZABLE)
-</script>
-
 
 </div>
 <!-- ===== END PAGE MAIN CONTENT ===== -->

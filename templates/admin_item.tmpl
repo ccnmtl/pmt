@@ -52,9 +52,9 @@ name="label" escape="html"></option></tmpl_loop>
 
 <tr><th>description</th><td><tmpl_var name="description">
 </td></tr>
-<tr><th>comment</th><td><div class="resizer" id="commentbox"><textarea name="comment" wrap="virtual"
-cols="40" rows="5"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
-height="20" alt="" /></div>
+<tr><th>comment</th><td><textarea name="comment" wrap="virtual"
+class="textform resizable" cols="40" rows="5"></textarea>
+
 <input type="submit" value="update" /></td></tr>
 <tmpl_if name="comments"><tr><th>comments</th><td>
 <tmpl_loop name="comments">
@@ -76,7 +76,4 @@ at <tmpl_var name="event_date_time"><tmpl_if name="comment"><hr />
 </td></tr>
 </table>
 </form>
-<script type="text/javascript">
-SET_DHTML("commentbox"+RESIZABLE)
-</script>
 <tmpl_include name="footer.tmpl">

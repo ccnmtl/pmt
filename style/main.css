@@ -1210,4 +1210,11 @@ table#progressbar .behind {
 .cloud-level4 { font-size: 220%; color: #930 !important; }
 .cloud-level5 { font-size: 260%; color: #f60 !important;}
 
+textarea.resizable {width: 90%; height: 90%;}
+
+.resize-handle {
+	       cursor: se-resize;
+	       position: absolute;
+	       float: right;
+}
 

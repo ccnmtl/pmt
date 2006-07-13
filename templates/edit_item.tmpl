@@ -127,9 +127,9 @@ name="selected"> selected="selected"</tmpl_if>><tmpl_var name="label" escape="ht
 </td></tr>
 <tr>
 <th class="firstcell">description:</th>
-<td><div class="resizer" id="descriptionbox">
-<textarea class="textform" name="description" cols="40" rows="8" wrap="virtual"><tmpl_var name="description"></textarea><img
-src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20" height="20" alt="" /></div>
+<td>
+<textarea class="textform" name="description" cols="40" rows="8" wrap="virtual"><tmpl_var name="description"></textarea>
+
 </td></tr>
 
 <tr>
@@ -147,9 +147,9 @@ Add a Client by UNI: <input type="text" name="client_uni" size="5"/>
 
 <tr class="screenshow">
 <th class="firstcell">comment:</th>
-<td><div class="resizer" id="commentbox"><textarea class="textform" name="comment" wrap="virtual"
-cols="40" rows="5"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
-height="20" alt="" /></div></td></tr>
+<td><textarea class="textform resizable" name="comment" wrap="virtual"
+cols="40" rows="5"></textarea>
+height="20" alt="" /></td></tr>
 <tr class="screenshow">
 <!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="UPDATE <tmpl_var name="type">" /></td>
 </tr>
@@ -159,9 +159,6 @@ height="20" alt="" /></div></td></tr>
 </tr>
 </table>
 </form>
-<script type="text/javascript">
-SET_DHTML("descriptionbox"+RESIZABLE,"commentbox"+RESIZABLE)
-</script>
 
 
 <h2>Add Attachment</h2>
@@ -176,10 +173,10 @@ name="attachment" /></td></tr>
 value="http://" size="30" /></td></tr>
 <tr><th class="firstcell">title:</th><td><input type="text"
 class="textform" name="title" size="30" /> (defaults to filename)</td></tr>
-<tr><th class="firstcell">description:</th><td><div class="resizer"
-id="attachmentdescriptionbox"><textarea wrap="virtual" class="textform" cols="40" rows="8"
-name="description"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
-height="20" alt="" /></div></td>
+<tr><th class="firstcell">description:</th><td>
+<textarea wrap="virtual" class="textform resizable" cols="40" rows="8"
+name="description"></textarea>
+</td>
 
 <tr>
 <!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" value="ADD ATTACHMENT" class="button" /></td>

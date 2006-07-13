@@ -25,9 +25,9 @@
 <tr><th class="firstcell">target date:</th><td><input type="text" class="textform"
 name="target_date" value="<tmpl_Var name="target_date">" size="15" 
 onclick="getCalN(this,2)" /></td></tr>
-<tr><th class="firstcell">description:</th><td><div class="resizer" id="descriptionbox"><textarea wrap="virtual"
-name="description" class="textform" cols="40" rows="8"><tmpl_Var name="description"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
-height="20" alt="" /></div>
+<tr><th class="firstcell">description:</th><td><textarea wrap="virtual"
+name="description" class="textform resizable" cols="40" rows="8"><tmpl_Var name="description"></textarea>
+
 </td></tr>
 <tr class="screenshow">
 <!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" value="UPDATE MILESTONE" class="button" /></td>
@@ -38,10 +38,6 @@ height="20" alt="" /></div>
 </tr>
 </table>
 </form>
-<script type="text/javascript">
-SET_DHTML("descriptionbox"+RESIZABLE)
-</script>
-
 
 </div>
 <!-- ===== END PAGE MAIN CONTENT ===== -->

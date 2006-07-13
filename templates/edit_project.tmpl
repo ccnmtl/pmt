@@ -49,7 +49,7 @@ onsubmit="select_all(this.managers);select_all(this.developers);select_all(this.
 <tr>
 <td class="firstcell" colspan="3">
 <div class="resizer" id="descriptionbox">
-<textarea class="textform" name="description" cols="40" rows="8">
+<textarea class="textform resizable" name="description" cols="40" rows="8">
 <tmpl_var name="description">
 </textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20" height="20" alt="" />
 </div>
@@ -352,9 +352,6 @@ name="label" escape="html"></option></tmpl_loop>
 
 
 
-<script type="text/javascript">
-SET_DHTML("descriptionbox"+RESIZABLE)
-</script>
 
 
 </div>

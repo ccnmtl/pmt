@@ -31,8 +31,9 @@ input[type=text],input[type=password],textarea {font-family: courier new, courie
 textarea {border: #000 solid 1px;}
 
 textarea {width: 100%;}
+textarea.resizable {width: 50%; height: 90%; border: #f60 solid 5px;}
 
-.resizer textarea {width: 90%; height: 90%;}
+
 
 textarea.tagsbox {width: 30em;}
 

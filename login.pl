@@ -19,8 +19,8 @@ eval {
         } else {
             print $cgi->header(), "user $username does not exist. are you sure you've entered it correctly (the PMT is case sensitive)?";
         }
-        print_form($pmt,$cgi);
     }
+    print_form($pmt,$cgi);
 };
 if($@) {
     my $E = $@;

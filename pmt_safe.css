@@ -317,4 +317,8 @@ p.message {
     padding: 1em;
 }
 
-
+.resize-handle {
+	       cursor: se-resize;
+	       position: absolute;
+	       float: right;
+}

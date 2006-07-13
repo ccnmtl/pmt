@@ -153,10 +153,7 @@ style="margin-top: 50px">
 size="60" class="textform"/><br />
 <label for="email">Email:</label><input type="text" name="email"
 size="60" class="textform" /><br />
-<div class="resizer" id="commentbox">
-<textarea class="textform" name="comment" wrap="virtual" cols="40" rows="5"></textarea>
-<img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20" height="20" alt="" />
-</div>
+<textarea class="textform resizable" name="comment" wrap="virtual" cols="40" rows="5"></textarea>
 </td>
 </tr>
 <tr>
@@ -203,7 +200,5 @@ by <tmpl_var name="fullname"><br />
 </tmpl_if>
 
 
-<script type="text/javascript">
-SET_DHTML("commentbox"+RESIZABLE)
-</script>
+
 <tmpl_include name="footer.tmpl">

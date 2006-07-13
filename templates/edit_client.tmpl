@@ -59,10 +59,9 @@ escape="html">" /></td></tr>
 <tmpl_loop name="contacts_select"><tmpl_include name="options_loop.tmpl"></tmpl_loop>
 </select>
 </td></tr>
-<tr><th class="firstcell">comments:</th><td><div class="resizer" id="commentbox"><textarea class="textform" name="comments" rows="10" cols="40"
+<tr><th class="firstcell">comments:</th><td><textarea class="textform resizable" name="comments" rows="10" cols="40"
 wrap="virtual"><tmpl_var name="comments"
-escape="html"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
-height="20" alt="" /></div></td></tr>
+escape="html"></textarea></td></tr>
 <tr><th class="firstcell">Projects:</th><td>
 <select name="projects" multiple="multiple" size="15">
 <tmpl_loop name="projects_select">
@@ -97,12 +96,6 @@ them as 'inactive'. if you are unsure, <b>DON'T DELETE!</b></p>
 <br />
 
 <br />
-
-
-<script type="text/javascript">
-SET_DHTML("commentbox"+RESIZABLE)
-</script>
-
 
 
 </div>

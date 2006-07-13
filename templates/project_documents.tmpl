@@ -96,10 +96,10 @@ name="title" escape="html"></a> <tmpl_if name="version">(version
 value="http://" size="30" /></td></tr>
 <tr><th class="firstcell">title:</th><td><input type="text" class="textform" name="title" size="30" /></td></tr>
 <tr><th class="firstcell">version:</th><td><input type="text" class="textform" name="version" size="15" /></td></tr>
-<tr><th class="firstcell">description:</th><td><div class="resizer"
-id="documentdescriptionbox"><textarea wrap="virtual" class="textform" cols="40" rows="8"
-name="description"></textarea><img src="http://www2.ccnmtl.columbia.edu/images/winresize.gif" width="20"
-height="20" alt="" /></div></td>
+<tr><th class="firstcell">description:</th><td>
+<textarea wrap="virtual" class="textform resizable" cols="40" rows="8"
+name="description"></textarea>
+</td>
 
 <tr>
 <!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" value="ADD DOCUMENT" class="button" /></td>
@@ -111,11 +111,6 @@ height="20" alt="" /></div></td>
 
 </table>
 </form>
-
-<script type="text/javascript">
-SET_DHTML("documentdescriptionbox"+RESIZABLE)
-</script>
-
 
 </div>
 <!-- ===== END PAGE MAIN CONTENT ===== -->
