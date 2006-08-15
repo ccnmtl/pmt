@@ -2018,28 +2018,29 @@ sub attachment {
     my $self = shift;
     my $cgi = $self->query();
     my $id = $cgi->param('attachment_id') || "";
-
+    my $attachment;
     eval {
-        my $attachment = PMT::Attachment->retrieve($id);
-
-        if($attachment->type eq "url") {
-            $self->header_type('redirect');
-            $self->header_props(-url => $attachment->url);
-            return "redirecting to url";
-        } else {
-            my $content_type = $attachment->content_type();
-            if($attachment->content_disposition()) {
-                my $filename = $attachment->filename;
-                $self->header_props(-type => $content_type,
-                                    -content_disposition => "attachment;filename=$filename");
-            } else {
-                $self->header_props(-type => $content_type);
-            }
-            return $attachment->contents();
-        }
+        $attachment = PMT::Attachment->retrieve($id);
     };
     if ($@) {
         return "error: no attachment found";
+    }
+
+    if($attachment->type eq "url") {
+        $self->header_type('redirect');
+        $self->header_props(-url => $attachment->url);
+        return "redirecting to url";
+    } else {
+        my $content_type = $attachment->content_type();
+        if($attachment->content_disposition()) {
+            my $filename = $attachment->filename;
+            $self->header_props(-type => $content_type,
+                                -content_disposition => "attachment;filename=$filename");
+        } else {
+            $self->header_props(-type => $content_type);
+        }
+        my $c = $attachment->contents();
+        return $c;
     }
 }
 
