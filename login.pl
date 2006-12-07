@@ -24,7 +24,7 @@ eval {
 };
 if($@) {
     my $E = $@;
-    exit if $E && ref $E eq 'APR::Error' && $E == ModPerl::EXIT;
+#    exit if $E && ref $E eq 'APR::Error' && $E == ModPerl::EXIT;
     if($E->isa('Error::Simple')) {
         if ($E->isa('Error::NO_USERNAME') ||
             $E->isa('Error::NO_PASSWORD') ||

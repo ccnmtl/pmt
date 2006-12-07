@@ -22,9 +22,10 @@
 <td><input type="text" class="textform" name="name" value="<tmpl_var name="name">" size="40" /></td>
 <tr><th class="firstcell">project:</th><td><a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td></tr>
 <tr><th class="firstcell">status:</th><td class="<tmpl_Var name="status">"><tmpl_var name="status"></td></tr>
-<tr><th class="firstcell">target date:</th><td><input type="text" class="textform"
+<tr><th class="firstcell">target date:</th><td><input type="text"
+class="textform" id="datebox"
 name="target_date" value="<tmpl_Var name="target_date">" size="15" 
-onclick="getCalN(this,2)" /></td></tr>
+onclick="javascript:NewCal('datebox','yyyymmdd')" /><a href="javascript:NewCal('datebox','yyyymmdd')"><i>select date</i></a></td></tr>
 <tr><th class="firstcell">description:</th><td><textarea wrap="virtual"
 name="description" class="textform resizable" cols="40" rows="8"><tmpl_Var name="description"></textarea>
 
