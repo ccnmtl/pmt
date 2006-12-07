@@ -2820,7 +2820,8 @@ sub user_history {
     my $template = $self->template("user_history.tmpl");
 
     $template->param(calendar   => $calendar,
-                     user       => $user,
+                     view_username  => $view_user->username,
+                     view_fullname => $view_user->fullname,
                      next_month => $next,
                      next_month_name => $months[($next - 1) % 12],
                      next_year  => $next_year,
@@ -3103,6 +3104,7 @@ sub user_weekly_report {
                                                "$sun_year-$sun_month-$sun_day"));
     $template->param(page_title => "weekly report for $user");
     $template->param(user_username => $user);
+    $template->param(user_fullname => $view_user->fullname);
     $template->param(reports_mode => 1);
     return $template->output();
 }
