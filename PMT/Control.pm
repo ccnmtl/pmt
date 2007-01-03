@@ -428,8 +428,6 @@ sub add_item {
     }
     my $title = escape($cgi->param('title')) || "no title";
 
-    #Min's changes to implement multiple assignees to an action item
-    #my $assigned_to  = $cgi->param('assigned_to') || "";
     my @assigned_to  = $cgi->param('assigned_to');
     my $owner        = $cgi->param('owner') || $username;
     my $priority     = $cgi->param('priority') || "";
@@ -442,7 +440,14 @@ sub add_item {
     my @dependencies = $cgi->param('depends');
     my @clients      = $cgi->param('clients');
     my $completed    = $cgi->param('completed') || "";
-
+    my $client_uni   = $cgi->param('client_uni') || "";
+    if ($client_uni ne "") {
+        # find the client id and append it to @clients
+        my @cs = PMT::Client->find_by_uni($client_uni);
+        if ($cs[0]) {
+            push @clients, $cs[0]->{client_id};
+        }
+    }
 
     my $target_date = $cgi->param('target_date') || "";
     my $estimated_time = $cgi->param('estimated_time') || "";
@@ -562,17 +567,25 @@ sub add_trackers {
     my $pmt = $self->{pmt};
     my @trackers = ();
     foreach my $i (1..10) {
-        my $pid = $cgi->param("pid$i") || "";
-        my $title = $cgi->param("title$i") || "";
-        my $time = $cgi->param("time$i") || "1 hour";
+        my $pid    = $cgi->param("pid$i") || "";
+        my $title  = $cgi->param("title$i") || "";
+        my $time   = $cgi->param("time$i") || "1 hour";
+        my $client_uni = $cgi->param("client$i") || "";
+        my @clients = PMT::Client->find_by_uni($client_uni);
+        my $client = "";
+        if ($clients[0]) {
+            $client = $clients[0]->{client_id};
+        }
         $title = substr $title, 0, 255;
         if ($time =~ /^(\d+)$/) {
             $time = "$1"."h";
         }
 
         if ($time ne "" && $title ne "") {
-            push @trackers, {pid => $pid, title => $title, "time" =>
-                $time};
+            push @trackers, {pid => $pid,
+                             title => $title,
+                             time => $time,
+                             client => $client};
         }
     }
     foreach my $t (@trackers) {
@@ -580,10 +593,14 @@ sub add_trackers {
         my $mid = $project->upcoming_milestone();
         my $milestone = PMT::Milestone->retrieve($mid);
         my $target_date = $milestone->target_date;
+        my $clients = [];
+        if ($t->{client} ne "") {
+            $clients = [$t->{client}];
+        }
         $pmt->add_tracker(pid => $t->{pid},
             mid => $mid, title => $t->{title}, "time" => $t->{time},
             target_date => $target_date, owner => $user->username,
-            completed => "", clients => []);
+            completed => "", clients => [$t->{client}]);
 
     }
     $self->header_type('redirect');

@@ -606,7 +606,9 @@ sub add_clients {
     my $self = shift;
     my @clients = @_;
     foreach my $client (@clients) {
-        $self->add_to_clients({client_id => $client});
+        if ($client ne "") {
+            $self->add_to_clients({client_id => $client});
+        }
     }
 }
 
