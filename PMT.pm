@@ -679,6 +679,16 @@ sub update_user {
     my $new_pass2 = shift;
     my $fullname  = escape(shift);
     my $email     = escape(shift);
+    my $type      = shift;
+    my $title	     = shift;
+    my $phone	     = shift;
+    my $bio	     = shift;
+    my $campus       = shift;
+    my $building     = shift;
+    my $room         = shift;
+    my $photo_url    = shift;
+    my $photo_width  = shift || 0;
+    my $photo_height = shift || 0;
 
     throw Error::NO_EMAIL "email address is necessary."
         unless $email;
@@ -690,6 +700,16 @@ sub update_user {
         $u->fullname($fullname);
         $u->email($email);
         $u->password($new_pass);
+	$u->type($type);
+	$u->title($title);
+	$u->phone($phone);
+	$u->bio($bio);
+	$u->campus($campus);
+	$u->building($building);
+	$u->room($room);
+	$u->photo_url($photo_url);
+	$u->photo_width($photo_width);
+	$u->photo_height($photo_height);
         $u->update();
     }
     return;

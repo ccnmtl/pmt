@@ -180,6 +180,9 @@ sub user_settings_form {
     $template->param(username => $user->username);
     $template->param(fullname => $user->fullname);
     $template->param(page_title => "update user settings");
+    $template->param(type_select => selectify(['Staff','Part-Timer','Guest'],
+					      ['Staff','Part-Timer','Guest'],
+					      [$user->type]));
     $template->param(settings_mode => 1);
     return $template->output();
 }
@@ -195,18 +198,26 @@ sub update_user {
     my $fullname  = $cgi->param('fullname')  || "";
     my $email     = $cgi->param('email')     || "";
 
+    my $type  = $cgi->param('type') || "";
+    my $title     = $cgi->param('title') || "";
+    my $phone     = $cgi->param('phone') || "";
+    my $bio       = $cgi->param('bio') || "";
+    my $campus    = $cgi->param('campus') || "";
+    my $building  = $cgi->param('building') || "";
+    my $room      = $cgi->param('room') || "";
+    my $photo_url = $cgi->param('photo_url') || "";
+    my $photo_width = $cgi->param('photo_width') || "0";
+    my $photo_height = $cgi->param('photo_height') || "0";
+
+
     if ($new_pass ne $new_pass2) {
         $self->header_props(-url => "home.pl?mode=user_settings_form;message=Sorry,%20your%20passwords%20did%20not%20match.");
         $self->header_type('redirect');
         return "redirecting back to form";
     }
-    if ($new_pass eq '') {
-        $self->header_props(-url => "home.pl?mode=user_settings_form;message=Please%20enter%20a%20password.");
-        $self->header_type('redirect');
-        return "redirecting back to form";
-    }
 
-    $self->{pmt}->update_user($user->username,$self->{password},$new_pass,$new_pass2,$fullname,$email);
+    $self->{pmt}->update_user($user->username,$self->{password},$new_pass,$new_pass2,$fullname,$email,
+	$type,$title,$phone,$bio,$campus,$building,$room,$photo_url,$photo_width,$photo_height);
 
     my $lcookie = $cgi->cookie(-name =>  'pmtusername',
         -value => $user->username,
@@ -218,7 +229,10 @@ sub update_user {
         -path => '/',
         -expires => '+10y');
     $self->header_props(-url => "home.pl?mode=user_settings_form;message=updated");
-    $self->header_add(-cookie => [$lcookie,$pcookie]);
+
+    if ($new_pass ne '') {
+	$self->header_add(-cookie => [$lcookie,$pcookie]);
+    }
     $self->header_type('redirect');
 
     return "redirecting back to form";

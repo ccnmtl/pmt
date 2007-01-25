@@ -10,9 +10,50 @@
 <input type="hidden" name="mode" value="update_user" />
 <table>
 <tr><th>full name</th><td><input type="text" name="fullname"
-value="<tmpl_var name="fullname" escape="html">" /></td></tr>
+value="<tmpl_var name="fullname" escape="html">" size="40" /></td></tr>
 <tr><th>email</th><td><input type="text" name="email"
-value="<tmpl_var name="email" escape="html">" /></td></tr>
+value="<tmpl_var name="email" escape="html">" size="40" /></td></tr>
+
+<tr><th>type</th><td>
+<select name="type">
+<tmpl_loop name="type_select">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+</select>
+</td></tr>
+<tr><th>title</th><td><input type="text" name="title"
+			     value="<tmpl_var name="title"
+			     escape="html">" size="40" /></td></tr>
+
+
+<tr><th>phone</th><td><input type="text" name="phone"
+			     value="<tmpl_var name="phone"
+			     escape="html">" size="15" /></td></tr>
+<tr><th>campus</th><td><input type="text" name="campus"
+			     value="<tmpl_var name="campus"
+			     escape="html">" size="15" /></td></tr>
+
+<tr><th>building</th><td><input type="text" name="building"
+			     value="<tmpl_var name="building"
+			     escape="html">" size="15" /></td></tr>
+<tr><th>room</th><td><input type="text" name="room"
+			     value="<tmpl_var name="room"
+			     escape="html">" size="5" /></td></tr>
+
+<tr><th>bio</th><td><textarea name="bio" rows="10" cols="60"
+			      wrap="virtual"><tmpl_var name="bio" escape="html"></textarea></td></tr>
+
+<tr><th>photo url</th><td><input type="text" name="photo_url"
+			     value="<tmpl_var name="photo_url"
+			     escape="html">" size="40" /></td></tr>
+<tr><th>photo width</th><td><input type="text" name="photo_width"
+			     value="<tmpl_var name="photo_width"
+			     escape="html">" size="3"/></td></tr>
+<tr><th>photo height</th><td><input type="text" name="photo_height"
+			     value="<tmpl_var name="photo_height"
+			     escape="html">" size="3" /></td></tr>
+
+
 <tr><th>change password to</th>
 <td><input type="password" name="new_pass" /></td></tr>
 <tr><th>verify</th><td><input type="password" name="new_pass2" /></td></tr>

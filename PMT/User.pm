@@ -8,7 +8,8 @@ my %PRIORITIES = (4 => 'CRITICAL', 3 => 'HIGH', 2 => 'MEDIUM', 1 => 'LOW',
 
 __PACKAGE__->table('users');
 __PACKAGE__->columns (Primary          => qw/username/);
-__PACKAGE__->columns (All              => qw/fullname email status grp password/);
+__PACKAGE__->columns (All              => qw/fullname email status grp password type 
+title phone bio campus building room photo_url photo_width photo_height/);
 
 __PACKAGE__->has_many(nodes            => 'PMT::Node', 'author');
 __PACKAGE__->has_many(projects         => 'PMT::Project', 'caretaker');
@@ -43,6 +44,16 @@ sub data {
         status => $self->status,
         grp => $self->grp,
         password => $self->password,
+	type => $self->type,
+	title => $self->title,
+	phone => $self->phone,
+	bio => $self->bio,
+	campus => $self->campus,
+	building => $self->building,
+	room => $self->room,
+	photo_url => $self->photo_url,
+	photo_width => $self->photo_width,
+	photo_height => $self->photo_height,
     };
 }
 
@@ -70,6 +81,53 @@ sub validate {
 }
 
 # }}}
+
+sub firstname {
+    my $self = shift;
+    my @parts = split ' ', $self->fullname;
+    pop @parts;
+    return join(" ",@parts);
+}
+
+sub lastname {
+    my $self = shift;
+    my @parts = split ' ', $self->fullname;
+    return pop @parts;
+}
+
+sub calculate_group {
+    my $self = shift;
+    my @groups = map {$_->{group_name}} @{$self->user_groups()};
+
+    my @sg = ();
+
+    if (grep (/management/, @groups)) {
+	push @sg, "Management";
+    }
+    if (grep (/educational technologists/, @groups)) {
+	push @sg, "Education";
+    }
+    if (grep (/video/, @groups)) {
+	push @sg, "Digital Media";
+    } 
+    if (grep (/programmers/, @groups)) {
+	push @sg, "Technology";
+    }
+    if (grep (/webmasters/, @groups)) {
+	push @sg, "Editorial and Design";
+    }
+
+    if (grep (/part-timers/, @groups)) {
+	push @sg, "Part-Timers";
+    }
+    if (grep (/external partners/, @groups)) {
+	push @sg, "External Partners";
+    }
+    if (grep (/new media associates/, @groups)) {
+	push @sg, "New Media Associates";
+    }
+    return \@sg;
+}
 
 sub user_info {
     my $self = shift;
