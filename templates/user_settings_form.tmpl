@@ -5,6 +5,40 @@
 <p class="message"><tmpl_var name="message"></p>
 </tmpl_if>
 
+<table cellspacing="0" cellpadding="0">
+<tr><td valign="top"><tmpl_if name="user_photo_url"><img src="<tmpl_var name="user_photo_url"
+								      escape="html">"
+								      /></tmpl_if>
+</td>
+<td>
+<table cellspacing="0" cellpadding="0" class="default">
+<tr><th>Username:</th><td><tmpl_var name="username"></td></tr>
+<tr><th>Fullname:</th><td><tmpl_var name="fullname"></td></tr>
+<tr><th>E-mail:</th><td><tmpl_var name="email"></td></tr>
+<tr><th>Title:</th><td><tmpl_var name="user_title"></td></tr>
+<tr><th>Phone:</th><td><tmpl_var name="user_phone"></td></tr>
+<tr><th>Office:</th><td><tmpl_var
+			   name="user_room"> <tmpl_var name="user_building">
+			   <tmpl_var name="user_campus"></td></tr>
+<tmpl_if name="status"><tr><th>Status:</th><td><tmpl_var name="user_status" escape="html"></td></tr></tmpl_if>
+<tmpl_if name="groups">
+<tr><th>Groups:</th><td>
+<tmpl_loop name="groups">
+<a href="home.pl?mode=group;group=<tmpl_var name='group'
+escape="url">"><tmpl_var name="group_name"
+escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
+</tmpl_loop>
+</td></tr>
+</tmpl_if>
+
+</table>
+
+</td></tr>
+<tmpl_if name="user_bio"><tr><td colspan="2"><tmpl_var name="user_bio"></td></tr></tmpl_if>
+
+</table>
+
+
 <form action="home.pl" method="POST">
 <fieldset><legend>update user information</legend>
 <input type="hidden" name="mode" value="update_user" />
