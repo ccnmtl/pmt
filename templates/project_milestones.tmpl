@@ -10,6 +10,60 @@
 </h1>
 
 
+<script type="text/javascript">
+
+var tl;
+function onLoad() {
+  var eventSource = new Timeline.DefaultEventSource();
+  var bandInfos = [
+    Timeline.createBandInfo({
+        eventSource:    eventSource,
+        date:           new Date(),
+        width:          "70%", 
+        intervalUnit:   Timeline.DateTime.MONTH, 
+        intervalPixels: 100
+    }),
+    Timeline.createBandInfo({
+        eventSource:    eventSource,
+        date:           new Date(),
+        width:          "30%", 
+        showEventText:  false,
+        trackHeight:    0.5,
+        trackGap:       0.2,
+        intervalUnit:   Timeline.DateTime.YEAR, 
+        intervalPixels: 200
+    })
+  ];
+  bandInfos[1].syncWith = 0;
+  bandInfos[1].highlight = true;
+
+  tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+  Timeline.loadJSON("home.pl?mode=project_milestones_json;pid=<tmpl_var name="pid">",function(xml, url) { eventSource.loadJSON(xml, url); });
+}
+
+var resizeTimerID = null;
+function onResize() {
+    if (resizeTimerID == null) {
+        resizeTimerID = window.setTimeout(function() {
+            resizeTimerID = null;
+            tl.layout();
+        }, 500);
+    }
+}
+
+addLoadEvent(onLoad);
+window.onresize = onResize;
+
+</script>
+
+
+
+
+<div id="my-timeline" style="height: 300px; border: 1px solid
+			     #aaa"></div>
+
+
+
 <table cellpadding="0" cellspacing="0" class="itemlisting" style="width: 650px;">
 <tr><th class="firstcell">milestone:</th>
 <th>status:</th>

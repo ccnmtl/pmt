@@ -69,6 +69,8 @@ sub setup {
         'project_info'           => 'project_info',
         'project_documents'      => 'project_documents',
         'project_milestones'     => 'project_milestones',
+	'project_milestones_json' => 'project_milestones_json',
+	'project_timeline'       => 'project_timeline',
         'update_group'           => 'update_group',
         'add_milestone'          => 'add_milestone',
         'add_services_item'      => 'add_services_item',
@@ -1643,6 +1645,62 @@ sub project_milestones {
     $template->param($data);
     return $template->output();
 }
+
+use JSON;
+
+my @months = qw/Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec/;
+
+sub simile_format_date {
+    my $date = shift;
+    my ($year,$month,$day) = split "-", $date;
+    my $mname = $months[$month - 1];
+    return "$mname $month $year 00:00:00 GMT";
+}
+
+sub project_milestones_json {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pid = $cgi->param('pid');
+    my $project = PMT::Project->retrieve($pid);
+#    my $data = $project->data();
+#    $data->{total_remaining_time} = interval_to_hours($project->estimated_time);
+#    $data->{total_completed_time} = interval_to_hours($project->completed_time);
+#    $data->{total_estimated_time} = interval_to_hours($project->all_estimated_time);
+
+    
+
+    my @milestones = map {
+	{
+	    start => simile_format_date($_->{target_date}),
+	    isDuration => 0,
+	    title => $_->{name},
+	    description => $_->{description},
+	    link => "home.pl?mode=milestone;mid=$_->{mid}"
+	};
+    } @{$project->project_milestones("priority")};
+    my $json = new JSON(pretty => 1);
+    $self->header_props(-type => 'application/json');
+    return $json->objToJson({'events' => \@milestones});
+}
+
+sub project_timeline {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pid = $cgi->param('pid');
+    my $project = PMT::Project->retrieve($pid);
+    my $data = $project->data();
+    $data->{milestones} = $project->project_milestones("priority");
+    $data->{total_remaining_time} = interval_to_hours($project->estimated_time);
+    $data->{total_completed_time} = interval_to_hours($project->completed_time);
+    $data->{total_estimated_time} = interval_to_hours($project->all_estimated_time);
+
+    my $template = $self->template("project_timeline.tmpl");
+    $template->param(projects_mode => 1);
+    $template->param(page_title => "project timeline");
+    $template->param($data);
+    return $template->output();
+}
+
 
 sub add_services_item {
     my $self = shift;
