@@ -114,6 +114,7 @@ sub setup {
         'active_clients_report' => 'active_clients_report',
         'someday_maybe'          => 'someday_maybe',
         'deactivate_user'        => 'deactivate_user',
+	'yearly_review'          => 'yearly_review',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -3028,6 +3029,45 @@ sub monthly_summary {
 
     return $template->output();
 }
+
+sub yearly_review {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pmt = $self->{pmt};
+
+    my ($year,$mon,$mday) = $self->get_date();
+
+    my ($start_year,$start_month,$start_day) = ($year - 1,$mon,$mday);
+    my ($end_year,$end_month,$end_day) = Add_Delta_Days($start_year,$start_month,$start_day,
+							366);
+
+    my $template = $self->template("yearly_summary.tmpl");
+    $template->param(
+	start_year => $start_year,
+	start_month => $start_month,
+	start_day => $start_day,
+	end_year => $end_year,
+	end_month => $end_month,
+	end_day => $end_day,
+	);
+
+    my $user = $self->{user};
+
+    #check is user is a group
+    my $data = $pmt->group($user);
+    $template->param($user->weekly_report("$start_year-$start_month-$start_day",
+                                               "$end_year-$end_month-$end_day"));
+    $template->param(page_title => "yearly report for ${user}->{username}");
+    $template->param(user_username => $user->{username});
+    $template->param(user_fullname => $user->{fullname});
+    $template->param(reports_mode => 1);
+    $template->param(posts => [map {$_->data()}
+			       sort { $b->added cmp $a->added}
+			       PMT::Node->user_posts_in_range($user->username,"$start_year-$start_month-$start_day",
+							      "$end_year-$end_month-$end_day")]);
+    return $template->output();
+}
+
 
 sub forum_archive {
     my $self = shift;

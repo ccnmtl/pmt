@@ -1,0 +1,103 @@
+<tmpl_include name="header_reports.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_reports.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>REPORTS:  Yearly Review</h1>
+
+
+<p><b>Total time for this year:</b> <tmpl_var
+name="total_time" escape="html"> hours.</p>
+
+<br />
+
+<tmpl_if name="active_projects">
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+	<tr>
+		<th colspan="4" class="milestone">Breakdown:</th>
+	</tr>
+<tr><th class="firstcell" colspan="2">project:</th><th colspan="2">time spent on project:</th></tr>
+<tmpl_loop name="active_projects">
+<tr><td class="firstcell" colspan="2"><a href="home.pl?mode=project;pid=<tmpl_var name="pid"
+ escape="url">"><tmpl_var name="name" escape="html"></a></td>
+<td colspan="2"><tmpl_Var name="time" escape="html"></td></tr>
+</tmpl_loop>
+<tr>
+<!-- ## Closing row --><td colspan="4" class="end">&nbsp;</td>
+</tr>
+
+
+<tr>
+<!-- ##  DIVIDER --><td colspan="4" class="divider">&nbsp;</td>
+</tr>
+
+
+	<tr>
+		<th colspan="4" class="milestone">Individual Times:</th>
+	</tr>
+
+<tr><th class="firstcell">time:</th>
+<th>item:</th>
+<th>completed at:</th>
+<th>project:</th></tr>
+<tmpl_loop name="individual_times">
+<tr><td class="firstcell"><tmpl_var name="actual_time" escape="html"></td>
+<td><a href="item.pl?iid=<tmpl_var name="iid" escape="url">">#<tmpl_var
+name="iid" escape="html">: <tmpl_var
+name="title" escape="html"></a></td>
+<td><nobr><tmpl_var name="completed" escape="html"></nobr></td>
+<td><a href="home.pl?mode=project;pid=<tmpl_var name="pid"
+escape="url">"><tmpl_var name="project" escape="html"></a></td>
+</tr>
+</tmpl_loop>
+
+<tr>
+<!-- ## Closing row --><td colspan="4" class="end">&nbsp;</td>
+</tr>
+
+</table>
+
+<br />
+
+<h2>piegraph:</h2>
+<img
+src="http://www2.ccnmtl.columbia.edu/graph/piegraph.pl?pie_height=20;start_angle=270;<tmpl_loop name="active_projects">l=<tmpl_var name="name" escape="url">;</tmpl_loop><tmpl_loop name="active_projects">s1=<tmpl_var name="hours" escape="url">;</tmpl_loop>color=%23ffcccc"
+width="400" height="300" alt="" />
+
+
+<tmpl_else>
+<p>No completion times were entered by this user for the specified
+time period.</p>
+</tmpl_if>
+
+<tmpl_if name="posts">
+
+<tmpl_loop name="posts">
+
+<div class="post">
+<a name="<tmpl_var name="nid">"> </a>
+<h2 class="nodesubject"><a href="home.pl?mode=node;nid=<tmpl_var name="nid">"><tmpl_var
+name="subject"></a></h2>
+<p class="byline"><tmpl_if name="pid">to project <a href="home.pl?mode=forum;pid=<tmpl_var
+name="pid">"><tmpl_var name="project"></a> </tmpl_if>by <a
+href="home.pl?mode=user;username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a> @ <tmpl_var name="added"></p>
+<div class="nodebody">
+<tmpl_var name="body">
+</div>
+<div class="replies"><tmpl_if name="replies">[<tmpl_var name="modified">]
+<a href="home.pl?mode=node;nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var
+name="replies"></a> | </tmpl_if><a
+href="home.pl?mode=node;nid=<tmpl_var name="nid">#addcomment">add a comment</a></div>
+</div>
+</tmpl_loop>
+</tmpl_if>
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">
