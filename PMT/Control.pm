@@ -323,7 +323,14 @@ sub add_project {
     if($target_date =~ /(\d{4}-\d{2}-\d{2})/) {
         $target_date = $1;
     } else {
-        throw Error::INVALID_DATE "malformed date";
+	# default to one year from today if they haven't specified a target date
+	# the form says it's required, but we'll be nice.
+	# TODO: this will break if someone adds a project on Feb 29th and doesn't
+	#       specify the target date. This is obscure enough that it's probably not
+	#       worth fixing. 
+	($year,$month,$day) = $self->get_date();
+	$year++;
+	$target_date = "$year-$month-$day";
     }
 
     my $project = PMT::Project->create({name => $name, pub_view => $pub_view,
