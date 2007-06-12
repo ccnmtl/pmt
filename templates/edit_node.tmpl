@@ -1,0 +1,58 @@
+<tmpl_include name="header_forums.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_forums.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+
+<tmpl_if name="preview">
+<h3>preview</h3>
+<h2 class="nodesubject"><tmpl_var name="subject" escape="html"></h2>
+<div class="nodebody">
+<tmpl_var name="body">
+</div>
+<h3>preview</h3>
+</tmpl_if>
+
+<tmpl_if name="can_edit">
+<form action="home.pl" method="post">
+<input type="hidden" name="mode" value="edit_node" />
+<input type="hidden" name="nid" value="<tmpl_var name="nid">" />
+
+<div class="post">
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 600px;">
+<tr><th class="firstcell">Subject:</th>
+<td><input class="textform" size="40" value="<tmpl_var
+name="subject" escape="html">" type="text" name="subject" id="subject"></td></tr>
+
+<tr><th class="firstcell">text:</th><td>(formatting is html)<br />
+<textarea class="textform resizable" name="body" cols="40" rows="15"
+wrap="virtual"><tmpl_var name="body" escape="html"></textarea>
+</td></tr>
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input class="button" type="submit" name="preview" value="preview" /> <input class="button" type="submit" value="post"></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+
+
+<tmpl_if name="can_delete">
+<tmpl_if name="can_delete"><a class="actionbutton" href="home.pl?mode=delete_node;nid=<tmpl_var name="nid" escape="url">">delete this post</a></tmpl_if>
+</div>
+</tmpl_if>
+
+
+</form>
+</tmpl_if>
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

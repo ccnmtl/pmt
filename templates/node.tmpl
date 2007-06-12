@@ -37,9 +37,12 @@ escape="html"><tmpl_unless __LAST__>, </tmpl_unless></tmpl_loop></textarea><br /
 </div>
 </div>
 
-<tmpl_if name="can_delete">
+<tmpl_if name="can_edit">
 <div style="padding: 6px; border-top: 1px solid #ccf; text-align: left;">
-<a class="actionbutton" href="home.pl?mode=delete_node;nid=<tmpl_var name="nid" escape="url">">delete this post</a>
+<a class="actionbutton"
+href="home.pl?mode=edit_node_form;nid=<tmpl_var name="nid"
+escape="url">">edit this post</a>
+<tmpl_if name="can_delete"><a class="actionbutton" href="home.pl?mode=delete_node;nid=<tmpl_var name="nid" escape="url">">delete this post</a></tmpl_if>
 </div>
 </tmpl_if>
 

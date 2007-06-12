@@ -24,6 +24,12 @@ sub can_delete {
         $user->username);
 }
 
+sub can_edit {
+    my $self = shift;
+    my $user = shift;
+    return ($self->author->username eq $user->username);
+}
+
 sub added_informal {
     my $self = shift;
     my $added = $self->added;
@@ -74,6 +80,7 @@ sub data {
     }
     if (defined($user)) {
         $d->{can_delete} = $self->can_delete($user);
+	$d->{can_edit}   = $self->can_edit($user);
     }
     return $d;
 }

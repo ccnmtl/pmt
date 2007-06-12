@@ -50,6 +50,8 @@ sub setup {
         'delete_item'            => 'delete_item',
         'delete_milestone'       => 'delete_milestone',
         'delete_node'            => 'delete_node',
+        'edit_node_form'         => 'edit_node_form',
+        'edit_node'              => 'edit_node',
         'delete_project'         => 'delete_project',
         'add_client_form'        => 'add_client_form',
         'add_client'             => 'add_client',
@@ -1181,9 +1183,9 @@ sub add_client_form {
             if ($d->{found}) {
                 $client_email  = $d->{mail}            || "";
                 $lastname      = $d->{lastname}        || "";
-                $firstname     = $d->{firstname}       || "";
+                $firstname     = $d->{"givenName;x-role-2"}  || $d->{"givenName"} || $d->{"firstname"} || "";
                 $title         = $d->{title}           || "";
-                $ou            = $d->{ou}              || "(not found)";
+                $ou            = $d->{"ou"}              || "(not found)";
                 $phone         = $d->{telephonenumber} || "";
             } else {
                 $lastname = $firstname = $title = $department = $school = $phone = "";
@@ -2473,6 +2475,50 @@ sub node {
                      tags => $node->tags(),
                      user_tags => $node->user_tags($self->{user}->{username}));
     return $template->output();
+}
+
+sub edit_node_form {
+    my $self     = shift;
+    my $cgi      = $self->query();
+    my $pmt      = $self->{pmt};
+    my $nid      = $cgi->param('nid') || "";
+    my $template = $self->template("edit_node.tmpl");
+    my $node     = PMT::Node->retrieve($nid);
+    $template->param($node->data($self->{user}));
+    $template->param(page_title => "Edit Forum Node: " . $template->param('subject'),
+                     tags => $node->tags(),
+                     user_tags => $node->user_tags($self->{user}->{username}));
+    return $template->output();
+}
+
+sub edit_node {
+    my $self     = shift;
+    my $cgi      = $self->query();
+    my $pmt      = $self->{pmt};
+    my $nid      = $cgi->param('nid') || "";
+    my $subject  = escape($cgi->param('subject')) || "";
+    my $body     = escape($cgi->param('body'))    || "";
+    my $preview  = $cgi->param('preview')         || "";
+
+
+    if ($preview eq "preview") {
+	my $template = $self->template("edit_node.tmpl");
+	my $node     = PMT::Node->retrieve($nid);
+	$template->param($node->data($self->{user}));
+	$template->param(page_title => "Edit Forum Node: " . $subject,
+			 tags       => $node->tags(),
+			 preview    => $preview,
+			 subject    => $subject,
+			 body       => $body);
+	return $template->output();
+    } else {
+	my $node = PMT::Node->retrieve($nid);
+	$node->subject($subject);
+	$node->body($body);
+	$node->update();
+	$self->header_type('redirect');
+	$self->header_props(-url => "home.pl?mode=node;nid=$nid");
+    }
 }
 
 sub staff_report {
