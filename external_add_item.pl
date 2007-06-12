@@ -64,22 +64,35 @@ foreach my $client (@clients) {
     push @new_clients, $client unless $client eq "";
 }
 
-my %item = (type         => $type,
-            pid          => $pid,
-            mid          => $mid,
-            title        => $title,
-            assigned_to  => $assignee,
-            owner        => $owner,
-            priority     => $priority,
-            target_date  => $target_date,
-            url          => $url,
-            description  => $description,
-            tags         => \@new_tags,
-            dependencies => [],
-            clients      => \@new_clients,
+my %item = (type           => $type,
+            pid            => $pid,
+            mid            => $mid,
+            title          => $title,
+            assigned_to    => $assignee,
+            owner          => $owner,
+            priority       => $priority,
+            target_date    => $target_date,
+            url            => $url,
+            description    => $description,
+            tags           => \@new_tags,
+            dependencies   => [],
+            clients        => \@new_clients,
             estimated_time => $estimated_time);
+
 my $pmt = new PMT();
 my $iid = $pmt->add_item(\%item);
+
+# since the PMT normally won't send an email to the assignee if the assignee and owner
+# are the same, we have to override that here to ensure that the assignee is notified
+if ($assignee eq $owner) {
+    my $item    = PMT::Item->retrieve($iid);
+    my $body    = $item->email_message_body();
+    my $u       = PMT::User->retrieve($assignee);
+    my $to      = $u->email;
+    my $subject = $item->email_subject("new external item added");
+    my $from    = $u->email;
+    $item->send_email($body,$subject,$from,$to)
+}
 
 if ($redirect_url) {
     if ($append_iid) {

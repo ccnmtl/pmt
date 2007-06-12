@@ -693,6 +693,23 @@ sub full_data {
     return \%data;
 }
 
+
+# emails relevant parties with info for an item
+sub email {
+    my $self    = shift;
+    my $subject = shift;
+    my $skip    = shift;
+
+    my $owner       = $self->owner;
+    my $owner_email = $owner->username . " (" . $owner->email . ")";
+    my $email_subj = $self->email_subject($subject);
+    my $body = $self->email_message_body();
+
+    foreach my $user (@{$self->which_users_to_email($skip)}) {
+	$self->send_email($body,$email_subj,$owner_email,$user->{'email'});
+    }
+}
+
 __PACKAGE__->set_sql(users_to_email =>
                      qq{SELECT u.username,u.email
                             FROM notify n, users u
@@ -701,12 +718,19 @@ __PACKAGE__->set_sql(users_to_email =>
                             AND n.iid = ? AND u.username <> ?;},
                      'Main');
 
-# emails relevant parties with info for an item
-sub email {
-    my $self    = shift;
-    my $subject = shift;
-    my $skip    = shift;
+# when an item is added/updated, use this to get a list
+# of users that need to be emailed
+sub which_users_to_email {
+    my $self = shift;
+    my $skip = shift;
+    my $sth = $self->sql_users_to_email;
+    $sth->execute($self->iid,$skip);
+    return $sth->fetchall_arrayref({});    
+}
 
+sub email_subject {
+    my $self = shift;
+    my $subject = shift;
     my $r = $self->full_data();
     my %item = %$r;
 
@@ -717,33 +741,18 @@ sub email {
         $subject_title = $subject_title . "(NEW)";
     }
 
-    my $email_subj = "[PMT:$project_title] Attn:$item{'assigned_to_fullname'}-$subject_title";
-    my $send_to;
+    return "[PMT:$project_title] Attn:$item{'assigned_to_fullname'}-$subject_title";
+}
 
-    my $owner = $self->owner;
-    my $owner_email = $owner->username . " (" . $owner->email . ")";
-
-    my $sth = $self->sql_users_to_email;
-    $sth->execute($self->iid,$skip);
-    my @users = @{$sth->fetchall_arrayref({})};
+sub email_message_body {
+    my $self = shift;
+    my $r = $self->full_data();
+    my %item = %$r;
     $r = $item{tags};
     my @tags = map {$_->{tag};} @$r;
     my $tags = join ', ', @tags;
-    $r = $item{dependencies};
-    my @dependencies = map {$$_{'dest'};} @$r;
-    my $dependencies = '';
-    if($#dependencies >= 0) {
-        my $dependencies = join ', ', @dependencies;
-    }
 
-    foreach my $user (@users) {
-        $ENV{PATH} = "/usr/sbin";
-        open(MAIL,"|/usr/sbin/sendmail -t");
-        print MAIL <<END_MESSAGE;
-To: $$user{'email'}
-From: $owner_email
-Subject: $email_subj
-
+    return qq{
 $item{'type'} #: $item{'iid'}
 title:\t\t$item{'title'}
 owner:\t\t$item{'owner_fullname'}
@@ -756,17 +765,38 @@ milestone:\t$item{'milestone'}
 last modified:\t$item{'last_mod'}\n
 url:\t\t$item{'url'}
 tags:\t$tags
-dependencies:\t$dependencies
 description:
 $item{'description'}
 
 view $item{'type'}: http://pmt.ccnmtl.columbia.edu/item.pl?iid=$item{'iid'}
 
 please do not reply to this message.
-END_MESSAGE
-        CORE::close MAIL;
-    }
+};
+
 }
+
+# do the actual sending of the mail
+sub send_email {
+    my $self    = shift;
+    my $message = shift;
+    my $subject = shift;
+    my $from    = shift;
+    my $to      = shift;
+
+    $ENV{PATH} = "/usr/sbin";
+    open(MAIL,"|/usr/sbin/sendmail -t");
+    print MAIL <<END_MESSAGE;
+To: $to
+From: $from
+Subject: $subject
+
+$message;
+END_MESSAGE
+    CORE::close MAIL;
+    print STDERR "sent email out";
+}
+
+
 
 
 # emails relevant parties with info for an item
