@@ -90,7 +90,6 @@ sub add_item {
             $args{estimated_time}});
 
     $item->update_tags($args{tags},$username);
-    $item->update_dependencies($args{dependencies});
     $item->add_clients(@{$args{clients}});
 
     # add notification (owner, assigned_to, @managers)
@@ -172,7 +171,6 @@ sub compare_items {
     ($item,$old,$changed,$add_notification,$comment,$message)
         = $self->compare_fields($item,$old,$changed,$add_notification,$comment,$message,$project);
 
-    ($changed,$comment,$message) = $self->compare_dependencies($item,$old,$changed,$comment,$message);
     ($changed,$comment,$message) = $self->compare_clients($item,$old,$changed,$comment,$message);
 
     ($item,$old,$changed,$comment,$message) = $self->check_assigned_to_active($item,$old,$project,$changed,$comment,$message);
@@ -342,20 +340,6 @@ sub compare_fields {
     return ($item,$old,$changed,$add_notification,$comment,$message);
 }
 
-sub compare_dependencies {
-    my $self = shift;
-    my $item = shift;
-    my $old = shift;
-    my $changed = shift;
-    my $comment = shift;
-    my $message = shift;
-    if (diff($item->{dependencies},[map {$$_{iid}} @{$old->{dependencies}}])) {
-        $changed = 1;
-        $comment .= "<b>dependencies changed</b><br />\n";
-        $message .= "dependencies changed. ";
-    }
-    return ($changed,$comment,$message);
-}
 sub compare_clients {
     my $self = shift;
     my $item = shift;
@@ -480,7 +464,6 @@ sub update_item {
         $i->status($item->{status});
         $i->mid($milestone);
         $i->estimated_time($item->{estimated_time});
-        $i->update_dependencies($item->{'dependencies'});
         $i->update_clients($item->{'clients'});
         $i->add_client_by_uni($item->{client_uni});
         # add history event

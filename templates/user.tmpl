@@ -59,8 +59,7 @@ escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
 <tmpl_if name="items">
 <table cellpadding="0" cellspacing="0" class="itemlisting">
 <tr>
-<th class="firstcell">&#160;</th>
-<th><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=title">item</a>:</th>
+<th class="firstcell"><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=title">item</a>:</th>
 <th><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=priority">priority</a>:</th>
 <th><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=status">status</a>:</th>
 <th><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=project">project</a>:</th>
@@ -70,8 +69,7 @@ escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
 
 <tmpl_loop name="items">
 <tr>
-<td class="firstcell"><tmpl_if name="has_dependencies">D<tmpl_else>&#160;</tmpl_if></td>
-<td class="<tmpl_var name="type_class">"><a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid">: <tmpl_var name="title"></a></td>
+<td class="firstcell <tmpl_var name="type_class">"><a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid">: <tmpl_var name="title"></a></td>
 <td class="pr<tmpl_var name="priority">"><tmpl_var name="priority_label"></td>
 <td class="<tmpl_var name="status">"><tmpl_if name="r_status"><tmpl_var
 name="r_status"><tmpl_else><tmpl_var name="status" escape="html"></tmpl_if></td>

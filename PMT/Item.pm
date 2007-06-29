@@ -15,8 +15,6 @@ __PACKAGE__->has_many(actual_times => 'PMT::ActualTime', 'iid');
 __PACKAGE__->has_many(notifies => 'PMT::Notify', 'iid');
 __PACKAGE__->has_many(events => 'PMT::Event', 'item');
 __PACKAGE__->has_many(comments => 'PMT::Comment', 'item');
-__PACKAGE__->has_many(dependents => 'PMT::Dependency', 'dest');
-__PACKAGE__->has_many(dependencies => 'PMT::Dependency', 'source');
 __PACKAGE__->has_many(clients => 'PMT::ItemClients', 'iid');
 __PACKAGE__->has_many(attachments => 'PMT::Attachment', 'item_id');
 
@@ -289,18 +287,6 @@ sub status_select {
     } @{$options{$combined}}]
 }
 
-# returns 1 if any of the item's dependencies are still open
-# returns 0 if all resolved or closed
-sub check_dependencies {
-    my $self = shift;
-    foreach my $d ($self->dependencies()) {
-        my $dest = PMT::Item->retrieve($d->dest);
-        return 1 if $dest->status eq "OPEN" || $dest->status eq "UNASSIGNED"
-            || $dest->status eq "INPROGRESS";
-    }
-    return 0;
-}
-
 sub close {
     my $self = shift;
     my $user = shift;
@@ -391,25 +377,6 @@ sub cc {
     }
 }
 
-# upgrades the priority and target date of all dependencies to make sure
-# they are at least as high a priority and at least as soon a target date
-sub prioritize_dependent {
-    my $self        = shift;
-    my $priority    = shift;
-    my $target_date = shift;
-
-    if ($priority > $self->priority) {
-        $self->priority($priority);
-    }
-    if (($target_date cmp $self->target_date) == -1) {
-        $self->target_date($target_date);
-    }
-    foreach my $d ($self->dependencies()) {
-        my $dest = PMT::Item->retrieve($d->dest);
-        $dest->prioritize_dependent($priority,$target_date);
-    }
-}
-
 # sets up notification for an item
 # owner, assigned_to, and all managers for project
 # are added by default (without duplication)
@@ -476,46 +443,6 @@ sub notify {
         my $n = PMT::Notify->find_or_create({username => $u, iid =>
                 $self->iid});
     }
-}
-
-# {{{ update_dependencies
-
-sub update_dependencies {
-    my $self = shift;
-    my $r    = shift;
-    my @dependencies = @$r;
-    # clear out the old ones first.
-    for my $d ($self->dependencies()) {
-        $d->delete;
-    }
-
-    # put the new ones back in
-    foreach my $d (@dependencies) {
-        next unless $d;
-        my $item = PMT::Item->retrieve($d);
-        # skip it if it will create a cycle
-
-        next if $item->cycle([$self->iid]);
-        $self->add_to_dependencies({ dest => $item->iid });
-
-        # make sure priorities are in order
-        $item->prioritize_dependent($self->priority,$self->target_date);
-    }
-}
-
-# recursively goes through the dependency tree and looks
-# for cycles.
-sub cycle {
-    my $self = shift;
-    my $seen = shift;
-    return 1 if grep {$_ == $self->iid} @$seen;
-    foreach my $d ($self->dependencies()) {
-        my @trail = @$seen;
-        push @trail, $self->iid;
-        my $dest = PMT::Item->retrieve($d->dest);
-        return 1 if $dest->cycle(\@trail);
-    }
-    return 0;
 }
 
 sub update_tags {
@@ -652,8 +579,6 @@ sub full_data {
                                   $data{status} eq 'INPROGRESS' ||
                                   $data{status} eq 'RESOLVED');
     $data{resolve_times}       = $item->resolve_times();
-    $data{dependencies}        = [map {PMT::Item->retrieve($_->dest)->data()} $item->dependencies()];
-    $data{dependents}          = [map {PMT::Item->retrieve($_->source)->data()} $item->dependents()];
     $data{history}             = $item->history();
     $data{comments}            = $item->get_comments();
 
@@ -680,7 +605,6 @@ sub full_data {
     $data{owner_select}        = $project->owner_select($owner);
     $data{status_select}       = $item->status_select();
     $data{priority_select}     = $item->priority_select();
-    $data{dependencies_select} = $project->dependencies_select($data{'iid'}, $data{dependencies});
     if(exists $data{pub_view}) {
         $data{pub_view}            = $data{pub_view} == 1;
     } else {

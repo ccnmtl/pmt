@@ -149,7 +149,6 @@ sub add_item_form {
     my $user = PMT::User->retrieve($username);
 
     $data{'tags'}         = $self->tags();
-    $data{'dependencies'} = $self->all_items_in_project();
     my $caretaker = $self->caretaker->username;
     $data{'developers'}   = [map {{
             username => $_->username, fullname => $_->fullname,
@@ -650,22 +649,6 @@ sub all_items_in_project {
 }
 
 # }}}
-
-sub dependencies_select {
-    my $self     = shift;
-    my $skip     = shift;
-    my $selected = shift;
-    my %selected = map {$_->{iid} => 1} @$selected;
-    my $r = $self->all_items_in_project($skip);
-    return [map {
-        my $iid = $_->{iid};
-        {
-            value => $iid,
-            label => "$_->{type} #$_->{iid} $_->{title} [$_->{status}]",
-            selected => exists $selected{$iid},
-        };
-    } @$r];
-}
 
 sub groups_in_project {
     my $self = shift;

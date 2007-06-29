@@ -13,9 +13,6 @@
 <input type="hidden" name="url" value="<tmpl_var escape="html" name="url">" />
 <input type="hidden" name="estimated_time" value="<tmpl_var name="estimated_time" escape="html">" />
 
-<tmpl_loop name="dependencies">
-<input type="hidden" name="depends" value="<tmpl_var name="iid">" />
-</tmpl_loop>
 <tmpl_loop name="clients">
 <input type="hidden" name="clients" value="<tmpl_var name="client_id" escape="html">" />
 </tmpl_loop>
@@ -150,34 +147,6 @@ __LAST__>, </tmpl_unless></tmpl_loop></textarea><br />
 </div>
 </td>
 </tr>
-
-<tmpl_if name="dependencies">
-<tr>
-<th class="firstcell" width="120">dependencies:</th>
-<td colspan="3">
-<tmpl_loop name="dependencies">
-<tmpl_var name="type">
-<a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid"> <tmpl_var name="title"></a>
-[<tmpl_var name="status">
-<tmpl_if name="r_status"> (<tmpl_var name="r_status">)</tmpl_if>]<br />
-</tmpl_loop>
-</td>
-</tr>
-</tmpl_if>
-
-<tmpl_if name="dependents">
-<tr>
-<th class="firstcell" width="120">dependents:</th>
-<td colspan="3">
-<tmpl_loop name="dependents">
-<tmpl_var name="type">
-<a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid"> <tmpl_var name="title"></a>
-[<tmpl_var name="status">
-<tmpl_if name="r_status"> (<tmpl_var name="r_status">)</tmpl_if>]<br />
-</tmpl_loop>
-</td>
-</tr>
-</tmpl_if>
 
 <tr>
 <th class="firstcell" width="120">description:</th>

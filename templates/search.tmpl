@@ -27,8 +27,6 @@ id="searchresults" onclick="sortColumn(event)">
 <tmpl_if name="show_assigned"><th>assigned to:</th></tmpl_if>
 <tmpl_if name="show_url"><th>url:</th></tmpl_if>
 <tmpl_if name="show_tags"><th>tags:</th></tmpl_if>
-<tmpl_if name="show_dependencies"><th>dependencies:</th></tmpl_if>
-<tmpl_if name="show_dependents"><th>dependents:</th></tmpl_if>
 <tmpl_if name="show_comments"><th>comments:</th></tmpl_if>
 <tmpl_if name="show_history"><th>history:</th></tmpl_if>
 <tmpl_if name="show_project"><th>project:</th></tmpl_if>
@@ -47,17 +45,6 @@ name="priority">"><tmpl_var name="priority_label"></td></tmpl_if>
 <tmpl_if name="show_assigned"><td><a href="home.pl?mode=user;username=<tmpl_var name="assigned_to">"><tmpl_var name="assigned_to_fullname"></a></td></tmpl_if>
 <tmpl_if name="show_url"><td><tmpl_if name="url"><a target="_blank" href="<tmpl_var name="url">"><tmpl_var name="url"></a><tmpl_else>&nbsp;</tmpl_if></td></tmpl_if>
 <tmpl_if name="show_tags"><td><tmpl_loop name="tags"><tmpl_var name="tag">, </tmpl_loop></td></tmpl_if>
-<tmpl_if name="show_dependencies"><td><tmpl_loop name="dependencies">
-<a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid">
-<tmpl_var name="title"> [<tmpl_if name="r_status"><tmpl_var
-name="r_status"><tmpl_else><tmpl_var name="status"></tmpl_if>]<br />
-</tmpl_loop></td></tmpl_if>
-<tmpl_if name="show_dependents"><td><tmpl_loop name="dependents">
-<a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid">
-<tmpl_var name="title"> [<tmpl_if
-name="r_status"><tmpl_var name="r_status"><tmpl_else><tmpl_Var
-name="status"></tmpl_if>]<br />
-</tmpl_loop></td></tmpl_if>
 <tmpl_if name="show_comments"><td><tmpl_loop name="comments">
 <b>-- <tmpl_var name="fullname"> @ <tmpl_var name="add_date_time"></b><br />
 <br /><tmpl_var name="comment"><br /><br />
@@ -224,9 +211,6 @@ title<br />
 <input type="checkbox" name="show" value="tags"> tags<br />
 </td>
 <td style="border: 0px; padding: 0 10px 0 0;">
-<input type="checkbox" name="show" value="dependencies">
-dependencies<br />
-<input type="checkbox" name="show" value="dependents"> dependents<br />
 <input type="checkbox" name="show" value="comments"> comments<br />
 <input type="checkbox" name="show" value="history"> history<br />
 </td>

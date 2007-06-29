@@ -25,7 +25,6 @@ BEGIN {
     use_ok("PMT::Notify");
     use_ok("PMT::ProjectClients");
     use_ok("PMT::WorksOn");
-    use_ok("PMT::Dependency");
 }
 
 use DBI;

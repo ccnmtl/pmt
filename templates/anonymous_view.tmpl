@@ -112,33 +112,7 @@ style="margin-top: 50px">
 </td>
 </tr>
 </tmpl_if>
-<tmpl_if name="dependencies">
-<tr>
-<th class="firstcell" width="120">dependencies:</th>
-<td colspan="3">
-<tmpl_loop name="dependencies">
-<tmpl_var name="type">
-<a href="view.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid"> <tmpl_var name="title"></a>
-[<tmpl_var name="status">
-<tmpl_if name="r_status"> (<tmpl_var name="r_status">)</tmpl_if>]<br />
-</tmpl_loop>
-</td>
-</tr>
-</tmpl_if>
 
-<tmpl_if name="dependents">
-<tr>
-<th class="firstcell" width="120">dependents:</th>
-<td colspan="3">
-<tmpl_loop name="dependents">
-<tmpl_var name="type">
-<a href="view.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid"> <tmpl_var name="title"></a>
-[<tmpl_var name="status">
-<tmpl_if name="r_status"> (<tmpl_var name="r_status">)</tmpl_if>]<br />
-</tmpl_loop>
-</td>
-</tr>
-</tmpl_if>
 
 <tr>
 <th class="firstcell" width="120">description:</th>

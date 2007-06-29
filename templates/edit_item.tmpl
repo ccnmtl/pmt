@@ -115,17 +115,6 @@ name="label" escape="html"></option></tmpl_loop>
 class="textform" type="text" name="url" size="40" value="<tmpl_var name="url">" /><tmpl_if name="url">)</tmpl_if></td></tr>
 
 <tr>
-<th class="firstcell">dependencies:</th>
-<td>
-<select class="available" style="width: 520px;" name="depends" multiple size="5">
-<option  value="">no dependencies</option>
-<tmpl_loop name="dependencies_select">
-<option value="<tmpl_var name="value" escape="html">"<tmpl_if
-name="selected"> selected="selected"</tmpl_if>><tmpl_var name="label" escape="html"></option>
-</tmpl_loop>
-</select>
-</td></tr>
-<tr>
 <th class="firstcell">description:</th>
 <td>
 <textarea class="textform" name="description" cols="40" rows="8" wrap="virtual"><tmpl_var name="description"></textarea>

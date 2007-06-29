@@ -57,8 +57,6 @@ eval {
                                       $data{status} eq 'INPROGRESS' ||
                                       $data{status} eq 'RESOLVED');
         $data{resolve_times}       = $item->resolve_times();
-        $data{dependencies}        = [map {PMT::Item->retrieve($_->dest)->data()} $item->dependencies()];
-        $data{dependents}          = [map {PMT::Item->retrieve($_->source)->data()} $item->dependents()];
         $data{history}             = $item->history();
         $data{comments}            = $item->get_comments();
         #Min's addition to implement email opt in/out

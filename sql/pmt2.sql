@@ -127,14 +127,6 @@ CREATE TABLE notify_project (
          ON DELETE CASCADE
 );
 
-CREATE TABLE dependencies (
-       source integer NOT NULL,
-       dest integer NOT NULL,
-       PRIMARY KEY (source,dest),
-       FOREIGN KEY (source) REFERENCES items (iid),
-       FOREIGN KEY (dest) REFERENCES items (iid)
-);
-
 CREATE TABLE events (
        eid integer PRIMARY KEY DEFAULT NEXTVAL('events_s'),
        status varchar(32) NOT NULL,

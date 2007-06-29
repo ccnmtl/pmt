@@ -219,22 +219,9 @@ maxlength="254" /></td></tr>
 <textarea class="textform" name="tags" cols="5" rows="5" style="width: 50%;"></textarea>
   </td>
 </tr>
-<tmpl_if name="dependencies">
-<tr>
-<th class="firstcell">dependencies:</th>
-<td>
-<select class="available" style="width: 520px;" name="depends" multiple size="5">
-<option value="">no dependencies</option>
-<tmpl_loop name="dependencies">
-<option value="<tmpl_var name="iid">"><tmpl_var name="type">
-#<tmpl_var name="iid"> <tmpl_var name="title"></option>
-</tmpl_loop>
-</select>
-  </td></tr></tmpl_if>
-
 
 <tr>
-<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="ADD <tmpl_if name="bug">BUG<tmpl_else>ACTION ITEM</tmpl_if>"" /></td>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="ADD <tmpl_if name="bug">BUG<tmpl_else>ACTION ITEM</tmpl_if>" /></td>
 </tr>
 
 <tr>

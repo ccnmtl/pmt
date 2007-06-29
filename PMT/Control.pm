@@ -463,7 +463,6 @@ sub add_item {
     my $url          = escape($cgi->param('url')) || "";
     my $description  = $cgi->param('description') || "";
     my $tags         = $cgi->param('tags') || "";
-    my @dependencies = $cgi->param('depends');
     my @clients      = $cgi->param('clients');
     my $completed    = $cgi->param('completed') || "";
     my $client_uni   = $cgi->param('client_uni') || "";
@@ -494,10 +493,6 @@ sub add_item {
     push @tags, split /\n/, $tags;
     @tags = grep {$_ ne ""} map {escape($_);} @tags;
 
-    my @new_dependencies;
-    foreach my $d (@dependencies) {
-        push @new_dependencies, $d unless $d eq "";
-    }
     my @new_clients;
     foreach my $client (@clients) {
         push @new_clients, $client unless $client eq "";
@@ -537,7 +532,6 @@ sub add_item {
                         url          => $url,
                         description  => $description,
                         tags         => \@tags,
-                        dependencies => \@new_dependencies,
                         clients      => \@new_clients,
                         estimated_time => $estimated_time);
             $iid = $pmt->add_item(\%item);
@@ -1732,7 +1726,6 @@ sub add_services_item {
 
     $data{'milestone_select'} = $project->project_milestones_select();
     $data{'tags'}     = $project->tags();
-    $data{'dependencies'} = $project->all_items_in_project();
     my $caretaker = $project->caretaker->username;
     $data{'developers'}   = [map {{
             username => $_->username, fullname => $_->fullname,
@@ -2188,7 +2181,6 @@ sub update_item {
     my $priority     = $cgi->param('priority') || "";
     my $url          = escape($cgi->param('url')) || "";
     my $description  = $cgi->param('description') || "";
-    my @dependencies = $cgi->param('depends');
     my @clients      = $cgi->param('clients');
     my $target_date  = $cgi->param('target_date') || PMT::Milestone->retrieve($mid)->target_date;
     my $comment      = escape($cgi->param('comment')) || "";
@@ -2202,11 +2194,6 @@ sub update_item {
     my $estimated_time = $cgi->param('estimated_time') || "01:00";
     if($estimated_time =~ /^(\d+)$/) {
         $estimated_time .= "h";
-    }
-
-    my @new_deps;
-    foreach my $d (@dependencies) {
-        push @new_deps, $d unless $d eq "";
     }
 
     my @new_clients;
@@ -2224,7 +2211,6 @@ sub update_item {
                 target_date  => $target_date,
                 url          => $url,
                 description  => $description,
-                dependencies => \@new_deps,
                 clients      => \@new_clients,
                 client_uni   => $client_uni,
                 status       => $status,

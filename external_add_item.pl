@@ -75,7 +75,6 @@ my %item = (type           => $type,
             url            => $url,
             description    => $description,
             tags           => \@new_tags,
-            dependencies   => [],
             clients        => \@new_clients,
             estimated_time => $estimated_time);
 

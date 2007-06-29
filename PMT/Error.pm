@@ -98,10 +98,6 @@ package Error::NO_SUCH_ITEM;
 @Error::NO_SUCH_ITEM::ISA = qw(Error::Simple);
 1;
 
-package Error::UNRESOLVED_DEPENDENCIES;
-@Error::UNRESOLVED_DEPENDENCIES::ISA = qw(Error::Simple);
-1;
-
 package Error::INVALID_STATUS;
 @Error::INVALID_STATUS::ISA = qw(Error::Simple);
 1;

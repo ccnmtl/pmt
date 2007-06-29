@@ -14,8 +14,7 @@
 <table cellpadding="0" cellspacing="0" class="itemlisting" id="itemstable"
 onclick="sortColumn(event)">
 	<thead><tr>
-		<th class="firstcell">&#160;</th>
-		<th nowrap="nowrap">item:</th>
+		<th nowrap="nowrap" class="firstcell">item:</th>
 		<th nowrap="nowrap">priority:</th>
 		<th nowrap="nowrap">status:</th>
 		<th nowrap="nowrap">project:</th>
@@ -25,8 +24,7 @@ onclick="sortColumn(event)">
 <tbody>
 <tmpl_loop name="items">
 	<tr>
-		<td class="firstcell"><tmpl_if name="has_dependencies">D<tmpl_else>&#160;</tmpl_if></td>
-		<td><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="item.pl?iid=<tmpl_var name="iid" escape="url">">#<tmpl_var name="iid" escape="html">: <tmpl_var name="title" escape="html"></a></td>
+		<td class="firstcell"><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="item.pl?iid=<tmpl_var name="iid" escape="url">">#<tmpl_var name="iid" escape="html">: <tmpl_var name="title" escape="html"></a></td>
 		<td class="pr<tmpl_var name="priority"
                 escape="html">"><span style="display:none"><tmpl_var
                 name="priority"></span><tmpl_var name="priority_label" escape="html"></td>

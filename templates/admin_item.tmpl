@@ -14,10 +14,7 @@
 <input type="hidden" name="tags" value="<tmpl_var name="tag">"
 />
 </tmpl_loop>
-<tmpl_loop name="dependencies">
-<input type="hidden" name="depends" value="<tmpl_var name="iid">"
-/>
-</tmpl_loop>
+
 
 <table>
 <tr><th><tmpl_var name="type"></th><td><h2>#<tmpl_var name="iid">
@@ -39,15 +36,6 @@ name="label" escape="html"></option></tmpl_loop>
 <tmpl_if name="url"><tr><th>url</th><td><a href="<tmpl_var name="url">"><tmpl_var name="url"></a></td></tr></tmpl_if>
 <tmpl_if name="tags"><tr><th>tags</th><td><tmpl_loop name="tags">
 <a href="home.pl?mode=tag;tag=<tmpl_var name="tag" escape="url">"><tmpl_var name="tag"></a>
-</tmpl_loop></td></tr></tmpl_if>
-<tmpl_if name="dependencies"><tr><th>dependencies</th><td><tmpl_loop name="dependencies">
-<a href="admin_view.pl?iid=<tmpl_var name="iid">"><tmpl_var name="type">
-#<tmpl_var name="iid"> <tmpl_var name="title"> [<tmpl_var name="status"><tmpl_if name="r_status"> (<tmpl_var name="r_status">)</tmpl_if>]<br />
-</tmpl_loop></td></tr></tmpl_if>
-
-<tmpl_if name="dependents"><tr><th>dependents</th><td><tmpl_loop name="dependents">
-<a href="admin_view.pl?iid=<tmpl_var name="iid">"><tmpl_var name="type">
-#<tmpl_var name="iid"> <tmpl_var name="title"> [<tmpl_var name="status"><tmpl_if name="r_status"> (<tmpl_var name="r_status">)</tmpl_if>]<br />
 </tmpl_loop></td></tr></tmpl_if>
 
 <tr><th>description</th><td><tmpl_var name="description">

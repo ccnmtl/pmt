@@ -66,8 +66,7 @@ name="caretaker_username" escape="url">"><tmpl_var name="caretaker_fullname"></a
 	</tr>
 
 	<tr>
-		<th class="firstcell">&#160;</th>
-		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=item">item</a>:</th>
+		<th class="firstcell"><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=item">item</a>:</th>
 		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=priority">priority</a>:</th>
 		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=status">status</a>:</th>
 		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=target_date"><nobr>target date</nobr></a>:</th>
@@ -79,8 +78,7 @@ name="caretaker_username" escape="url">"><tmpl_var name="caretaker_fullname"></a
 
 <tmpl_loop name="items">
 	<tr>
-		<td class="firstcell"><tmpl_if name="has_dependencies">D<tmpl_else>&#160;</tmpl_if></td>
-		<td><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid"> <tmpl_var name="title"></a></td>
+		<td class="firstcell"><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid"> <tmpl_var name="title"></a></td>
 		<td class="pr<tmpl_var name="priority">"><tmpl_var
                 name="priority_label"></td>
 		<td class="<tmpl_var name="status">"><tmpl_if name="r_status"><tmpl_var

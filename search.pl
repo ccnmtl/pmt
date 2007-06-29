@@ -90,8 +90,8 @@ eval {
             print $cgi->header("text/xml"),$feed->as_string();
         } else {
 
-            if ((exists $shows{show_tags}) || (exists $shows{show_dependencies}) ||
-                (exists $shows{show_dependents}) || (exists $shows{show_comments}) ||
+            if ((exists $shows{show_tags}) || 
+                (exists $shows{show_comments}) ||
                 (exists $shows{show_history})) {
                 foreach my $i (@$r) {
                     $pmt->debug("fetching item: " . time());
