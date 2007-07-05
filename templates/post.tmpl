@@ -39,6 +39,16 @@ name="pid">"><tmpl_var name="name"></option>
 <tr><th class="firstcell">Subject:</th>
 <td><input class="textform" size="40" type="text" name="subject" id="subject"></td></tr>
 
+<tr>
+<th class="firstcell">tags:</th><td>
+
+<div id="edittags">
+  <textarea class="textform resizable" id="usertags" name="usertags" rows="1"></textarea><br />
+  (separate tags with commas or newlines)
+</div>
+
+</td></tr>
+
 <tr><th class="firstcell">text:</th><td>(formatting can be done using <a
 href="http://search.cpan.org/~tima/Text-Tiki-0.73/Tiki.pm#TikiText_NOTATION">Tiki
 notation</a>)<br />
@@ -54,9 +64,12 @@ wrap="virtual"></textarea>
 <!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
 </tr>
 </table>
+
 </form>
 
 </div>
+
+
 <!-- ===== END PAGE MAIN CONTENT ===== -->
 
 

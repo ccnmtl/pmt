@@ -9,6 +9,13 @@
 
 <div class="post">
 <h2 class="nodesubject"><tmpl_var name="subject" escape="html"></h2>
+
+<tmpl_if name="tags">
+  <div class="nodetags">
+    Tags: <tmpl_var name="tags" escape="html">
+  </div>
+</tmpl_if>
+
 <div class="nodebody">
 <tmpl_var name="formatted_body">
 </div>
@@ -35,6 +42,17 @@
 <table cellpadding="0" cellspacing="0" class="pmtform" style="width: 600px;">
 <tr><th class="firstcell"><label for="subject">subject:</label></th>
 <td><input class="textform" type="text" name="subject" id="subject" value="<tmpl_var name="subject" escape="html">" /></td></tr>
+
+<tr>
+<th class="firstcell">tags:</th><td>
+
+<div id="edittags">
+  <textarea class="textform resizable" id="usertags" name="usertags" rows="1"><tmpl_var name="tags" escape="html"></textarea><br />
+  (separate tags with commas or newlines)
+</div>
+
+</td></tr>
+
 
 <tr><th class="firstcell">text:</th><td>(formatting can be done using <a
 href="http://search.cpan.org/~tima/Text-Tiki-0.73/Tiki.pm#TikiText_NOTATION">Tiki

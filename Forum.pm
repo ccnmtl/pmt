@@ -148,8 +148,14 @@ sub post {
                                subject => $args{subject}, body =>$body,
                                reply_to => $args{reply_to}, project => $args{pid}});
 
+    # add tags to the newly-created post
+    my @tags = ();
+    push @tags, split /[\n\r\,+]/, $args{tags};
+    @tags = grep {$_ ne ""} map {&PMT::Common::escape($_);} @tags;
+    $p->update_tags(\@tags, $author->username);
+    
     $self->reply_to_node($args{reply_to});
-
+    
 
     if($args{type} eq "post") {
         $self->email_post($p->nid,\%args);

@@ -1301,6 +1301,8 @@ sub post {
     my $type     = $cgi->param('type')            || "";
     my $reply_to = $cgi->param('reply_to')        || "";
     my $preview  = $cgi->param('preview')         || "";
+    my $tags     = escape($cgi->param('usertags'))        || "";
+    $tags =~ s/\s+\n/\, /;
 
     if ($preview eq "preview") {
         my $tiki = new Text::Tiki;
@@ -1310,6 +1312,7 @@ sub post {
         $template->param(pid => $pid,
             subject => $subject,
             body => $body,
+            tags => $tags,
             formatted_body => $formatted_body,
             type => $type,
             reply_to => $reply_to);
@@ -1319,7 +1322,7 @@ sub post {
         my $forum = new Forum($username);
         my $nid = $forum->post(type => $type,pid => $pid,
             subject => $subject,body => $body,
-            reply_to => $reply_to);
+            reply_to => $reply_to, tags => $tags);
         $self->header_type('redirect');
         $self->header_props(-url => "home.pl?mode=forum");
     }
