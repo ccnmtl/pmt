@@ -32,7 +32,8 @@
 
 <chapter id="users">
 <title>Users</title>
-<para>The PMT2 seperates user authentication into a seperate module. This will hopefully allow us to reuse username/password info across multiple projects. It will also potentially allow us to replace our authentication module with a module that interfaces with ACIS' campus-wide kerberos authentication with minimal hassle.</para>
+<para>The PMT2 separates user authentication into a separate module. This will hopefully allow us to reuse 
+username/password info across multiple projects. It will also potentially allow us to replace our authentication module with a module that interfaces with ACIS' campus-wide kerberos authentication with minimal hassle.</para>
 
 </chapter>
 

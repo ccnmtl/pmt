@@ -157,7 +157,7 @@ sufficient information for its reproduction and fixing or not.</para>
 <para>The user-focused interface of the system will handle control and
 security of most of the information (ie, only managers have the
 ability to delete tasks, etc). User authentication will be provided by
-a seperate module accessible to all scripts on www2. Ideally, a
+a separate module accessible to all scripts on www2. Ideally, a
 solution allowing integration of CCNMTL tools with ACIS' campus-wide
 kerberos authentication will be developed at some point in the near
 future. The module providing authentication for the PMT2 can then be

@@ -136,7 +136,7 @@ appear. they would be the file select, url, delete checkbox, plus a
 appropriate.</para>
 
 <para>There should be an additional form on the 'edit project' page
-(similar to how 'add milestone' is on that page but in a seperate
+(similar to how 'add milestone' is on that page but in a separate
 form) for 'add a misc. document'. this form would have fields for
 title, file select, and url plus a submit button.</para>
 
@@ -1045,7 +1045,7 @@ on per-project resource usage.</para>
 <sect1><title>implementation notes/plan</title>
 
 <para>have to figure out a good way to generate a pdf from the entered
-data. this will probably start out as a seperate application from the PMT. 
+data. this will probably start out as a separate application from the PMT. 
 at some point, once the time-tracking aspects of the PMT have been fully
 implemented and worked out, we may be able to integrate the time-sheet
 creation with the PMT.</para>
