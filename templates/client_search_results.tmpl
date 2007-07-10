@@ -49,7 +49,7 @@ href="home.pl?mode=client_search;department=<tmpl_var name="department" escape="
 escape="html"></a></td><td><tmpl_Var name="registered" escape="html"></td>
 <td><a href="home.pl?mode=user;username=<tmpl_Var name="contact_username"
 escape="url">"><tmpl_var name="contact_fullname" escape="html"></a></td>
-<td><tmpl_if name="inactive">Inactive<tmpl_else>Active</tmpl_if></td>
+<td><tmpl_var name="status"></td>
 <td><tmpl_if name="last_mod"><tmpl_var name="last_mod"><tmpl_else>&#160;</tmpl_if></td>
 </tr>
 </tmpl_loop>

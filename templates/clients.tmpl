@@ -39,7 +39,7 @@ href="home.pl?mode=client_search;school=<tmpl_var name="school" escape="url">"><
 <td><tmpl_var name="registration_date" escape="html"></td>
 <td><a href="home.pl?mode=user;username=<tmpl_var name="contact"
 escape="url">"><tmpl_var name="contact_fullname" escape="html"></td>
-<td><tmpl_if name="inactive">Inactive<tmpl_else>Active</tmpl_if></td>
+<td><tmpl_var name="status"></td>
 <td nowrap="nowrap"><tmpl_if name="last_mod"><tmpl_var name="last_mod"><tmpl_else>&#160;</tmpl_if></td>
 </tr>
 </tmpl_loop>

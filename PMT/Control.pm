@@ -2251,8 +2251,8 @@ sub all_clients {
 
     my $template = $self->template("clients.tmpl");
     $template->param(clients => [map {
-        $_->{inactive} = $_->{status} eq "inactive";
-        $_;
+         $_->{status} = $_->{status};
+         $_;
     } @{PMT::Client->all_clients_data($letter)}]);
     $template->param('letters' => \@letters);
     $template->param(clients_mode => 1);
@@ -2733,6 +2733,9 @@ sub edit_client_form {
     my $data = $client->data();
     $data->{client_email} = $data->{email};
     $data->{active} = $data->{status} eq "active";
+    $data->{inactive} = $data->{status} eq "inactive";
+    $data->{potential} = $data->{status} eq "potential";
+    $data->{'not interested'} = $data->{status} eq "not interested";
     $template->param(contact_fullname => $contact->fullname);
 
     delete $data->{email};
@@ -2782,7 +2785,7 @@ sub client_search {
 
     my $template = $self->template("client_search_results.tmpl");
     $template->param(results => [map {
-        $_->{inactive} = $_->{status} eq "inactive";
+        $_->{status} = $_->{status};
         $_;
     } @{PMT::Client->client_search(
                                    query => $q,

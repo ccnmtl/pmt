@@ -27,9 +27,10 @@ escape="html">" /></td></tr>
 escape="html">" /></td></tr>
 <tr><th class="firstcell">status:</th><td>
 <select class="small" name="status">
-<option value="active"<tmpl_if name="active">
-selected="selected"</tmpl_if>>active</option>
-<option value="inactive"<tmpl_unless name="active"> selected="selected"</tmpl_unless>>inactive</option>
+<option value="active"<tmpl_if name="active"> selected="selected"</tmpl_if>>active</option>
+<option value="inactive"<tmpl_if name="inactive"> selected="selected"</tmpl_if>>inactive</option>
+<option value="potential"<tmpl_if name="potential"> selected="selected"</tmpl_if>>potential</option>
+<option value="not interested"<tmpl_if name="not interested"> selected="selected"</tmpl_if>>not interested</option>
 </select>
 </td></tr>
 <tr><th class="firstcell">department:</th><td>
