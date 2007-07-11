@@ -1154,6 +1154,7 @@ sub add_client_form {
     my $phone             = $cgi->param('phone')             || "";
     my $contact           = $cgi->param('contact')           || "";
     my $comments          = $cgi->param('comments')          || "";
+    my $status            = $cgi->param('satatus')           || "";
 
     my $user = $self->{user};
     my $username = $self->{username};
@@ -1227,7 +1228,8 @@ sub add_client_form {
                              month              => $mon,
                              day                => $mday,
                              existing_clients   => $existing_clients,
-                             ou                 => $ou
+                             ou                 => $ou,
+                             status             => $status
             );
         }
     }
@@ -1250,6 +1252,8 @@ sub add_client {
     my $phone             = $cgi->param('phone')             || "";
     my $contact_username  = $cgi->param('contact')           || "";
     my $comments          = $cgi->param('comments')          || "";
+    my $status            = $cgi->param('status')            || "";
+
     $title = substr($title,0,100);
     $phone = substr($phone,0,32);
     if ($client_email ne "" && $lastname ne "") {
@@ -1267,6 +1271,7 @@ sub add_client {
                 contact           => $contact,
                 comments          => $comments,
                 registration_date => $registration_date,
+                status            => $status,
             });
     }
     $self->header_type('redirect');
