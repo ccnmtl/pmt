@@ -208,7 +208,9 @@ sub projects_select {
 }
 
 __PACKAGE__->set_sql(total_clients_by_school => qq{
-select school, count(*) as cnt from clients group by school;
+select school, count(*) as cnt from clients
+where (status = 'active' or status = 'inactive')
+group by school;
 }, 'Main');
 
 
@@ -231,7 +233,8 @@ sub total_clients_by_school {
 
 __PACKAGE__->set_sql(total_clients_by_school_for_date => qq{
 select school, count(*) as cnt from clients
-where registration_date like ?
+where (status = 'active' or status = 'inactive')
+and registration_date like ?
 group by school;}, 'Main');
 
 sub total_clients_by_school_for_month {
@@ -511,7 +514,8 @@ sub next_client {
 
 __PACKAGE__->set_sql(clients_reg_date_count_prev =>
                      qq{SELECT count(*) as cnt from clients
-                            WHERE registration_date = ? and client_id < ?;},'Main');
+                            WHERE
+                            registration_date = ? and client_id < ?;},'Main');
 
 # in this case, "normal" means the current client`s reg. date is unique
 __PACKAGE__->set_sql(prev_client_normal =>
