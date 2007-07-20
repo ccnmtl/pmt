@@ -92,13 +92,17 @@ eval {
 
             if ((exists $shows{show_tags}) || 
                 (exists $shows{show_comments}) ||
-                (exists $shows{show_history})) {
+                (exists $shows{show_history}) ||
+                (exists $shows{show_time_on_task})) {
                 foreach my $i (@$r) {
                     $pmt->debug("fetching item: " . time());
                     my $item = PMT::Item->retrieve($i->{iid});
                     my $r = $item->full_data();
                     my %data = %$r;
                     foreach my $k (keys %shows) {$data{$k} = 1;}
+                    if(exists $shows{show_time_on_task}) {
+                      $data{resolve_times} = $item->resolve_times();
+                    }
                     push @items, \%data;
                     $pmt->debug("done fetching item: " . time());
                 }

@@ -28,6 +28,7 @@ id="searchresults" onclick="sortColumn(event)">
 <tmpl_if name="show_url"><th>url:</th></tmpl_if>
 <tmpl_if name="show_tags"><th>tags:</th></tmpl_if>
 <tmpl_if name="show_comments"><th>comments:</th></tmpl_if>
+<tmpl_if name="show_time_on_task"><th>time on task:</th></tmpl_if>
 <tmpl_if name="show_history"><th>history:</th></tmpl_if>
 <tmpl_if name="show_project"><th>project:</th></tmpl_if>
 <tmpl_if name="show_milestone"><th>milestone:</th></tmpl_if>
@@ -38,17 +39,24 @@ id="searchresults" onclick="sortColumn(event)">
 <tmpl_loop name="items">
 <tr><tmpl_if name="show_title"><td class="firstcell"><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /> <a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid">: <tmpl_var name="title"></a></td></tmpl_if>
 <tmpl_if name="show_description"><td><tmpl_var name="description"></td></tmpl_if>
-<tmpl_if name="show_priority"><td class="pr<tmpl_var
-name="priority">"><tmpl_var name="priority_label"></td></tmpl_if>
+<tmpl_if name="show_priority"><td class="pr<tmpl_var name="priority">"><tmpl_var name="priority_label"></td></tmpl_if>
 <tmpl_if name="show_target_date"><td><tmpl_var name="target_date"></td></tmpl_if>
 <tmpl_if name="show_owner"><td><a href="home.pl?mode=user;username=<tmpl_var name="owner">"><tmpl_var name="owner_fullname"></a></td></tmpl_if>
 <tmpl_if name="show_assigned"><td><a href="home.pl?mode=user;username=<tmpl_var name="assigned_to">"><tmpl_var name="assigned_to_fullname"></a></td></tmpl_if>
 <tmpl_if name="show_url"><td><tmpl_if name="url"><a target="_blank" href="<tmpl_var name="url">"><tmpl_var name="url"></a><tmpl_else>&nbsp;</tmpl_if></td></tmpl_if>
 <tmpl_if name="show_tags"><td><tmpl_loop name="tags"><tmpl_var name="tag">, </tmpl_loop></td></tmpl_if>
-<tmpl_if name="show_comments"><td><tmpl_loop name="comments">
-<b>-- <tmpl_var name="fullname"> @ <tmpl_var name="add_date_time"></b><br />
-<br /><tmpl_var name="comment"><br /><br />
-</tmpl_loop>
+<tmpl_if name="show_comments"><td>
+  <tmpl_loop name="comments">
+    <b>-- <tmpl_var name="fullname"> @ <tmpl_var name="add_date_time"></b><br />
+    <br /><tmpl_var name="comment"><br /><br />
+  </tmpl_loop>
+</td></tmpl_if>
+<tmpl_if name="show_time_on_task"><td>
+  <tmpl_loop name="resolve_times">
+    <tmpl_var name="actual_time" escape="html">
+    -- <tmpl_Var name="resolver_fullname" escape="html">
+    <br/>
+  </tmpl_loop>
 </td></tmpl_if>
 <tmpl_if name="show_history"><td><table>
 <tmpl_loop name="history">
@@ -213,14 +221,13 @@ title<br />
 <td style="border: 0px; padding: 0 10px 0 0;">
 <input type="checkbox" name="show" value="comments"> comments<br />
 <input type="checkbox" name="show" value="history"> history<br />
+<input type="checkbox" name="show" value="last_mod">last modified date<br />
 </td>
 <td style="border: 0px; padding: 0 10px 0 0;">
 <input type="checkbox" name="show" value="project"> project <br />
 <input type="checkbox" name="show" value="milestone">milestone <br />
-<input type="checkbox" name="show"  checked="true"
-value="status">status <br />
-<input type="checkbox" name="show" value="last_mod">last modified date
-<br />
+<input type="checkbox" name="show"  checked="true" value="status">status <br />
+<input type="checkbox" name="show" value="time_on_task">time on task<br />
 </td></tr>
 </table>
 </td></tr>
