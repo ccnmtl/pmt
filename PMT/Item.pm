@@ -804,6 +804,8 @@ sub search_items {
     my $offset      = $args{offset};
     my $max_date    = $args{max_date};
     my $min_date    = $args{min_date};
+    my $max_mod_date= $args{max_mod_date};
+    my $min_mod_date= $args{min_mod_date};
 
     # ignore non iso8601 dates
     if($max_date !~ /\d{4}-\d{2}-\d{2}/) {
@@ -814,6 +816,13 @@ sub search_items {
         $min_date = "";
     }
 
+    if($max_mod_date !~ /\d{4}-\d{2}-\d{2}/) {
+        $max_mod_date = "";
+    }
+
+    if($min_mod_date !~ /\d{4}-\d{2}-\d{2}/) {
+        $min_mod_date = "";
+    }
 
     my $rows = 0;
 
@@ -874,6 +883,16 @@ sub search_items {
         if($min_date ne "") {
             $query_string .= qq{ AND i.target_date >= ? };
             push @args, $min_date;
+        }
+
+        if($max_mod_date ne "") {
+            $query_string .= qq{ AND i.last_mod <= ? };
+            push @args, $max_mod_date;
+        }
+
+        if($min_mod_date ne "") {
+            $query_string .= qq{ AND i.last_mod >= ? };
+            push @args, $min_mod_date;
         }
 
         my $status_string = "";

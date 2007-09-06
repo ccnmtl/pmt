@@ -34,6 +34,8 @@ eval {
     my $rss         = $cgi->param('rss') || "";
     my $max_date    = $cgi->param('max_date') || "";
     my $min_date    = $cgi->param('min_date') || "";
+    my $max_mod_date= $cgi->param('max_mod_date') || "";
+    my $min_mod_date= $cgi->param('min_date') || "";
     my $hide_menu   = $cgi->param('hide_menu') || "";
     my $results_title = $cgi->param('results_title') || "";
 
@@ -65,6 +67,7 @@ eval {
                                         assigned_to => $assigned_to, status => \@status, tag => $tag,
                                         number => $number, sortby => $sortby, order => $order, limit => $limit,
                                         offset => $offset, max_date => $max_date, min_date => $min_date,
+                                        max_mod_date => $max_mod_date, min_mod_date => $min_mod_date,
                                         show => \@show);
         $current_time = time();
         $pmt->debug("finished main query: $current_time");

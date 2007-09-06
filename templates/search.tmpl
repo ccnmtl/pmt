@@ -190,14 +190,40 @@ RESOLVED (FIXED)</nobr><br />
 <td>
 <table cellspacing="0" cellpadding="0">
 <tr valign="middle">
-<td style="border: 0px; padding: 0 10px 4px 0; vertical-align: middle;">before:</td><td style="border: 0px; padding: 0 10px 4px 0;"><input class="textform" size="20" type="text" name="max_date" onclick="getCalN(this,2)" /></td>
-</tr>
-<tr valign="middle">
-<td style="border: 0px; padding: 0 10px 0 0; vertical-align: middle;">after:</td><td style="border: 0px; padding: 0 10px 0 0;"><input class="textform" size="20" type="text" name="min_date" onclick="getCalN(this,2)" />
+<td style="border: 0px; padding: 0 10px 4px 0; vertical-align: middle;">before:</td>
+<td style="border: 0px; padding: 0 10px 4px 0;">
+<input class="textform" size="20" type="text" name="max_date" id="max_date" onclick="javascript:NewCal('max_date','yyyymmdd')" />
+<a href="javascript:NewCal('max_date','yyyymmdd')"><i>select date</i></a>
 </td>
 </tr>
-</table>
-</td></tr>
+<tr valign="middle">
+<td style="border: 0px; padding: 0 10px 0 0; vertical-align: middle;">after:</td>
+<td style="border: 0px; padding: 0 10px 0 0;">
+<input class="textform" size="20" type="text" name="min_date" id="min_date" onclick="javascript:NewCal('min_date','yyyymmdd')" />
+<a href="javascript:NewCal('min_date','yyyymmdd')"><i>select date</i></a>
+</td>
+</tr>
+</table></td></tr>
+
+<tr>
+<th class="firstcell">last modified:</th>
+<td>
+<table cellspacing="0" cellpadding="0">
+<tr valign="middle">
+<td style="border: 0px; padding: 0 10px 4px 0; vertical-align: middle;">before:</td>
+<td style="border: 0px; padding: 0 10px 4px 0;">
+<input class="textform" size="20" type="text" name="max_mod_date" id="max_mod_date" onclick="javascript:NewCal('max_mod_date','yyyymmdd')" />
+<a href="javascript:NewCal('max_mod_date','yyyymmdd')"><i>select date</i></a>
+</td>
+</tr>
+<tr valign="middle">
+<td style="border: 0px; padding: 0 10px 0 0; vertical-align: middle;">after:</td>
+<td style="border: 0px; padding: 0 10px 0 0;">
+<input class="textform" size="20" type="text" name="min_mod_date" id="min_mod_date" onclick="javascript:NewCal('min_mod_date','yyyymmdd')" />
+<a href="javascript:NewCal('min_mod_date','yyyymmdd')"><i>select date</i></a>
+</td>
+</tr>
+</table></td></tr>
 <tr>
 <th class="firstcell">result page title:</th><td><input class="textform" size="20" type="text" name="results_title"
         value="Search Results" /></td></tr>
