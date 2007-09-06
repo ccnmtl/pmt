@@ -35,7 +35,7 @@ eval {
     my $max_date    = $cgi->param('max_date') || "";
     my $min_date    = $cgi->param('min_date') || "";
     my $max_mod_date= $cgi->param('max_mod_date') || "";
-    my $min_mod_date= $cgi->param('min_date') || "";
+    my $min_mod_date= $cgi->param('min_mod_date') || "";
     my $hide_menu   = $cgi->param('hide_menu') || "";
     my $results_title = $cgi->param('results_title') || "";
 
