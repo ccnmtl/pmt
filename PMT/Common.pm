@@ -36,12 +36,17 @@ sub interval_to_hours {
 
     my ($days,$hours,$minutes) = (0,0,0);
 
-    if($interval =~ /(\d\d):(\d\d)/) {
+    # handle "HHH:MM" or "HHH:MM:SS" (in the latter, seconds are just ignored)
+    if($interval =~ /^(\d+):(\d\d)/) {
         $hours = $1;
         $minutes = $2;
     }
-    if ($interval =~ /^(\d+)\sday(s\s+\d\d:\d\d)?/) {
+    # handle "DD days HH:MM" or "D day HH:MM"
+    if ($interval =~ /^(\d+)\sday(s)?\s+(\d+):(\d\d)/) {
         $days = $1;
+        # $2 is the optional (s) in "day(s)"
+        $hours = $3;
+        $minutes = $4;
     }
     $hours = ($days * 24) + $hours + ($minutes/60);
     $hours =~ s/\.(\d\d)\d*/.$1/g;
