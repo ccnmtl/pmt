@@ -9,19 +9,25 @@
 name="pid" escape="url">"><tmpl_var name="name" escape="html"></a><br />
 <span class="hide">REPORTS:</span> &#62; for the
 <tmpl_var name="time_period">
-<strong><tmpl_var name="year" escape="html">-<tmpl_var name="month" escape="html"></strong>
+from <tmpl_var name="start"> to <tmpl_var name="end">
+<!--from <tmpl_var name="p_month" escape="html">/<tmpl_var name="p_year" escape="html">
+to <tmpl_var name="month" escape="html">/<tmpl_var name="year" escape="html">-->
 </h1>
 
 
-<p>&#60;&#60; <a href="home.pl?mode=project_months_report;year=<tmpl_var name="p_year"
-escape="url">;month=<tmpl_var name="p_month"
-escape="url">;num_months=<tmpl_var name="num_months">;pid=<tmpl_var
-name="pid" escape="url">">Previous <tmpl_var name="time_period"></a> 
+<p>&#60;&#60; <a href="home.pl?mode=project_months_report;
+pid=<tmpl_var name="pid" escape="url">;
+<tmpl_if name="num_months">
+  num_months=<tmpl_var name="num_months" escape="url">;
+</tmpl_if>
+<tmpl_var name="prev_options">
+">Previous <tmpl_var name="time_period"></a> 
 -- 
-<a href="home.pl?mode=project_months_report;year=<tmpl_var name="n_year"
-escape="url">;month=<tmpl_var name="n_month"
-escape="url">;num_months=<tmpl_var name="num_months">;pid=<tmpl_var
-name="pid" escape="url">">Next <tmpl_var name="time_period"></a> &#62;&#62;</p>
+<a href="home.pl?mode=project_months_report;
+pid=<tmpl_var name="pid" escape="url">;
+num_months=<tmpl_var name="num_months" escape="url">;
+<tmpl_var name="next_options">
+">Next <tmpl_var name="time_period"></a> &#62;&#62;</p>
 
 <p><b>Total time spent on this project for this <tmpl_var name="time_period">:
 </b> <tmpl_var name="total_time" escape="html"> hours.</p>
