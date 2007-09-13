@@ -12,7 +12,7 @@ use PMT::Attachment;
 use PMT::Group;
 use CGI;
 use HTML::Template;
-use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days Days_in_Month Add_Delta_YM/;
+use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days Days_in_Month Add_Delta_YM Delta_Days/;
 use Text::Tiki;
 use Forum;
 use HTML::CalendarMonth;
@@ -105,6 +105,7 @@ sub setup {
         'edit_client_form'       => 'edit_client_form',
         'client_search'          => 'client_search',
         'client_search_form'     => 'client_search_form',
+        'project_custom_report'  => 'project_custom_report',
         'project_months_report'  => 'project_months_report',
         'user_history'           => 'user_history',
         'weekly_summary'         => 'weekly_summary',
@@ -2837,15 +2838,35 @@ sub client_search {
     return $template->output();
 }
 
+sub project_custom_report {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pid = $cgi->param('pid');
+    
+    my $template = $self->template("project_custom_report.tmpl");
+
+    $template->param(
+                     page_title => "Custom Project Report",
+                     pid => $pid
+                    );
+    return $template->output();
+}
+
 sub project_months_report {
     my $self = shift;
     my $cgi = $self->query();
     my $pid        = $cgi->param('pid') || "";
     my $num_months = $cgi->param('num_months') || "";
 
-    my $project = PMT::Project->retrieve($pid);
+    my $template = $self->template("project_months_report.tmpl");
 
-    my ($year,$month,$mday) = $self->get_date();
+    # TODO: use actual template for this.
+    # will only happen via someone putting in a URL by hand, anyway.
+    if($pid eq "") {
+       return "Error: Cannot generate project reports without a project ID.";
+    }
+
+    my $project = PMT::Project->retrieve($pid);
 
     my ($time_period, $time_title);
     if ($num_months == 1) {
@@ -2860,34 +2881,92 @@ sub project_months_report {
     } elsif ($num_months == 12) {
         $time_period = "year";
         $time_title  = "Annual";
+    } else {
+        $time_period = "period";
+        $time_title = "Custom";
     }
 
-    my ($p_year, $p_month, $p_day) = Add_Delta_YM($year, $month, 1, 0, -$num_months);
-    my ($n_year, $n_month, $n_day) = Add_Delta_YM($year, $month, 1, 0, $num_months);
+    # get the date parameters that were passed in
+    # (not using get_date() because
+    #  - a) we don't want to default to the current date
+    #  - b) we also want to support options startdate and enddate)
+    #my ($year,$month,$mday) = $self->get_date();
 
-    my $start_day = 1;
-    #calculate end day
-    my ($end_year, $end_month, $end_day) = Add_Delta_Days($n_year, $n_month, $n_day, -1);
+    my ($start_year, $start_month, $start_day);
+    my ($end_year, $end_month, $end_day);
+    my ($prev_options, $next_options) = "";
 
-    my $start = $year . "-" . "$month" . "-" . $start_day;
-    my $end   = $end_year . "-" . "$end_month" . "-" . $end_day;
-    #Min's addition to include forum posts in reports
-    my $forum = new Forum($self->{user}->username);
+    # startdate / enddate (for custom reports)
+    my $startdate = $cgi->param('startdate') || "";
+    my $enddate = $cgi->param('enddate') || "";
+    
+    if($startdate =~ /(\d+)-(\d+)-(\d+)/ ) {
+      $start_year = $1;
+      $start_month = $2;
+      $start_day = $3;
+    }
+    if($enddate =~ /(\d+)-(\d+)-(\d+)/ ) {
+      $end_year = $1;
+      $end_month = $2;
+      $end_day = $3;
+    }
+    
+    # didn't get custom start / end dates... use num_months instead
+    if($start_year eq "" || $end_year eq "") {
+       if($num_months eq "") {
+          $num_months = 12;   # default to annual report
+       }
+       my ($tyear,$tmon,$tday) = todays_date();
+       $end_year = $cgi->param('year') || $tyear;
+       $end_month = $cgi->param('month') || $tmon;
+       $end_day = $cgi->param('day') || $tday;
+    }
 
-    my $template = $self->template("project_months_report.tmpl");
+
+    # get dates for "previous" and "next" links
+    if($start_year ne "") {
+       my $distance = Delta_Days($start_year, $start_month, $start_day,
+                                 $end_year, $end_month, $end_day);
+       my ($p_year, $p_month, $p_day) =  Add_Delta_Days($start_year, $start_month, $start_day,
+                                                        -$distance);
+       $prev_options = "startdate=$p_year-$p_month-$p_day;" .
+                       "enddate=$start_year-$start_month-$start_day;";
+       my ($n_year, $n_month, $n_day) = Add_Delta_Days($end_year, $end_month, $end_day,
+                                                       $distance);
+       $next_options = "startdate=$end_year-$end_month-$end_day;" .
+                       "enddate=$n_year-$n_month-$n_day;";
+   }
+   else {
+       my ($p_year, $p_month, $p_day) = Add_Delta_YM($end_year, $end_month, 1, 0, -$num_months);
+       my ($n_year, $n_month, $n_day) = Add_Delta_YM($end_year, $end_month, 1, 0, $num_months);
+
+       # calculate start and end dates for the report
+       # -- (the date that was passed in is used as the END date,
+       #     so an annual report for 9/2007 is from 9/2006 to 9/2007)
+       ($start_year, $start_month, $start_day) = Add_Delta_Days($p_year, $p_month, $end_day, 1);
+
+       $prev_options = "year=$p_year;month=$p_month;day=$end_day",
+       $next_options = "year=$n_year;month=$n_month;day=$end_day",
+    }
+
+    my $start = "$start_year-$start_month-$start_day";
+    my $end = "$end_year-$end_month-$end_day";
+
     $template->param(
-                     year => $year,
-                     month => $month,
-                     p_year => $p_year,
-                     p_month => $p_month,
-                     n_year => $n_year,
-                     n_month => $n_month,
-                     num_months => $num_months,
+                     page_title => "$time_title Project Report",
+                     start => $start,
+                     end => $end,
+                     prev_options => $prev_options,
+                     next_options => $next_options,
+                     num_months => $cgi->param('num_months') || "",
                      time_period => $time_period,
                      time_title => $time_title,
                      );
-    $template->param($project->interval_report("$year-$month-$start_day", "$end_year-$end_month-$end_day"));
+    $template->param($project->interval_report($start, $end));
     $template->param($project->data());
+
+    #Min's addition to include forum posts in reports
+    my $forum = new Forum($self->{user}->username);
     $template->param(posts => $forum->project_posts_by_time($pid, $start, $end));
 
     return $template->output();
@@ -3194,6 +3273,10 @@ sub project_weekly_report {
     my $cgi = $self->query();
 
     my $pid = $cgi->param('pid') || "";
+    if($pid eq "") {
+      return "Error: Must specify a Project ID.";
+    }
+      
     my $project = PMT::Project->retrieve($pid);
 
     my ($year,$mon,$mday) = $self->get_date();
@@ -3203,10 +3286,8 @@ sub project_weekly_report {
     my ($pm_year,$pm_month,$pm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,-7);
     my ($nm_year,$nm_month,$nm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,7);
 
-    #Min's addition to include forum posts in reports
-    my $start = $mon_year . "-" . $mon_month . "-" . $mon_day;
-    my $end   = $sun_year . "-" . $sun_month . "-" . $sun_day;
-    my $forum = new Forum($self->{user}->username);
+    my $start = "$mon_year-$mon_month-$mon_day";
+    my $end   = "$sun_year-$sun_month-$sun_day";
 
     my $template = $self->template("project_weekly_report.tmpl");
     $template->param(
@@ -3223,11 +3304,13 @@ sub project_weekly_report {
                      nm_month => $nm_month,
                      nm_day => $nm_day,
                      );
-    $template->param($project->interval_report("$mon_year-$mon_month-$mon_day",
-                                             "$sun_year-$sun_month-$sun_day"));
+    $template->param($project->interval_report($start, $end));
     $template->param($project->data());
 
+    #Min's addition to include forum posts in reports
+    my $forum = new Forum($self->{user}->username);
     $template->param(posts => $forum->project_posts_by_time($pid, $start, $end));
+
     return $template->output();
 }
 
@@ -3237,15 +3320,13 @@ sub get_date {
     my $self = shift;
     my $cgi = $self->query();
 
-    my $syear = $cgi->param('year') || "";
-    my $smonth = $cgi->param('month') || "";
-    my $sday = $cgi->param('day') || "";
-    my ($mday,$mon,$year);
     my ($tyear,$tmon,$tday) = todays_date();
-    $year = $syear ? $syear : $tyear;
-    $mon  = $smonth  ? $smonth  : $tmon;
-    $mday = $sday  ? $sday  : $tday;
-    return ($year,$mon,$mday);
+    
+    my $year = $cgi->param('year') || $tyear;
+    my $mon = $cgi->param('month') || $tmon;
+    my $day = $cgi->param('day') || $tday;
+    
+    return ($year,$mon,$day);
 }
 
 sub user_weekly_report {
