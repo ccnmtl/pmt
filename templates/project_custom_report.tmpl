@@ -1,0 +1,46 @@
+<tmpl_include name="header_reports.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_reports.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>REPORTS: Generate Custom Project Report</h1>
+
+<p>Please select start and end dates to view project activity for that time period.</p>
+
+<form method="get" action="home.pl">
+  <input type="hidden" value="project_months_report" name="mode" />  
+  <input type="hidden" value="<tmpl_var name="pid">" name="pid" />
+
+  <table class="pmtform" cellspacing='0' cellpadding='0'>
+  <tbody>  
+  <tr>
+  <th class="firstcell">Start Date:</th>
+    <td><input class="textform" type="text" name="startdate" id="startdate" size="20" />
+    <a href="javascript:NewCal('startdate','yyyymmdd')"><i>select date</i></a>
+  </td>
+  </tr><tr>
+  <th class="firstcell">End Date:</th>
+    <td><input class="textform" type="text" name="enddate" id="enddate" size="20" />
+    <a href="javascript:NewCal('enddate','yyyymmdd')"><i>select date</i></a>
+    </td>
+  </tr>
+  <tr>
+  <td colspan='2' class="firstcell" align='center'>
+    <input type="submit" class="button" value="VIEW REPORT"/></td>
+  </tr>
+  <tr>
+  <!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+  </tr>
+  </tbody>
+  </table>
+
+</form>
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">
