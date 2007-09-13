@@ -772,8 +772,8 @@ sub interval_report {
             $interval_start,$interval_end);
         $user->{hours} = interval_to_hours($user->{time});
     }
-    # get individual times
 
+    # get individual times
     my $indivs = $self->completed_times_in_interval($interval_start,$interval_end);
 
     return {active_users => $active_users,
