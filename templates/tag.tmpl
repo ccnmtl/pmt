@@ -4,10 +4,37 @@
 <div class="pagecontent">
 
 
-<h1><b>tag:</b> <tmpl_var name="tag"></h1>
+<h1>
+
+<a 
+title="RSS feed for tag: <tmpl_var name="tag" escape="html">"
+href="tag_feed.pl?tag=<tmpl_var name="tag"
+escape="url"><tmpl_if
+	    name="pid">;pid=<tmpl_var name="pid"></tmpl_if>"><img 
+src="images/xml.gif" width="36" height="14" 
+alt="RSS feed for tag: <tmpl_var name="tag" escape="html">"
+border="0" /></a>
+
+<b>tag:</b> <tmpl_var name="tag">
+</h1>
+
 
 <tmpl_if name="items">
-<h2>items</h2>
+<h2>
+
+<a 
+title="RSS feed for tag: <tmpl_var name="tag" escape="html"> (items only)"
+href="tag_feed.pl?tag=<tmpl_var name="tag"
+
+escape="url"><tmpl_if
+	    name="pid">;pid=<tmpl_var name="pid"></tmpl_if>;items_only=1"><img 
+src="images/xml.gif" width="36" height="14" 
+alt="RSS feed for tag: <tmpl_var name="tag" escape="html"> (items only)"
+border="0" /></a>
+
+items
+
+</h2>
 <table>
 <tr>
 <th>item</th>
@@ -36,7 +63,20 @@
 <tmpl_if name="nodes">
 <br />
 <br />
-<h2>forum posts</h2>
+<h2>
+
+<a 
+title="RSS feed for tag: <tmpl_var name="tag" escape="html"> (forum posts only)"
+href="tag_feed.pl?tag=<tmpl_var name="tag"
+escape="url"><tmpl_if
+	    name="pid">;pid=<tmpl_var name="pid"></tmpl_if>;posts_only=1"><img 
+src="images/xml.gif" width="36" height="14" 
+alt="RSS feed for tag: <tmpl_var name="tag" escape="html"> (forum posts only)"
+border="0" /></a>
+
+forum posts
+
+</h2>
 <table>
 <tr>
 <th>post</th>

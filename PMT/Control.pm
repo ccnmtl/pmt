@@ -1993,6 +1993,7 @@ sub tag {
 
     $template->param(items => \@items,
                      nodes => \@nodes,
+		     pid => $pid,
                      tag => $tag);
 
     return $template->output();
