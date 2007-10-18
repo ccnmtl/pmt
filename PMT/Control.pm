@@ -1994,7 +1994,7 @@ sub tag {
     $template->param(items => \@items,
                      nodes => \@nodes,
 		     pid => $pid,
-                     tag => $tag);
+                     tag => uri_unescape($tag));
 
     return $template->output();
 

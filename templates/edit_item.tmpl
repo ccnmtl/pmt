@@ -7,7 +7,7 @@
 
 <h1>PROJECTS: <a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a><br />
 <span class="hide">PROJECTS:</span> &#62;  View <span style="text-transform: capitalize;"><tmpl_var name="type"></span><br />
-<span class="hide">PROJECTS:</span> &#62; #<tmpl_var name="iid"> <tmpl_var name="title"><br />
+<span class="hide">PROJECTS:</span> &#62; #<tmpl_var name="iid"> <tmpl_var name="title" escape="html"><br />
 <span class="hide">PROJECTS: &#62; </span> 
 <a class="actionbutton" href="home.pl?mode=delete_item;iid=<tmpl_var name="iid">">delete <tmpl_var name="type"></a>
 </h1>
@@ -117,7 +117,7 @@ class="textform" type="text" name="url" size="40" value="<tmpl_var name="url">" 
 <tr>
 <th class="firstcell">description:</th>
 <td>
-<textarea class="textform" name="description" cols="40" rows="8" wrap="virtual"><tmpl_var name="description"></textarea>
+<textarea class="textform" name="description" cols="40" rows="8" wrap="virtual"><tmpl_var name="description" escape="html"></textarea>
 
 </td></tr>
 

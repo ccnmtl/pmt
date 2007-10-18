@@ -8,6 +8,9 @@
 <h1>ITEMS: My Items</h1>
 <h1 class="print">Items for <tmpl_var name="username"></h1>
 
+<a href="user_feed.pl?username=<tmpl_var name="username" escape="url">">
+<img class="rss" src="images/rss.png" alt="RSS" border="0" /></a> Track changes (RSS)
+
 <div id="ie6special">
 <form action="home.pl" method="get" class="pclayer" onsubmit="return validate_pid(this)">
 <input type="hidden" name="mode" value="add_item_form" />
@@ -31,6 +34,8 @@
 <input type="submit" class="button" value=" go "/>
 </form>
 </div>
+
+<br clear="right" />
 
 <h2>outstanding items:</h2>
 

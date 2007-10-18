@@ -339,6 +339,12 @@ li:hover ul, li.over ul { display: block; }
 	text-decoration: none;
 }
 
+
+img.rss {
+   vertical-align: middle;
+   padding: 0px 4px 3px 3px;
+}
+   
 #localnav ul li a:hover
 {
 	color: #960;
@@ -1230,3 +1236,4 @@ textarea.resizable {width: 90%; height: 90%;}
 	       float: right;
 }
 
+}

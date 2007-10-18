@@ -31,17 +31,29 @@ name="caretaker_username" escape="url">"><tmpl_var name="caretaker_fullname"></a
 
 <br clear="right" />
 
+<h2>Project Changes:</h2>
+
 <p id="ie6special">
 <form action="home.pl" method="POST" class="pclayer">
         <input type="hidden" name="mode" value="notify_project" />
 	<input type="hidden" name="pid" value="<tmpl_var name="pid">" />
 	<input type="hidden" name="username" value="<tmpl_var name="username">" />
+
+<a href="project_feed.pl?pid=<tmpl_var name="pid" escape="url">">
+<img class="rss" src="images/rss.png" alt="RSS" border="0" /></a>
+Track changes (RSS)<br />
+
+
 	<tmpl_if name="proj_cc">
-	<input onclick="return submitForm(this.form)" type="checkbox" name="proj_notification" value="yes" checked /> Notify me of all changes in this project <span id="pleasewait"> (Changing notification... Please wait...)</span>
+	<input onclick="return submitForm(this.form)" type="checkbox" name="proj_notification" value="yes" checked />
 	<tmpl_else>
-	<input onclick="return submitForm(this.form)" type="checkbox" name="proj_notification" value="yes" /> Notify me of all changes in this project <span id="pleasewait"> (Changing notification... Please wait...)</span>
-	</tmpl_if>
+	<input onclick="return submitForm(this.form)" type="checkbox" name="proj_notification" value="yes" />
+ 	</tmpl_if>
+	Notify me of all changes via e-mail</li>
+   <span id="pleasewait"> (Changing notification... Please wait...)</span>
 </form>
+
+<br clear="right">
 
 </p>
 
@@ -78,7 +90,7 @@ name="caretaker_username" escape="url">"><tmpl_var name="caretaker_fullname"></a
 
 <tmpl_loop name="items">
 	<tr>
-		<td class="firstcell"><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid"> <tmpl_var name="title"></a></td>
+		<td class="firstcell"><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid"> <tmpl_var name="title" escape="html"></a></td>
 		<td class="pr<tmpl_var name="priority">"><tmpl_var
                 name="priority_label"></td>
 		<td class="<tmpl_var name="status">"><tmpl_if name="r_status"><tmpl_var

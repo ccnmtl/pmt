@@ -74,7 +74,8 @@ sub all_recent {
     my @nodes = PMT::Node->retrieve_from_sql(qq{nid > 0 order by modified
         desc limit 10});
     return [map {{nid => $_->nid, subject => $_->subject, body => $_->body,
-            author => $_->author->username, fullname => $_->author->fullname}} @nodes];
+            author => $_->author->username, fullname => $_->author->fullname,
+            added => $_->added}} @nodes];
 }
 
 # project specific ones

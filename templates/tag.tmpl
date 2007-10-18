@@ -1,4 +1,4 @@
-<tmpl_include name="header_items.tmpl">
+<tmpl_include name="header_tag.tmpl">
 <tmpl_include name="menu_global.tmpl">
 <tmpl_include name="menu_local_items.tmpl">
 <div class="pagecontent">
@@ -8,14 +8,12 @@
 
 <a 
 title="RSS feed for tag: <tmpl_var name="tag" escape="html">"
-href="tag_feed.pl?tag=<tmpl_var name="tag"
-escape="url"><tmpl_if
-	    name="pid">;pid=<tmpl_var name="pid"></tmpl_if>"><img 
-src="images/xml.gif" width="36" height="14" 
-alt="RSS feed for tag: <tmpl_var name="tag" escape="html">"
+href="tag_feed.pl?tag=<tmpl_var name="tag" escape="url">
+<tmpl_if name="pid">;pid=<tmpl_var name="pid"></tmpl_if>">
+<img class="rss" src="images/rss.png" alt="RSS feed for tag: <tmpl_var name="tag" escape="html">"
 border="0" /></a>
 
-<b>tag:</b> <tmpl_var name="tag">
+<b>tag:</b> <tmpl_var name="tag" escape="html">
 </h1>
 
 
@@ -24,12 +22,9 @@ border="0" /></a>
 
 <a 
 title="RSS feed for tag: <tmpl_var name="tag" escape="html"> (items only)"
-href="tag_feed.pl?tag=<tmpl_var name="tag"
-
-escape="url"><tmpl_if
-	    name="pid">;pid=<tmpl_var name="pid"></tmpl_if>;items_only=1"><img 
-src="images/xml.gif" width="36" height="14" 
-alt="RSS feed for tag: <tmpl_var name="tag" escape="html"> (items only)"
+href="tag_feed.pl?tag=<tmpl_var name="tag" escape="url">
+<tmpl_if name="pid">;pid=<tmpl_var name="pid"></tmpl_if>;items_only=1">
+<img class="rss" src="images/rss.png" alt="RSS feed for tag: <tmpl_var name="tag" escape="html"> (items only)"
 border="0" /></a>
 
 items
@@ -68,9 +63,9 @@ items
 <a 
 title="RSS feed for tag: <tmpl_var name="tag" escape="html"> (forum posts only)"
 href="tag_feed.pl?tag=<tmpl_var name="tag"
-escape="url"><tmpl_if
-	    name="pid">;pid=<tmpl_var name="pid"></tmpl_if>;posts_only=1"><img 
-src="images/xml.gif" width="36" height="14" 
+escape="url">
+<tmpl_if name="pid">;pid=<tmpl_var name="pid"></tmpl_if>;posts_only=1">
+<img class="rss" src="images/rss.png" 
 alt="RSS feed for tag: <tmpl_var name="tag" escape="html"> (forum posts only)"
 border="0" /></a>
 

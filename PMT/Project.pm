@@ -260,7 +260,7 @@ sub events_on {
 }
 
 __PACKAGE__->set_sql(recent_events => qq{
-SELECT e.status,i.iid,i.title,c.comment,c.username
+SELECT e.status,i.iid,i.title,c.comment,c.username,e.event_date_time,i.assigned_to,i.owner
 FROM   events e, items i, milestones m, comments c
 WHERE  e.item = i.iid AND c.event = e.eid AND i.mid = m.mid AND m.pid = ?
 ORDER BY e.event_date_time DESC limit 10;

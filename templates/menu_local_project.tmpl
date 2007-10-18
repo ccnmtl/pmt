@@ -13,6 +13,9 @@
 <h1>manage project</h1>
 <ul>
 	<li><a href="home.pl?mode=project;pid=<tmpl_var name="pid">">main page</a></li>
+	<li>track changes<a href="project_feed.pl?pid=<tmpl_var name="pid" escape="url">">
+<img class="rss" src="images/rss.png" alt="RSS" border="0" /></a>
+</li>
 	<li>add: <a
         href="home.pl?mode=add_item_form;type=action;pid=<tmpl_var
         name="pid" escape="html">">action item</a></li>
@@ -84,7 +87,6 @@ height="10" width="<tmpl_var name="behind">" alt=""/></td>
 
 	<li class="last">total remaining time: <tmpl_var name="total_remaining_time"> hours</li>
 </tmpl_if>
-	<li><a href="user_feed.pl?username=<tmpl_var name="username" escape="url">"><img src="images/xml.gif" width="36" height="14" alt="" border="0" /></a></li>
 </ul>
 
 </div>

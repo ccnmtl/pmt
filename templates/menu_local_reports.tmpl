@@ -26,12 +26,10 @@
         <li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=3">quarterly</a></li>
         <li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=6">semestral</a></li>
         <li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=12">annual</a></li>
-        <li><span class="hide">periodic: </span><a href="home.pl?mode=project_custom_report;pid=<tmpl_var name="pid">">custom</a></li>
+        <li class="last"><span class="hide">periodic: </span><a href="home.pl?mode=project_custom_report;pid=<tmpl_var name="pid">">custom</a></li>
+        <li>track changes <a href="project_feed.pl?pid=<tmpl_var name="pid">"><img class="rss" src="images/rss.png" alt="" border="0" /></a></li>
 </ul>
 </tmpl_if>
-<ul>
-	<li><a href="user_feed.pl?username=<tmpl_var name="username" escape="url">"><img src="images/xml.gif" width="36" height="14" alt="" border="0" /></a></li>
-</ul>
 
 </div>
 </div>

@@ -5,6 +5,11 @@
 
 	<title>PMT: <tmpl_var name="page_title"></title>
 
+	<tmpl_if name="pid">
+   	<link rel="alternate" type="application/rss+xml" title="RSS"
+	         href="project_feed.pl?pid=<tmpl_var name="pid">">
+	</tmpl_if>
+
 	<link rel="stylesheet" href="style/main.css" type="text/css" media="screen" />
 	<tmpl_include name="js_common.tmpl">
 	<link rel="stylesheet" href="style/print.css" type="text/css" media="print" />
