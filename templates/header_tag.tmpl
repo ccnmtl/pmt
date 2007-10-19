@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+	<title>PMT: <tmpl_var name="page_title"></title>
+
+   <link rel="alternate" type="application/rss+xml" title="RSS"
+	      href="tag_feed.pl?tag=<tmpl_var name="tag">">
+
+	<link rel="stylesheet" href="style/main.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="style/tablesort.css" type="text/css" media="screen" />
+	<tmpl_include name="js_common.tmpl">
+	<link rel="stylesheet" href="style/print.css" type="text/css" media="print" />
+
+<script type="text/javascript" language="javascript">
+function validate_pid(form) {
+    var pid = form.pid[form.pid.selectedIndex].value;
+    if (pid != "") {
+        return true;
+    }
+    return false;   
+}
+</script>
+
+<style type="text/css">
+/* just need a couple rules to make the resizer work properly */
+
+textarea {width: 100%;}
+
+.resizer textarea {width: 90%; height: 90%;}
+
+textarea.tagsbox {width: 30em;}
+
+</style>
+
+<script type="text/javascript" language="javascript">
+if (Safaribrowser)
+	{
+	document.write('<style type="text/css">');
+	document.write('.resizer textarea {width: 90%; height: 100px;}');
+	document.write('</style>');
+	}
+</script>
+
+
+
+</head>
+<body class="viewmode" id="sectionitems">
+
+
+
+
+
+
