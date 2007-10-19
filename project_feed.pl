@@ -20,7 +20,7 @@ eval {
 
     my $rss = new XML::RSS(version => '1.0');
     $rss->channel(
-                  title        => "PMT project feed",
+                  title        => "PMT project feed: $project->{name}",
                   link         => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=project;pid=$pid",
                   description  => "all changes to this project",
                   );
