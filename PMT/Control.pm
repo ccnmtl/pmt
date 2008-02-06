@@ -1177,7 +1177,10 @@ sub add_client_form {
 
             my $ou = "not_retrieved";
             if ($d->{found}) {
-                $client_email  = $d->{mail}            || "";
+		if ($d->{mail}) {
+		    $client_email  = $d->{mail}            || "";
+		} 
+
                 $lastname      = $d->{lastname}        || "";
                 $firstname     = $d->{"givenName;x-role-2"}  || $d->{"givenName"} || $d->{"firstname"} || "";
                 $title         = $d->{title}           || "";
@@ -1213,7 +1216,6 @@ sub add_client_form {
             } else {
               $schools_select = PMT::Client->all_schools_select("Arts & Sciences");
             }
-
             my $existing_clients   = PMT::Client->existing_clients($uni,$lastname);
             $template->param(client_email       => $client_email,
                              lastname           => $lastname,

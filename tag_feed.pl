@@ -32,8 +32,6 @@ eval {
 	link => "http://pmt.ccnmtl.columbia.edu/tag_feed.pl?tag=$escapedtag",
 	);
 
-    
-
     foreach my $el (@{$r->{items}}) {
         my $item = $el->{item};
         my @parts = split "_", $item;
