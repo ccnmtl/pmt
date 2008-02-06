@@ -19,6 +19,7 @@ escape="html"><tmpl_unless name="current"></a><tmpl_else></span></tmpl_unless> <
 <thead>
 <tr>
 <th class="firstcell">name:</th>
+<th>email:</th>
 <th>school:</th>
 <th>department:</th>
 <th>registered:</th>
@@ -33,6 +34,7 @@ escape="html"><tmpl_unless name="current"></a><tmpl_else></span></tmpl_unless> <
 <tr><td class="firstcell"><a href="home.pl?mode=client;client_id=<tmpl_var name="client_id"
 escape="url">"><tmpl_var name="lastname" escape="html">, <tmpl_var
 name="firstname" escape="html"></a></td>
+<td><tmpl_var name="email"></td>
 <td><tmpl_if name="school"><a
 href="home.pl?mode=client_search;school=<tmpl_var name="school" escape="url">"><tmpl_var name="school" escape="html"></a></tmpl_if></td>
 <td><a href="home.pl?mode=client_search;department=<tmpl_var name="department" escape="url">"><tmpl_var name="department" escape="html"></a></td>
