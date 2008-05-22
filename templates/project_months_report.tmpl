@@ -16,9 +16,7 @@ to <tmpl_var name="month" escape="html">/<tmpl_var name="year" escape="html">-->
 
 
 <p>&#60;&#60; <a href="home.pl?mode=project_months_report;
-pid=<tmpl_var name="pid" escape="url">;
-<tmpl_if name="num_months">
-  num_months=<tmpl_var name="num_months" escape="url">;
+pid=<tmpl_var name="pid" escape="url">;<tmpl_if name="num_months">num_months=<tmpl_var name="num_months" escape="url">;
 </tmpl_if>
 <tmpl_var name="prev_options">
 ">Previous <tmpl_var name="time_period"></a> 
