@@ -14,6 +14,10 @@
 
 var tl;
 function onLoad() {
+  if (typeof(Timeline) == 'undefined') {
+      logError('SIMILE Timeline javascript library NOT AVAILABLE');
+      return;
+  }
   var eventSource = new Timeline.DefaultEventSource();
   var bandInfos = [
     Timeline.createBandInfo({
