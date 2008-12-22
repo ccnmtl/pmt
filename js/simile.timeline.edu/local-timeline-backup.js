@@ -1,3 +1,4 @@
 if (typeof(Timeline) =='undefined') {
-    document.write('<script type="text/javascript" src="js/simile.timeline.edu/timeline/timeline-api.js"></script><script type="text/javascript" src="js/simile.timeline.edu/timeline/bundle.js"></script><link type="text/css" href="js/simile.timeline.edu/timeline/bundle.css" rel="stylesheet" /><script type="text/javascript" src="js/simile.timeline.edu/timeline/timeline.js"></script><script type="text/javascript" src="js/simile.timeline.edu/timeline/labellers.js"></script>');
+    Timeline_urlPrefix = 'js/simile.timeline.edu/timeline/';
+    document.write('<script type="text/javascript" src="js/simile.timeline.edu/timeline/timeline-api.js"></script>');
 }
