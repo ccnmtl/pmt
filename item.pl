@@ -49,6 +49,7 @@ eval {
         my $tiki = new Text::Tiki;
         $data{description} = $data{description} || "";
         $data{description} =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
+	$data{description} =~ s/(\w+)\+(\w+)\@/$1&plus;$2@/g; # workaround for second awful Text::Tiki bug
         $data{description_html} = $tiki->format($data{description});
         $data{$data{type}}         = 1;
         $data{tags}                = $item->tags();

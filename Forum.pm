@@ -136,6 +136,7 @@ sub post {
     }
 
     my $tiki = new Text::Tiki;
+    $args{body} =~ s/(\w+)\+(\w+)\@/$1&plus;$2@/g; # workaround for second awful Text::Tiki bug
     $args{body} =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
     my $body = PMT::Common::escape($tiki->format($args{body}));
     $args{author} ||= $self->{user};
