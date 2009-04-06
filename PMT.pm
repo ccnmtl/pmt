@@ -469,7 +469,7 @@ sub update_item {
         # add history event
         $i->add_event($item->{'status'},"$comment " . $item->{comment},$user);
         my $new_milestone = PMT::Milestone->retrieve($item->{mid});
-        $i->update();
+        $i->touch();
         $milestone->update_milestone($user);
         if($item->{mid} != $old->{mid}) {
             my $old_milestone = PMT::Milestone->retrieve($old->{mid});
@@ -486,7 +486,7 @@ sub update_item {
             $message .= "comment added. ";
         }
     }
-    $i->update();
+    $i->touch();
     return $message;
 }
 
