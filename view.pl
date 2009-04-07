@@ -29,7 +29,7 @@ my $tiki = new Text::Tiki;
 my $description = $item->description;
 $description =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
 $description =~ s/(\w+)\+(\w+)\@/$1&plus;$2@/g; # workaround for second awful Text::Tiki bug
-$template->param(description_html => $tiki->format($description);
+$template->param(description_html => $tiki->format($description));
 
 my @full_history = ();
 my %history_items = ();
