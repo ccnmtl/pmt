@@ -245,7 +245,7 @@ sub project_milestones {
 }
 
 __PACKAGE__->set_sql(events_on => qq{
-SELECT e.status,e.event_date_time as date_time,e.item,i.title,c.comment,c.username
+SELECT e.status,e.event_date_time as date_time,e.item,i.iid,i.title,c.comment,c.username
 FROM events e, items i, milestones m, comments c
 WHERE e.item = i.iid AND c.event = e.eid AND i.mid = m.mid AND m.pid = ?
 AND date_trunc('day',e.event_date_time) = ?

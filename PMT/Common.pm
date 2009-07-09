@@ -606,7 +606,8 @@ sub ldap_lookup {
     use JSON;
     my $uni = shift;
     my $json = new JSON;
-    return $json->jsonToObj(get "http://cdap.ccnmtl.columbia.edu/?uni=$uni");
+    return $json->decode(get "http://cdap.ccnmtl.columbia.edu/?uni=$uni");
+#    return $json->jsonToObj(get "http://cdap.ccnmtl.columbia.edu/?uni=$uni");
 }
 
 sub tasty_get {
@@ -620,7 +621,8 @@ sub tasty_get {
     my $full = "http://$base/service/$service/$url";
     my $r = get $full;
     my $json = new JSON;
-    my $obj = $json->jsonToObj($r);
+#    my $obj = $json->jsonToObj($r);
+    my $obj = $json->decode($r);
     if (!$obj) {
         $obj = {};
     }
