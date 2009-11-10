@@ -115,6 +115,7 @@ sub add_tracker {
     my $user = PMT::User->retrieve($args{owner});
 
     my ($year,$mon,$mday) = todays_date();    
+    use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days/;
     my ($mon_year,$mon_month,$mon_day) = Monday_of_Week(Week_of_Year($year,$mon,$mday));
     my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,6);
 
