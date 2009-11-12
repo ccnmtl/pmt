@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head><title>resize test</title>
+	<script src="http://ccnmtl.columbia.edu/scripts/MochiKit/MochiKit.js" type="text/javascript"></script>
+	<script src="resizable_textareas.js" type="text/javascript"></script>
+	<style type="text/css">
+	  .resize-handle {
+	     cursor: se-resize;
+	  position: absolute;
+	  }
+
+.draggable
+{
+    color: white;
+    cursor: move;
+    font-size: 25px;
+    height: 100px;
+    line-height: 100px;
+    position: absolute;
+    text-align: center;
+    top: 200px;
+    width: 100px;
+}
+
+
+
+	</style>
+    </head>
+    <body>
+        <form action="" method="post">
+            <fieldset><legend>test</legend>
+                <textarea name="foo"  class="resizable" cols="50" rows="5">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer erat turpis, rutrum a, tincidunt ac, interdum et, nulla. In risus justo, accumsan vel, lobortis sodales, auctor at, lorem. Suspendisse vel enim. Nunc porta ullamcorper est. Vestibulum dolor erat, fermentum in, dictum a, hendrerit ut, turpis. Duis cursus risus vel velit. Curabitur in lorem. Cras et sem sit amet urna posuere vulputate. Aenean lacinia, quam a accumsan consequat, mauris dolor lobortis wisi, ac suscipit augue quam et metus. Maecenas lacinia urna ut urna.
+
+Curabitur tincidunt, pede id interdum facilisis, felis arcu tristique velit, sed venenatis ligula diam quis sapien. Ut ipsum ligula, convallis vitae, posuere egestas, porttitor ac, tellus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In diam. Maecenas sit amet arcu. Duis convallis tempor sem. Nunc ultrices, dolor at viverra faucibus, dui sapien dapibus quam, non commodo tellus velit consectetuer diam. Duis vel libero eget metus pharetra sodales. Suspendisse potenti. Nulla erat libero, pretium eu, congue eu, malesuada at, nisl. Phasellus non leo. Sed feugiat. Nullam et lectus vitae eros ornare suscipit. Sed a metus sed lacus blandit euismod. Ut dignissim nisl nec magna.
+
+Sed ullamcorper nunc at libero. Fusce pulvinar ipsum et nisl. Vestibulum tempor. Etiam sit amet arcu a wisi fermentum ullamcorper. Phasellus dignissim tempor felis. Donec orci pede, vulputate nec, venenatis ut, tristique eget, mauris. Praesent in ligula sit amet dui accumsan dapibus. Quisque purus ipsum, pharetra at, volutpat id, molestie at, tortor. Proin mollis lacus vitae lectus. Pellentesque bibendum fermentum tortor. Sed at lectus ac felis fringilla nonummy. Vivamus tincidunt.
+
+Nam vel lacus sit amet turpis convallis suscipit. Fusce lacinia libero et tortor. Curabitur fermentum dignissim diam. Sed nunc. Vestibulum eleifend scelerisque nulla. In varius velit vitae ligula. Ut lorem arcu, accumsan vulputate, cursus sit amet, dapibus ultricies, magna. Aliquam mollis est eget dui. Donec quis metus ullamcorper elit condimentum bibendum. Curabitur volutpat tellus ac lacus.
+
+Aliquam erat volutpat. In hac habitasse platea dictumst. Vivamus congue justo vitae sapien. Nam leo magna, nonummy ut, gravida in, posuere quis, mi. Mauris et nisl. Nulla facilisi. Integer ut leo in ligula feugiat rhoncus. Aliquam mattis. Ut porttitor, dui a elementum dictum, nulla massa ornare nunc, nec aliquet ante lacus ac dui. Aliquam pretium. Integer imperdiet. Curabitur placerat risus at ligula. Nam suscipit dolor cursus mauris.
+</textarea>
+            <p>click on the little arrow graphic and drag to resize the textarea.</p>
+	      </fieldset>
+
+            </form>
+
+            <h2>instructions</h2>
+
+            <ol>
+                <li>include MochiKit (1.4+)</li>
+		<li>include resizable_textareas.js</li>
+		<li>give the textarea(s) a class of "resizable" and
+		make sure they each have a name</li>
+            </ol>
+
+    </body>
+</html>
