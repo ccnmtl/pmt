@@ -57,16 +57,19 @@ escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
 
 
 <tmpl_if name="items">
-<table cellpadding="0" cellspacing="0" class="itemlisting">
-<tr>
-<th class="firstcell"><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=title">item</a>:</th>
-<th><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=priority">priority</a>:</th>
-<th><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=status">status</a>:</th>
-<th><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=project">project</a>:</th>
-<th><nobr><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=target_date">target date</a>:</nobr></th>
-<th><nobr><a href="home.pl?mode=user;username=<tmpl_var name="user_username">&amp;sortby=last_mod">last modified</a>:</nobr></th>
-</tr>
-
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="itemstable"
+onclick="sortColumn(event)">
+  <thead>
+    <tr>
+      <th class="firstcell">item:</th>
+      <th>priority:</th>
+      <th>status:</th>
+      <th>project:</th>
+      <th><nobr>target date:</nobr></th>
+      <th><nobr>last modified:</nobr></th>
+    </tr>
+</thead>
+<tbody>
 <tmpl_loop name="items">
 <tr>
 <td class="firstcell <tmpl_var name="type_class">"><a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid">: <tmpl_var name="title"></a></td>
@@ -78,7 +81,7 @@ name="r_status"><tmpl_else><tmpl_var name="status" escape="html"></tmpl_if></td>
 <td><nobr><tmpl_var name="last_mod"></nobr></td>
 </tr>
 </tmpl_loop>
-
+</tbody>
 	<tr>
 		<!-- ## Closing row --><td colspan="7" class="end">&nbsp;</td>
 	</tr>
