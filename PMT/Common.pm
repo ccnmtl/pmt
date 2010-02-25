@@ -621,12 +621,18 @@ sub tasty_get {
     my $full = "http://$base/service/$service/$url";
     my $r = get $full;
     my $json = new JSON;
-    my $obj = $json->jsonToObj($r);
+    eval {
+	my $obj = $json->jsonToObj($r);
 #    my $obj = $json->decode($r);
-    if (!$obj) {
-        $obj = {};
+	if (!$obj) {
+	    $obj = {};
+	}
+	return $obj;
+    };
+    if ($@) {
+	# tasty didn't return JSON for some reason
+	return {};
     }
-    return $obj;
 }
 
 use LWP::UserAgent;
