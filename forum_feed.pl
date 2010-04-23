@@ -20,15 +20,15 @@ eval {
     my $rss = new XML::RSS(version => '1.0');
     $rss->channel(
                   title        => "PMT Forum",
-                  link         => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=forum",
+                  link         => "http://$ENV{'SERVER_NAME'}/home.pl?mode=forum",
                   description  => "recent posts, personal log entries and comments in the forum"
                   );
     for my $n (@{$nodes}) {
         $n->{added} =~ /^(\d.*?)\./;
         my $date = $1;
         $rss->add_item(title => "$n->{subject}",
-                       link => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=node;nid=$n->{nid}",
-                       description => "<small>by <b><a href=\"http://pmt.ccnmtl.columbia.edu/home.pl?" .
+                       link => "http://$ENV{'SERVER_NAME'}/home.pl?mode=node;nid=$n->{nid}",
+                       description => "<small>by <b><a href=\"http://$ENV{'SERVER_NAME'}/home.pl?" .
                                       "mode=user;username=$n->{author}\">$n->{fullname}</a>" .
                                       "</b> @ $date</small><br />$n->{body}"
                       );

@@ -21,20 +21,20 @@ eval {
     my $rss = new XML::RSS(version => '1.0');
     $rss->channel(
                   title        => "PMT project feed: $project->{name}",
-                  link         => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=project;pid=$pid",
+                  link         => "http://$ENV{'SERVER_NAME'}/home.pl?mode=project;pid=$pid",
                   description  => "all changes to this project",
                   );
     for my $i (@{$items}) {
         $i->{event_date_time} =~ /^(\d.*?)\./;
         my $date = $1;
         $rss->add_item(title => "$i->{title} ($i->{status})",
-                       link => "http://pmt.ccnmtl.columbia.edu/item.pl?iid=$i->{iid}",
+                       link => "http://$ENV{'SERVER_NAME'}/item.pl?iid=$i->{iid}",
                        description => "<small>$date</small><br />$i->{comment}<br />" .
                                       "<small>owner: <a href=\"" . 
-                                      "http://pmt.ccnmtl.columbia.edu/home.pl?mode=user;" .
+                                      "http://$ENV{'SERVER_NAME'}/home.pl?mode=user;" .
                                       "username=$i->{owner}\">$i->{owner}</a></small>" .
                                       "<small> / assigned to: <a href=\"" .
-                                      "http://pmt.ccnmtl.columbia.edu/home.pl?mode=user;" .
+                                      "http://$ENV{'SERVER_NAME'}/home.pl?mode=user;" .
                                       "username=$i->{assigned_to}\">$i->{assigned_to}" .
                                       "</a></small>"
                       );

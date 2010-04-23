@@ -29,7 +29,7 @@ eval {
     my $rss = new XML::RSS(version => '1.0');
     $rss->channel(
 	title => "PMT Tag feed for $tag",
-	link => "http://pmt.ccnmtl.columbia.edu/tag_feed.pl?tag=$escapedtag",
+	link => "http://$ENV{'SERVER_NAME'}/tag_feed.pl?tag=$escapedtag",
 	);
 
     foreach my $el (@{$r->{items}}) {
@@ -44,7 +44,7 @@ eval {
 							  $i->status,$i->target_date,$i->description);
 		$rss->add_item(
 		    title => "$type: $title [$project]",
-		    link => "http://pmt.ccnmtl.columbia.edu/item.pl?iid=$id",
+		    link => "http://$ENV{'SERVER_NAME'}/item.pl?iid=$id",
 		    description => "<b>status:</b> $status, <b>target date:</b> $target_date<br />$description",
 		    );
 	    }
@@ -55,7 +55,7 @@ eval {
 		my ($subject,$author,$body) = ($n->subject,$n->author->fullname,$n->body);
 		$rss->add_item(
 		    title => "$subject",
-		    link => "http://pmt.ccnmtl.columbia.edu/home.pl?mode=node;nid=$id",
+		    link => "http://$ENV{'SERVER_NAME'}/home.pl?mode=node;nid=$id",
 		    description => "<b>$author</b><br />$body"
 		    );
 	    }

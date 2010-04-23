@@ -18,13 +18,13 @@ eval {
     my $rss = new XML::RSS(version => '1.0');
     $rss->channel(
                   title        => "PMT user feed for $username",
-                  link         => "http://pmt.ccnmtl.columbia.edu/pmt2/",
+                  link         => "http://$ENV{'SERVER_NAME'}/pmt2/",
                   description  => "the items that appear on your PMT homepage",
                   );
     for my $i (@{$items}) {
         $i->{description} ||= "";
         $rss->add_item(title => "$i->{type}: $i->{title} ($i->{project})",
-                       link => "http://pmt.ccnmtl.columbia.edu/item.pl?iid=$i->{iid}",
+                       link => "http://$ENV{'SERVER_NAME'}/item.pl?iid=$i->{iid}",
                        description => "<b>status:</b> $i->{status}, <b>target date:</b> $i->{target_date}<br />$i->{description}");
     }
 
