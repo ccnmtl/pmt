@@ -97,6 +97,8 @@ eval {
         $data{total_completed_time} = interval_to_hours($project->completed_time);
         $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
 
+        $data{wiki_category} = $project->wiki_category;
+
         ($data{done},$data{todo},$data{free},$data{completed_behind},$data{behind}) = $project->estimate_graph(150);
 
         my $template = get_template("item.tmpl");
@@ -105,6 +107,7 @@ eval {
         $template->param(page_title => "Item: $data{title}");
         $template->param($user->menu());
         $template->param(cc => $item->cc($user));
+        $template->param(wiki_base_url => PMT::Common::get_wiki_url());
         print $cgi->header(-charset => 'utf-8'), $template->output();
     }
 };
