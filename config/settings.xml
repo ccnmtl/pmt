@@ -6,4 +6,5 @@
   <attachment_repository>/var/www/pmt/attachments</attachment_repository>
   <tasty_base>tasty.ccnmtl.columbia.edu</tasty_base>
   <tasty_service>pmt_test</tasty_service>
+  <wiki_base_url>http://wiki.ccnmtl.columbia.edu</wiki_base_url>
 </settings>
