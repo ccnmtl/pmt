@@ -165,7 +165,7 @@ sub user_groups {
 
 
 __PACKAGE__->set_sql(projects_by_auth => qq{
-        SELECT p.pid,p.name
+        SELECT p.pid,p.name, p.wiki_category
         FROM works_on w, projects p
             WHERE  w.pid = p.pid
             AND p.status <> 'Complete'
@@ -196,7 +196,7 @@ sub projects_by_auth {
     # get the list of projects that this user
     # is explicitly attached to
     foreach my $p (@{$sth->fetchall_arrayref({})}) {
-        $projects{$p->{pid}} = $p->{name};
+        $projects{$p->{pid}} = {name => $p->{name}, wiki_category => $p->{wiki_category}};
     }
 
     # then, add in the projects for the groups that

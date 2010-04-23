@@ -659,4 +659,10 @@ sub tasty_delete {
     my $res = $ua->request($req);
 }
 
+sub get_wiki_url {
+    use PMT::Config;
+    my $config = new PMT::Config;
+    return $config->{wiki_base_url};
+}
+
 1;

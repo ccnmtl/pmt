@@ -144,6 +144,7 @@ sub template {
     my $template = PMT::Common::get_template(@_);
     $template->param(message => $self->{message});
     $template->param($self->{user}->menu());
+    $template->param(wiki_base_url => PMT::Common::get_wiki_url());
     return $template;
 }
 
@@ -254,13 +255,16 @@ sub my_projects {
     my $last_mods = PMT::Project->all_projects_by_last_mod();
     my %seen = ();
     my $manager_projects = $user->projects_by_auth('manager');
+    my $wiki_base_url = PMT::Common::get_wiki_url();
     $data->{manager_projects} = [map {
         $seen{$_} = 1;
         {
             pid      => $_,
-            name     => $manager_projects->{$_},
+            name     => $manager_projects->{$_}{name},
             last_mod => $last_mods->{$_},
             proj_cc  => $user->notify_projects($_),
+            wiki_category => $manager_projects->{$_}{wiki_category},
+            wiki_base_url => $wiki_base_url,
         };
     } sort {
         lc($manager_projects->{$a}) cmp lc($manager_projects->{$b});
@@ -271,9 +275,11 @@ sub my_projects {
         $seen{$_} = 1;
         {
                     pid      => $_,
-                    name     => $developer_projects->{$_},
+                    name     => $developer_projects->{$_}{name},
                     last_mod => $last_mods->{$_},
                     proj_cc  => $user->notify_projects($_),
+                    wiki_category => $developer_projects->{$_}{wiki_category},
+                    wiki_base_url => $wiki_base_url,
         };
     } sort {
         lc($developer_projects->{$a}) cmp lc($developer_projects->{$b});
@@ -283,9 +289,11 @@ sub my_projects {
     $data->{guest_projects} = [map {
         {
                     pid      => $_,
-                    name     => $guest_projects->{$_},
+                    name     => $guest_projects->{$_}{name},
                     last_mod => $last_mods->{$_},
                     proj_cc  => $user->notify_projects($_),
+                    wiki_category => $guest_projects->{$_}{wiki_category},
+                    wiki_base_url => $wiki_base_url,
         };
     } sort {
         lc($guest_projects->{$a}) cmp lc($guest_projects->{$b});
@@ -295,7 +303,6 @@ sub my_projects {
     $template->param($data);
     $template->param('projects_mode' => 1);
     $template->param(page_title => "my projects");
-
     return $template->output();
 }
 
