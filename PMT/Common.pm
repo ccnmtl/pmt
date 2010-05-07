@@ -665,4 +665,10 @@ sub get_wiki_url {
     return $config->{wiki_base_url};
 }
 
+sub get_uni_domain {
+    use PMT::Config;
+    my $config = new PMT::Config;
+    return $config->{uni_domain};
+}
+
 1;

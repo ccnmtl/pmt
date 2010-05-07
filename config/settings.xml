@@ -7,4 +7,5 @@
   <tasty_base>tasty.ccnmtl.columbia.edu</tasty_base>
   <tasty_service>pmt_test</tasty_service>
   <wiki_base_url>http://wiki.ccnmtl.columbia.edu</wiki_base_url>
+  <uni_domain>columbia.edu</uni_domain>
 </settings>

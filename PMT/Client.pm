@@ -320,8 +320,8 @@ sub find_by_uni {
     return () if $uni eq "";
     my @clients = __PACKAGE__->search(email => $uni);
     if (@clients) { return @clients; }
-    return __PACKAGE__->search(email => "$uni\@columbia.edu");
-
+    my $uni_domain = PMT::Common::get_uni_domain();
+    return __PACKAGE__->search(email => "$uni\@$uni_domain");
 }
 
 sub client_search {
