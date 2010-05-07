@@ -33,6 +33,9 @@ body
 	padding: 0;
 	border: 0;
 	border-right: 1px solid #40536A;
+	width: 168px;
+	height: 53px;
+	background: url('/images/pmt_logo.gif');
 }
 
 #pmtlogo img { border-right: 1px solid #fff; }
