@@ -24,7 +24,7 @@
 <tmpl_if name="groups">
 <tr><th>Groups:</th><td>
 <tmpl_loop name="groups">
-<a href="home.pl?mode=group;group=<tmpl_var name='group'
+<a href="/home.pl?mode=group;group=<tmpl_var name='group'
 escape="url">"><tmpl_var name="group_name"
 escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
 </tmpl_loop>
@@ -39,7 +39,7 @@ escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
 </table>
 
 
-<form action="home.pl" method="POST">
+<form action="/home.pl" method="POST">
 <fieldset><legend>update user information</legend>
 <input type="hidden" name="mode" value="update_user" />
 <table>

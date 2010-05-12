@@ -7,7 +7,7 @@
 
 <h1>PROJECTS: Active Projects<tmpl_if name="days"> for the last <tmpl_var name="days"> days</tmpl_if></h1>
 
-<form type="GET" action="home.pl">
+<form type="GET" action="/home.pl">
   <input type="hidden" name="mode" value="active_projects_report">
   Number of days to display: <input type="text" size="4" name="days"> <input type="submit" value="Go!">
 </form>
@@ -29,15 +29,15 @@
 <tbody>
 <tmpl_loop name="projects">
 <tr>
-<td class="firstcell"><a href="home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="pid"></a></td>
-<td><a href="home.pl?mode=project_info;pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="project_name"></a></td>
+<td class="firstcell"><a href="/home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="pid"></a></td>
+<td><a href="/home.pl?mode=project_info;pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="project_name"></a></td>
 <td><tmpl_if name="project_number"><tmpl_var
 name="project_number"><tmpl_else> n/a </tmpl_if></td>
 <td><tmpl_var name="project_last_worked_on"></td>
 <td><tmpl_var name="project_status"></td>
-<td><a href="home.pl?mode=user;username=<tmpl_var name="caretaker_username">"><tmpl_var name="caretaker_fullname"></a></td>
+<td><a href="/home.pl?mode=user;username=<tmpl_var name="caretaker_username">"><tmpl_var name="caretaker_fullname"></a></td>
 <td><tmpl_var name="time_worked_on"></td>
-<td><a href="home.pl?mode=project_weekly_report;pid=<tmpl_var name="pid" escape="url">">Weekly</a>&nbsp;<a href="home.pl?mode=project_months_report;num_months=1&pid=<tmpl_var name="pid" escape="url">">Monthly</a>&nbsp;<a href="home.pl?mode=project_months_report;num_months=12&pid=<tmpl_var name="pid" escape="url">">Yearly</a></td>
+<td><a href="/home.pl?mode=project_weekly_report;pid=<tmpl_var name="pid" escape="url">">Weekly</a>&nbsp;<a href="/home.pl?mode=project_months_report;num_months=1&pid=<tmpl_var name="pid" escape="url">">Monthly</a>&nbsp;<a href="/home.pl?mode=project_months_report;num_months=12&pid=<tmpl_var name="pid" escape="url">">Yearly</a></td>
 </tr>
 </tmpl_loop>
 </tbody>
@@ -51,7 +51,7 @@ name="project_number"><tmpl_else> n/a </tmpl_if></td>
 <tmpl_if name="total_hours"><p>Total number of hours worked (at any date) on the projects in this report: <b><tmpl_var name="total_hours"></b></p></tmpl_if>
 
 <p>You may download this table as a <a
-href="home.pl?mode=active_projects_report;csv=1;csv_header=1;days=<tmpl_var name="days">">CSV file with header line</a> and as a <a href="home.pl?mode=active_projects_report;csv=1;csv_header=0;days=<tmpl_var name="days">">CSV file without header line</a>.</p>
+href="/home.pl?mode=active_projects_report;csv=1;csv_header=1;days=<tmpl_var name="days">">CSV file with header line</a> and as a <a href="/home.pl?mode=active_projects_report;csv=1;csv_header=0;days=<tmpl_var name="days">">CSV file without header line</a>.</p>
 
 </div>
 <!-- ===== END PAGE MAIN CONTENT ===== -->

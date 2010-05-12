@@ -5,7 +5,7 @@
 <!-- ===== PAGE MAIN CONTENT ===== -->
 <div class="pagecontent">
 
-<h1>PROJECT: <a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
+<h1>PROJECT: <a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
 <span class="hide">PROJECT:</span> &#62; Project Documents
 </h1>
 
@@ -16,7 +16,7 @@
 <ul>
 <tmpl_loop name="documents">
 <li>
-<a href="home.pl?mode=document;did=<tmpl_var name="did" escape="url">"><tmpl_var
+<a href="/home.pl?mode=document;did=<tmpl_var name="did" escape="url">"><tmpl_var
 name="title" escape="html"></a> <tmpl_if name="version">(version
 <tmpl_var name="version" escape="html">)</tmpl_if> <i>[<tmpl_var name="last_mod" escape="html">]</i>
 </li>
@@ -30,7 +30,7 @@ name="title" escape="html"></a> <tmpl_if name="version">(version
 
 
 <tmpl_if name="documents">
-<form action="home.pl" method="post">
+<form action="/home.pl" method="post">
 <input type="hidden" name="mode" value="delete_documents" />
 <input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
 
@@ -41,7 +41,7 @@ name="title" escape="html"></a> <tmpl_if name="version">(version
 </tr>
 <tmpl_loop name="documents">
 <tr><td class="firstcell"><input type="checkbox" name="del_<tmpl_var name="did" escape="html">" /></td>
-<td><a href="home.pl?mode=document;did=<tmpl_var name="did" escape="url">"><tmpl_var
+<td><a href="/home.pl?mode=document;did=<tmpl_var name="did" escape="url">"><tmpl_var
 name="title" escape="html"></a> <tmpl_if name="version">(version
 <tmpl_var name="version" escape="html">)</tmpl_if> <i>[<tmpl_var name="last_mod" escape="html">]</i>
 </td>
@@ -85,7 +85,7 @@ name="title" escape="html"></a> <tmpl_if name="version">(version
 
 <h2>add document:</h2>
 
-<form action="home.pl" method="post" enctype="multipart/form-data">
+<form action="/home.pl" method="post" enctype="multipart/form-data">
 <input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
 <input type="hidden" name="mode" value="add_document" />
 

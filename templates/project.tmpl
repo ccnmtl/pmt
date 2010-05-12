@@ -7,11 +7,11 @@
 
 
 
-<h1>PROJECTS: <a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
+<h1>PROJECTS: <a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
 <span class="hide">PROJECTS:</span> &#62; Main Page</h1>
 
 <tmpl_if name="description">
-<h2>Caretaker: <a href="home.pl?mode=user;username=<tmpl_var
+<h2>Caretaker: <a href="/home.pl?mode=user;username=<tmpl_var
 name="caretaker_username" escape="url">"><tmpl_var name="caretaker_fullname"></a></h2>
 <h2>Description:</h2>
 </tmpl_if>
@@ -20,7 +20,7 @@ name="caretaker_username" escape="url">"><tmpl_var name="caretaker_fullname"></a
 	<div id="fullviewbox">
 	<nobr><b>Estimated time:</b> <tmpl_var name="total_remaining_time"> hours</nobr><br />
 
-	<b>View</b> <a href="home.pl?mode=project_info;pid=<tmpl_var
+	<b>View</b> <a href="/home.pl?mode=project_info;pid=<tmpl_var
         name="pid">">Full Project Info</a>
 	</div>
 </div>	
@@ -34,13 +34,13 @@ name="caretaker_username" escape="url">"><tmpl_var name="caretaker_fullname"></a
 <h2>Project Changes:</h2>
 
 <p id="ie6special">
-<form action="home.pl" method="POST" class="pclayer">
+<form action="/home.pl" method="POST" class="pclayer">
         <input type="hidden" name="mode" value="notify_project" />
 	<input type="hidden" name="pid" value="<tmpl_var name="pid">" />
 	<input type="hidden" name="username" value="<tmpl_var name="username">" />
 
-<a href="project_feed.pl?pid=<tmpl_var name="pid" escape="url">">
-<img class="rss" src="images/rss.png" alt="RSS" border="0" /></a>
+<a href="/project_feed.pl?pid=<tmpl_var name="pid" escape="url">">
+<img class="rss" src="/images/rss.png" alt="RSS" border="0" /></a>
 Track changes (RSS)<br />
 
 
@@ -64,7 +64,7 @@ Track changes (RSS)<br />
 <tmpl_loop name="milestones">
 <tmpl_if name="items">
 	<tr>
-		<th colspan="9" class="milestone">MILESTONE: <a href="home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="name" escape="html"></a></th>
+		<th colspan="9" class="milestone">MILESTONE: <a href="/home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="name" escape="html"></a></th>
 	</tr>
 
 
@@ -78,36 +78,36 @@ Track changes (RSS)<br />
 	</tr>
 
 	<tr>
-		<th class="firstcell"><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=item">item</a>:</th>
-		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=priority">priority</a>:</th>
-		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=status">status</a>:</th>
-		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=target_date"><nobr>target date</nobr></a>:</th>
-		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=owner">owner</a>:</th>
-		<th><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=assigned_to"><nobr>assigned to</nobr></a>:</th>
-		<th nowrap="nowrap"><a href="home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=last_mod">last modified</a>:</th>
+		<th class="firstcell"><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=item">item</a>:</th>
+		<th><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=priority">priority</a>:</th>
+		<th><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=status">status</a>:</th>
+		<th><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=target_date"><nobr>target date</nobr></a>:</th>
+		<th><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=owner">owner</a>:</th>
+		<th><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=assigned_to"><nobr>assigned to</nobr></a>:</th>
+		<th nowrap="nowrap"><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">&amp;sortby=last_mod">last modified</a>:</th>
 		<th>&#160;</th>
 	</tr>
 
 <tmpl_loop name="items">
 	<tr>
-		<td class="firstcell"><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid"> <tmpl_var name="title" escape="html"></a></td>
+		<td class="firstcell"><img src="/images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="/item/<tmpl_var name="iid">/">#<tmpl_var name="iid"> <tmpl_var name="title" escape="html"></a></td>
 		<td class="pr<tmpl_var name="priority">"><tmpl_var
                 name="priority_label"></td>
 		<td class="<tmpl_var name="status">"><tmpl_if name="r_status"><tmpl_var
                 name="r_status"><tmpl_else><tmpl_var name="status"></tmpl_if>
 		</td>
 		<td nowrap="nowrap"><tmpl_var name="target_date"></td>
-		<td><a href="home.pl?mode=user;username=<tmpl_var
+		<td><a href="/home.pl?mode=user;username=<tmpl_var
                 name="owner">"><tmpl_var name="owner_fullname"
                 escape="html"></a></td>
-		<td><a href="home.pl?mode=user;username=<tmpl_var
+		<td><a href="/home.pl?mode=user;username=<tmpl_var
                 name="assigned_to">"><tmpl_var name="assigned_to_fullname"
                 escape="html"></a></td>
 		<td nowrap="nowrap"><tmpl_var name="last_mod"></td>
 		<td><tmpl_if name="notify">
-		<img src="images/email.gif" alt="" width="14" height="11" alt="E-mail notification" />
+		<img src="/images/email.gif" alt="" width="14" height="11" alt="E-mail notification" />
 		<tmpl_else>
-		<img src="images/noemail.gif" alt="" width="14" height="11" alt="No E-mail notification" />
+		<img src="/images/noemail.gif" alt="" width="14" height="11" alt="No E-mail notification" />
 		</tmpl_if>
 		</td>
 	</tr>

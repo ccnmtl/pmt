@@ -7,7 +7,7 @@
 
 <h1>REPORTS: Total Project Breakdown<br />
 <span class="hide">REPORTS: </span>
-&#62; A complete history of <a href="home.pl?mode=user;username=<tmpl_var
+&#62; A complete history of <a href="/home.pl?mode=user;username=<tmpl_var
 name="username" escape="url">"><tmpl_var name="fullname"></a>'s projects</h1>
 
 <p><b>Total Hours Logged:</b> <tmpl_var name="total_time"></p>
@@ -16,7 +16,7 @@ name="username" escape="url">"><tmpl_var name="fullname"></a>'s projects</h1>
 <table cellpadding="0" cellspacing="0" class="itemlisting">
 <tr><th class="firstcell">project:</th><th nowrap="nowrap">total time logged:</th></tr>
 <tmpl_loop name="projects">
-<tr><td class="firstcell"><a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var
+<tr><td class="firstcell"><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var
 name="name" escape="html"></a></td><td class="numcell"><tmpl_var name="time"></td></tr>
 </tmpl_loop>
 <tr>

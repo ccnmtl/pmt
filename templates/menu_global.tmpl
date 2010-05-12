@@ -15,19 +15,19 @@
 <div id="usernavigation">
 
 <div class="username">
-User: <a href="home.pl"><tmpl_var name="username"></a> |  
-<a href="logout.pl">LOGOUT</a>  |  
-<a href="home.pl?mode=user_settings_form">PROFILE</a>
+User: <a href="/home.pl"><tmpl_var name="username"></a> |  
+<a href="/logout.pl">LOGOUT</a>  |  
+<a href="/home.pl?mode=user_settings_form">PROFILE</a>
 </div>
 <!--  primary navigation: user navigation: quickjump to projects  -->
 <div class="quickjump">
-<form action="home.pl" method="get">
+<form action="/home.pl" method="get">
 <input type="hidden" name="mode" value="project" />
 	<select class="dropdown" size="1" onchange="sendIt(this.options[selectedIndex].value);reset()">
 		<option selected="selected" value="">QUICK ACCESS TO PROJECT:</option>
 		<option value="">---------------------------</option>
 		<tmpl_loop name="projects">
-		<option value="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></option>
+		<option value="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></option>
 		</tmpl_loop>
 	</select>
 </form>
@@ -40,54 +40,54 @@ User: <a href="home.pl"><tmpl_var name="username"></a> |
 <!-- = primary navigation: pmt css-dropdown navigation location = -->
 <div id="pmtnavigation">
 <ul id="nav" class="navigationlist"> 
-  <li id="items"><a href="home.pl">Items <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+  <li id="items"><a href="/home.pl">Items <img class="dropdown_arrow" src="/images/dropdown_arrow.gif" alt="" /></a> 
     <ul class="item_list"> 
-      <li class="alignfirst"><a href="home.pl">My Items</a></li> 
-      <li class="subitem"><a href="home.pl?mode=add_trackers_form"><img class="dropdown_arrow" src="images/subitem.gif" alt="" /> Add Tracker</a></li> 
-      <li><a href="search.pl?type=%25&pid=%25&owner=<tmpl_var name="username" escape="url">&assigned_to=%25&status=OPEN&status=UNASSIGNED&status=INPROGRESS&status=RESOLVED_%25&limit=100&sortby=priority&order=DESC&show=title&show=priority&show=target_date&show=assigned&show=project&show=status&results_title=Owned+Items">Owned Items</a></li> 
-      <li><a href="home.pl?mode=someday_maybe">Someday/Maybe Items</a></li> 
-      <li><a href="home.pl?mode=watched_items">Watched Items</a></li> 
-      <li><a href="search.pl">Search Items</a></li> 
-      <li><a href="home.pl?mode=my_tags">My Tags</a></li>
+      <li class="alignfirst"><a href="/home.pl">My Items</a></li> 
+      <li class="subitem"><a href="/home.pl?mode=add_trackers_form"><img class="dropdown_arrow" src="/images/subitem.gif" alt="" /> Add Tracker</a></li> 
+      <li><a href="/search.pl?type=%25&pid=%25&owner=<tmpl_var name="username" escape="url">&assigned_to=%25&status=OPEN&status=UNASSIGNED&status=INPROGRESS&status=RESOLVED_%25&limit=100&sortby=priority&order=DESC&show=title&show=priority&show=target_date&show=assigned&show=project&show=status&results_title=Owned+Items">Owned Items</a></li> 
+      <li><a href="/home.pl?mode=someday_maybe">Someday/Maybe Items</a></li> 
+      <li><a href="/home.pl?mode=watched_items">Watched Items</a></li> 
+      <li><a href="/search.pl">Search Items</a></li> 
+      <li><a href="/home.pl?mode=my_tags">My Tags</a></li>
     </ul> 
 
 </li> 
-  <li id="projects"><a href="home.pl?mode=my_projects">Projects <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+  <li id="projects"><a href="/home.pl?mode=my_projects">Projects <img class="dropdown_arrow" src="/images/dropdown_arrow.gif" alt="" /></a> 
     <ul class="project_list"> 
-      <li class="alignfirst"><a href="home.pl?mode=my_projects">My Projects</a></li> 
-      <li><a href="home.pl?mode=all_projects">All Projects</a></li> 
-      <li><a href="home.pl?mode=add_project_form">Create New Project</a></li> 
-      <li><a href="home.pl?mode=project_search_form">Search Projects</a></li> 
+      <li class="alignfirst"><a href="/home.pl?mode=my_projects">My Projects</a></li> 
+      <li><a href="/home.pl?mode=all_projects">All Projects</a></li> 
+      <li><a href="/home.pl?mode=add_project_form">Create New Project</a></li> 
+      <li><a href="/home.pl?mode=project_search_form">Search Projects</a></li> 
     </ul> 
   </li>  
-  <li id="clients"><a href="home.pl?mode=client_search;contact=<tmpl_var name="username" escape="url">;status=active">Clients <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+  <li id="clients"><a href="/home.pl?mode=client_search;contact=<tmpl_var name="username" escape="url">;status=active">Clients <img class="dropdown_arrow" src="/images/dropdown_arrow.gif" alt="" /></a> 
     <ul class="client_list"> 
-      <li class="alignfirst"><a href="home.pl?mode=client_search;contact=<tmpl_var name="username" escape="url">;status=active">My Clients</a></li> 
-      <li class="subitem"><a href="home.pl?mode=active_clients_report&employee=<tmpl_var name="username" escape="url">"><img class="dropdown_arrow" src="images/subitem.gif" alt="" /> My Active Clients</a></li> 
-      <li><a href="home.pl?mode=all_clients">All Clients</a></li> 
-      <li class="subitem"><a href="home.pl?mode=add_client_form"><img class="dropdown_arrow" src="images/subitem.gif" alt="" /> Add Client</a></li> 
-      <li class="subitem"><a href="home.pl?mode=client_search_form"><img class="dropdown_arrow" src="images/subitem.gif" alt="" /> Search Clients</a></li> 
-      <li><a href="home.pl?mode=new_clients">New Clients</a></li> 
+      <li class="alignfirst"><a href="/home.pl?mode=client_search;contact=<tmpl_var name="username" escape="url">;status=active">My Clients</a></li> 
+      <li class="subitem"><a href="/home.pl?mode=active_clients_report&employee=<tmpl_var name="username" escape="url">"><img class="dropdown_arrow" src="/images/subitem.gif" alt="" /> My Active Clients</a></li> 
+      <li><a href="/home.pl?mode=all_clients">All Clients</a></li> 
+      <li class="subitem"><a href="/home.pl?mode=add_client_form"><img class="dropdown_arrow" src="/images/subitem.gif" alt="" /> Add Client</a></li> 
+      <li class="subitem"><a href="/home.pl?mode=client_search_form"><img class="dropdown_arrow" src="/images/subitem.gif" alt="" /> Search Clients</a></li> 
+      <li><a href="/home.pl?mode=new_clients">New Clients</a></li> 
     </ul> 
   </li> 
-  <li id="usergroup"><a href="home.pl?mode=my_groups">Users/Groups <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+  <li id="usergroup"><a href="/home.pl?mode=my_groups">Users/Groups <img class="dropdown_arrow" src="/images/dropdown_arrow.gif" alt="" /></a> 
     <ul class="group_list"> 
-      <li class="alignfirst"><a href="home.pl?mode=my_groups">My Groups</a></li> 
-      <li><a href="home.pl?mode=all_groups">All Groups</a></li> 
-      <li><a href="home.pl?mode=users">All Users</a></li> 
+      <li class="alignfirst"><a href="/home.pl?mode=my_groups">My Groups</a></li> 
+      <li><a href="/home.pl?mode=all_groups">All Groups</a></li> 
+      <li><a href="/home.pl?mode=users">All Users</a></li> 
     </ul> 
   </li>  
-  <li id="reports"><a href="home.pl?mode=my_reports">Reports <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+  <li id="reports"><a href="/home.pl?mode=my_reports">Reports <img class="dropdown_arrow" src="/images/dropdown_arrow.gif" alt="" /></a> 
     <ul class="report_list"> 
-      <li class="alignfirst"><a href="home.pl?mode=my_reports">My Reports</a></li> 
-      <li><a href="home.pl?mode=global_reports">Global Reports</a></li> 
+      <li class="alignfirst"><a href="/home.pl?mode=my_reports">My Reports</a></li> 
+      <li><a href="/home.pl?mode=global_reports">Global Reports</a></li> 
     </ul> 
   </li> 
   <li><a href="<tmpl_var name="wiki_base_url">/index.php/PMT_Tutorial">Help</a></li> 
-  <li id="forum"><a href="home.pl?mode=forum">Forums <img class="dropdown_arrow" src="images/dropdown_arrow.gif" alt="" /></a> 
+  <li id="forum"><a href="/home.pl?mode=forum">Forums <img class="dropdown_arrow" src="/images/dropdown_arrow.gif" alt="" /></a> 
     <ul class="forum_list"> 
-      <li class="alignfirst"><a href="home.pl?mode=forum">View Forums</a></li> 
-      <li><a href="home.pl?mode=post_form">Post Forum</a></li> 
+      <li class="alignfirst"><a href="/home.pl?mode=forum">View Forums</a></li> 
+      <li><a href="/home.pl?mode=post_form">Post Forum</a></li> 
     </ul> 
   </li> 
   <li><a href="<tmpl_var name="wiki_base_url">/">Wiki</a></li> 

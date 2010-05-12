@@ -1,5 +1,5 @@
 
-<form action="home.pl" method="post" id="submitform">
+<form action="/home.pl" method="post" id="submitform">
 <input type="hidden" name="mode" value="update_item" />
 <input type="hidden" name="iid" value="<tmpl_var name="iid">" />
 <input type="hidden" name="mid" value="<tmpl_var name="mid">" />
@@ -29,13 +29,13 @@
 <tr>
 <th class="firstcell" width="120">project:</th>
 <td width="240">
-<a href="home.pl?mode=project;pid=<tmpl_var name="pid">">
+<a href="/home.pl?mode=project;pid=<tmpl_var name="pid">">
 <tmpl_var name="project">
 </a>
 </td>
 <th class="firstcell" width="120">milestone:</th>
 <td width="235">
-<a href="home.pl?mode=milestone;mid=<tmpl_var name="mid">">
+<a href="/home.pl?mode=milestone;mid=<tmpl_var name="mid">">
 <tmpl_var name="milestone">
 </a>
 </td>
@@ -63,7 +63,7 @@ name="label" escape="html"></option>
 <tmpl_var name="estimated_time" escape="html"> h</td>
 <th class="firstcell" width="120">assigned to:</th>
 <td>
-<a href="home.pl?mode=user;username=<tmpl_var name="assigned_to">"><tmpl_var name="assigned_to_fullname"></a>
+<a href="/home.pl?mode=user;username=<tmpl_var name="assigned_to">"><tmpl_var name="assigned_to_fullname"></a>
 </td>
 </tr>
 <tr>
@@ -75,7 +75,7 @@ name="label" escape="html"></option>
 </tmpl_if>
 <th class="firstcell" width="120">owner:</th>
 <td>
-<a href="home.pl?mode=user;username=<tmpl_var name="owner">"><tmpl_var name="owner_fullname"></a>
+<a href="/home.pl?mode=user;username=<tmpl_var name="owner">"><tmpl_var name="owner_fullname"></a>
 </td>
 </tr>
 <tmpl_if name="resolve_times">
@@ -94,7 +94,7 @@ name="label" escape="html"></option>
 <tmpl_var name="actual_time" escape="html">
 </td>
 <td>
-<a href="home.pl?mode=user;username=<tmpl_Var name="resolver_username" escape="url">">
+<a href="/home.pl?mode=user;username=<tmpl_Var name="resolver_username" escape="url">">
 <tmpl_Var name="resolver_fullname" escape="html">
 </a>
 </td>
@@ -111,7 +111,7 @@ name="label" escape="html"></option>
 <th class="firstcell" width="120">clients:</th>
 <td colspan="3">
 <tmpl_loop name="clients">
-<a href="home.pl?mode=client;client_id=<tmpl_var name="client_id" escape="url">"><tmpl_var name="firstname" escape="html">
+<a href="/home.pl?mode=client;client_id=<tmpl_var name="client_id" escape="url">"><tmpl_var name="firstname" escape="html">
 <tmpl_var name="lastname" escape="html"></a>
 <tmpl_unless __LAST__>, </tmpl_unless>
 </tmpl_loop>
@@ -134,7 +134,7 @@ name="label" escape="html"></option>
 
 <div id="viewtags">
 <tmpl_loop name="tags">
-<a href="home.pl?mode=tag;tag=<tmpl_var name="tag" escape="url">"><tmpl_var name="tag"></a>
+<a href="/home.pl?mode=tag;tag=<tmpl_var name="tag" escape="url">"><tmpl_var name="tag"></a>
 </tmpl_loop>
 </div>
 
@@ -178,7 +178,7 @@ cols="40" rows="5"></textarea>
 <ul>
 <tmpl_loop name="attachments">
 <li>
-<a href="home.pl?mode=attachment;attachment_id=<tmpl_var name="id" escape="url">"><tmpl_varname="title" escape="html"></a> <i>[<tmpl_var name="last_mod" escape="html">]</i></li>
+<a href="/home.pl?mode=attachment;attachment_id=<tmpl_var name="id" escape="url">"><tmpl_varname="title" escape="html"></a> <i>[<tmpl_var name="last_mod" escape="html">]</i></li>
 </tmpl_loop>
 </ul>
 </tmpl_if>
@@ -201,7 +201,7 @@ cols="40" rows="5"></textarea>
 </td>
 
 <td>
-by <a href="home.pl?mode=user;username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><br />
+by <a href="/home.pl?mode=user;username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><br />
 <nobr>at <tmpl_var name="timestamp"></nobr>
 </p>
 </td>

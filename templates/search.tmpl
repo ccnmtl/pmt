@@ -37,12 +37,12 @@ id="searchresults" onclick="sortColumn(event)">
 </tr></thead>
 <tbody>
 <tmpl_loop name="items">
-<tr><tmpl_if name="show_title"><td class="firstcell"><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /> <a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid">: <tmpl_var name="title"></a></td></tmpl_if>
+<tr><tmpl_if name="show_title"><td class="firstcell"><img src="/images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /> <a href="/item/<tmpl_var name="iid">/">#<tmpl_var name="iid">: <tmpl_var name="title"></a></td></tmpl_if>
 <tmpl_if name="show_description"><td><tmpl_var name="description"></td></tmpl_if>
 <tmpl_if name="show_priority"><td class="pr<tmpl_var name="priority">"><tmpl_var name="priority_label"></td></tmpl_if>
 <tmpl_if name="show_target_date"><td><tmpl_var name="target_date"></td></tmpl_if>
-<tmpl_if name="show_owner"><td><a href="home.pl?mode=user;username=<tmpl_var name="owner">"><tmpl_var name="owner_fullname"></a></td></tmpl_if>
-<tmpl_if name="show_assigned"><td><a href="home.pl?mode=user;username=<tmpl_var name="assigned_to">"><tmpl_var name="assigned_to_fullname"></a></td></tmpl_if>
+<tmpl_if name="show_owner"><td><a href="/home.pl?mode=user;username=<tmpl_var name="owner">"><tmpl_var name="owner_fullname"></a></td></tmpl_if>
+<tmpl_if name="show_assigned"><td><a href="/home.pl?mode=user;username=<tmpl_var name="assigned_to">"><tmpl_var name="assigned_to_fullname"></a></td></tmpl_if>
 <tmpl_if name="show_url"><td><tmpl_if name="url"><a target="_blank" href="<tmpl_var name="url">"><tmpl_var name="url"></a><tmpl_else>&nbsp;</tmpl_if></td></tmpl_if>
 <tmpl_if name="show_tags"><td><tmpl_loop name="tags"><tmpl_var name="tag">, </tmpl_loop></td></tmpl_if>
 <tmpl_if name="show_comments"><td>
@@ -62,14 +62,14 @@ id="searchresults" onclick="sortColumn(event)">
 <tmpl_loop name="history">
 <tr>
 <td class="<tmpl_var name="status">"><tmpl_var name="status"></td>
-<td><tmpl_var name="comment"><hr />by <a href="home.pl?mode=user;username=<tmpl_var name="username">"><tmpl_var name="fullname"></a> 
+<td><tmpl_var name="comment"><hr />by <a href="/home.pl?mode=user;username=<tmpl_var name="username">"><tmpl_var name="fullname"></a> 
 at <tmpl_var name="event_date_time"></td>
 </tr>
 </tmpl_loop>
 </table>
 </td></tmpl_if>
-<tmpl_if name="show_project"><td><a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td></tmpl_if>
-<tmpl_if name="show_milestone"><td><a href="home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="milestone"></a></td></tmpl_if>
+<tmpl_if name="show_project"><td><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td></tmpl_if>
+<tmpl_if name="show_milestone"><td><a href="/home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="milestone"></a></td></tmpl_if>
 <tmpl_if name="show_status"><td class="<tmpl_var name="status">"><tmpl_if
 name="r_status"><tmpl_var name="r_status"><tmpl_else><tmpl_var
 name="status"></tmpl_if></td></tmpl_if>

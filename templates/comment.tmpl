@@ -1,11 +1,11 @@
 
 <div class="comment">
-<div class="nodesubject"><a href="home.pl?mode=node;nid=<tmpl_var name="nid">"><tmpl_var name="subject"></a></div>
+<div class="nodesubject"><a href="/home.pl?mode=node;nid=<tmpl_var name="nid">"><tmpl_var name="subject"></a></div>
 <div class="byline"> by <a 
-href="home.pl?mode=user;username=<tmpl_var name="author" escape="url">"><tmpl_var name="author_fullname"></a>
+href="/home.pl?mode=user;username=<tmpl_var name="author" escape="url">"><tmpl_var name="author_fullname"></a>
 @ <tmpl_var name="added"></div>
 <div class="commentbody"><tmpl_var name="body"></div>
-<div class="replies"><a href="home.pl?mode=node;nid=<tmpl_var
+<div class="replies"><a href="/home.pl?mode=node;nid=<tmpl_var
 name="nid">#addcomment">reply to this</a></div>
 <tmpl_if name="comment_html"><div class="reply"><tmpl_var name="comment_html"></div></tmpl_if>
 </div>

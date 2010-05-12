@@ -5,15 +5,15 @@
 <!-- ===== PAGE MAIN CONTENT ===== -->
 <div class="pagecontent">
 
-<h1>PROJECTS: <a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
+<h1>PROJECTS: <a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
 <span class="hide">PROJECTS:</span> &#62; Project Information<br />
 <span class="hide">PROJECTS: &#62; </span> 
-<a href="home.pl?mode=project_info;pid=<tmpl_var name="pid" escape="url">" class="actionbutton">view information</a>
-<a href="home.pl?mode=delete_project;pid=<tmpl_var name="pid">" class="actionbutton">delete project</a>
+<a href="/home.pl?mode=project_info;pid=<tmpl_var name="pid" escape="url">" class="actionbutton">view information</a>
+<a href="/home.pl?mode=delete_project;pid=<tmpl_var name="pid">" class="actionbutton">delete project</a>
 </h1>
 
 
-<form action="home.pl" method="post"
+<form action="/home.pl" method="post"
 onsubmit="select_all(this.managers);select_all(this.developers);select_all(this.guests);select_all(this.clients)">
 <input type="hidden" name="mode" value="update_project" />
 <input type="hidden" name="pid" value="<tmpl_var name="pid">" />
@@ -282,7 +282,7 @@ name="label" escape="html"></option></tmpl_loop>
 
 <tr>
 <td class="firstcell" nowrap="nowrap"><input class="textform" type="text" name="eval_url" value="<tmpl_var name="eval_url" escape="html">" size="40" /></td>
-<td nowrap="nowrap"><a href="home.pl?mode=project_documents;pid=<tmpl_var name="pid">">Project Documents &#62;</a></td>
+<td nowrap="nowrap"><a href="/home.pl?mode=project_documents;pid=<tmpl_var name="pid">">Project Documents &#62;</a></td>
 </tr>
 
 <tr>
@@ -327,7 +327,7 @@ name="label" escape="html"></option></tmpl_loop>
 </select>
 
 <p>
-<a href="home.pl?mode=add_client_form">Add new client &#62;</a>
+<a href="/home.pl?mode=add_client_form">Add new client &#62;</a>
 </p>
 </td>
 </tr>

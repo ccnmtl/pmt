@@ -10,10 +10,10 @@
 
 <tmpl_if name="group">
 <table cellspacing="0" cellpadding="0" class="default">
-<tr><th>group</th><td><tmpl_var name="user_fullname"> [<a href="home.pl?mode=group;group=<tmpl_var
+<tr><th>group</th><td><tmpl_var name="user_fullname"> [<a href="/home.pl?mode=group;group=<tmpl_var
 name="user_username" escape="url">">edit user list</a>]</td></tr>
 <tmpl_if name="users"><tr><th>users</th><td><tmpl_loop name="users"><a
-href="home.pl?mode=user;username=<tmpl_var name="username"
+href="/home.pl?mode=user;username=<tmpl_var name="username"
 escape="url">"><tmpl_Var name="fullname"
 escape="html"></a><tmpl_unless __LAST__>,
 </tmpl_unless></tmpl_loop></td></tr></tmpl_if>
@@ -38,7 +38,7 @@ escape="html"></a><tmpl_unless __LAST__>,
 <tmpl_if name="groups">
 <tr><th>Groups:</th><td>
 <tmpl_loop name="groups">
-<a href="home.pl?mode=group;group=<tmpl_var name='group'
+<a href="/home.pl?mode=group;group=<tmpl_var name='group'
 escape="url">"><tmpl_var name="group_name"
 escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
 </tmpl_loop>
@@ -72,11 +72,11 @@ onclick="sortColumn(event)">
 <tbody>
 <tmpl_loop name="items">
 <tr>
-<td class="firstcell <tmpl_var name="type_class">"><a href="item.pl?iid=<tmpl_var name="iid">">#<tmpl_var name="iid">: <tmpl_var name="title"></a></td>
+<td class="firstcell <tmpl_var name="type_class">"><a href="/item/<tmpl_var name="iid">/">#<tmpl_var name="iid">: <tmpl_var name="title"></a></td>
 <td class="pr<tmpl_var name="priority">"><tmpl_var name="priority_label"></td>
 <td class="<tmpl_var name="status">"><tmpl_if name="r_status"><tmpl_var
 name="r_status"><tmpl_else><tmpl_var name="status" escape="html"></tmpl_if></td>
-<td><a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td>
+<td><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td>
 <td><tmpl_var name="target_date"></td>
 <td><nobr><tmpl_var name="last_mod"></nobr></td>
 </tr>

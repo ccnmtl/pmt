@@ -44,7 +44,7 @@ eval {
 							  $i->status,$i->target_date,$i->description);
 		$rss->add_item(
 		    title => "$type: $title [$project]",
-		    link => "http://$ENV{'SERVER_NAME'}/item.pl?iid=$id",
+		    link => "http://$ENV{'SERVER_NAME'}/item/$id/",
 		    description => "<b>status:</b> $status, <b>target date:</b> $target_date<br />$description",
 		    );
 	    }

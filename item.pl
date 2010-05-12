@@ -119,7 +119,7 @@ if($@) {
             $E->isa('Error::AUTHENTICATION_FAILURE')) {
             print $cgi->redirect('login.pl');
         } elsif ($E->isa('Error::NO_IID')) {
-            print $cgi->redirect('home.pl');
+            print $cgi->redirect('/home.pl');
         } else {
             print $cgi->header(), "<h1>error:</h1><p>$E->{-text}</p>";
         }

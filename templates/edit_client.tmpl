@@ -13,7 +13,7 @@ name="firstname" escape="url">%20<tmpl_var name="lastname"
 escape="url">">perform directory lookup</a>
 </h1>
 
-<form action="home.pl" method="POST">
+<form action="/home.pl" method="POST">
 <input type="hidden" name="mode" value="edit_client"/>
 <input type="hidden" name="client_id" value="<tmpl_var
 name="client_id">" />
@@ -83,7 +83,7 @@ escape="html"></textarea></td></tr>
 
 <hr align="left" noshade size="1" width="710">
 
-<form action="home.pl" method="POST">
+<form action="/home.pl" method="POST">
 <h2>delete client</h2>
 <input type="hidden" name="mode" value="delete_client" />
 <input type="hidden" name="client_id" value="<tmpl_Var

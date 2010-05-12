@@ -14,9 +14,9 @@
 <div class="post">
 <tmpl_if name="subject">
 <h2 class="nodesubject"><tmpl_var name="subject" escape="html"></h2></tmpl_if>
-<p class="byline"><tmpl_if name="pid">to project <a href="home.pl?mode=forum;pid=<tmpl_var
+<p class="byline"><tmpl_if name="pid">to project <a href="/home.pl?mode=forum;pid=<tmpl_var
 name="pid">"><tmpl_var name="project"></a></tmpl_if> by <a
-href="home.pl?mode=user;username=<tmpl_var name="author"
+href="/home.pl?mode=user;username=<tmpl_var name="author"
 escape="url">"><tmpl_var name="author_fullname" escape="html"></a> @
 <tmpl_var name="added" escape="html"></p>
 <div class="nodebody">
@@ -25,7 +25,7 @@ escape="url">"><tmpl_var name="author_fullname" escape="html"></a> @
 <div id="tags">
 Tags: <div id="viewtags">
 <tmpl_loop name="tags">
-<a href="home.pl?mode=tag;tag=<tmpl_var name="tag" escape="url">"><tmpl_var name="tag"></a>
+<a href="/home.pl?mode=tag;tag=<tmpl_var name="tag" escape="url">"><tmpl_var name="tag"></a>
 </tmpl_loop>
 </div>
 <a href="#edittags" class="hs-control"><tmpl_unless name="user_tags">Add<tmpl_else>Edit</tmpl_unless> Tags</a>
@@ -40,9 +40,9 @@ escape="html"><tmpl_unless __LAST__>, </tmpl_unless></tmpl_loop></textarea><br /
 <tmpl_if name="can_edit">
 <div style="padding: 6px; border-top: 1px solid #ccf; text-align: left;">
 <a class="actionbutton"
-href="home.pl?mode=edit_node_form;nid=<tmpl_var name="nid"
+href="/home.pl?mode=edit_node_form;nid=<tmpl_var name="nid"
 escape="url">">edit this post</a>
-<tmpl_if name="can_delete"><a class="actionbutton" href="home.pl?mode=delete_node;nid=<tmpl_var name="nid" escape="url">">delete this post</a></tmpl_if>
+<tmpl_if name="can_delete"><a class="actionbutton" href="/home.pl?mode=delete_node;nid=<tmpl_var name="nid" escape="url">">delete this post</a></tmpl_if>
 </div>
 </tmpl_if>
 
@@ -52,7 +52,7 @@ escape="url">">edit this post</a>
 
 <div class="screenshow">
 <a name="addcomment"></a><h2>add a comment:</h2>
-<form action="home.pl" method="post" id="replyform">
+<form action="/home.pl" method="post" id="replyform">
 <input type="hidden" name="mode" value="post" />
 <input type="hidden" name="reply_to" value="<tmpl_Var name="nid">" />
 <input type="hidden" name="pid" value="<tmpl_var name="pid">" />

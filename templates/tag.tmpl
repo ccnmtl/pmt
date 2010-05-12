@@ -8,9 +8,9 @@
 
 <a 
 title="RSS feed for tag: <tmpl_var name="tag" escape="html">"
-href="tag_feed.pl?tag=<tmpl_var name="tag" escape="url">
+href="/tag_feed.pl?tag=<tmpl_var name="tag" escape="url">
 <tmpl_if name="pid">;pid=<tmpl_var name="pid"></tmpl_if>">
-<img class="rss" src="images/rss.png" alt="RSS feed for tag: <tmpl_var name="tag" escape="html">"
+<img class="rss" src="/images/rss.png" alt="RSS feed for tag: <tmpl_var name="tag" escape="html">"
 border="0" /></a>
 
 <b>tag:</b> <tmpl_var name="tag" escape="html">
@@ -22,9 +22,9 @@ border="0" /></a>
 
 <a 
 title="RSS feed for tag: <tmpl_var name="tag" escape="html"> (items only)"
-href="tag_feed.pl?tag=<tmpl_var name="tag" escape="url">
+href="/tag_feed.pl?tag=<tmpl_var name="tag" escape="url">
 <tmpl_if name="pid">;pid=<tmpl_var name="pid"></tmpl_if>;items_only=1">
-<img class="rss" src="images/rss.png" alt="RSS feed for tag: <tmpl_var name="tag" escape="html"> (items only)"
+<img class="rss" src="/images/rss.png" alt="RSS feed for tag: <tmpl_var name="tag" escape="html"> (items only)"
 border="0" /></a>
 
 items
@@ -43,11 +43,11 @@ items
 
 <tmpl_loop name="items">
 <tr>
-<td class="<tmpl_var name="type_class">"><a href="item.pl?iid=<tmpl_var name="iid">"><tmpl_var name="type"># <tmpl_var name="iid">: <tmpl_var name="title"></a></td>
+<td class="<tmpl_var name="type_class">"><a href="/item/<tmpl_var name="iid">/"><tmpl_var name="type"># <tmpl_var name="iid">: <tmpl_var name="title"></a></td>
 <td class="pr<tmpl_var name="priority">"><tmpl_var name="priority_label"></td>
 <td class="<tmpl_var name="status">"><tmpl_var name="status"> <tmpl_if name="r_status">(<tmpl_var name="r_status">)</tmpl_if></td>
-<td><a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td>
-<td><a href="home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="milestone"></a></td>
+<td><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td>
+<td><a href="/home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="milestone"></a></td>
 <td><tmpl_var name="target_date"></td>
 <td><tmpl_var name="last_mod"></td>
 </tr>
@@ -62,10 +62,10 @@ items
 
 <a 
 title="RSS feed for tag: <tmpl_var name="tag" escape="html"> (forum posts only)"
-href="tag_feed.pl?tag=<tmpl_var name="tag"
+href="/tag_feed.pl?tag=<tmpl_var name="tag"
 escape="url">
 <tmpl_if name="pid">;pid=<tmpl_var name="pid"></tmpl_if>;posts_only=1">
-<img class="rss" src="images/rss.png" 
+<img class="rss" src="/images/rss.png" 
 alt="RSS feed for tag: <tmpl_var name="tag" escape="html"> (forum posts only)"
 border="0" /></a>
 
@@ -81,9 +81,9 @@ forum posts
 
 <tmpl_loop name="nodes">
 <tr>
-<td><a href="home.pl?mode=node;nid=<tmpl_var name="nid">"><tmpl_var
+<td><a href="/home.pl?mode=node;nid=<tmpl_var name="nid">"><tmpl_var
 name="subject" escape="html"></a></td>
-<td><a href="home.pl?mode=user;username=<tmpl_var name="author"
+<td><a href="/home.pl?mode=user;username=<tmpl_var name="author"
 escape="url">"><tmpl_var name="author_fullname" escape="html"></a></td>
 <td><tmpl_var name="added_informal"></td>
 </tr>

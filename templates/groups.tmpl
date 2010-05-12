@@ -9,7 +9,7 @@
 
 <ul>
 <tmpl_loop name="groups">
-<li><a href="home.pl?mode=group;group=<tmpl_var name="group"
+<li><a href="/home.pl?mode=group;group=<tmpl_var name="group"
 escape="url">"><tmpl_var name='group_name'></a></li>
 </tmpl_loop>
 </ul>
@@ -17,7 +17,7 @@ escape="url">"><tmpl_var name='group_name'></a></li>
 <br />
 <a name="add"></a>
 <h2>create a new group:</h2>
-<form action="home.pl" method="post">
+<form action="/home.pl" method="post">
 <input type="hidden" name="mode" value="add_group" />
 <table cellpadding="0" cellspacing="0" class="pmtform" style="width: 400px;">
 <tr>

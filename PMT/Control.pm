@@ -218,7 +218,7 @@ sub update_user {
 
 
     if ($new_pass ne $new_pass2) {
-        $self->header_props(-url => "home.pl?mode=user_settings_form;message=Sorry,%20your%20passwords%20did%20not%20match.");
+        $self->header_props(-url => "/home.pl?mode=user_settings_form;message=Sorry,%20your%20passwords%20did%20not%20match.");
         $self->header_type('redirect');
         return "redirecting back to form";
     }
@@ -235,7 +235,7 @@ sub update_user {
         -value => $new_pass,
         -path => '/',
         -expires => '+10y');
-    $self->header_props(-url => "home.pl?mode=user_settings_form;message=updated");
+    $self->header_props(-url => "/home.pl?mode=user_settings_form;message=updated");
 
     if ($new_pass ne '') {
 	$self->header_add(-cookie => [$lcookie,$pcookie]);
@@ -351,7 +351,7 @@ sub add_project {
     $project->add_milestone("Final Release",$target_date,"project completion");
 
     $self->header_type('redirect');
-    $self->header_props(-url => "home.pl?mode=project;pid=" . $project->pid);
+    $self->header_props(-url => "/home.pl?mode=project;pid=" . $project->pid);
     return "redirecting to new project page";
 }
 
@@ -574,7 +574,7 @@ sub add_item {
     # so they can conveniently add multiple items
 
     $self->header_type('redirect');
-    $self->header_props(-url => "home.pl?mode=add_item_form;type=$type;pid=$pid");
+    $self->header_props(-url => "/home.pl?mode=add_item_form;type=$type;pid=$pid");
     return "redirecting back to add item form";
 
 }
@@ -632,7 +632,7 @@ sub add_trackers {
 
     }
     $self->header_type('redirect');
-    $self->header_props(-url => "home.pl?mode=add_trackers_form");
+    $self->header_props(-url => "/home.pl?mode=add_trackers_form");
     return "redirecting back to add trackers form";
 }
 
@@ -880,7 +880,7 @@ sub delete_client {
         my $letter = substr($client->lastname,0,1);
         $client->delete();
         $self->header_type('redirect');
-        $self->header_props(-url => "home.pl?mode=all_clients;letter=$letter");
+        $self->header_props(-url => "/home.pl?mode=all_clients;letter=$letter");
         return "redirecting back to clients page";
     } else {
         return $self->verify_delete_client($client_id);
@@ -897,7 +897,7 @@ sub verify_delete_client {
 <h1>are you sure?</h1>
 <p>once a client is deleted, their information is lost permanently. it cannot be recovered.
 please be <em>very</em> sure that you should be deleting the entry.</p>
-<form action="home.pl" method="POST">
+<form action="/home.pl" method="POST">
 <input type="hidden" name="mode" value="delete_client"/>
 <input type="hidden" name="client_id" value="$client_id"/>
 <input type="hidden" name="verify" value="ok"/>
@@ -924,7 +924,7 @@ sub delete_documents {
 #        $user->dbi_commit();
 #    }
     $self->header_type('redirect');
-    $self->header_props(-url => "home.pl?mode=project;pid=$pid");
+    $self->header_props(-url => "/home.pl?mode=project;pid=$pid");
     return "documents deleted";
 }
 
@@ -942,7 +942,7 @@ sub delete_attachments {
     }
 
     $self->header_type('redirect');
-    $self->header_props(-url => "item.pl?iid=$iid");
+    $self->header_props(-url => "/item/$iid/");
     return "attachments deleted";
 }
 
@@ -960,7 +960,7 @@ sub delete_item {
         my $mid = $item->mid->mid;
         $item->delete();
         $self->header_type('redirect');
-        $self->header_props(-url => "home.pl?mode=milestone;mid=$mid");
+        $self->header_props(-url => "/home.pl?mode=milestone;mid=$mid");
         return "deleted item";
     }
 }
@@ -975,7 +975,7 @@ sub update_group {
     $pmt->update_group($group,\@users);
 
     $self->header_type('redirect');
-    $self->header_props(-url => "home.pl?mode=group;group=$group");
+    $self->header_props(-url => "/home.pl?mode=group;group=$group");
     return "updated group";
 }
 
@@ -999,7 +999,7 @@ sub add_milestone {
     my $project = PMT::Project->retrieve($pid);
     $project->add_milestone($name,$target_date,$description);
     $self->header_type('redirect');
-    $self->header_props(-url => "home.pl?mode=project;pid=$pid");
+    $self->header_props(-url => "/home.pl?mode=project;pid=$pid");
 }
 
 
@@ -1011,7 +1011,7 @@ sub delete_item_verify {
     </head>
     <body>
     <h2>delete item</h2>
-    <form action="home.pl" method="POST">
+    <form action="/home.pl" method="POST">
     <input type="hidden" name="mode" value="delete_item" />
     <input type="hidden" name="verify" value="ok" />
     <input type="hidden" name="iid" value="$iid" />
@@ -1034,7 +1034,7 @@ sub delete_milestone {
     $mid =~ s/\D//g;
     unless($mid) {
         $self->header_type('redirect');
-        $self->header_props(-url => "home.pl");
+        $self->header_props(-url => "/home.pl");
     } else {
         my $milestone = PMT::Milestone->retrieve($mid);
         my $really = $cgi->param('verify') || "";
@@ -1044,7 +1044,7 @@ sub delete_milestone {
         } else {
             my $pid = $milestone->delete_milestone();
             $self->header_type('redirect');
-            $self->header_props(-url => "home.pl?mode=project;pid=$pid");
+            $self->header_props(-url => "/home.pl?mode=project;pid=$pid");
             return "milestone deleted\n";
         }
     }
@@ -1058,7 +1058,7 @@ sub delete_milestone_verify {
     </head>
     <body>
     <h2>delete milestone</h2>
-    <form action="home.pl" method="POST">
+    <form action="/home.pl" method="POST">
     <input type="hidden" name="mode" value="delete_milestone" />
     <input type="hidden" name="verify" value="ok" />
     <input type="hidden" name="mid" value="$mid" />
@@ -1082,7 +1082,7 @@ sub delete_node {
         my $forum = new Forum($self->{username});
         $forum->delete_node($nid);
         $self->header_type('redirect');
-        $self->header_props(-url => "home.pl?mode=forum");
+        $self->header_props(-url => "/home.pl?mode=forum");
         return "deleted node";
     }
 }
@@ -1095,7 +1095,7 @@ sub delete_node_verify {
     </head>
     <body>
     <h2>delete item</h2>
-    <form action="home.pl" method="POST">
+    <form action="/home.pl" method="POST">
     <input type="hidden" name="mode" value="delete_node" />
     <input type="hidden" name="verify" value="ok" />
     <input type="hidden" name="nid" value="$nid" />
@@ -1122,7 +1122,7 @@ sub delete_project {
     } else {
         $project->delete();
         $self->header_type('redirect');
-        $self->header_props(-url => "home.pl");
+        $self->header_props(-url => "/home.pl");
         return "deleted project";
     }
 }
@@ -1136,7 +1136,7 @@ sub delete_project_verify {
     </head>
     <body>
     <h2>delete project</h2>
-    <form action="home.pl" method="POST">
+    <form action="/home.pl" method="POST">
     <input type="hidden" name="mode" value="delete_project" />
     <input type="hidden" name="verify" value="ok" />
     <input type="hidden" name="pid" value="$pid" />
@@ -1285,7 +1285,7 @@ sub add_client {
             });
     }
     $self->header_type('redirect');
-    $self->header_props(-url => "home.pl?mode=add_client_form");
+    $self->header_props(-url => "/home.pl?mode=add_client_form");
 }
 
 sub post_form {
@@ -1340,7 +1340,7 @@ sub post {
             subject => $subject,body => $body,
             reply_to => $reply_to, tags => $tags);
         $self->header_type('redirect');
-        $self->header_props(-url => "home.pl?mode=forum");
+        $self->header_props(-url => "/home.pl?mode=forum");
     }
 }
 
@@ -1462,7 +1462,7 @@ sub update_items {
         }
     }
     $self->header_type('redirect');
-    $self->header_props(-url => "home.pl");
+    $self->header_props(-url => "/home.pl");
 }
 
 sub total_breakdown {
@@ -1536,7 +1536,7 @@ sub edit_milestone {
         description => $description);
     $milestone->update();
     $self->header_type("redirect");
-    $self->header_props(-url => "home.pl?mode=milestone;mid=$mid");
+    $self->header_props(-url => "/home.pl?mode=milestone;mid=$mid");
 }
 
 sub add_document {
@@ -1561,7 +1561,7 @@ sub add_document {
                                           version => $version,
                                           author => $username);
     $self->header_type("redirect");
-    $self->header_props(-url => "home.pl?mode=project;pid=$pid");
+    $self->header_props(-url => "/home.pl?mode=project;pid=$pid");
 }
 
 sub add_attachment {
@@ -1584,7 +1584,7 @@ sub add_attachment {
                                                  description => $description,
                                                  author      => $username);
         $self->header_type("redirect");
-        $self->header_props(-url => "item.pl?iid=$iid");
+        $self->header_props(-url => "/item/$iid/");
     };
     if ($@) {
         my $E = $@;
@@ -1599,7 +1599,7 @@ sub add_group {
     my $group = $cgi->param('group') || "";
     $group = $self->{pmt}->add_group($group);
     $self->header_type("redirect");
-    $self->header_props(-url => "home.pl?mode=group;group=$group");
+    $self->header_props(-url => "/home.pl?mode=group;group=$group");
 }
 
 sub project_info {
@@ -1698,7 +1698,7 @@ sub project_milestones_json {
 	    isDuration => 0,
 	    title => $_->{name},
 	    description => $_->{description},
-	    link => "home.pl?mode=milestone;mid=$_->{mid}"
+	    link => "/home.pl?mode=milestone;mid=$_->{mid}"
 	};
     } @{$project->project_milestones("priority")};
     my $json = new JSON(pretty => 1);
@@ -1791,7 +1791,7 @@ sub notify {
         $item->drop_cc($user);
     }
     $self->header_type('redirect');
-    $self->header_props(-url => "item.pl?iid=$iid");
+    $self->header_props(-url => "/item/$iid/");
     return "changed notification for an item";
 }
 
@@ -1811,7 +1811,7 @@ sub notify_project {
         $project->drop_cc($user);
     }
     $self->header_type('redirect');
-    $self->header_props(-url => "home.pl?mode=project;pid=$pid");
+    $self->header_props(-url => "/home.pl?mode=project;pid=$pid");
     return "updated project notification";
 }
 
@@ -1871,7 +1871,7 @@ sub update_project {
                        );
 
     $self->header_type('redirect');
-    $self->header_props(-url => "home.pl?mode=project;pid=$pid");
+    $self->header_props(-url => "/home.pl?mode=project;pid=$pid");
     return "updated project info";
 }
 
@@ -2243,7 +2243,7 @@ sub update_item {
 
     my $message = URI::Escape::uri_escape($pmt->update_item(\%item,$username));
     $self->header_type('redirect');
-    $self->header_props(-url => "item.pl?iid=$iid;message=$message");
+    $self->header_props(-url => "/item/$iid/?message=$message");
     return $message;
 }
 
@@ -2523,7 +2523,7 @@ sub edit_node {
 	$node->body($body);
 	$node->update();
 	$self->header_type('redirect');
-	$self->header_props(-url => "home.pl?mode=node;nid=$nid");
+	$self->header_props(-url => "/home.pl?mode=node;nid=$nid");
     }
 }
 
@@ -2585,7 +2585,7 @@ sub project_history {
         my $cell = "";
 
         foreach my $i (@$r) {
-            $cell .= "<tr><td><a href='item.pl?iid=$$i{iid}'>$$i{title}</a></td>";
+            $cell .= "<tr><td><a href='/item/$$i{iid}/'>$$i{title}</a></td>";
             $cell .= "<td class='$$i{status}'>$$i{status}</td>";
             $cell .= "<td>$$i{comment}<hr />by $$i{username} \@ $$i{date_time}</td>";
             $cell .= "</tr>";
@@ -2736,7 +2736,7 @@ sub edit_client {
     $client->update();
     my $letter = uc(substr($lastname,0,1));
     $self->header_type('redirect');
-    $self->header_props(-url => "home.pl?mode=all_clients;letter=$letter");
+    $self->header_props(-url => "/home.pl?mode=all_clients;letter=$letter");
     return "client edited";
 }
 
@@ -3013,7 +3013,7 @@ sub user_history {
         my $cell = "";
 
         foreach my $i (@$r) {
-            $cell .= "<td><a href='item.pl?iid=$$i{iid}'>$$i{title}</a></td>";
+            $cell .= "<td><a href='/item/$$i{iid}/'>$$i{title}</a></td>";
             $cell .= "<td class='$$i{status}'>$$i{status}</td>";
             $cell .= "<td>$$i{comment}<hr />by $$i{username} \@ $$i{date_time}</td>";
             $cell .= "</tr>";

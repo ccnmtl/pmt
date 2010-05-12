@@ -5,12 +5,12 @@
 <!-- ===== PAGE MAIN CONTENT ===== -->
 <div class="pagecontent">
 
-<h1>USERS/GROUPS: <!--<a href="home.pl?mode=user;username=<tmpl_var name="group" escape="url">">--><tmpl_var name="group_name"></h1>
+<h1>USERS/GROUPS: <!--<a href="/home.pl?mode=user;username=<tmpl_var name="group" escape="url">">--><tmpl_var name="group_name"></h1>
 
 <h2>activity summary for <b><tmpl_var name="group_fullname"></b></h2>
 
 
-<form action="home.pl" method="get">
+<form action="/home.pl" method="get">
 <p><input type="hidden" name="mode" value="group_activity_summary" />
 <input type="hidden" name='group_name' value="<tmpl_var name="group_name"
 escape="html">"/>
@@ -36,11 +36,11 @@ name="end_month">-<tmpl_var name="end_day">" />
 <table cellpadding="0" cellspacing="0" class="timescompleted">
 <tr><th class="firstcell">item:</th><th>time:</th><th>completed at:</th><th>project:</th></tr>
 <tmpl_loop name="individual_times">
-<tr><td class="firstcell" style="width:150px;"><a href="item.pl?iid=<tmpl_var name="iid" escape="url">"><tmpl_var
+<tr><td class="firstcell" style="width:150px;"><a href="/item/<tmpl_var name="iid" escape="url">/"><tmpl_var
 name="item" escape="html"></a></td>
 <td><tmpl_var name="actual_time" escape="html"></td>
 <td><nobr><tmpl_var name="completed" escape="html"></nobr></td>
-<td style="width:150px;"><a href="home.pl?mode=project;pid=<tmpl_var name="pid"
+<td style="width:150px;"><a href="/home.pl?mode=project;pid=<tmpl_var name="pid"
 escape="url">"><tmpl_var name="project" escape="html"></a></td>
 </tr>
 </tmpl_loop>
@@ -70,7 +70,7 @@ escape="url">"><tmpl_var name="project" escape="html"></a></td>
 <div class="post">
 <h2 class="nodesubject"><tmpl_var name="subject"></h2>
 <p class="byline"><tmpl_if name="project"><a
-href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></tmpl_if> @ <tmpl_var name="added_informal"></p>
+href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></tmpl_if> @ <tmpl_var name="added_informal"></p>
 <div class="nodebody">
 <tmpl_Var name="body">
 </div>

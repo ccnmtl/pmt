@@ -5,9 +5,9 @@
 <!-- ===== PAGE MAIN CONTENT ===== -->
 <div class="pagecontent">
 
-<h1>CLIENTS: <a href="home.pl?mode=client;client_id=<tmpl_var name="client_id"
+<h1>CLIENTS: <a href="/home.pl?mode=client;client_id=<tmpl_var name="client_id"
 escape="url">"><tmpl_var name="client_firstname" escape="html"> <tmpl_var name="client_lastname" escape="html"></a><br />
-<span class="hide">CLIENTS:</span> &#62; Project: <a href="home.pl?mode=project;pid=<tmpl_Var name="pid" escape="url">">
+<span class="hide">CLIENTS:</span> &#62; Project: <a href="/home.pl?mode=project;pid=<tmpl_Var name="pid" escape="url">">
 <tmpl_var name="name">
 </a>
 <br />
@@ -17,7 +17,7 @@ escape="url">"><tmpl_var name="client_firstname" escape="html"> <tmpl_var name="
 <span class="hide">CLIENTS:</span> &#62; Add To Do
 </h1>
 
-<form action="home.pl" method="POST">
+<form action="/home.pl" method="POST">
 <input type="hidden" name="mode" value="add_item" />
 <input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
 <tmpl_loop name="milestone_select"><tmpl_if name="selected"><input type="hidden" name="mid" value="<tmpl_var
@@ -49,7 +49,7 @@ for yourself.</p>
 <tmpl_if name="tracker">
 <span class="hide">CLIENTS:</span> &#62; Add Tracker</h1>
 
-<form action="home.pl" method="POST">
+<form action="/home.pl" method="POST">
 <input type="hidden" name="mode" value="add_item"/>
 <input type="hidden" name="pid" value="<tmpl_var name="pid"
 escape="html">" />
@@ -131,7 +131,7 @@ delete it like you would any other action item or bug.</p>
 <span class="hide">CLIENTS:</span> &#62; <tmpl_if name="bug">Add A Bug <tmpl_else>Add An Action Item </tmpl_if>
 </h1>
 
-<form action="home.pl" method="POST">
+<form action="/home.pl" method="POST">
 <input type="hidden" name="mode" value="add_item" />
 <input type="hidden" name="pid" value="<tmpl_var name="pid">" />
 

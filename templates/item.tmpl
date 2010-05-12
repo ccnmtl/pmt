@@ -9,11 +9,11 @@
 </tmpl_if>
 
 
-<h1>PROJECTS: <a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a><br />
+<h1>PROJECTS: <a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a><br />
 <span class="hide">PROJECTS:</span> &#62;  View <span style="text-transform: capitalize;"><tmpl_var name="type"></span><br />
 <span class="hide">PROJECTS:</span> &#62; #<tmpl_var name="iid"> <tmpl_var name="title" escape="html"><br />
 <span class="hide">PROJECTS: &#62; </span> 
-<a href="home.pl?mode=update_item_form;iid=<tmpl_var name="iid" escape="url">" class="actionbutton">edit <tmpl_var name="type"></a>
+<a href="/home.pl?mode=update_item_form;iid=<tmpl_var name="iid" escape="url">" class="actionbutton">edit <tmpl_var name="type"></a>
 </h1>
 
 <br />
@@ -23,11 +23,11 @@
 <script type="text/javascript" language="JavaScript">
 if ('<tmpl_var name="assigned_to">'=='<tmpl_var name="username">') {
 document.write('<p id="ie6special" style="width: 710px; text-align: right;">');
-document.write('<img src="images/checked.gif" width="16" height="16" hspace="0" vspace="0" align="top"> <span style="color:#999;">Notify me of changes in this <tmpl_var name="type"></span>');
+document.write('<img src="/images/checked.gif" width="16" height="16" hspace="0" vspace="0" align="top"> <span style="color:#999;">Notify me of changes in this <tmpl_var name="type"></span>');
 document.write('</p>');
 }
 else {
-document.write('<form action="home.pl" method="POST" class="pclayer">'); 
+document.write('<form action="/home.pl" method="POST" class="pclayer">'); 
 document.write('<input type="hidden" name="mode" value="notify">');
 document.write('<input type="hidden" name="iid" value="<tmpl_var name="iid">" />');
 document.write('<tmpl_if name="cc">');

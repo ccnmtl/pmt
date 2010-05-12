@@ -7,7 +7,7 @@
 
 <h1>DEACTIVATE USER</h1>
 
-<form action="home.pl" method="post">
+<form action="/home.pl" method="post">
 <fieldset>
 <input type="hidden" name="mode" value="deactivate_user"/>
 <tmpl_if name="users_select">
@@ -46,7 +46,7 @@ the following projects. New caretakers must be chosen for them:</p>
 <table>
 <tr><th>project</th><th>choose new caretaker</th></tr>
 <tmpl_loop name="caretaker_projects">
-<tr><td><a href="home.pl?mode=project;pid=<tmpl_var
+<tr><td><a href="/home.pl?mode=project;pid=<tmpl_var
 name="pid">"><tmpl_var name="name"></a></td>
 <td><select name="caretaker_<tmpl_var name="pid">">
 <tmpl_loop name="caretaker_select">
@@ -67,8 +67,8 @@ be reassigned before deactivation:</p>
 <tmpl_loop name="assigned_items">
 <tr>
 
-		<td><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="item.pl?iid=<tmpl_var name="iid" escape="url">">#<tmpl_var name="iid" escape="html">: <tmpl_var name="title" escape="html"></a></td>
-		<td><a href="home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="project" escape="html"></a></td>
+		<td><img src="/images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="/item/<tmpl_var name="iid" escape="url">/">#<tmpl_var name="iid" escape="html">: <tmpl_var name="title" escape="html"></a></td>
+		<td><a href="/home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var name="project" escape="html"></a></td>
 		<td class="<tmpl_var name="status" escape="html">"><tmpl_if
                 name="r_status"><tmpl_var name="r_status"
                 escape="html"><tmpl_else><tmpl_var name="status"

@@ -8,22 +8,22 @@
 <h1>CLIENTS: Client Information<br />
 <span class="hide">CLIENTS:</span> &#62; <tmpl_var name="firstname" escape="html"> <tmpl_var name="lastname" escape="html"><br />
 <span class="hide">CLIENTS: &#62; </span> 
-<a class="actionbutton" href="home.pl?mode=edit_client_form;client_id=<tmpl_var name="client_id" escape="url">">edit client info</a>
+<a class="actionbutton" href="/home.pl?mode=edit_client_form;client_id=<tmpl_var name="client_id" escape="url">">edit client info</a>
 <a class="actionbutton" href="http://www.columbia.edu/cgi-bin/lookup.pl?fullname=<tmpl_var
 name="firstname" escape="url">%20<tmpl_var name="lastname"
 escape="url">">perform directory lookup</a>
 </h1>
 
 <tmpl_if name="client_prev">
-  <a class="actionbutton" href="home.pl?mode=client;client_id=<tmpl_var name="client_prev" escape="url">">previous client (older)</a>
+  <a class="actionbutton" href="/home.pl?mode=client;client_id=<tmpl_var name="client_prev" escape="url">">previous client (older)</a>
 </tmpl_if>
 <tmpl_if name="client_next">
-  <a class="actionbutton" href="home.pl?mode=client;client_id=<tmpl_var name="client_next" escape="url">">next client (newer)</a>
+  <a class="actionbutton" href="/home.pl?mode=client;client_id=<tmpl_var name="client_next" escape="url">">next client (newer)</a>
 </tmpl_if>
 <br />
 <br />
 
-<form action="home.pl" method="get">
+<form action="/home.pl" method="get">
 <input type="hidden" name="mode" value="add_services_item"/>
 <input type="hidden" name="client_id" value="<tmpl_var name="client_id" escape="html">"/>
 <table cellpadding="0" cellspacing="0" class="pmtform" style="width:600px;">
@@ -47,7 +47,7 @@ escape="html"></td></tr>
 escape="html"></td></tr>
 <tr><th class="firstcell">email:</th><td><tmpl_var name="client_email"
 escape="html"></td></tr>
-<tr><th class="firstcell">CCNMTL contact:</th><td><a href="home.pl?mode=user;username=<tmpl_var
+<tr><th class="firstcell">CCNMTL contact:</th><td><a href="/home.pl?mode=user;username=<tmpl_var
 name="contact" escape="url">"><tmpl_var name="contact_fullname"
 escape="html"></a></td></tr>
 <tr>
@@ -86,7 +86,7 @@ escape="html"></td></tr>
 
 <tmpl_if name="client_projects">
 <h2>Projects:</h2>
-<tmpl_loop name="client_projects"><a href="home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var
+<tmpl_loop name="client_projects"><a href="/home.pl?mode=project;pid=<tmpl_var name="pid" escape="url">"><tmpl_var
 name="name" escape="html"></a><br /></tmpl_loop>
 </tmpl_if>
 <br />
@@ -101,10 +101,10 @@ name="name" escape="html"></a><br /></tmpl_loop>
 <th>project:</th>
 </tr>
 <tmpl_loop name="recent_items">
-<tr><td class="firstcell"><img src="images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class">" /><a href="item.pl?iid=<tmpl_var
-name="iid">"><tmpl_unless name="title">[<tmpl_Var name="iid">]</tmpl_unless><tmpl_var
+<tr><td class="firstcell"><img src="/images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class">" /><a href="/item/<tmpl_var
+name="iid">/"><tmpl_unless name="title">[<tmpl_Var name="iid">]</tmpl_unless><tmpl_var
 name="title"></a></td><td class="<tmpl_var name="status">"><tmpl_var
-name="status"></td><td><nobr><tmpl_var name="last_mod"></nobr></td><td><nobr><a href="home.pl?mode=project;pid=<tmpl_var
+name="status"></td><td><nobr><tmpl_var name="last_mod"></nobr></td><td><nobr><a href="/home.pl?mode=project;pid=<tmpl_var
 name="pid">"><tmpl_var name="project"></a></nobr></td></tr>
 </tmpl_loop>
 <tfoot>

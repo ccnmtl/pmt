@@ -10,11 +10,11 @@
 New Clients for <tmpl_var name="month" escape="html"> <tmpl_var name="year" escape="html"></h1>
 
 <p>&#60;&#60; <a
-href="home.pl?mode=new_clients;year=<tmpl_var name="pm_year"
+href="/home.pl?mode=new_clients;year=<tmpl_var name="pm_year"
 escape="url">;month=<tmpl_Var name="pm_month"
 escape="url">;day=<tmpl_var name="pm_day" escape="url">"><tmpl_var
 name="pm_mon" escape="html"></a> -- <a
-href="home.pl?mode=new_clients;year=<tmpl_Var name="nm_year"
+href="/home.pl?mode=new_clients;year=<tmpl_Var name="nm_year"
 escape="url">;month=<tmpl_var name="nm_month"
 escape="url">;day=<tmpl_var name="nm_day" escape="url">"><tmpl_var
 name="nm_mon" escape="html"></a> &#62;&#62;</p>
@@ -28,13 +28,13 @@ name="nm_mon" escape="html"></a> &#62;&#62;</p>
 <th>contact:</th>
 </tr>
 <tmpl_loop name="clients">
-<tr><td class="firstcell"><a href="home.pl?mode=client;client_id=<tmpl_var name="client_id"
+<tr><td class="firstcell"><a href="/home.pl?mode=client;client_id=<tmpl_var name="client_id"
 escape="url">"><tmpl_var name="lastname" escape="html">, <tmpl_var
 name="firstname" escape="html"></a></td>
-<td><a href="home.pl?mode=client_search;school=<tmpl_var name="school" escape="url">"><tmpl_var name="school" escape="html"></a></td>
-<td><a href="home.pl?mode=client_search;department=<tmpl_var name="department" escape="url">"><tmpl_var name="department" escape="html"></a></td>
+<td><a href="/home.pl?mode=client_search;school=<tmpl_var name="school" escape="url">"><tmpl_var name="school" escape="html"></a></td>
+<td><a href="/home.pl?mode=client_search;department=<tmpl_var name="department" escape="url">"><tmpl_var name="department" escape="html"></a></td>
 <td><tmpl_var name="registration_date" escape="html"></td>
-<td><a href="home.pl?mode=user;username=<tmpl_var name="contact"
+<td><a href="/home.pl?mode=user;username=<tmpl_var name="contact"
 escape="url">"><tmpl_var name="contact_fullname" escape="html"></td></tr>
 </tmpl_loop>
 

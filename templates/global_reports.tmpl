@@ -10,15 +10,15 @@
 
  
 <ul>
-<li><a href="home.pl?mode=active_clients_report">active clients</a></li>
-<li><a href="home.pl?mode=active_projects_report">active projects</a></li>
-<li><a href="home.pl?mode=staff_report">staff report</a></li>
-<li><a href="home.pl?mode=weekly_summary">weekly summary</a></li>
-<li><a href="home.pl?mode=monthly_summary">monthly summary</a></li>
-<li><a href="home.pl?mode=clients_summary">clients summary</a></li>
+<li><a href="/home.pl?mode=active_clients_report">active clients</a></li>
+<li><a href="/home.pl?mode=active_projects_report">active projects</a></li>
+<li><a href="/home.pl?mode=staff_report">staff report</a></li>
+<li><a href="/home.pl?mode=weekly_summary">weekly summary</a></li>
+<li><a href="/home.pl?mode=monthly_summary">monthly summary</a></li>
+<li><a href="/home.pl?mode=clients_summary">clients summary</a></li>
 </ul>
 
-<form action="home.pl" method="get">
+<form action="/home.pl" method="get">
 <p>
 <input type="hidden" name="mode" value="group_activity_summary" />
 group: <select name="group_name" class="big">
@@ -30,7 +30,7 @@ group: <select name="group_name" class="big">
 </p>
 </form>
 
-<form action="home.pl" method="get">
+<form action="/home.pl" method="get">
 <p>
 <input type="hidden" name="mode" value="group_plate" />
 group: <select name="group_name" class="big">

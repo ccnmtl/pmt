@@ -24,7 +24,7 @@ eval {
     for my $i (@{$items}) {
         $i->{description} ||= "";
         $rss->add_item(title => "$i->{type}: $i->{title} ($i->{project})",
-                       link => "http://$ENV{'SERVER_NAME'}/item.pl?iid=$i->{iid}",
+                       link => "http://$ENV{'SERVER_NAME'}/item/$i->{iid}/",
                        description => "<b>status:</b> $i->{status}, <b>target date:</b> $i->{target_date}<br />$i->{description}");
     }
 

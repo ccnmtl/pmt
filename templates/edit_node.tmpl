@@ -16,7 +16,7 @@
 </tmpl_if>
 
 <tmpl_if name="can_edit">
-<form action="home.pl" method="post">
+<form action="/home.pl" method="post">
 <input type="hidden" name="mode" value="edit_node" />
 <input type="hidden" name="nid" value="<tmpl_var name="nid">" />
 
@@ -42,7 +42,7 @@ wrap="virtual"><tmpl_var name="body" escape="html"></textarea>
 
 
 <tmpl_if name="can_delete">
-<tmpl_if name="can_delete"><a class="actionbutton" href="home.pl?mode=delete_node;nid=<tmpl_var name="nid" escape="url">">delete this post</a></tmpl_if>
+<tmpl_if name="can_delete"><a class="actionbutton" href="/home.pl?mode=delete_node;nid=<tmpl_var name="nid" escape="url">">delete this post</a></tmpl_if>
 </div>
 </tmpl_if>
 

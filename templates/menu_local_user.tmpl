@@ -4,18 +4,18 @@
 
 <h1 id="category">Users/Groups</h1>
 <ul>
-	<li><a href="home.pl?mode=my_groups">my groups</a></li>
-	<li><a href="home.pl?mode=all_groups">all groups</a></li>
-	<li><a href="home.pl?mode=users">all users</a></li>
+	<li><a href="/home.pl?mode=my_groups">my groups</a></li>
+	<li><a href="/home.pl?mode=all_groups">all groups</a></li>
+	<li><a href="/home.pl?mode=users">all users</a></li>
 </ul>
 
 <h1>view this user's:</h1>
 <ul>
-	<li><a href="home.pl?mode=client_search;contact=<tmpl_var name='user_username'>;status=active">clients</a></li>
-	<li><a href="home.pl?mode=total_breakdown;username=<tmpl_var name="user_username">">project breakdown</a></li>
-	<li><a href="home.pl?mode=user_plate;username=<tmpl_var name="user_username"
+	<li><a href="/home.pl?mode=client_search;contact=<tmpl_var name='user_username'>;status=active">clients</a></li>
+	<li><a href="/home.pl?mode=total_breakdown;username=<tmpl_var name="user_username">">project breakdown</a></li>
+	<li><a href="/home.pl?mode=user_plate;username=<tmpl_var name="user_username"
 escape="url">">plate</a></li>
-	<li><a href="home.pl?mode=forum_archive;username=<tmpl_var name="user_username">">log entries</a></li>
+	<li><a href="/home.pl?mode=forum_archive;username=<tmpl_var name="user_username">">log entries</a></li>
 </ul>
 
 <form>
@@ -23,16 +23,16 @@ escape="url">">plate</a></li>
 <ul>
 	<li><input id="calbox" type="hidden" /><a href="javascript:ViewNewCal('calbox','yyyymmdd')">calendar</a></li>
 
-	<li>search: <a href="search.pl">items</a></li>
-	<li><span class="hide">search:</span> <a href="home.pl?mode=project_search_form">projects</a></li>
-	<li><span class="hide">search:</span> <a href="home.pl?mode=client_search_form">clients</a></li>
+	<li>search: <a href="/search.pl">items</a></li>
+	<li><span class="hide">search:</span> <a href="/home.pl?mode=project_search_form">projects</a></li>
+	<li><span class="hide">search:</span> <a href="/home.pl?mode=client_search_form">clients</a></li>
 </ul>
 </form>
 
 <h1>this user's reports:</h1>
 <ul>
-	<li><a href="home.pl?mode=user_weekly_report;username=<tmpl_var name="user_username">">weekly report</a></li>
-	<li class="last"><a href="home.pl?mode=user_history;user=<tmpl_Var
+	<li><a href="/home.pl?mode=user_weekly_report;username=<tmpl_var name="user_username">">weekly report</a></li>
+	<li class="last"><a href="/home.pl?mode=user_history;user=<tmpl_Var
 name="user_username">">calendar: history</a></li>
 	<li class="last">total estimated time assigned: <b><tmpl_var name="total_estimated_time"></b> hr</li>
 </ul>

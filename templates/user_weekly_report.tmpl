@@ -5,7 +5,7 @@
 <!-- ===== PAGE MAIN CONTENT ===== -->
 <div class="pagecontent">
 
-<h1>REPORTS:  Weekly Report for: <a href="home.pl?mode=user;username=<tmpl_var
+<h1>REPORTS:  Weekly Report for: <a href="/home.pl?mode=user;username=<tmpl_var
 name="user_username" escape="url">"><tmpl_var name="user_fullname" escape="html"></a><br />
 <span class="hide">REPORTS:</span> &#62; for the week from 
 <strong><tmpl_var name="mon_year" escape="html">-<tmpl_var name="mon_month" escape="html">-<tmpl_var name="mon_day" escape="html"></strong>
@@ -16,10 +16,10 @@ escape="html">-<tmpl_var name="sun_day" escape="html"></strong>
 
 
 
-<p>&#60;&#60; <a href="home.pl?mode=user_weekly_report;year=<tmpl_var name="pm_year"
+<p>&#60;&#60; <a href="/home.pl?mode=user_weekly_report;year=<tmpl_var name="pm_year"
 escape="url">;month=<tmpl_var name="pm_month"
 escape="url">;day=<tmpl_var name="pm_day" escape="url">;username=<tmpl_var
-name="user_username" escape="url">">Previous week</a> -- <a href="home.pl?mode=user_weekly_report;year=<tmpl_var name="nm_year"
+name="user_username" escape="url">">Previous week</a> -- <a href="/home.pl?mode=user_weekly_report;year=<tmpl_var name="nm_year"
 escape="url">;month=<tmpl_var name="nm_month"
 escape="url">;day=<tmpl_var name="nm_day" escape="url">;username=<tmpl_var
 name="user_username" escape="url">">Next week</a> &#62;&#62;</p>
@@ -36,7 +36,7 @@ name="total_time" escape="html"> hours.</p>
 	</tr>
 <tr><th class="firstcell" colspan="2">project:</th><th colspan="2">time spent on project:</th></tr>
 <tmpl_loop name="active_projects">
-<tr><td class="firstcell" colspan="2"><a href="home.pl?mode=project;pid=<tmpl_var name="pid"
+<tr><td class="firstcell" colspan="2"><a href="/home.pl?mode=project;pid=<tmpl_var name="pid"
  escape="url">"><tmpl_var name="name" escape="html"></a></td>
 <td colspan="2"><tmpl_Var name="time" escape="html"></td></tr>
 </tmpl_loop>
@@ -60,11 +60,11 @@ name="total_time" escape="html"> hours.</p>
 <th>project:</th></tr>
 <tmpl_loop name="individual_times">
 <tr><td class="firstcell"><tmpl_var name="actual_time" escape="html"></td>
-<td><a href="item.pl?iid=<tmpl_var name="iid" escape="url">">#<tmpl_var
+<td><a href="/item/<tmpl_var name="iid" escape="url">/">#<tmpl_var
 name="iid" escape="html">: <tmpl_var
 name="title" escape="html"></a></td>
 <td><nobr><tmpl_var name="completed" escape="html"></nobr></td>
-<td><a href="home.pl?mode=project;pid=<tmpl_var name="pid"
+<td><a href="/home.pl?mode=project;pid=<tmpl_var name="pid"
 escape="url">"><tmpl_var name="project" escape="html"></a></td>
 </tr>
 </tmpl_loop>

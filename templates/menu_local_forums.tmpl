@@ -4,18 +4,18 @@
 
 <h1 id="category">Forums</h1>
 <ul>
-	<li><a href="home.pl?mode=forum">view forums</a></li>
-	<li><a href="home.pl?mode=post_form">post forum</a></li>
-   <li>track changes <a href="forum_feed.pl"><img class="rss" src="images/rss.png" alt="" border="0" /></a></li>
+	<li><a href="/home.pl?mode=forum">view forums</a></li>
+	<li><a href="/home.pl?mode=post_form">post forum</a></li>
+   <li>track changes <a href="/forum_feed.pl"><img class="rss" src="/images/rss.png" alt="" border="0" /></a></li>
 </ul>
 
 <h1>archives</h1>
 <ul>
-	<li><a href="home.pl?mode=forum_archive;type=posts">all posts</a></li>
+	<li><a href="/home.pl?mode=forum_archive;type=posts">all posts</a></li>
 <tmpl_if name="pid">
-	<li><a href="home.pl?mode=forum_archive;type=posts;pid=<tmpl_Var name="pid">">this project's posts</a></li>
+	<li><a href="/home.pl?mode=forum_archive;type=posts;pid=<tmpl_Var name="pid">">this project's posts</a></li>
 </tmpl_if>
-	<li><a href="home.pl?mode=forum_archive;type=logs">all log entries</a></li>
+	<li><a href="/home.pl?mode=forum_archive;type=logs">all log entries</a></li>
 </ul>
 
 
@@ -25,11 +25,11 @@
 <ul>
 	<li><form><input id="calbox" type="hidden" /><a href="javascript:ViewNewCal('calbox','yyyymmdd')">calendar</a></form></li>
 
-	<li>search: <a href="search.pl">items</a></li>
-	<li><span class="hide">search:</span> <a href="home.pl?mode=project_search_form">projects</a></li>
-	<li><span class="hide">search:</span> <a href="home.pl?mode=client_search_form">clients</a></li>
+	<li>search: <a href="/search.pl">items</a></li>
+	<li><span class="hide">search:</span> <a href="/home.pl?mode=project_search_form">projects</a></li>
+	<li><span class="hide">search:</span> <a href="/home.pl?mode=client_search_form">clients</a></li>
 	<li class="last">search forums:
-	<form action="home.pl" method="get">
+	<form action="/home.pl" method="get">
 	<input type="hidden" name="mode" value="search_forum" />
 	<input class="textform" name="searchWord" type="text" size="15" maxlength="40" id="search" />
 	<input type="submit" value="go" class="button" />

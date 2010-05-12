@@ -5,7 +5,7 @@
 <!-- ===== PAGE MAIN CONTENT ===== -->
 <div class="pagecontent">
 
-<h1>PROJECT: <a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
+<h1>PROJECT: <a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
 <span class="hide">PROJECT:</span> &#62; Project Milestones
 </h1>
 
@@ -42,7 +42,7 @@ function onLoad() {
   bandInfos[1].highlight = true;
 
   tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
-  Timeline.loadJSON("home.pl?mode=project_milestones_json;pid=<tmpl_var name="pid">",function(xml, url) { eventSource.loadJSON(xml, url); });
+  Timeline.loadJSON("/home.pl?mode=project_milestones_json;pid=<tmpl_var name="pid">",function(xml, url) { eventSource.loadJSON(xml, url); });
 }
 
 var resizeTimerID = null;
@@ -78,7 +78,7 @@ window.onresize = onResize;
 
 <tmpl_loop name="milestones">
 <tr>
-<td class="firstcell"><a href="home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="name" escape="html"></a></td>
+<td class="firstcell"><a href="/home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="name" escape="html"></a></td>
 <td class="<tmpl_var name="status">"><tmpl_var name="status"></td>
 <td><tmpl_var name="target_date"></td>
 <td><tmpl_var name="total_estimated_time"></td>
@@ -95,7 +95,7 @@ window.onresize = onResize;
 
 <h2>add milestone:</h2>
 
-<form action="home.pl" method="post">
+<form action="/home.pl" method="post">
 <input type="hidden" name="mode" value="add_milestone"/>
 <input type="hidden" name="pid" value="<tmpl_var name="pid">" />
 

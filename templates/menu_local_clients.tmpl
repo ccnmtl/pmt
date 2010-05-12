@@ -4,14 +4,14 @@
 
 <h1 id="category">clients</h1>
 <ul>
-	<li><a href="home.pl?mode=client_search;contact=<tmpl_var name="username" escape="url">;status=active">my clients</a></li>
-	<li><a href="home.pl?mode=all_clients">all clients</a></li>
-	<li><a href="home.pl?mode=new_clients">new clients</a></li>
+	<li><a href="/home.pl?mode=client_search;contact=<tmpl_var name="username" escape="url">;status=active">my clients</a></li>
+	<li><a href="/home.pl?mode=all_clients">all clients</a></li>
+	<li><a href="/home.pl?mode=new_clients">new clients</a></li>
 </ul>
 
 <h1>manage clients</h1>
 <ul>
-	<li><a href="home.pl?mode=add_client_form">add new client</a></li>
+	<li><a href="/home.pl?mode=add_client_form">add new client</a></li>
 </ul>
 
 <form>
@@ -24,16 +24,16 @@
 </tmpl_if>
 	<li><input id="calbox" type="hidden" /><a href="javascript:ViewNewCal('calbox','yyyymmdd')">calendar</a></li>
 
-	<li>search: <a href="search.pl">items</a></li>
-	<li><span class="hide">search:</span> <a href="home.pl?mode=project_search_form">projects</a></li>
-	<li><span class="hide">search:</span> <a href="home.pl?mode=client_search_form">clients</a></li>
+	<li>search: <a href="/search.pl">items</a></li>
+	<li><span class="hide">search:</span> <a href="/home.pl?mode=project_search_form">projects</a></li>
+	<li><span class="hide">search:</span> <a href="/home.pl?mode=client_search_form">clients</a></li>
 </ul>
 </form>
 
 <h1>reports</h1>
 
 <ul>
-	<li class="last"><a href="home.pl?mode=clients_summary">clients summary</a></li>
+	<li class="last"><a href="/home.pl?mode=clients_summary">clients summary</a></li>
 </ul>
 
 </div>

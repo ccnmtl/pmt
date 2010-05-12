@@ -28,7 +28,7 @@ eval {
         $i->{event_date_time} =~ /^(\d.*?)\./;
         my $date = $1;
         $rss->add_item(title => "$i->{title} ($i->{status})",
-                       link => "http://$ENV{'SERVER_NAME'}/item.pl?iid=$i->{iid}",
+                       link => "http://$ENV{'SERVER_NAME'}/item/$i->{iid}/",
                        description => "<small>$date</small><br />$i->{comment}<br />" .
                                       "<small>owner: <a href=\"" . 
                                       "http://$ENV{'SERVER_NAME'}/home.pl?mode=user;" .

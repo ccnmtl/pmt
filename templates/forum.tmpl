@@ -21,18 +21,18 @@
 <tmpl_loop name="posts">
 <div class="post">
 <a name="<tmpl_var name="nid">"> </a>
-<h2 class="nodesubject"><a href="home.pl?mode=node;nid=<tmpl_var name="nid">"><tmpl_var
+<h2 class="nodesubject"><a href="/home.pl?mode=node;nid=<tmpl_var name="nid">"><tmpl_var
 name="subject"></a></h2>
-<p class="byline">to project <a href="home.pl?mode=forum;pid=<tmpl_var
+<p class="byline">to project <a href="/home.pl?mode=forum;pid=<tmpl_var
 name="pid">"><tmpl_var name="project"></a> by <a
-href="home.pl?mode=user;username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a> @ <tmpl_var name="added"></p>
+href="/home.pl?mode=user;username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a> @ <tmpl_var name="added"></p>
 <div class="nodebody">
 <tmpl_var name="body">
 </div>
 <div class="replies"><tmpl_if name="replies">[<tmpl_var name="modified">]
-<a href="home.pl?mode=node;nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var
+<a href="/home.pl?mode=node;nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var
 name="replies"></a> | </tmpl_if><a
-href="home.pl?mode=node;nid=<tmpl_var name="nid">#addcomment">add a comment</a></div>
+href="/home.pl?mode=node;nid=<tmpl_var name="nid">#addcomment">add a comment</a></div>
 </div>
 </tmpl_loop>
 
@@ -48,12 +48,12 @@ href="home.pl?mode=node;nid=<tmpl_var name="nid">#addcomment">add a comment</a><
 <div id="logs">
 <h1>recent personal log entries</h1>
 <tmpl_loop name="logs">
-<div class="log"><a href="home.pl?mode=node;nid=<tmpl_var name="nid">"><tmpl_var
+<div class="log"><a href="/home.pl?mode=node;nid=<tmpl_var name="nid">"><tmpl_var
 name="added_informal"><tmpl_if name="subject">: <tmpl_var
 name="subject" escape="html"></tmpl_if></a> by <a
-href="home.pl?mode=user;username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a>
+href="/home.pl?mode=user;username=<tmpl_var name="author">"><tmpl_var name="author_fullname"></a>
 <tmpl_if name="replies"><div class="replies"><a
-href="home.pl?mode=node;nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var name="replies"></a></div></tmpl_if>
+href="/home.pl?mode=node;nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var name="replies"></a></div></tmpl_if>
 </div>
 </tmpl_loop>
 <div class="log">&#160;</div>
@@ -67,11 +67,11 @@ href="home.pl?mode=node;nid=<tmpl_Var name="nid">#comments">comments: <tmpl_var 
 <h1>recently modified items</h1>
 <table cellpadding="0" cellspacing="0" class="itemlisting">
 <tmpl_loop name="items">
-<tr><td class="firstcell"><a href="item.pl?iid=<tmpl_var
-name="iid">"><tmpl_unless name="title">[<tmpl_Var name="iid">]</tmpl_unless><tmpl_var
+<tr><td class="firstcell"><a href="/item/<tmpl_var
+name="iid">/"><tmpl_unless name="title">[<tmpl_Var name="iid">]</tmpl_unless><tmpl_var
 name="title"></a></td><td class="<tmpl_var name="status">"><tmpl_var
 name="status"></td></tr>
-<tr><td colspan="2" class="firstcell">in project: <a href="home.pl?mode=project;pid=<tmpl_var
+<tr><td colspan="2" class="firstcell">in project: <a href="/home.pl?mode=project;pid=<tmpl_var
 name="pid">"><tmpl_var name="project"></a></td></tr>
 </tmpl_loop>
 	<tr>

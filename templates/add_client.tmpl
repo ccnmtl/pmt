@@ -12,7 +12,7 @@
 
 <span class="hide">CLIENTS:</span> &#62; Client's E-mail</h1>
 
-<form action="home.pl" method="GET">
+<form action="/home.pl" method="GET">
 <input type="hidden" name="mode" value="add_client_form"/>
 <table cellpadding="0" cellspacing="0" class="pmtform" style="width: 500px;">
 <tr>
@@ -54,7 +54,7 @@ duplicate.</p>
 <tbody>
 <tmpl_loop name="existing_clients">
 <tr>
-<td class="firstcell"><a href="home.pl?mode=client;client_id=<tmpl_var name="client_id"
+<td class="firstcell"><a href="/home.pl?mode=client;client_id=<tmpl_var name="client_id"
 escape="url">"><tmpl_var name="firstname" escape="html"> <tmpl_var
 name="lastname" escape="html"></a></td>
 <td><tmpl_var name="email" escape="html"></td>
@@ -73,7 +73,7 @@ name="lastname" escape="html"></a></td>
 <br />
 </tmpl_if>
 
-<form action="home.pl" method="POST">
+<form action="/home.pl" method="POST">
 <input type="hidden" name="mode" value="add_client" />
 
 <table cellpadding="0" cellspacing="0" class="pmtform" style="width: 650px;">

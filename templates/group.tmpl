@@ -5,16 +5,16 @@
 <!-- ===== PAGE MAIN CONTENT ===== -->
 <div class="pagecontent">
 
-<h1>USERS/GROUPS: <!--<a href="home.pl?mode=user;username=<tmpl_var name="group" escape="url">">--><tmpl_var name="group_name"><br />
+<h1>USERS/GROUPS: <!--<a href="/home.pl?mode=user;username=<tmpl_var name="group" escape="url">">--><tmpl_var name="group_name"><br />
 <span class="hide">USERS/GROUPS:  </span> 
-<a class="actionbutton" href="home.pl?mode=group_activity_summary;group_name=<tmpl_var
+<a class="actionbutton" href="/home.pl?mode=group_activity_summary;group_name=<tmpl_var
 name="group" escape="url">">group activity summary</a>
 </h1>
 
 <tmpl_if name="users">
 <ul>
 <tmpl_loop name="users">
-<li><a href="home.pl?mode=user;username=<tmpl_var name="username"
+<li><a href="/home.pl?mode=user;username=<tmpl_var name="username"
 escape="url">"><tmpl_var name="fullname"></a></li>
 </tmpl_loop>
 </ul>
@@ -23,7 +23,7 @@ escape="url">"><tmpl_var name="fullname"></a></li>
 <br />
 
 <h2>update group:</h2>
-<form action="home.pl" method="post">
+<form action="/home.pl" method="post">
 <input type="hidden" name="mode" value="update_group" />
 <input type="hidden" name="group" value="<tmpl_var name="group">" />
 <select class="available" style="width: 290px;" name="users" multiple="multiple" size="10">

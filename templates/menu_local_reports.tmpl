@@ -4,8 +4,8 @@
 
 <h1 id="category">Reports</h1>
 <ul>
-	<li><a href="home.pl?mode=my_reports">my reports</a></li>
-	<li><a href="home.pl?mode=global_reports">global reports</a></li>
+	<li><a href="/home.pl?mode=my_reports">my reports</a></li>
+	<li><a href="/home.pl?mode=global_reports">global reports</a></li>
 </ul>
 
 <form>
@@ -13,21 +13,21 @@
 <ul>
 	<li><input id="calbox" type="hidden" /><a href="javascript:ViewNewCal('calbox','yyyymmdd')">calendar</a></li>
 
-	<li>search: <a href="search.pl">items</a></li>
-	<li><span class="hide">search:</span> <a href="home.pl?mode=project_search_form">projects</a></li>
-	<li><span class="hide">search:</span> <a href="home.pl?mode=client_search_form">clients</a></li>
+	<li>search: <a href="/search.pl">items</a></li>
+	<li><span class="hide">search:</span> <a href="/home.pl?mode=project_search_form">projects</a></li>
+	<li><span class="hide">search:</span> <a href="/home.pl?mode=client_search_form">clients</a></li>
 </ul>
 </form>
 <tmpl_if name="pid">
 <h1>this project's reports</h1>
 <ul>
-        <li>periodic: <a href="home.pl?mode=project_weekly_report;pid=<tmpl_var name="pid">">weekly</a></li>
-        <li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=1">monthly</a></li>
-        <li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=3">quarterly</a></li>
-        <li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=6">semestral</a></li>
-        <li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=12">annual</a></li>
-        <li class="last"><span class="hide">periodic: </span><a href="home.pl?mode=project_custom_report;pid=<tmpl_var name="pid">">custom</a></li>
-        <li>track changes <a href="project_feed.pl?pid=<tmpl_var name="pid">"><img class="rss" src="images/rss.png" alt="" border="0" /></a></li>
+        <li>periodic: <a href="/home.pl?mode=project_weekly_report;pid=<tmpl_var name="pid">">weekly</a></li>
+        <li><span class="hide">periodic: </span><a href="/home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=1">monthly</a></li>
+        <li><span class="hide">periodic: </span><a href="/home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=3">quarterly</a></li>
+        <li><span class="hide">periodic: </span><a href="/home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=6">semestral</a></li>
+        <li><span class="hide">periodic: </span><a href="/home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=12">annual</a></li>
+        <li class="last"><span class="hide">periodic: </span><a href="/home.pl?mode=project_custom_report;pid=<tmpl_var name="pid">">custom</a></li>
+        <li>track changes <a href="/project_feed.pl?pid=<tmpl_var name="pid">"><img class="rss" src="/images/rss.png" alt="" border="0" /></a></li>
 </ul>
 </tmpl_if>
 

@@ -4,34 +4,34 @@
 
 <h1 id="category">projects</h1>
 <ul>
-	<li><a href="home.pl?mode=my_projects">my projects</a></li>
-	<li><a href="home.pl?mode=all_projects">all projects</a></li>
-	<li><a href="home.pl?mode=add_project_form">create new project</a></li>
+	<li><a href="/home.pl?mode=my_projects">my projects</a></li>
+	<li><a href="/home.pl?mode=all_projects">all projects</a></li>
+	<li><a href="/home.pl?mode=add_project_form">create new project</a></li>
 </ul>
 
 <tmpl_if name="pid">
 <h1>manage project</h1>
 <ul>
-	<li><a href="home.pl?mode=project;pid=<tmpl_var name="pid">">main page</a></li>
-	<li>track changes<a href="project_feed.pl?pid=<tmpl_var name="pid" escape="url">">
-<img class="rss" src="images/rss.png" alt="RSS" border="0" /></a>
+	<li><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">">main page</a></li>
+	<li>track changes<a href="/project_feed.pl?pid=<tmpl_var name="pid" escape="url">">
+<img class="rss" src="/images/rss.png" alt="RSS" border="0" /></a>
 </li>
 	<li>add: <a
-        href="home.pl?mode=add_item_form;type=action;pid=<tmpl_var
+        href="/home.pl?mode=add_item_form;type=action;pid=<tmpl_var
         name="pid" escape="html">">action item</a></li>
-	<li><span class="hide">add:</span> <a href="home.pl?mode=add_item_form;type=bug;pid=<tmpl_var name="pid" escape="html">">bugs</a></li>
-	<li><span class="hide">add:</span> <a href="home.pl?mode=add_item_form;type=tracker;pid=<tmpl_var name="pid" escape="html">">tracker</a></li>
-	<li class="last"><span class="hide">add:</span> <a href="home.pl?mode=add_item_form;type=todo;pid=<tmpl_var name="pid" escape="html">">to do</a></li>
-	<li><a href="home.pl?mode=project_info;pid=<tmpl_var name="pid">">project information</a></li>
-	<li><a href="home.pl?mode=project_milestones;pid=<tmpl_var
+	<li><span class="hide">add:</span> <a href="/home.pl?mode=add_item_form;type=bug;pid=<tmpl_var name="pid" escape="html">">bugs</a></li>
+	<li><span class="hide">add:</span> <a href="/home.pl?mode=add_item_form;type=tracker;pid=<tmpl_var name="pid" escape="html">">tracker</a></li>
+	<li class="last"><span class="hide">add:</span> <a href="/home.pl?mode=add_item_form;type=todo;pid=<tmpl_var name="pid" escape="html">">to do</a></li>
+	<li><a href="/home.pl?mode=project_info;pid=<tmpl_var name="pid">">project information</a></li>
+	<li><a href="/home.pl?mode=project_milestones;pid=<tmpl_var
         name="pid">">milestones</a></li>
-	<li><a href="home.pl?mode=project_documents;pid=<tmpl_var
+	<li><a href="/home.pl?mode=project_documents;pid=<tmpl_var
         name="pid">">documents</a></li>
-	<li class="last"><a href="home.pl?mode=forum;pid=<tmpl_var name="pid" escape="html">">forum</a> | <a
+	<li class="last"><a href="/home.pl?mode=forum;pid=<tmpl_var name="pid" escape="html">">forum</a> | <a
         href="<tmpl_var name="wiki_base_url">/index.php/Category:<tmpl_var
         name="wiki_category" escape="url">">wiki</a></li>
 	<!-- <li class="last"><a
-        href="home.pl?mode=project_notification_form;pid=<tmpl_var
+        href="/home.pl?mode=project_notification_form;pid=<tmpl_var
         name="pid">">e-mail notification</a></li>
 	-->
 	<tmpl_if name="url">
@@ -50,24 +50,24 @@
 </tmpl_if>
 	<li><input id="calbox" type="hidden" /><a href="javascript:ViewNewCal('calbox','yyyymmdd')">calendar</a></li>
 
-	<li>search: <a href="search.pl">items</a></li>
-	<li><span class="hide">search:</span> <a href="home.pl?mode=project_search_form">projects</a></li>
-	<li><span class="hide">search:</span> <a href="home.pl?mode=client_search_form">clients</a></li>
+	<li>search: <a href="/search.pl">items</a></li>
+	<li><span class="hide">search:</span> <a href="/home.pl?mode=project_search_form">projects</a></li>
+	<li><span class="hide">search:</span> <a href="/home.pl?mode=client_search_form">clients</a></li>
 </ul>
 </form>
 <h1>reports</h1>
 
 <ul>
 <tmpl_if name="pid">
-	<li>periodic: <a href="home.pl?mode=project_weekly_report;pid=<tmpl_var name="pid">">weekly</a></li>
-	<li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=1">monthly</a></li>
-	<li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=3">quarterly</a></li>
-	<li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=6">semestral</a></li>
-	<li><span class="hide">periodic: </span><a href="home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=12">annual</a></li>
-   <li><span class="hide">periodic: </span><a href="home.pl?mode=project_custom_report;pid=<tmpl_var name="pid">">custom</a></li>
-	<li>calendar: <a href="project_cal.pl?pid=<tmpl_var name="pid">">target dates</a></li>
+	<li>periodic: <a href="/home.pl?mode=project_weekly_report;pid=<tmpl_var name="pid">">weekly</a></li>
+	<li><span class="hide">periodic: </span><a href="/home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=1">monthly</a></li>
+	<li><span class="hide">periodic: </span><a href="/home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=3">quarterly</a></li>
+	<li><span class="hide">periodic: </span><a href="/home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=6">semestral</a></li>
+	<li><span class="hide">periodic: </span><a href="/home.pl?mode=project_months_report;pid=<tmpl_var name="pid">&amp;num_months=12">annual</a></li>
+   <li><span class="hide">periodic: </span><a href="/home.pl?mode=project_custom_report;pid=<tmpl_var name="pid">">custom</a></li>
+	<li>calendar: <a href="/project_cal.pl?pid=<tmpl_var name="pid">">target dates</a></li>
 	<li class="last"><span class="hide">calendar:</span> <a
-        href="home.pl?mode=project_history;pid=<tmpl_var name="pid">">history</a></li>
+        href="/home.pl?mode=project_history;pid=<tmpl_var name="pid">">history</a></li>
 <li><table id="progressbar" cellpadding="0" cellspacing="0">
 <tr>
 <td width="<tmpl_var name="done">" class="done"><img src="http://www2.ccnmtl.columbia.edu/images/pixel.gif"

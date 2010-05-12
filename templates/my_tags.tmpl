@@ -6,10 +6,10 @@
 <div class="pagecontent">
 
 <h1>TAGS: My Tags</h1>
-<p>(<a href="home.pl?mode=all_tags">view tags for everyone</a>)</p>
+<p>(<a href="/home.pl?mode=all_tags">view tags for everyone</a>)</p>
 <h1 class="print">Tags for <tmpl_var name="username"></h1>
 
-<p><tmpl_loop name="tags"><a href="home.pl?mode=tag;tag=<tmpl_var
+<p><tmpl_loop name="tags"><a href="/home.pl?mode=tag;tag=<tmpl_var
 name="tag" escape="url">" class="cloud-level<tmpl_var name="level" escape="url">"><tmpl_var name="tag"
 escape="html"></a> | </tmpl_loop>
 </p>

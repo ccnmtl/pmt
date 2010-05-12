@@ -30,7 +30,7 @@ eval {
         my $r = $project->milestones_on("$year-$month-$item");
         foreach my $m (@$r) {
             my $h2 = new HTML::Element 'h3';
-            my $a = HTML::Element->new('a',href => "home.pl?mode=milestone;mid=$$m{mid}");
+            my $a = HTML::Element->new('a',href => "/home.pl?mode=milestone;mid=$$m{mid}");
             $a->push_content("MILESTONE: $$m{name}");
             $h2->push_content($a);
             $c->item($item)->push_content($h2);
@@ -38,7 +38,7 @@ eval {
         $r = $project->items_on("$year-$month-$item");
         foreach my $i (@$r) {
             my $p = new HTML::Element 'br';
-            my $a = HTML::Element->new('a',href => "item.pl?iid=$$i{iid}");
+            my $a = HTML::Element->new('a',href => "/item/$$i{iid}/");
             $a->push_content("$$i{type} #$$i{iid} $$i{title} ($$i{status})");
             $p->push_content($a);
             $c->item($item)->push_content($p);
@@ -83,7 +83,7 @@ if($@) {
             $E->isa('Error::AUTHENTICATION_FAILURE')) {
             print $cgi->redirect('login.pl');
         } elsif ($E->isa('Error::NO_PID')) {
-            print $cgi->redirect('home.pl');
+            print $cgi->redirect('/home.pl');
         } else {
             print $cgi->header(), "<h1>error:</h1><p>$E->{-text}</p>";
         }

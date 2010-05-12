@@ -5,16 +5,16 @@
 <!-- ===== PAGE MAIN CONTENT ===== -->
 <div class="pagecontent">
 
-<h1>PROJECTS: <a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a><br />
+<h1>PROJECTS: <a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a><br />
 <span class="hide">PROJECTS:</span> &#62;  View <span style="text-transform: capitalize;"><tmpl_var name="type"></span><br />
 <span class="hide">PROJECTS:</span> &#62; #<tmpl_var name="iid"> <tmpl_var name="title" escape="html"><br />
 <span class="hide">PROJECTS: &#62; </span> 
-<a class="actionbutton" href="home.pl?mode=delete_item;iid=<tmpl_var name="iid">">delete <tmpl_var name="type"></a>
+<a class="actionbutton" href="/home.pl?mode=delete_item;iid=<tmpl_var name="iid">">delete <tmpl_var name="type"></a>
 </h1>
 
 <br />
 
-<form action="home.pl" method="POST">
+<form action="/home.pl" method="POST">
 <input type="hidden" name="mode" value="update_item" />
 <input type="hidden" name="iid" value="<tmpl_var name="iid">" />
 
@@ -38,7 +38,7 @@
 <input type="text" class="textform" size="40" name="title" value="<tmpl_var name="title" escape="html">" /></td></tr>
 <tr>
 <th class="firstcell">project:</th>
-<td><a href="home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td></tr>
+<td><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td></tr>
 <tr>
 <th class="firstcell">milestone:</th>
 <td>
@@ -151,7 +151,7 @@ cols="40" rows="5"></textarea>
 
 
 <h2>Add Attachment</h2>
-<form action="home.pl" method="post" enctype="multipart/form-data">
+<form action="/home.pl" method="post" enctype="multipart/form-data">
 <input type="hidden" name="mode" value="add_attachment" />
 <input type="hidden" name="iid" value="<tmpl_var name="iid">" />
 
@@ -183,7 +183,7 @@ name="description"></textarea>
 <tmpl_if name="attachments">
 <h2>Delete Attachments</h2>
 
-<form action="home.pl" method="post">
+<form action="/home.pl" method="post">
 <input type="hidden" name="mode" value="delete_attachments"/>
 <input type="hidden" name="iid" value="<tmpl_var name="iid">"/>
 
@@ -194,7 +194,7 @@ name="description"></textarea>
 </tr>
 <tmpl_loop name="attachments">
 <tr><td class="firstcell"><input type="checkbox" name="del_<tmpl_var name="id" escape="html">" /></td>
-<td><a href="home.pl?mode=attachment;attachment_id=<tmpl_var name="id" escape="url">"><tmpl_var
+<td><a href="/home.pl?mode=attachment;attachment_id=<tmpl_var name="id" escape="url">"><tmpl_var
 name="title" escape="html"></a> <i>[<tmpl_var name="last_mod" escape="html">]</i>
 </td>
 <td><tmpl_if name="description"><tmpl_var name="description" escape="html"></tmpl_if>

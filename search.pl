@@ -87,7 +87,7 @@ eval {
                            );
             foreach my $i (@$r) {
                 $feed->add_item(title => $i->{title},
-                                link => "http://$ENV{'SERVER_NAME'}/item.pl?iid=$i->{iid}",
+                                link => "http://$ENV{'SERVER_NAME'}/item/$i->{iid}/",
                                 description => $i->{description});
             }
             print $cgi->header("text/xml"),$feed->as_string();
