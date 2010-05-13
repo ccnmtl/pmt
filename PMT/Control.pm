@@ -1415,8 +1415,6 @@ sub update_items {
                     $i->r_status($r_status); # prevent it from re-matching later
                 } elsif ($status eq "VERIFIED" && $i->status ne "VERIFIED") {
                     $comment .= "<b>verified</b><br />\n";
-                } elsif ($status eq "CLOSED" && $i->status ne "CLOSED") {
-                    $comment .= "<b>closed</b><br />\n";
                 } elsif ($status eq "INPROGRESS" && $i->status ne "INPROGRESS") {
                     $comment .= "<b>marked in progress</b><br />\n";
                 } else {

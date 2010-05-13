@@ -187,7 +187,7 @@ th {
 .OPEN { background-color: #cc0000; color: #ffffff; font-weight: bold;}
 .REOPENED { background-color: #cc0000; color: #ffffff; font-weight: bold;}
 .RESOLVED { background-color: #cc9900; color: #ffffff;font-weight: bold;}
-.VERIFIED { background-color: #9999cc; color: #ffffff;font-weight: bold;}
+.VERIFIED { background-color: #009900; color: #ffffff;font-weight: bold;}
 .CLOSED { background-color: #009900; color: #ffffff;font-weight: bold;}
 .UNASSIGNED { background-color: #ff6600; color: #ffffff; font-weight: bold;}
 

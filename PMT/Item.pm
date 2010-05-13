@@ -232,8 +232,7 @@ sub status_select {
                   RESOLVED_DUPLICATE  => 'RESOLVED (DUPLICATE)',
                   RESOLVED_WORKSFORME => 'RESOLVED (WORKSFORME)',
                   RESOLVED_NEEDINFO   => 'RESOLVED (NEEDINFO)',
-                  VERIFIED            => 'VERIFIED',
-                  CLOSED              => 'CLOSED');
+                  VERIFIED            => 'VERIFIED');
 
     my %options = (OPEN                => ['OPEN','INPROGRESS','RESOLVED_FIXED',
                                            'RESOLVED_INVALID','RESOLVED_WONTFIX',
@@ -271,8 +270,7 @@ sub status_select {
                                            'RESOLVED_WORKSFORME','RESOLVED_WONTFIX',
                                            'RESOLVED_DUPLICATE','RESOLVED_FIXED',
                                            'OPEN','VERIFIED'],
-                   VERIFIED            => ['VERIFIED','OPEN'],
-                   CLOSED              => ['CLOSED','OPEN']);
+                   VERIFIED            => ['VERIFIED','OPEN']);
     my $combined;
     if(defined($r_status) && $r_status ne "" && $status eq "RESOLVED") {
         $combined = $status . "_" . $r_status;
@@ -290,13 +288,8 @@ sub status_select {
 }
 
 sub close {
+    # no-op now
     my $self = shift;
-    my $user = shift;
-    if ($self->status eq "VERIFIED") {
-        $self->status('CLOSED');
-        $self->touch();
-        $self->add_event('CLOSED',"<b>milestone closed</b><br />",$user);
-    }
 }
 
 sub add_event {

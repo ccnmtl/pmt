@@ -277,9 +277,6 @@ sub compare_statuses {
         } elsif ($item->{status} eq "VERIFIED" && $old->{status} ne "VERIFIED") {
             $comment .= "<b>verified</b><br />\n";
             $message .= "verified. ";
-        } elsif ($item->{status} eq "CLOSED" && $old->{status} ne "CLOSED") {
-            $comment .= "<b>closed</b><br />\n";
-            $message .= "closed. ";
         } elsif ($item->{status} eq "INPROGRESS" && $old->{status} ne "INPROGRESS") {
             $comment .= "<b>marked in progress</b><br />\n";
             $message .= "marked in progress.  ";

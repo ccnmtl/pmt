@@ -125,9 +125,6 @@ sub close_milestone {
     if ($self->status ne "CLOSED") {
         $self->status('CLOSED');
         $self->update();
-        foreach my $i ($self->items()) {
-            $i->close($user);
-        }
     }
 
 }
