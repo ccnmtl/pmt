@@ -480,13 +480,13 @@ sub update_item {
             $old_milestone->update_milestone($user);
         }
         $i->update_email($item->{'type'} . " #" . $item->{'iid'} . " " . $item->{'title'} . " updated",
-                         "$comment---------------\n" . $item->{'comment'},$username);
+                         "$comment---------------\n" . dehtml($item->{'comment'}),$username);
     } elsif ($item->{'comment'} ne "") {
         # add comment if needed
         $i->add_comment($user,$item->{'comment'});
         if($changed == 0) {
             $i->update_email("comment added to " . $item->{'type'} . " #" . $item->{'iid'} . " " . $item->{'title'},
-                             $item->{'comment'},$username);
+                             dehtml($item->{'comment'}),$username);
             $message .= "comment added. ";
         }
     }

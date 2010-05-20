@@ -13,7 +13,7 @@ require Exporter;
                           paragraphize selectify escape get_template
                           todays_date scale_array ld diff diff_order
                           lists_diff truncate_string tasty_get
-                          tasty_delete tasty_put ldap_lookup
+                          tasty_delete tasty_put ldap_lookup dehtml
                           );
 
 sub scale_array {
@@ -669,6 +669,18 @@ sub get_uni_domain {
     use PMT::Config;
     my $config = new PMT::Config;
     return $config->{uni_domain};
+}
+
+# very quick and dirty approach to switching
+# the html that has been submitted in a comment 
+# (thanks to wmd.js) from going out in email as html.
+# for now it's good enough to just remove the '<p>' tags.
+
+sub dehtml {
+    my $string = shift;
+    $string =~ s{<p>}{}g;
+    $string =~ s{</p>}{}g;
+    return $string;
 }
 
 1;
