@@ -136,8 +136,14 @@ Add a Client by UNI: <input type="text" name="client_uni" size="5"/>
 
 <tr class="screenshow">
 <th class="firstcell">comment:</th>
-<td><textarea class="textform" name="comment" wrap="virtual"
-cols="40" rows="5"></textarea>
+<td>
+<div id="wmd-button-bar" class="wmd-panel"></div>
+      <br/>
+<textarea class="textform wmd-panel" name="comment" wrap="virtual"
+cols="40" rows="5" id="wmd-input" ></textarea>
+<br/>
+      <div id="wmd-preview" class="wmd-panel"></div>
+
 </td></tr>
 <tr class="screenshow">
 <!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" class="button" value="UPDATE <tmpl_var name="type">" /></td>
@@ -215,5 +221,6 @@ name="title" escape="html"></a> <i>[<tmpl_var name="last_mod" escape="html">]</i
 <!-- ===== END PAGE MAIN CONTENT ===== -->
 
 
+<script type="text/javascript" src="/js/wmd.js"></script>
 
 <tmpl_include name="footer.tmpl">

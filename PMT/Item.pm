@@ -87,7 +87,7 @@ sub resolve_times {
 
 __PACKAGE__->set_sql(history => qq{
 SELECT e.status,date_trunc('second',e.event_date_time) as event_date_time,
-c.username,u.fullname,c.comment
+c.username,u.fullname,c.comment,c.cid
 FROM events e, users u, comments c
 WHERE e.eid = c.event AND e.item = ? AND c.username = u.username
 ORDER BY e.event_date_time ASC;},'Main');
@@ -96,22 +96,15 @@ sub history {
     my $self = shift;
     my $sth = $self->sql_history;
     $sth->execute($self->iid);
-    use Text::Tiki;
-    my $tiki = new Text::Tiki();
     return [map {
         $_->{comment} = $_->{comment} || "";
-        $_->{comment} =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
-	$_->{comment} =~ s/(\w+)\+(\w+)\@/$1&plus;$2@/g; # workaround for second awful Text::Tiki bug
-        $_->{comment} = $tiki->format($_->{comment});
-        $_->{comment} =~ s{&lt;br /&gt;\s*}{\n}g;
-        $_->{comment} =~ s{&lt;(/?)b&gt;}{<$1b>}g;
         $_;
     } @{$sth->fetchall_arrayref({})}];
 }
 
 __PACKAGE__->set_sql(comments => qq{
 SELECT c.comment,date_trunc('second',c.add_date_time) as add_date_time,
-       c.username, u.fullname
+       c.username, u.fullname, c.cid
 FROM comments c, users u
 WHERE c.item = ? AND c.username = u.username
 ORDER BY c.add_date_time DESC;}, 'Main');
@@ -120,16 +113,65 @@ sub get_comments {
     my $self = shift;
     my $sth = $self->sql_comments;
     $sth->execute($self->iid);
-    use Text::Tiki;
-    my $tiki = new Text::Tiki();
     return [map {
         $_->{comment} = $_->{comment} || "";
-        $_->{comment} =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
-	$_->{comment} =~ s/(\w+)\+(\w+)\@/$1&plus;$2@/g; # workaround for second awful Text::Tiki bug
-        $_->{comment} = $tiki->format($_->{comment});
         $_;
     } @{$sth->fetchall_arrayref({})}];
 }
+
+__PACKAGE__->set_sql(all_items => qq{
+    SELECT i.iid 
+    FROM items i order by i.iid DESC;},
+                     'Main');
+
+sub all_items {
+    my $self = shift;
+    my $sth = $self->sql_all_items;
+    $sth->execute();
+    my %results = ();
+    return $sth->fetchall_arrayref({});
+}
+
+sub timed_out {
+    die "TIMED OUT";
+}
+
+sub detiki_comments {
+    my $self = shift;
+    use Text::Tiki;
+    use Data::Dumper;
+    my $tiki = new Text::Tiki();
+
+    my $sth = $self->sql_history;
+    $sth->execute($self->iid);
+    foreach my $comment (@{$sth->fetchall_arrayref({})}) {
+	my $text = $comment->{comment} || "";
+	if ($text =~ /^<p>/) {
+	    # guessing that it's already converted
+	    next;
+	}
+
+	$SIG{ALRM} = \&timed_out;
+	eval {
+	    alarm (10); # give it 10 seconds to complete. Text::Tiki likes to go into infinite loops on occasion.
+
+	    $text =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
+	    $text =~ s/(\w+)\+(\w+)\@/$1&plus;$2@/g; # workaround for second awful Text::Tiki bug
+	    $text = $tiki->format($text);
+	    $text =~ s{&lt;br /&gt;\s*}{\n}g;
+	    $text =~ s{&lt;(/?)b&gt;}{<$1b>}g;
+	    my $co = PMT::Comment->retrieve($comment->{cid});
+	    $co->comment($text);
+	    $co->update();
+	    alarm(0);           # Cancel the pending alarm if conversion succeeds
+	};
+	if ($@ =~ /TIMED OUT/) {
+	    print "Timed out. on comment ", $comment->{cid}, "\n";
+	}
+    }
+}
+
+
 
 sub data {
     my $self = shift;
