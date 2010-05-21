@@ -1179,14 +1179,14 @@ sub add_client_form {
         } else {
             $uni = "";
         }
+        my $ou = "not_retrieved";
         if ($uni ne "") {
             my $d = ldap_lookup($uni);
 
-            my $ou = "not_retrieved";
             if ($d->{found}) {
-		if ($d->{mail}) {
-		    $client_email  = $d->{mail}            || "";
-		} 
+                if ($d->{mail}) {
+                    $client_email  = $d->{mail}            || "";
+                } 
 
                 $lastname      = $d->{lastname}        || "";
                 $firstname     = $d->{"givenName;x-role-2"}  || $d->{"givenName"} || $d->{"firstname"} || "";
@@ -1196,52 +1196,54 @@ sub add_client_form {
             } else {
                 $lastname = $firstname = $title = $department = $school = $phone = "";
             }
-
-            $school =~ s/\s+$//;
-            $department =~ s/\s+$//;
-
-            $phone =~ s/[\n\r]/ /g;
-            $phone =~ s/\s+$//;
-            $client_email =~ s/\s//g;
-            $lastname =~ s/\s+$//;
-            $lastname =~ s/^(\w)(\w+)/"$1" . lc($2)/e;
-
-            $firstname =~ s/\s+$//;
-            $firstname =~ s/^(\w)(\w+)/"$1" . lc($2)/e;
-            # eliminate the duplication in the title
-            $title =~ s/\s{2,}.*$//;
-
-            my ($year,$mon,$mday) = todays_date();
-            my $users_select       = PMT::User::users_select($username);
-
-            my $departments_select = PMT::Client->all_departments_select($ou);
-
-            my $schools_select;
-
-            if ( PMT::Client::is_a_recognized_school($ou) ) { # if the OU is a recognized school name...
-              $schools_select = PMT::Client->all_schools_select($ou);
-            } else {
-              $schools_select = PMT::Client->all_schools_select("Arts & Sciences");
-            }
-            my $existing_clients   = PMT::Client->existing_clients($uni,$lastname);
-            $template->param(client_email       => $client_email,
-                             lastname           => $lastname,
-                             firstname          => $firstname,
-                             title              => $title,
-                             department         => $department,
-                             school             => $school,
-                             schools_select     => $schools_select,
-                             departments_select => $departments_select,
-                             phone              => $phone,
-                             users_select       => $users_select,
-                             year               => $year,
-                             month              => $mon,
-                             day                => $mday,
-                             existing_clients   => $existing_clients,
-                             ou                 => $ou,
-                             status             => $status
-            );
+        } else {
+            # Just so there's something to check existing users against
+            $uni = $client_email;
         }
+        $school =~ s/\s+$//;
+        $department =~ s/\s+$//;
+
+        $phone =~ s/[\n\r]/ /g;
+        $phone =~ s/\s+$//;
+        $client_email =~ s/\s//g;
+        $lastname =~ s/\s+$//;
+        $lastname =~ s/^(\w)(\w+)/"$1" . lc($2)/e;
+
+        $firstname =~ s/\s+$//;
+        $firstname =~ s/^(\w)(\w+)/"$1" . lc($2)/e;
+        # eliminate the duplication in the title
+        $title =~ s/\s{2,}.*$//;
+
+        my ($year,$mon,$mday) = todays_date();
+        my $users_select       = PMT::User::users_select($username);
+
+        my $departments_select = PMT::Client->all_departments_select($ou);
+
+        my $schools_select;
+
+        if ( PMT::Client::is_a_recognized_school($ou) ) { # if the OU is a recognized school name...
+          $schools_select = PMT::Client->all_schools_select($ou);
+        } else {
+          $schools_select = PMT::Client->all_schools_select("Arts & Sciences");
+        }
+        my $existing_clients   = PMT::Client->existing_clients($uni,$lastname);
+        $template->param(client_email       => $client_email,
+                         lastname           => $lastname,
+                         firstname          => $firstname,
+                         title              => $title,
+                         department         => $department,
+                         school             => $school,
+                         schools_select     => $schools_select,
+                         departments_select => $departments_select,
+                         phone              => $phone,
+                         users_select       => $users_select,
+                         year               => $year,
+                         month              => $mon,
+                         day                => $mday,
+                         existing_clients   => $existing_clients,
+                         ou                 => $ou,
+                         status             => $status
+        );
     }
     $template->param(clients_mode => 1);
     $template->param(page_title => 'add client');

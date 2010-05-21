@@ -604,10 +604,14 @@ sub truncate_string {
 sub ldap_lookup {
     use LWP::Simple;
     use JSON;
-    my $uni = shift;
-    my $json = new JSON;
-#    return $json->decode(get "http://cdap.ccnmtl.columbia.edu/?uni=$uni");
-    return $json->jsonToObj(get "http://cdap.ccnmtl.columbia.edu/?uni=$uni");
+    use PMT::Config;
+    my $config = new PMT::Config;
+    if ($config->{ldap_url}) {
+        my $uni = shift;
+        my $json = new JSON;
+#       return $json->decode(get "http://cdap.ccnmtl.columbia.edu/?uni=$uni");
+        return $json->jsonToObj(get $config->{ldap_url});
+    }
 }
 
 sub tasty_get {
