@@ -1,0 +1,79 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>ITEMS: Project Items<br />
+<span class="hide">ITEMS:</span> &#62; Edit Project Items</h1>
+
+<form action="/home.pl" method="post">
+<input type="hidden" name="mode" value="update_items" />
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr>
+<th class="firstcell">item:</th>
+<th>priority:</th>
+<th>status:</th>
+<th>assigned to:</th>
+<th>milestone:</th>
+<th>target date:</th>
+<th>resolve time:</th>
+</tr>
+<tmpl_loop name="milestones">
+<tmpl_loop name="items">
+<tr>
+<td class="firstcell"><input class="textform" size="30" type="text" name="title_<tmpl_var name="iid" escape="html">"
+value="<tmpl_var name="title" escape="html">" /></td>
+<td><select class="small" name="priority_<tmpl_var
+name="iid" escape="html">">
+<tmpl_loop name="priority_select">
+<option value="<tmpl_var name="value" escape="html">"<tmpl_if
+name="selected"> selected="selected"</tmpl_if>><tmpl_var
+name="label" escape="html"></option></tmpl_loop>
+</select></td>
+<td>
+<select class="medium" name="status_<tmpl_var name="iid" escape="html">">
+<tmpl_loop name="status_select">
+<option value="<tmpl_var name="value" escape="html">"<tmpl_if
+name="selected"> selected="selected"</tmpl_if>><tmpl_var
+name="label" escape="html"></option></tmpl_loop>
+<option value="someday">Someday/Maybe</option>
+</select>
+</td>
+<td><select class="xmedium" name="assigned_to_<tmpl_var name="iid" escape="html">">
+<tmpl_loop name="assigned_to_select">
+<option value="<tmpl_var name="value" escape="html">"<tmpl_if
+name="selected"> selected="selected"</tmpl_if>><tmpl_var
+name="label" escape="html"></option></tmpl_loop>
+</select></td>
+<td><select class="xmedium" name="milestone_<tmpl_var name="iid" escape="html">">
+<tmpl_loop name="milestone_select">
+<option value="<tmpl_var name="value" escape="html">"<tmpl_if
+name="selected"> selected="selected"</tmpl_if>><tmpl_var
+name="label" escape="html"></option></tmpl_loop>
+</select></td>
+<td><input id="target_date_<tmpl_var name="iid" escape="html">" class="textform" size="10" type="text" name="target_date_<tmpl_var name="iid" escape="html">" value="<tmpl_var name="target_date">" onclick="javascript:NewCal('target_date_<tmpl_var name="iid" escape="html">','yyyymmdd')" /></td>
+<td><input class="textform" size="10" type="text" name="resolve_time_<tmpl_var name="iid" escape="url">" /></td>
+</tr>
+</tmpl_loop>
+</tmpl_loop>
+	<tr class="screenshow">
+		<!-- ## Submit button --><td colspan="7" class="firstcell" align="center"><input class="button" type="submit" value="UPDATE ITEMS" /></td>
+	</tr>
+	<tr>
+		<!-- ## Closing row --><td colspan="7" class="end">&nbsp;</td>
+	</tr>
+</table>
+<input type="hidden" name="redirect" value="/home.pl?mode=project;pid=<tmpl_var name="pid">" />
+</form>
+
+
+
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

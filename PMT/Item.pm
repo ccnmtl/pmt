@@ -206,6 +206,8 @@ sub data {
         type_class           => $type_classes{$self->type},
         priority_select      => $self->priority_select(),
         status_select        => $self->status_select(),
+	assigned_to_select   => $self->assigned_to_select(),
+	milestone_select     => $self->milestone_select(),
         notify               => $notify,
     };
 }
@@ -327,6 +329,18 @@ sub status_select {
             selected => ($_ eq $combined),
         }
     } @{$options{$combined}}]
+}
+
+sub assigned_to_select {
+    my $self = shift;
+    my $project = $self->mid->pid;
+    return $project->assigned_to_select($self->assigned_to);
+}
+
+sub milestone_select {
+    my $self = shift;
+    my $project = $self->mid->pid;
+    return $project->milestone_select($self->mid);
 }
 
 sub close {

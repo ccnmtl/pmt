@@ -57,9 +57,9 @@ Track changes (RSS)<br />
 
 </p>
 
-
+<tmpl_if name="milestones">
 <h2>outstanding items:</h2>
-
+<p>[<a href="/home.pl?mode=edit_project_items_form;pid=<tmpl_var name="pid">">bulk edit</a>]</p>
 <table cellpadding="0" cellspacing="0" class="itemlisting">
 <tmpl_loop name="milestones">
 <tmpl_if name="items">
@@ -126,7 +126,7 @@ Track changes (RSS)<br />
 </tmpl_if>
 </tmpl_loop>
 </table>
-
+</tmpl_if>
 
 
 </div>

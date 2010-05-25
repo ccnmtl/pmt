@@ -68,6 +68,7 @@ sub setup {
         'add_attachment'         => 'add_attachment',
         'add_group'              => 'add_group',
         'edit_my_items_form'     => 'edit_my_items_form',
+        'edit_project_items_form' => 'edit_project_items_form',
         'project_info'           => 'project_info',
         'project_documents'      => 'project_documents',
         'project_milestones'     => 'project_milestones',
@@ -1362,6 +1363,8 @@ sub update_items {
             my $ass_to = PMT::User->retrieve($assigned_to);
             my $target_date = $params{"target_date_$iid"};
             my $resolve_time = $params{"resolve_time_$iid"};
+	    my $mid = $params{"milestone_$iid"};
+
             my $i = PMT::Item->retrieve($iid);
             my $r_status = "";
             ($status,$r_status) = split /_/, $status;
@@ -1449,6 +1452,15 @@ sub update_items {
             if ($resolve_time) {
                 $i->add_resolve_time($u,$resolve_time);
             }
+	    if ($mid) { # only check this if there's one in the params
+		my $milestone = PMT::Milestone->retrieve($mid);
+		if ($milestone->mid != $i->mid->mid) {
+		    $changed = 1;
+		    my $old_milestone = PMT::Milestone->retrieve($i->mid->mid);
+		    $old_milestone->update_milestone($u);
+		    $i->mid($mid);
+		}
+	    }
             if ($changed != 0) {
                 $i->add_event($status,$comment,$u);
                 my $milestone = $i->mid;
@@ -1462,7 +1474,8 @@ sub update_items {
         }
     }
     $self->header_type('redirect');
-    $self->header_props(-url => "/home.pl");
+    my $redirect = $params{"redirect"} || "/home.pl";
+    $self->header_props(-url => $redirect);
 }
 
 sub total_breakdown {
@@ -2442,6 +2455,51 @@ sub project {
     return $template->output();
 
 }
+
+sub edit_project_items_form {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $username = $self->{user}->username;
+    my ($year,$mon,$day) = todays_date();
+    my $pid    = $cgi->param('pid') || "";
+    my $sortby = $cgi->param('sortby') || $cgi->cookie("pmtsort") || "priority";
+    my $project = PMT::Project->retrieve($pid);
+    my $works_on = $project->project_role($username);
+    my %data = %{$project->data()};
+    my $caretaker = $project->caretaker;
+
+    $data{caretaker_fullname}   = $caretaker->fullname;
+    $data{caretaker_username}   = $caretaker->username;
+    $data{milestones}           = $project->project_milestones($sortby, $username);
+    $data{managers}             = [map {$_->data()} $project->managers()];
+    $data{developers}           = [map {$_->data()} $project->developers()];
+    $data{guests}               = [map {$_->data()} $project->guests()];
+    $data{total_remaining_time} = interval_to_hours($project->estimated_time);
+    $data{total_completed_time} = interval_to_hours($project->completed_time);
+    $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
+
+    my $table_width = 150;
+    ($data{done},$data{todo},$data{free},$data{completed_behind},$data{behind}) = $project->estimate_graph($table_width)
+;
+
+    if($works_on) {$data{$works_on} = 1;}
+    my $template = $self->template("edit_project_items.tmpl");
+    $template->param(\%data);
+
+    $template->param(proj_cc => $project->cc(PMT::User->retrieve($username)));
+    $template->param(page_title => "project: $data{name}",
+                     month      => $mon,
+                     year       => $year);
+
+    my $proj = PMT::Project->retrieve($pid);
+    $template->param(projects_mode => 1);
+    $self->header_add(-cookie => [$cgi->cookie(-name => "pmtsort",
+                                               -value => $sortby,
+                                               -path => '/',
+                                               -expires => "+10y")]);
+    return $template->output();
+}
+
 
 sub forum {
     my $self = shift;
