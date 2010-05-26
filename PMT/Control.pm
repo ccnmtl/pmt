@@ -255,51 +255,21 @@ sub my_projects {
     my $user = $self->{user};
     my $last_mods = PMT::Project->all_projects_by_last_mod();
     my %seen = ();
-    my $manager_projects = $user->projects_by_auth('manager');
+    my $projects = $user->workson_projects();
     my $wiki_base_url = PMT::Common::get_wiki_url();
-    $data->{manager_projects} = [map {
+    $data->{projects} = [map {
         $seen{$_} = 1;
         {
             pid      => $_,
-            name     => $manager_projects->{$_}{name},
+            name     => $projects->{$_}{name},
             last_mod => $last_mods->{$_},
             proj_cc  => $user->notify_projects($_),
-            wiki_category => $manager_projects->{$_}{wiki_category},
+            wiki_category => $projects->{$_}{wiki_category},
             wiki_base_url => $wiki_base_url,
         };
     } sort {
-        lc($manager_projects->{$a}) cmp lc($manager_projects->{$b});
-    } keys %{$manager_projects}];
-
-    my $developer_projects = $user->projects_by_auth('developer');
-    $data->{developer_projects} = [map {
-        $seen{$_} = 1;
-        {
-                    pid      => $_,
-                    name     => $developer_projects->{$_}{name},
-                    last_mod => $last_mods->{$_},
-                    proj_cc  => $user->notify_projects($_),
-                    wiki_category => $developer_projects->{$_}{wiki_category},
-                    wiki_base_url => $wiki_base_url,
-        };
-    } sort {
-        lc($developer_projects->{$a}) cmp lc($developer_projects->{$b});
-    } grep { !exists $seen{$_} } keys %{$developer_projects}];
-
-    my $guest_projects = $user->projects_by_auth('guest');
-    $data->{guest_projects} = [map {
-        {
-                    pid      => $_,
-                    name     => $guest_projects->{$_}{name},
-                    last_mod => $last_mods->{$_},
-                    proj_cc  => $user->notify_projects($_),
-                    wiki_category => $guest_projects->{$_}{wiki_category},
-                    wiki_base_url => $wiki_base_url,
-        };
-    } sort {
-        lc($guest_projects->{$a}) cmp lc($guest_projects->{$b});
-    } grep { !exists $seen{$_} } keys %{$guest_projects}];
-
+        lc($projects->{$a}) cmp lc($projects->{$b});
+    } keys %{$projects}];
 
     $template->param($data);
     $template->param('projects_mode' => 1);
@@ -347,7 +317,7 @@ sub add_project {
     my $project = PMT::Project->create({name => $name, pub_view => $pub_view,
                                         caretaker => $self->{user}, description => $description,
                                         status => 'planning', wiki_category => $wiki_category});
-    my $manager = PMT::WorksOn->create({username => $self->{user}->username, pid => $project->pid, auth => 'manager'});
+    my $manager = PMT::WorksOn->create({username => $self->{user}->username, pid => $project->pid});
 
     $project->add_milestone("Final Release",$target_date,"project completion");
 
@@ -407,9 +377,7 @@ sub project_search_form {
         approaches_select => PMT::Project::approaches_select(),
         scales_select => PMT::Project::scales_select(),
         distributions_select => PMT::Project::distribs_select(),
-        managers_select => PMT::WorksOn->works_on_select("manager"),
-        developers_select => PMT::WorksOn->works_on_select("developer"),
-        guests_select => PMT::WorksOn->works_on_select("guest"),
+        personnel_select => PMT::WorksOn->personnel_select(),
         status_select => PMT::Project::status_select(),
     );
     $template->param(projects_mode => 1);
@@ -1064,7 +1032,7 @@ sub delete_milestone_verify {
     <input type="hidden" name="verify" value="ok" />
     <input type="hidden" name="mid" value="$mid" />
     <input type="submit" value="delete" /><br />
-    (NOTE: only the manager(s) for the project may delete the milestone. you must delete or move all items attached to the milestone before you can delete it.)
+    (NOTE: You must delete or move all items attached to the milestone before you can delete it.)
     </form>
     </body>
     </html>
@@ -1113,9 +1081,6 @@ sub delete_project {
     my $cgi = $self->query();
     my $pid = $cgi->param('pid') || "";
     my $project = PMT::Project->retrieve($pid);
-    if($project->project_role($self->{username}) ne "manager") {
-        throw Error::PERMISSION_DENIED "only a manager may delete a project";
-    }
 
     my $really = $cgi->param('verify') || "";
     if ($really ne "ok") {
@@ -1142,7 +1107,7 @@ sub delete_project_verify {
     <input type="hidden" name="verify" value="ok" />
     <input type="hidden" name="pid" value="$pid" />
     <input type="submit" value="delete" /><br />
-    (NOTE: only the manager(s) for the project may delete the project. <b>WARNING!</b> deleting the project will delete all milestones and items in the project.)
+    <b>WARNING!</b> deleting the project will delete all milestones and items in the project.
     </form>
     </body>
     </html>
@@ -1628,9 +1593,7 @@ sub project_info {
     }
 
     $data{caretaker_fullname}   = $caretaker->fullname;
-    $data{managers}             = [map {$_->data()} $project->managers()];
-    $data{developers}           = [map {$_->data()} $project->developers()];
-    $data{guests}               = [map {$_->data()} $project->guests()];
+    $data{personnel}             = [map {$_->data()} $project->personnel()];
     $data{clients}              = $project->clients_data();
     $data{tags}                 = $project->tags();
     $data{total_remaining_time} = interval_to_hours($project->estimated_time);
@@ -1754,12 +1717,10 @@ sub add_services_item {
     my $project = PMT::Project->retrieve($pid);
     my %data = %{$project->data()};
 
-    $data{developers}           = [map {$_->data()} $project->developers()];
-
     $data{'milestone_select'} = $project->project_milestones_select();
     $data{'tags'}     = $project->tags();
     my $caretaker = $project->caretaker->username;
-    $data{'developers'}   = [map {{
+    $data{'personnel'}   = [map {{
             username => $_->username, fullname => $_->fullname,
             caretaker => ($caretaker eq $_->username),
         };
@@ -1808,6 +1769,11 @@ sub notify {
     return "changed notification for an item";
 }
 
+sub referer {
+    return $ENV{HTTP_REFERER} || "/home.pl";
+}
+    
+
 sub notify_project {
     my $self = shift;
     my $cgi = $self->query();
@@ -1824,7 +1790,7 @@ sub notify_project {
         $project->drop_cc($user);
     }
     $self->header_type('redirect');
-    $self->header_props(-url => "/home.pl?mode=project;pid=$pid");
+    $self->header_props(-url => referer());
     return "updated project notification";
 }
 
@@ -1841,9 +1807,7 @@ sub update_project {
     my $description = escape($cgi->param('description')) || "";
     my $caretaker   = escape($cgi->param('caretaker')) || "";
     my $pub_view    = ($cgi->param('pub_view') eq "public") ? 't' : 'f';
-    my @managers    = $cgi->param('managers');
-    my @developers  = $cgi->param('developers');
-    my @guests      = $cgi->param('guests');
+    my @personnel    = $cgi->param('personnel');
     my @clients     = $cgi->param('clients');
     my $status      = $cgi->param('status');
     my $projnum     = $cgi->param('projnum')    || "";
@@ -1863,9 +1827,7 @@ sub update_project {
                        name        => $name,
                        description => $description,
                        caretaker   => $caretaker,
-                       managers    => \@managers,
-                       developers  => \@developers,
-                       guests      => \@guests,
+                       personnel    => \@personnel,
                        clients     => \@clients,
                        pub_view    => $pub_view,
                        status      => $status,
@@ -1902,9 +1864,7 @@ sub update_project_form {
     my $project = PMT::Project->retrieve($pid);
 
     my %data = %{$project->data()};
-    $data{managers}             = [map {$_->data()} $project->managers()];
-    $data{developers}           = [map {$_->data()} $project->developers()];
-    $data{guests}               = [map {$_->data()} $project->guests()];
+    $data{personnel}             = [map {$_->data()} $project->personnel()];
     $data{caretaker_select}     = $project->caretaker_select();
     $data{all_non_personnel}    = $project->all_non_personnel_select();
     $data{statuses}             = $project->status_select();
@@ -2425,9 +2385,7 @@ sub project {
     $data{caretaker_fullname}   = $caretaker->fullname;
     $data{caretaker_username}   = $caretaker->username;
     $data{milestones}           = $project->project_milestones($sortby, $username);
-    $data{managers}             = [map {$_->data()} $project->managers()];
-    $data{developers}           = [map {$_->data()} $project->developers()];
-    $data{guests}               = [map {$_->data()} $project->guests()];
+    $data{personnel}             = [map {$_->data()} $project->personnel()];
     $data{total_remaining_time} = interval_to_hours($project->estimated_time);
     $data{total_completed_time} = interval_to_hours($project->completed_time);
     $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
@@ -2471,9 +2429,7 @@ sub edit_project_items_form {
     $data{caretaker_fullname}   = $caretaker->fullname;
     $data{caretaker_username}   = $caretaker->username;
     $data{milestones}           = $project->project_milestones($sortby, $username);
-    $data{managers}             = [map {$_->data()} $project->managers()];
-    $data{developers}           = [map {$_->data()} $project->developers()];
-    $data{guests}               = [map {$_->data()} $project->guests()];
+    $data{personnel}             = [map {$_->data()} $project->personnel()];
     $data{total_remaining_time} = interval_to_hours($project->estimated_time);
     $data{total_completed_time} = interval_to_hours($project->completed_time);
     $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
@@ -2732,9 +2688,7 @@ sub project_search {
     my $approach  = $cgi->param('approach') || "";
     my $scale     = $cgi->param('scale') || "";
     my $distrib   = $cgi->param('distrib') || "";
-    my $manager   = $cgi->param('manager') || "";
-    my $developer = $cgi->param('developer') || "";
-    my $guest     = $cgi->param('guest') || "";
+    my $personnel   = $cgi->param('personnel') || "";
     my $status    = $cgi->param('status') || "";
 
     my $template = $self->template("project_search_results.tmpl");
@@ -2743,9 +2697,7 @@ sub project_search {
                                                              approach => $approach,
                                                              scale => $scale,
                                                              distrib => $distrib,
-                                                             manager => $manager,
-                                                             developer => $developer,
-                                                             guest => $guest,
+                                                             personnel => $personnel,
                                                              status => $status,
                                                              )
                      );

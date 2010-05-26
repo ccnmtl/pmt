@@ -43,11 +43,10 @@ name="caretaker_username" escape="url">"><tmpl_var name="caretaker_fullname"></a
 <img class="rss" src="/images/rss.png" alt="RSS" border="0" /></a>
 Track changes (RSS)<br />
 
-
 	<tmpl_if name="proj_cc">
-	<input onclick="return submitForm(this.form)" type="checkbox" name="proj_notification" value="yes" checked />
+	<label><img src="/images/email.gif" alt="" width="14" height="11" alt="E-mail notification" /><input onclick="return submitForm(this.form)" type="checkbox" name="proj_notification" value="yes" checked /></label>
 	<tmpl_else>
-	<input onclick="return submitForm(this.form)" type="checkbox" name="proj_notification" value="yes" />
+	<label><img src="/images/noemail.gif" alt="" width="14" height="11" alt="E-mail notification" /><input onclick="return submitForm(this.form)" type="checkbox" name="proj_notification" value="yes" /></label>
  	</tmpl_if>
 	Notify me of all changes via e-mail</li>
    <span id="pleasewait"> (Changing notification... Please wait...)</span>

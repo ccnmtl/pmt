@@ -92,7 +92,6 @@ sub add_item {
     $item->update_tags($args{tags},$username);
     $item->add_clients(@{$args{clients}});
 
-    # add notification (owner, assigned_to, @managers)
     $item->add_notification();
 
     $item->add_event($status,"<b>$args{'type'} added</b>",$user);
@@ -575,9 +574,7 @@ sub edit_project {
         || throw Error::NO_NAME "no name specified in edit_project()";
     my $description = escape($args{description});
     my $caretaker   = untaint_username($args{caretaker});
-    my $mr          = $args{managers};
-    my $dr          = $args{developers};
-    my $gr          = $args{guests};
+    my $pr          = $args{personnel};
     my $cr          = $args{clients};
     my $pub_view    = $args{pub_view};
     my $status      = $args{status};
@@ -618,45 +615,21 @@ sub edit_project {
     my $got_caretaker = 0;
     # put them back in
 
-    # since people are bad about accidently selecting the same
-    # person as both a manager and a developer, we want things
-    # to fail gracefully if they do that. ie, we'll silently
-    # just not add them as the lower form.
-
     my %seen;
 
-    foreach my $manager (@$mr) {
-        next if $manager eq "-1";
-        next if $manager eq "";
-        next if $seen{$manager};
-        my $w = PMT::WorksOn->create({username => $manager,
-                                      pid => $project->pid, auth => 'manager'});
-        $seen{$manager} = 1;
-        $got_caretaker = 1 if $manager eq $caretaker;
+    foreach my $person (@$pr) {
+        next if $person eq "-1";
+        next if $person eq "";
+        next if $seen{$person};
+        my $w = PMT::WorksOn->create({username => $person, pid => $project->pid});
+        $seen{$person} = 1;
+        $got_caretaker = 1 if $person eq $caretaker;
     }
-    # make sure that at least the caretaker is a manager.
+    # make sure that at least the caretaker is on the project
     if(!$got_caretaker) {
-        my $w = PMT::WorksOn->create({username => $caretaker,
-                                      pid => $project->pid, auth => 'manager'});
+        my $w = PMT::WorksOn->create({username => $caretaker, pid => $project->pid});
         $seen{$caretaker} = 1;
     }
-    foreach my $developer (@$dr) {
-        next if $developer eq "";
-        next if $developer eq "-1";
-        next if $seen{$developer};
-        my $w = PMT::WorksOn->create({username => $developer,
-                                      pid => $project->pid, auth => 'developer'});
-        $seen{$developer} = 1;
-    }
-    foreach my $guest (@$gr) {
-        next if $guest eq "";
-        next if $guest eq "-1";
-        next if $seen{$guest};
-        my $w = PMT::WorksOn->create({username => $guest,
-                                      pid => $project->pid, auth => 'guest'});
-        $seen{$guest} = 1;
-    }
-
     $project->clients()->delete_all;
     foreach my $client (@$cr) {
         next if $client eq "";

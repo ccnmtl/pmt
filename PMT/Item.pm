@@ -429,7 +429,7 @@ sub cc {
 }
 
 # sets up notification for an item
-# owner, assigned_to, and all managers for project
+# owner, assigned_to
 # are added by default (without duplication)
 sub add_notification {
     my $self = shift;
@@ -445,14 +445,6 @@ sub add_notification {
 
     #assignees will be notified of anything regarding this item
     $notified{$assigned_to->username} = 1;
-
-    my $project = $self->mid->pid;
-    foreach my $m ($project->managers()) {
-        #check if manager wants to be notified of anything about this item
-        if ($self->project_notification($m) > 0) {
-            $notified{$m->username} = 1;
-        }
-    }
 
     my @notify = keys %notified;
     $self->notify(\@notify);

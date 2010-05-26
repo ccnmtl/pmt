@@ -216,12 +216,61 @@ sub projects_by_auth {
 # the user is attached to. searches recursively through
 # groups that the user is in. key is pid, value is project name.
 
+__PACKAGE__->set_sql(workson_projects => qq{
+        SELECT p.pid,p.name FROM works_on w, projects p
+            WHERE w.pid = p.pid
+            AND p.status <> 'Complete' AND p.status <> 'Deferred'
+            AND w.username = ?;
+    }, 'Main');
+
+sub workson_projects {
+    my $self = shift;
+    my $seen = shift;
+
+    if(!$seen) {
+        $seen = {};
+    }
+    if (exists $seen->{$self->username}) {
+        return {};
+    }
+
+    $seen->{$self->username} = 1;
+
+    # use a hash to automagically remove duplicates
+    my %projects = ();
+
+    my $sth = $self->sql_workson_projects;
+    $sth->execute($self->username);
+    # get the list of projects that this user
+    # is explicitly attached to
+    foreach my $p (@{$sth->fetchall_arrayref({})}) {
+        $projects{$p->{pid}} = {name => $p->{name}, wiki_category => $p->{wiki_category}};
+    }
+
+    # then, add in the projects for the groups that
+    # the user is part of.
+    foreach my $g (@{$self->user_groups()}) {
+        my $group_user = PMT::User->retrieve($g->{group});
+        my $group_projects = $group_user->workson_projects($seen);
+        foreach my $pid (keys %{$group_projects}) {
+            $projects{$pid} = $group_projects->{$pid};
+        }
+    }
+    return \%projects;
+
+}
+
+# returns a reference to a hashtable of projects that
+# the user is attached to. searches recursively through
+# groups that the user is in. key is pid, value is project name.
+
 __PACKAGE__->set_sql(projects => qq{
         SELECT p.pid,p.name FROM works_on w, projects p
             WHERE w.pid = p.pid
             AND p.status <> 'Complete' AND p.status <> 'Deferred'
             AND w.username = ?;
     }, 'Main');
+
 
 sub projects_hash {
     my $self = shift;

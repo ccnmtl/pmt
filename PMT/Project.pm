@@ -150,7 +150,7 @@ sub add_item_form {
 
     $data{'tags'}         = $self->tags();
     my $caretaker = $self->caretaker->username;
-    $data{'developers'}   = [map {{
+    $data{'personnel'}   = [map {{
             username => $_->username, fullname => $_->fullname,
             caretaker => ($_->username eq $caretaker),
         };
@@ -529,25 +529,12 @@ sub types_select {
     }
 }
 
-sub managers {
-    my $self = shift;
-    return grep { $_->status eq "active"} map {PMT::User->retrieve($_->username); }
-    PMT::WorksOn->search(pid => $self->pid, auth => 'manager');
-}
-
-sub developers {
-    my $self = shift;
-    return grep { $_->status eq "active"} map {PMT::User->retrieve($_->username) }
-    PMT::WorksOn->search(pid => $self->pid,
-        auth => 'developer');
-}
-
-sub guests {
+sub personnel {
     my $self = shift;
     return grep { $_->status eq "active" } map {PMT::User->retrieve($_->username) }
-    PMT::WorksOn->search(pid => $self->pid,
-        auth => 'guest');
+    PMT::WorksOn->search(pid => $self->pid);
 }
+
 
 sub personnel_in_project {
     my $self = shift;
@@ -682,32 +669,32 @@ sub caretaker_select {
             label => $_->fullname,
             selected => ($_->username eq $caretaker->username),
         }
-    } $self->managers()];
+    } $self->personnel()];
 }
 
 sub new_caretaker_select {
     my $self      = shift;
     my $potential = shift;
     my $caretaker = $self->caretaker;
-    my $managers = [map {
+    my $personnel = [map {
         {
             value => $_->username,
             label => $_->fullname,
             selected => ($_->username eq $potential->username),
         }
-    } grep {$_->username ne $caretaker->username} $self->managers()];
+    } grep {$_->username ne $caretaker->username} $self->personnel()];
 
-    if (!@$managers) {
-        $managers = [{value => $potential->username, label => $potential->fullname,
+    if (!@$personnel) {
+        $personnel = [{value => $potential->username, label => $potential->fullname,
                       selected => 1}];
     }
-    return $managers;
+    return $personnel;
 }
 
 
 sub all_non_personnel_select {
     my $self = shift;
-    my @selected = ($self->managers(),$self->developers(),$self->guests());
+    my @selected = ($self->personnel());
     my %selected = map {$_->username => 1} @selected;
 
     my @users = PMT::User->all_active();
@@ -825,14 +812,6 @@ sub drop_cc {
     foreach my $i (@$iids) {
         my $item = PMT::Item->retrieve($i->{iid});
         $item->drop_cc($user);
-#        my @res = PMT::Item->search(iid => $i->{iid},
-#                             assigned_to => $user->username);
-#       # remove user from notify if he is not assigned to the item
-#       #  ie if @res is empty
-#        if (@res < 1) {
-#            PMT::Notify->retrieve(iid => $i->{iid}, username =>
-#                $user->username)->delete;
-#        }
     }
 
     # 2) remove pid and username from notify_project table
@@ -924,7 +903,6 @@ sub set_caretaker {
     my $self = shift;
     my $caretaker = shift;
     $self->caretaker($caretaker);
-    # TODO: make sure caretaker is at least a manager on the project
 }
 
 sub projects_active_during {
@@ -988,10 +966,9 @@ sub project_search {
         push @conditions, "p.$k = ?";
         push @values, $args{$k};
     }
-    foreach my $k (qw/manager developer guest/) {
-        next unless $args{$k};
-        push @conditions, "p.pid in (select w.pid from works_on w where w.username = ? and w.auth = '$k')";
-        push @values, $args{$k};
+    if ($args{'personnel'}) {
+	push @conditions, "p.pid in (select w.pid from works_on w where w.username = ?)";
+        push @values, $args{'personnel'};
     }
     $sql .= " AND " if @conditions;
     $sql .= join " AND ", @conditions;

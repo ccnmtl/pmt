@@ -197,7 +197,7 @@ delete it like you would any other action item or bug.</p>
 <th rowspan="2" class="firstcell">assign to:</th>
 <td rowspan="2">
 <select class="available" style="width: 290px;" name="assigned_to" multiple size="6">
-<tmpl_loop name="developers">
+<tmpl_loop name="personnel">
 <option value="<tmpl_var name="username">"<tmpl_if name="caretaker"> selected="selected"</tmpl_if>><tmpl_var name="fullname"></option>
 </tmpl_loop>
 </select>

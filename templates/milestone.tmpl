@@ -7,17 +7,8 @@
 
 <h1>PROJECT: <a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a><br />
 <span class="hide">PROJECT:</span> &#62; Milestone: <tmpl_var name="name">
-<tmpl_if name="manager">
 <br /><span class="hide">PROJECT: &#62; </span>
-<a class="actionbutton" href="/home.pl?mode=edit_milestone_form;mid=<tmpl_var name="mid" escape="url">">edit
-milestone</a>
-<tmpl_else>
-<tmpl_if name="developer">
-<br /><span class="hide">PROJECT: &#62; </span>
-<a class="actionbutton" href="/home.pl?mode=edit_milestone_form;mid=<tmpl_var name="mid" escape="url">">edit
-milestone</a>
-</tmpl_if>
-</tmpl_if>
+<a class="actionbutton" href="/home.pl?mode=edit_milestone_form;mid=<tmpl_var name="mid" escape="url">">edit milestone</a>
 </h1>
 
 

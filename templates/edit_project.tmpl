@@ -14,7 +14,7 @@
 
 
 <form action="/home.pl" method="post"
-onsubmit="select_all(this.managers);select_all(this.developers);select_all(this.guests);select_all(this.clients)">
+onsubmit="select_all(this.personnel);select_all(this.clients)">
 <input type="hidden" name="mode" value="update_project" />
 <input type="hidden" name="pid" value="<tmpl_var name="pid">" />
 
@@ -181,7 +181,7 @@ name="label" escape="html"></option></tmpl_loop>
 <tr>
 <th class="firstcell" width="35%">Available staff:</th>
 <th width="15%">&#160;</th>
-<th width="50%">Current Managers:</th>
+<th width="50%">Current Personnel:</th>
 </tr>
 
 <tr>
@@ -192,62 +192,21 @@ name="label" escape="html"></option></tmpl_loop>
 </tmpl_loop>
 </select>
 </td>
-<td align="center" valign="middle"><!-- arrows for managers -->
-<input class="button" onclick="move(this.form.personnel_select, this.form.managers)" type="button" value="&gt;&gt;"/>
+<td align="center" valign="middle"><!-- arrows for personnel -->
+<input class="button" onclick="move(this.form.personnel_select, this.form.personnel)" type="button" value="&gt;&gt;"/>
 <br />
 <br />
-<input class="button" onclick="move(this.form.managers, this.form.personnel_select)" type="button" value="&lt;&lt;"/>
+<input class="button" onclick="move(this.form.personnel, this.form.personnel_select)" type="button" value="&lt;&lt;"/>
 </td>
-<td><!-- list of current managers -->
-<select class="activated" name="managers" size="5" multiple="multiple">
-<tmpl_loop name="managers">
+<td><!-- list of current personnel -->
+<select class="activated" name="personnel" size="5" multiple="multiple">
+<tmpl_loop name="personnel">
 <option value="<tmpl_var name="username" escape="html">"><tmpl_var name="fullname" escape="html"></option>
 </tmpl_loop>
 </select>
 </td>
 </tr>
 
-<tr>
-<th>&#160;</th>
-<th>Current Developers:</th>
-</tr>
-
-<tr>
-<td align="center" valign="middle"><!-- arrows for developers -->
-<input onclick="move(this.form.personnel_select, this.form.developers)" type="button" value="&gt;&gt;"/>
-<br />
-<br />
-<input onclick="move(this.form.developers, this.form.personnel_select)" type="button" value="&lt;&lt;"/>
-</td>
-<td><!-- list of current developers -->
-<select class="activated" name="developers" size="5" multiple="multiple">
-<tmpl_loop name="developers">
-<option value="<tmpl_var name="username" escape="html">"><tmpl_var name="fullname" escape="html"></option>
-</tmpl_loop>
-</select>
-</td>
-</tr>
-
-<tr>
-<th>&#160;</th>
-<th>Current Guests:</th>
-</tr>
-
-<tr>
-<td align="center" valign="middle"><!-- arrows for guests -->
-<input onclick="move(this.form.personnel_select, this.form.guests)" type="button" value="&gt;&gt;"/>
-<br />
-<br />
-<input onclick="move(this.form.guests, this.form.personnel_select)" type="button" value="&lt;&lt;"/>
-</td>
-<td><!-- list of current guests -->
-<select class="activated" name="guests" size="5" multiple="multiple">
-<tmpl_loop name="guests">
-<option value="<tmpl_var name="username" escape="html">"><tmpl_var name="fullname" escape="html"></option>
-</tmpl_loop>
-</select>
-</td>
-</tr>
 
 <tr>
 <!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>

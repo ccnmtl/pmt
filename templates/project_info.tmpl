@@ -109,32 +109,12 @@
 		</td>
 	</tr>
 	<tr>
-		<th>Managers:</th>
+		<th>Personnel:</th>
 		<td>
-		<tmpl_loop name="managers">
+		<tmpl_loop name="personnel">
 		<a href="/home.pl?mode=user;username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><tmpl_unless __LAST__>, </tmpl_unless></tmpl_loop>
 		</td>
 	</tr>
-	<tmpl_if name="developers">
-	<tr>
-		<th>Developers:</th>
-		<td>
-		<tmpl_loop name="developers">
-		<a href="/home.pl?mode=user;username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><tmpl_unless __LAST__>, </tmpl_unless>
-		</tmpl_loop>
-		</td>
-	</tr>
-	</tmpl_if>
-	<tmpl_if name="guests">
-	<tr>
-		<th>Guests:</th>
-		<td>
-		<tmpl_loop name="guests">
-		<a href="/home.pl?mode=user;username=<tmpl_var name="username">"><tmpl_var name="fullname"></a><tmpl_unless __LAST__>, </tmpl_unless>
-		</tmpl_loop>
-		</td>
-	</tr>
-	</tmpl_if>
 </table>
 
 
