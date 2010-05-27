@@ -20,6 +20,9 @@ my %content_types = (html => 'text/html',
                      gif => 'image/gif',
                      jpg => 'image/jpg',
                      png => 'image/png',
+		     csv => 'text/csv',
+		     zip => 'application/zip',
+		     xls => 'application/vnd.ms-excel',
                      mov => 'video/quicktime');
 
 sub data {
@@ -48,6 +51,8 @@ sub content_disposition {
                         xls => 1,
                         xml => 1,
                         pdf => 1,
+			csv => 1,
+			xls => 1,
                         mov => 1);
     return $dispositions{$self->type};
 }
