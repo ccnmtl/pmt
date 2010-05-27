@@ -154,7 +154,7 @@ name="milestone_select"><tmpl_include name="options_loop.tmpl"></tmpl_loop></sel
 <th class="firstcell">assign to:</th>
 <td>
 <select class="available" style="width: 290px;" name="assigned_to" multiple size="6">
-<tmpl_loop name="developers">
+<tmpl_loop name="personnel">
 <option value="<tmpl_var name="username">"<tmpl_if name="caretaker">
 selected="selected"</tmpl_if>><tmpl_var name="fullname"></option>
 </tmpl_loop></select>
