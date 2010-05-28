@@ -53,6 +53,7 @@ sub content_disposition {
                         pdf => 1,
 			csv => 1,
 			xls => 1,
+			zip => 1,
                         mov => 1);
     return $dispositions{$self->type};
 }
