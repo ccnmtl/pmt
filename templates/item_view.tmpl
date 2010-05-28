@@ -181,7 +181,11 @@ cols="40" rows="5" id="wmd-input" ></textarea>
 <ul>
 <tmpl_loop name="attachments">
 <li>
-<a href="/home.pl?mode=attachment;attachment_id=<tmpl_var name="id" escape="url">"><tmpl_varname="title" escape="html"></a> <i>[<tmpl_var name="last_mod" escape="html">]</i></li>
+<tmpl_if name="image">
+<img src="/home.pl?mode=attachment;attachment_id=<tmpl_var name="id" escape="url">" />
+<tmpl_else>
+<a href="/home.pl?mode=attachment;attachment_id=<tmpl_var name="id" escape="url">"><tmpl_varname="title" escape="html"></a></tmpl_if> <i>[<tmpl_var name="last_mod" escape="html">]</i></li>
+
 </tmpl_loop>
 </ul>
 </tmpl_if>

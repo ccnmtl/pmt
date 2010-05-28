@@ -31,7 +31,7 @@ sub data {
         id => $self->id, iid => $self->item_id->iid, filename =>
         $self->filename, title => $self->title, type => $self->type, url =>
         $self->url, description => $self->description, author => $self->author->username, last_mod =>
-        $self->last_mod,
+        $self->last_mod, image => $self->image(),
     };
 }
 
@@ -56,6 +56,12 @@ sub content_disposition {
 			zip => 1,
                         mov => 1);
     return $dispositions{$self->type};
+}
+
+sub image {
+    my $self = shift;
+    my %images = (jpg => 1, gif => 1, png => 1);
+    return exists $images{$self->type};
 }
 
 sub contents {
