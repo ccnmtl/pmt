@@ -808,19 +808,6 @@ sub error {
     my $message = shift;
 }
 
-# {{{ fatal
-# called when we can't figure out what else to do
-
-sub fatal {
-    my $self = shift;
-    my $message = shift || "";
-    print "content-type: text/html\n\n";
-    print "<h1>error:</h1><p>$message</p>";
-    $self->error($message);
-}
-
-# }}}
-
 sub DESTROY {
     my $self = shift;
     # check if it's defined first to get rid of some
