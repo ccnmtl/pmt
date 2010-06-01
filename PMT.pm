@@ -757,25 +757,6 @@ sub group_users_select_list {
 
 # }}}
 
-
-# {{{ update_group
-
-sub update_group {
-    my $self = shift;
-    my $group = untaint_username(shift);
-    my $users = shift;
-
-    my @u = PMT::Group->search({grp => $group});
-    foreach my $u (@u) {$u->delete()}
-
-    foreach my $u (@$users) {
-        my $g = PMT::Group->create({grp => $group, username => $u});
-    }
-
-}
-
-# }}}
-
 # }}}
 
 sub error {

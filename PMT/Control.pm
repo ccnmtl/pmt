@@ -938,10 +938,15 @@ sub update_group {
     my $self = shift;
     my $cgi = $self->query();
     my $pmt = $self->{pmt};
-    my $group = $cgi->param('group') || "";
+    my $group = untaint_username($cgi->param('group') || "");
     my @users = $cgi->param('users');
 
-    $pmt->update_group($group,\@users);
+    my @u = PMT::Group->search({grp => $group});
+    foreach my $u (@u) {$u->delete()}
+
+    foreach my $u (@users) {
+        my $g = PMT::Group->create({grp => $group, username => $u});
+    }
 
     $self->header_type('redirect');
     $self->header_props(-url => "/home.pl?mode=group;group=$group");
