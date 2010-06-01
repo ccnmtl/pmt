@@ -805,10 +805,6 @@ sub redirect_with_cookie {
 
 # {{{ --- logging functions
 
-sub debug {
-    my $self = shift;
-    my $message = shift;
-}
 sub error {
     my $self = shift;
     my $message = shift;

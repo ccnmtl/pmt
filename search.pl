@@ -61,7 +61,6 @@ eval {
     {
 
         my $current_time = time();
-        $pmt->debug("starting main query: $current_time");
 
         my $r = PMT::Item->search_items(pid => $pid, q => $q, type => $type, owner => $owner,
                                         assigned_to => $assigned_to, status => \@status, tag => $tag,
@@ -70,7 +69,6 @@ eval {
                                         max_mod_date => $max_mod_date, min_mod_date => $min_mod_date,
                                         show => \@show);
         $current_time = time();
-        $pmt->debug("finished main query: $current_time");
         my @items;
         my %shows;
 
@@ -98,7 +96,6 @@ eval {
                 (exists $shows{show_history}) ||
                 (exists $shows{show_time_on_task})) {
                 foreach my $i (@$r) {
-                    $pmt->debug("fetching item: " . time());
                     my $item = PMT::Item->retrieve($i->{iid});
                     my $r = $item->full_data();
                     my %data = %$r;
@@ -107,7 +104,6 @@ eval {
                       $data{resolve_times} = $item->resolve_times();
                     }
                     push @items, \%data;
-                    $pmt->debug("done fetching item: " . time());
                 }
             } else {
                 foreach my $i (@$r) {
