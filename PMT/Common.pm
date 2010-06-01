@@ -14,6 +14,7 @@ require Exporter;
                           todays_date scale_array ld diff diff_order
                           lists_diff truncate_string tasty_get
                           tasty_delete tasty_put ldap_lookup dehtml
+                          redirect_with_cookie
                           );
 
 sub scale_array {
@@ -686,5 +687,28 @@ sub dehtml {
     $string =~ s{</p>}{}g;
     return $string;
 }
+
+sub redirect_with_cookie {
+    my $cgi = shift;
+    my $url      = shift || throw Error::NO_URL "no url specified in redirect_with_cookie()";
+    my $username = shift || "";
+    my $password = shift || "";
+
+    my $lcookie = $cgi->cookie(-name => 'pmtusername',
+                               -value => $username,
+                               -path => '/',
+                               -expires => '+10y');
+    my $pcookie = $cgi->cookie(-name => 'pmtpassword',
+                               -value => $password,
+                               -path => '/',
+                               -expires => '+10y');
+    if($url ne "") {
+        print $cgi->redirect(-location => $url,
+                             -cookie => [$lcookie,$pcookie]);
+    } else {
+        print $cgi->header(-cookie => [$lcookie,$pcookie]);
+    }
+}
+
 
 1;

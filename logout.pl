@@ -1,11 +1,13 @@
 #!/usr/bin/perl -w
 use lib qw(.);
 use strict;
-use PMT;
+use PMT::Common;
 
-my $pmt = PMT->new();
+use CGI;
+my $cgi = CGI->new();
+
 eval {
-    $pmt->redirect_with_cookie("login.pl","","");
+    redirect_with_cookie($cgi,"login.pl","","");
 };
 
 

@@ -777,31 +777,6 @@ sub update_group {
 # }}}
 
 # }}}
-# {{{ redirect_with_cookie
-
-sub redirect_with_cookie {
-    my $self     = shift;
-    my $url      = shift || throw Error::NO_URL "no url specified in redirect_with_cookie()";
-    my $username = shift || "";
-    my $password = shift || "";
-
-    my $lcookie = $cgi->cookie(-name => 'pmtusername',
-                               -value => $username,
-                               -path => '/',
-                               -expires => '+10y');
-    my $pcookie = $cgi->cookie(-name => 'pmtpassword',
-                               -value => $password,
-                               -path => '/',
-                               -expires => '+10y');
-    if($url ne "") {
-        print $cgi->redirect(-location => $url,
-                             -cookie => [$lcookie,$pcookie]);
-    } else {
-        print $cgi->header(-cookie => [$lcookie,$pcookie]);
-    }
-}
-
-# }}}
 
 sub error {
     my $self = shift;

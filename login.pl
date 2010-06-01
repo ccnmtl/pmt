@@ -1,11 +1,9 @@
 #!/usr/bin/perl -w
 use lib qw(.);
 use strict;
-
-use PMT;
+use CGI;
 use PMT::Common;
-
-my $pmt = PMT->new();
+use PMT::User;
 my $cgi = CGI->new();
 
 eval {
@@ -15,12 +13,12 @@ eval {
         my $user = PMT::User->retrieve($username);
         if ($user) {
             $user->validate($username,$password);
-            $pmt->redirect_with_cookie("home.pl",$username,$password);
+            redirect_with_cookie($cgi,"home.pl",$username,$password);
         } else {
             print $cgi->header(), "user $username does not exist. are you sure you've entered it correctly (the PMT is case sensitive)?";
         }
     }
-    print_form($pmt,$cgi);
+    print_form($cgi);
 };
 if($@) {
     my $E = $@;
@@ -39,10 +37,10 @@ if($@) {
 }
 
 sub print_form {
-    my $pmt = shift;
     my $cgi = shift;
     print $cgi->header();
     my $template = get_template("login.tmpl");
     $template->param(page_title => "login to PMT");
     print $template->output();
 }
+
