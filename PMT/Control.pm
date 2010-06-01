@@ -1510,9 +1510,14 @@ sub edit_milestone {
     my $target_date = $cgi->param('target_date') || "";
     my $description = escape($cgi->param('description')) || "";
 
+    if ($cgi->param('inherit')) {
+	$milestone->update_item_target_dates($target_date);
+    }
+
     $milestone->set(name => $name, target_date => $target_date,
         description => $description);
     $milestone->update();
+
     $self->header_type("redirect");
     $self->header_props(-url => "/home.pl?mode=milestone;mid=$mid");
 }

@@ -107,6 +107,19 @@ sub unclosed_items {
     return \@items;
 }
 
+sub update_item_target_dates {
+    my $self = shift;
+    my $new_target_date = shift;
+
+    foreach my $item (PMT::Item->unclosed_items_in_milestone($self->mid)) {
+	if ($item->target_date == $self->target_date) {
+	    $item->set(target_date => $new_target_date);
+	    $item->update();
+	}
+    }
+
+}
+
 sub update_milestone {
     my $self = shift;
     my $user = shift;

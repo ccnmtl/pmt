@@ -25,7 +25,11 @@
 <tr><th class="firstcell">target date:</th><td><input type="text"
 class="textform" id="datebox"
 name="target_date" value="<tmpl_Var name="target_date">" size="15" 
-onclick="javascript:NewCal('datebox','yyyymmdd')" /><a href="javascript:NewCal('datebox','yyyymmdd')"><i>select date</i></a></td></tr>
+onclick="javascript:NewCal('datebox','yyyymmdd')" /><a href="javascript:NewCal('datebox','yyyymmdd')"><i>select date</i></a><br />
+<input type="checkbox" name="inherit" /> Also change the due dates on
+all items in this milestone which had the same due date as this
+milestone. 
+</td></tr>
 <tr><th class="firstcell">description:</th><td><textarea wrap="virtual"
 name="description" class="textform" cols="40" rows="8"><tmpl_Var name="description"></textarea>
 
