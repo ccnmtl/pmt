@@ -803,22 +803,10 @@ sub redirect_with_cookie {
 
 # }}}
 
-# {{{ --- logging functions
-
 sub error {
     my $self = shift;
     my $message = shift;
 }
-sub warn {
-    my $self = shift;
-    my $message = shift;
-}
-sub info {
-    my $self = shift;
-    my $message = shift;
-}
-
-# }}}
 
 # {{{ fatal
 # called when we can't figure out what else to do
