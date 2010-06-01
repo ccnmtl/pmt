@@ -803,20 +803,6 @@ sub redirect_with_cookie {
 
 # }}}
 
-# {{{ clean_username
-
-# removes whitespace and lowercases
-sub clean_username {
-    my $self = shift;
-    my $text = shift || return "";
-    $text =~ s/\W//g;
-    $text =~ tr/A-Z/a-z/;
-    return $text;
-}
-
-# }}}
-
-
 # {{{ --- logging functions
 
 sub debug {
