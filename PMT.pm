@@ -12,10 +12,6 @@ use PMT::Project;
 use PMT::Group;
 use PMT::Notify;
 use PMT::NotifyProject;
-use XML::Simple;
-use HTML::Template;
-use Text::Wrap;
-use Text::Tiki;
 
 package PMT;
 
@@ -754,8 +750,6 @@ sub group_users_select_list {
                  \%t;
              } PMT::User->all_active()];
 }
-
-# }}}
 
 # }}}
 
