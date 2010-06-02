@@ -100,30 +100,6 @@ sub add_item {
 
 # }}}
 
-# {{{ add_todo
-
-sub add_todo {
-    my $self = shift;
-    my %args = @_;
-
-    my $milestone = PMT::Milestone->retrieve($args{mid});
-    my $user = PMT::User->retrieve($args{owner});
-    my $item = PMT::Item->create({
-            type => 'action item', owner => $user, assigned_to => $user,
-            title => escape($args{title}), mid => $milestone, status =>
-            'OPEN', priority => 1, target_date => $args{'target_date'},
-            estimated_time => '0h'});
-
-    # add history event
-    $item->add_event('OPEN',"<b>$args{'type'} added</b>",$user);
-
-    # the milestone may need to be reopened
-    $milestone->update_milestone($user);
-
-}
-
-# }}}
-
 # pass in two hashrefs with the data for each item
 sub compare_items {
     my $self = shift;
