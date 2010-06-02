@@ -509,7 +509,8 @@ sub add_item {
                         tags         => \@tags,
                         clients      => \@new_clients,
                         estimated_time => $estimated_time);
-            $iid = PMT::Item->add_item(\%item);
+
+            $iid = PMT::Item::add_item(\%item);
 
             #By default, add the owner of an action item to its notify list.
                                                 my $add_cc_item = PMT::Item->retrieve($iid);
