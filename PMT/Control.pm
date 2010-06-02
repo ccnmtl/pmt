@@ -351,7 +351,6 @@ sub global_reports {
     my $template = $self->template("global_reports.tmpl");
     $template->param(reports_mode => 1);
     $template->param(page_title => "global reports");
-    my $pmt = $self->{pmt};
     $template->param(groups => PMT::User->groups());
     return $template->output();
 }
@@ -370,7 +369,6 @@ sub my_groups {
 sub project_search_form {
     my $self = shift;
     my $user = $self->{user};
-    my $pmt = $self->{pmt};
     my $template = $self->template("project_search_form.tmpl");
     $template->param(types_select => PMT::Project::types_select(),
         areas_select => PMT::Project::areas_select(),
@@ -603,7 +601,6 @@ sub add_trackers {
     my $self = shift;
     my $user = $self->{user};
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
     my @trackers = ();
     foreach my $i (1..10) {
         my $pid    = $cgi->param("pid$i") || "";
@@ -978,7 +975,6 @@ sub delete_item {
 sub update_group {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
     my $group = untaint_username($cgi->param('group') || "");
     my @users = $cgi->param('users');
 
@@ -1178,7 +1174,6 @@ sub add_client_form {
 
     my $user = $self->{user};
     my $username = $self->{username};
-    my $pmt = $self->{pmt};
 
     my $template = $self->template('add_client.tmpl');
 
@@ -1755,7 +1750,6 @@ sub project_timeline {
 sub add_services_item {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
     my $user = $self->{user};
     my $pid = $cgi->param('pid');
     my $type = $cgi->param('type') || "tracker";
@@ -1828,7 +1822,6 @@ sub referer {
 sub notify_project {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
     my $user = $self->{user};
     my $pid = $cgi->param('pid');
     my $project = PMT::Project->retrieve($pid);
@@ -1905,7 +1898,6 @@ sub update_project_form {
     my $self = shift;
     my $cgi = $self->query();
     my $pid = $cgi->param('pid');
-    my $pmt = $self->{pmt};
     my $user = $self->{user};
     my $username = $user->username;
 
@@ -1949,7 +1941,6 @@ sub update_project_form {
 
 sub search_forum {
     my $self = shift;
-    my $pmt = $self->{pmt};
     my $user = $self->{user};
     my $username = $user->username;
     my $cgi = $self->query();
@@ -1993,7 +1984,6 @@ sub set_tags {
 sub tag {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
     my $user = $self->{user};
     my $username = $user->username;
     my $tag     = $cgi->param('tag') || "";
@@ -2186,7 +2176,6 @@ sub update_item_form {
     my $self = shift;
     my $cgi = $self->query();
     my $iid = $cgi->param('iid');
-    my $pmt = $self->{pmt};
     my $user = $self->{user};
 
 
@@ -2303,7 +2292,6 @@ sub all_clients {
 
 sub all_groups {
     my $self = shift;
-    my $pmt = $self->{pmt};
     my $template = $self->template('groups.tmpl');
     $template->param(groups => PMT::User->groups());
     $template->param(page_title => "Groups");
@@ -2314,10 +2302,9 @@ sub all_groups {
 sub group {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
     my $group = $cgi->param('group') || "";
     my $template = $self->template('group.tmpl');
-    $template->param($pmt->group($group));
+    $template->param(group_info($group));
     $template->param(page_title => "Group: $group");
     $template->param(users_mode => 1);
     return $template->output();
@@ -2512,7 +2499,6 @@ sub forum {
     my $self = shift;
     my $cgi = $self->query();
     my $username = $self->{user}->username;
-    my $pmt = $self->{pmt};
     my $pid = $cgi->param('pid') || "";
     my $forum = new Forum($username);
     my $template = $self->template("forum.tmpl");
@@ -2537,7 +2523,6 @@ sub forum {
 sub node {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
     my $nid = $cgi->param('nid') || "";
     my $template = $self->template("node.tmpl");
     my $node = PMT::Node->retrieve($nid);
@@ -2551,7 +2536,6 @@ sub node {
 sub edit_node_form {
     my $self     = shift;
     my $cgi      = $self->query();
-    my $pmt      = $self->{pmt};
     my $nid      = $cgi->param('nid') || "";
     my $template = $self->template("edit_node.tmpl");
     my $node     = PMT::Node->retrieve($nid);
@@ -2565,7 +2549,6 @@ sub edit_node_form {
 sub edit_node {
     my $self     = shift;
     my $cgi      = $self->query();
-    my $pmt      = $self->{pmt};
     my $nid      = $cgi->param('nid') || "";
     my $subject  = escape($cgi->param('subject')) || "";
     my $body     = escape($cgi->param('body'))    || "";
@@ -2595,7 +2578,6 @@ sub edit_node {
 sub staff_report {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
     my ($year,$mon,$mday) = $self->get_date();
 
     my ($mon_year,$mon_month,$mon_day) = Monday_of_Week(Week_of_Year($year,$mon,$mday));
@@ -2768,7 +2750,6 @@ sub new_clients {
 sub project_search {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
     my $search = $cgi->param('search') || "";
 
     my $type      = $cgi->param('type') || "";
@@ -2867,7 +2848,6 @@ sub edit_client_form {
 sub client_search_form {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
     my $template = $self->template("client_search_form.tmpl");
     $template->param(schools => PMT::Client->all_schools());
     $template->param(departments => PMT::Client->all_departments());
@@ -2883,7 +2863,6 @@ sub client_search_form {
 sub client_search {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
 
     my $status = $cgi->param('status') || "%";
     my $department = $cgi->param('department') || "%";
@@ -3199,7 +3178,6 @@ sub summary_over_time {
 sub weekly_summary {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
 
     my ($year,$mon,$mday) = $self->get_date();
 
@@ -3230,7 +3208,7 @@ sub weekly_summary {
         grp_educationaltechnologists grp_video grp_management/;
     }
 
-    @groups = map { $pmt->group($_) } @groups;
+    @groups = map { group_info($_) } @groups;
     $template->param(groups => \@groups);
 
     $template->param(summary_over_time("$mon_year-$mon_month-$mon_day",
@@ -3250,10 +3228,44 @@ sub weekly_summary {
     return $template->output();
 }
 
+sub group_info {
+    my $group = untaint_username(shift);
+    my $gu = PMT::User->retrieve($group);
+    my $data = $gu->user_info();
+    $data->{group} = $group;
+    $data->{group_name} = $data->{user_fullname};
+    $data->{group_select_list} = group_users_select_list($group);
+    $data->{users} = [map {$_->data()} $gu->users_in_group()];
+    $data->{group_nice_name} = $data->{group_name};
+    $data->{group_nice_name} =~ s/\s+\(group\)\s*$//g;
+    return $data;
+}
+
+# creates a datastructure that can be used to
+# create a select list of users for a group.
+# lists every active user with
+#   value => their username
+#   label => their fullname
+#   selected => whether or not they are part of the group
+sub group_users_select_list {
+    my $group = untaint_username(shift);
+
+    my $g = PMT::User->retrieve($group);
+    my %in_group;
+    foreach my $u ($g->users_in_group()) {
+        $in_group{$u->username} = 1;
+    }
+    return [grep {$_->{value} ne $group}
+            map {my %t = (value => $_->username,
+                          label => $_->fullname,
+                          selected => exists $in_group{$_->username});
+                 \%t;
+             } PMT::User->all_active()];
+}
+
 sub monthly_summary {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
 
     my ($year,$mon,$mday) = $self->get_date();
 
@@ -3282,7 +3294,7 @@ sub monthly_summary {
     unless (@groups) {
         @groups = qw/grp_programmers grp_webmasters grp_educationaltechnologists grp_video grp_management/;
     }
-    @groups = map {$pmt->group($_) } @groups;
+    @groups = map {group_info($_) } @groups;
     $template->param(groups => \@groups);
     $template->param(summary_over_time("$mon_year-$mon_month-$mon_day",
 				       "$sun_year-$sun_month-$sun_day",
@@ -3305,7 +3317,6 @@ sub monthly_summary {
 sub yearly_review {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
 
     my ($year,$mon,$mday) = $self->get_date();
 
@@ -3326,7 +3337,7 @@ sub yearly_review {
     my $user = $self->{user};
 
     #check is user is a group
-    my $data = $pmt->group($user);
+    my $data = group_info($user);
     $template->param($user->weekly_report("$start_year-$start_month-$start_day",
                                                "$end_year-$end_month-$end_day"));
     $template->param(page_title => "yearly report for ${user}->{username}");
@@ -3475,7 +3486,6 @@ sub get_date {
 sub user_weekly_report {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
     my $user = $cgi->param('username') || "";
     my $view_user = PMT::User->retrieve($user);
     my ($year,$mon,$mday) = $self->get_date();
@@ -3502,7 +3512,7 @@ sub user_weekly_report {
                      );
 
     #check is user is a group
-    my $data = $pmt->group($user);
+    my $data = group_info($user);
     $template->param($view_user->weekly_report("$mon_year-$mon_month-$mon_day",
                                                "$sun_year-$sun_month-$sun_day"));
     $template->param(page_title => "weekly report for $user");

@@ -586,51 +586,6 @@ sub add_group {
 
 # }}}
 
-# {{{ group
-
-sub group {
-    my $self = shift;
-    my $group = untaint_username(shift);
-    my $gu = PMT::User->retrieve($group);
-    my $data = $gu->user_info();
-    $data->{group} = $group;
-    $data->{group_name} = $data->{user_fullname};
-    $data->{group_select_list} = $self->group_users_select_list($group);
-    $data->{users} = [map {$_->data()} $gu->users_in_group()];
-    $data->{group_nice_name} = $data->{group_name};
-    $data->{group_nice_name} =~ s/\s+\(group\)\s*$//g;
-    return $data;
-}
-
-# }}}
-
-# {{{ group_users_select_list
-
-# creates a datastructure that can be used to
-# create a select list of users for a group.
-# lists every active user with
-#   value => their username
-#   label => their fullname
-#   selected => whether or not they are part of the group
-sub group_users_select_list {
-    my $self = shift;
-    my $group = untaint_username(shift);
-
-    my $g = PMT::User->retrieve($group);
-    my %in_group;
-    foreach my $u ($g->users_in_group()) {
-        $in_group{$u->username} = 1;
-    }
-    return [grep {$_->{value} ne $group}
-            map {my %t = (value => $_->username,
-                          label => $_->fullname,
-                          selected => exists $in_group{$_->username});
-                 \%t;
-             } PMT::User->all_active()];
-}
-
-# }}}
-
 sub error {
     my $self = shift;
     my $message = shift;
