@@ -416,7 +416,6 @@ sub add_item {
     my $self = shift;
     my $user = $self->{user};
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
 
     my $username = $user->username;
 
@@ -1881,27 +1880,29 @@ sub update_project {
     my $distrib     = $cgi->param('distrib')    || "";
     my $poster      = $cgi->param('poster')     || "";
 
-    $pmt->edit_project(pid         => $pid,
-                       name        => $name,
-                       description => $description,
-                       caretaker   => $caretaker,
-                       personnel    => \@personnel,
-                       clients     => \@clients,
-                       pub_view    => $pub_view,
-                       status      => $status,
-                       projnum     => $projnum,
-                       type        => $type,
-                       area        => $area,
-                       url         => $url,
-                       restricted  => $restricted,
-                       approach    => $approach,
-                       info_url    => $info_url,
-                       entry_rel   => $entry_rel,
-                       eval_url    => $eval_url,
-                       scale       => $scale,
-                       distrib     => $distrib,
-                       poster      => $poster,
-                       );
+    my $project = PMT::Project->retrieve($pid);
+
+    $project->edit_project(pid         => $pid,
+			   name        => $name,
+			   description => $description,
+			   caretaker   => $caretaker,
+			   personnel    => \@personnel,
+			   clients     => \@clients,
+			   pub_view    => $pub_view,
+			   status      => $status,
+			   projnum     => $projnum,
+			   type        => $type,
+			   area        => $area,
+			   url         => $url,
+			   restricted  => $restricted,
+			   approach    => $approach,
+			   info_url    => $info_url,
+			   entry_rel   => $entry_rel,
+			   eval_url    => $eval_url,
+			   scale       => $scale,
+			   distrib     => $distrib,
+			   poster      => $poster,
+	);
 
     $self->header_type('redirect');
     $self->header_props(-url => "/home.pl?mode=project;pid=$pid");

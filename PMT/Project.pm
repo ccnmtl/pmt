@@ -164,6 +164,79 @@ sub add_item_form {
     return \%data;
 }
 
+sub edit_project {
+    my $self        = shift;
+    my %args = @_;
+    my $pid         = $args{pid};
+    my $name        = escape($args{name})
+        || throw Error::NO_NAME "no name specified in edit_project()";
+    my $description = escape($args{description});
+    my $caretaker   = untaint_username($args{caretaker});
+    my $pr          = $args{personnel};
+    my $cr          = $args{clients};
+    my $pub_view    = $args{pub_view};
+    my $status      = $args{status};
+    my $projnum     = $args{projnum} || 0;
+    my $area        = $args{area};
+    my $url         = $args{url} || "";
+    my $restricted  = $args{restricted};
+    my $approach    = $args{approach};
+    my $info_url    = $args{info_url} || "";
+    my $entry_rel   = $args{entry_rel};
+    my $eval_url    = $args{eval_url} || "";
+    my $scale       = $args{scale};
+    my $distrib     = $args{distrib};
+    my $type        = $args{type};
+    my $poster      = $args{poster};
+
+    $self->name($name);
+    $self->description($description);
+    $self->caretaker(PMT::User->retrieve($caretaker));
+    $self->pub_view($pub_view);
+    $self->status($status);
+    $self->projnum($projnum);
+    $self->area($area);
+    $self->url($url);
+    $self->restricted($restricted);
+    $self->approach($approach);
+    $self->info_url($info_url);
+    $self->entry_rel($entry_rel);
+    $self->eval_url($eval_url);
+    $self->scale($scale);
+    $self->distrib($distrib);
+    $self->type($type);
+    $self->poster($poster);
+
+    # clear users
+    $self->works_on()->delete_all();
+    my $got_caretaker = 0;
+    # put them back in
+
+    my %seen;
+
+    foreach my $person (@$pr) {
+        next if $person eq "-1";
+        next if $person eq "";
+        next if $seen{$person};
+        my $w = PMT::WorksOn->create({username => $person, pid => $self->pid});
+        $seen{$person} = 1;
+        $got_caretaker = 1 if $person eq $caretaker;
+    }
+    # make sure that at least the caretaker is on the project
+    if(!$got_caretaker) {
+        my $w = PMT::WorksOn->create({username => $caretaker, pid => $self->pid});
+        $seen{$caretaker} = 1;
+    }
+    $self->clients()->delete_all;
+    foreach my $client (@$cr) {
+        next if $client eq "";
+        my $p = PMT::ProjectClients->create({pid => $self->pid, client_id => $client});
+    }
+    $self->update();
+
+}
+
+
 
 sub data {
     my $self = shift;
