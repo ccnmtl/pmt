@@ -561,30 +561,6 @@ sub update_user {
 }
 
 # }}}
-# {{{ group stuff
-
-# {{{ add_group
-
-# adds a group. returns normalized group name.
-sub add_group {
-    my $self = shift;
-    my $group_name = shift;
-    my $normalized = $group_name;
-
-    $normalized =~ s/\W//g;
-    $normalized = "grp_$normalized";
-    $group_name = "$group_name (group)";
-    my $email = 'nobody@localhost';
-    my $password = 'nopassword';
-
-    my $u = PMT::User->create({username => $normalized, fullname => $group_name, email => $email,
-                               password => $password});
-    $u->grp('t');
-    $u->update();
-    return $normalized;
-}
-
-# }}}
 
 sub error {
     my $self = shift;
