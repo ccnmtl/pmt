@@ -2385,7 +2385,6 @@ sub milestone {
 sub user {
     my $self = shift;
     my $cgi = $self->query();
-    my $pmt = $self->{pmt};
     my $login = $self->{user}->username;
     my ($year,$mon,$day) = todays_date();
 
@@ -2407,7 +2406,7 @@ sub user {
         unless $data->{user_username};
     my $vu = PMT::User->retrieve($username);
     if ($data->{group}) {
-        $data->{users} = $pmt->users_in_group($username);
+        $data->{users} = $vu->users_in_group();
     } else {
         $data->{groups} = $vu->user_groups();
     }
