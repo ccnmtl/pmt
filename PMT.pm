@@ -100,33 +100,6 @@ sub add_item {
 
 # }}}
 
-# {{{ add_tracker
-
-sub add_tracker {
-    my $self = shift;
-    my %args = @_;
-
-    my $milestone = PMT::Milestone->retrieve($args{mid});
-    my $user = PMT::User->retrieve($args{owner});
-
-    my ($year,$mon,$mday) = todays_date();    
-    use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days/;
-    my ($mon_year,$mon_month,$mon_day) = Monday_of_Week(Week_of_Year($year,$mon,$mday));
-    my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,6);
-
-    my $target_date = "${sun_year}-${sun_month}-${sun_day}";
-    my $item = PMT::Item->create({
-            type => 'action item', owner => $user, assigned_to => $user,
-            title => escape($args{title}), mid => $milestone, status =>
-            'VERIFIED', priority => 1, target_date => $target_date,
-            estimated_time => $args{'time'}});
-    my $iid = $item->iid;
-
-    $item->add_clients(@{$args{clients}});
-    $item->add_resolve_time($user,$args{time},$args{completed});
-}
-
-# }}}
 # {{{ add_todo
 
 sub add_todo {
