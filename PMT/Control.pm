@@ -3125,6 +3125,40 @@ sub user_history {
     return $template->output();
 }
 
+sub summary_over_time {
+    # this used to be a "weekly summary" but was expanded
+    my $week_start = shift;
+    my $week_end = shift;
+    my $groups = shift;
+    my @GROUPS = @{$groups};
+    my @group_names = map {$_->{group}} @GROUPS;
+    my $projects = PMT::Project->projects_active_during($week_start,$week_end,\@group_names);
+    my $grand_total = interval_to_hours(PMT::ActualTime->interval_total_time($week_start,$week_end));
+
+    foreach my $p (@$projects) {
+        my $project = PMT::Project->retrieve($p->{pid});
+        $p->{group_times} = [map {{time =>
+                interval_to_hours($project->group_hours($_->{group},$week_start,$week_end))
+                || '-'};} @{$groups}];
+        $p->{total_time} = interval_to_hours($project->interval_total($week_start,$week_end));
+    }
+
+    my %data = (
+                total_time => $grand_total,
+                project_times => $projects,
+                );
+    $data{group_totals} = [map {
+        my $gu = PMT::User->retrieve($_->{group});
+        {
+            time => interval_to_hours($gu->total_group_time($week_start,$week_end)) || "-"
+            };
+    } @{$groups}];
+
+    return \%data;
+
+}
+
+
 sub weekly_summary {
     my $self = shift;
     my $cgi = $self->query();
@@ -3162,9 +3196,9 @@ sub weekly_summary {
     @groups = map { $pmt->group($_) } @groups;
     $template->param(groups => \@groups);
 
-    $template->param($pmt->weekly_summary("$mon_year-$mon_month-$mon_day",
-                                          "$sun_year-$sun_month-$sun_day",
-                                      \@groups));
+    $template->param(summary_over_time("$mon_year-$mon_month-$mon_day",
+				       "$sun_year-$sun_month-$sun_day",
+				       \@groups));
     $template->param(page_title => "Weekly Summary");
     my @values = ();
     my @labels = ();
@@ -3213,9 +3247,9 @@ sub monthly_summary {
     }
     @groups = map {$pmt->group($_) } @groups;
     $template->param(groups => \@groups);
-    $template->param($pmt->weekly_summary("$mon_year-$mon_month-$mon_day",
-                                          "$sun_year-$sun_month-$sun_day",
-                                      \@groups));
+    $template->param(summary_over_time("$mon_year-$mon_month-$mon_day",
+				       "$sun_year-$sun_month-$sun_day",
+				       \@groups));
     $template->param(page_title => "monthly summary");
     my @values = ();
     my @labels = ();
