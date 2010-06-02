@@ -90,7 +90,7 @@ sub unclosed_items {
     my $username = shift;
 
     #Min's changes to implement notification opt in/out
-    my @items = map {$_->data($username)} $self->unclosed_items();
+    my @items = map {$_->data($username)} $self->all_unclosed_items();
     if ($sortby eq "item") {
         @items = sort {$a->{iid} <=> $b->{iid}} @items;
     } elsif ($sortby eq "status" || $sortby eq "target_date" || $sortby eq
@@ -106,7 +106,7 @@ sub unclosed_items {
     return \@items;
 }
 
-sub unclosed_items {
+sub all_unclosed_items {
     my $self = shift;
     return PMT::Item->unclosed_items_in_milestone($self->mid);
 }
@@ -115,7 +115,7 @@ sub update_item_target_dates {
     my $self = shift;
     my $new_target_date = shift;
 
-    foreach my $item ($self->unclosed_items()) {
+    foreach my $item ($self->all_unclosed_items()) {
 	if ($item->target_date == $self->target_date) {
 	    $item->set(target_date => $new_target_date);
 	    $item->update();

@@ -31,6 +31,54 @@ my %PRIORITIES = (4 => 'CRITICAL', 3 => 'HIGH', 2 => 'MEDIUM', 1 => 'LOW',
 0 => 'ICING');
 
 
+sub add_item {
+    my $args = shift || throw Error::NO_ARGUMENTS "no arguments given to add_item()";
+    my %args = %$args;
+    my $status;
+    my $username = untaint_username($args{'owner'});
+    my $milestone = PMT::Milestone->retrieve($args{mid});
+    my $project = $milestone->pid;
+    my $user = PMT::User->retrieve($username);
+    my $owner = PMT::User->retrieve($args{owner});
+    my $assigned_to = PMT::User->retrieve($args{assigned_to});
+
+    if($args{'assigned_to'} eq 'caretaker') {
+        $args{'assigned_to'} = $project->caretaker->username;
+        $status = 'UNASSIGNED';
+    }
+    if(!$project->project_role($username)) {
+        # if the person submitting the item isn't on the project
+        # team, we need to add them as a guest on the project
+        my $w = PMT::WorksOn->create({username => $username,pid => $project->pid, auth => 'guest'});
+        $status = 'UNASSIGNED';
+    }
+
+    $status = $status || 'OPEN';
+
+    $args{priority} = $args{priority} || "0";
+
+    my $item = PMT::Item->create({
+            type => $args{type}, owner => $owner, assigned_to =>
+            $assigned_to, title => $args{title}, mid => $milestone, url =>
+            $args{url}, status => $status, description =>
+            escape($args{description}), priority => $args{priority},
+            target_date => $args{target_date}, estimated_time =>
+            $args{estimated_time}});
+
+    $item->update_tags($args{tags},$username);
+    $item->add_clients(@{$args{clients}});
+
+    $item->add_notification();
+
+    $item->add_event($status,"<b>$args{'type'} added</b>",$user);
+    $item->email("new $args{'type'}: $args{'title'}",$username);
+
+    # the milestone may need to be reopened
+    $milestone->update_milestone($user);
+    return $item->iid;
+}
+
+
 sub tags {
     my $self = shift;
     my $iid = $self->{iid};

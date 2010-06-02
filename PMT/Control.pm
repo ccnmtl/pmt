@@ -509,7 +509,7 @@ sub add_item {
                         tags         => \@tags,
                         clients      => \@new_clients,
                         estimated_time => $estimated_time);
-            $iid = $pmt->add_item(\%item);
+            $iid = PMT::Item->add_item(\%item);
 
             #By default, add the owner of an action item to its notify list.
                                                 my $add_cc_item = PMT::Item->retrieve($iid);
@@ -2436,6 +2436,7 @@ sub project {
     $data{caretaker_username}   = $caretaker->username;
     $data{milestones}           = $project->project_milestones($sortby, $username);
     $data{personnel}             = [map {$_->data()} $project->personnel()];
+    print STDERR "here\n";
     $data{total_remaining_time} = interval_to_hours($project->estimated_time);
     $data{total_completed_time} = interval_to_hours($project->completed_time);
     $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
