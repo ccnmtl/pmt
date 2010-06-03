@@ -321,6 +321,10 @@ sub add_project {
 
     $project->add_milestone("Final Release",$target_date,"project completion");
 
+    # call this for the side-effect that it will create a someday/maybe milestone
+    # for us since it doesn't exist
+    $project->someday_maybe_milestone();
+
     $self->header_type('redirect');
     $self->header_props(-url => "/home.pl?mode=project;pid=" . $project->pid);
     return "redirecting to new project page";

@@ -1072,11 +1072,8 @@ sub someday_maybe_milestone {
     my $self = shift;
     my @milestones = PMT::Milestone->search(pid => $self->pid, name => 'Someday/Maybe');
     if (scalar (@milestones)) {
-        print STDERR "returning existing\n";
-        print STDERR $milestones[0]->mid;
         return $milestones[0];
     } else {
-        print STDERR "creating new one\n";
         # no existing someday/maybe milestone. need to add one.
         my $m = $self->add_to_milestones({
             name        => 'Someday/Maybe',
