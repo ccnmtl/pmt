@@ -610,7 +610,8 @@ sub ldap_lookup {
     if ($config->{ldap_url}) {
         my $uni = shift;
         my $json = new JSON;
-       return $json->jsonToObj(get "http://cdap.ccnmtl.columbia.edu/?uni=$uni");
+	my $url = $config->{ldap_url} . $uni;
+       return $json->jsonToObj(get $url);
     }
 }
 
