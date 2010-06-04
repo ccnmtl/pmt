@@ -1278,6 +1278,7 @@ sub add_client {
 
     $title = substr($title,0,100);
     $phone = substr($phone,0,32);
+    my $client_id = "";
     if ($client_email ne "" && $lastname ne "") {
 
         my $contact = PMT::User->retrieve($contact_username);
@@ -1295,9 +1296,11 @@ sub add_client {
                 registration_date => $registration_date,
                 status            => $status,
             });
+	$client_id = $client->client_id;
     }
     $self->header_type('redirect');
-    $self->header_props(-url => "/home.pl?mode=add_client_form");
+    if ($client_id ne "") { $self->header_props(-url => "/home.pl?mode=client;client_id=${client_id}"); }
+    else { $self->header_props(-url => "/home.pl?mode=add_client_form"); }
 }
 
 sub post_form {
