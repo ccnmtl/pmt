@@ -1193,7 +1193,6 @@ sub add_client_form {
         my $ou = "not_retrieved";
         if ($uni ne "") {
             my $d = ldap_lookup($uni);
-
             if ($d->{found}) {
                 if ($d->{mail}) {
                     $client_email  = $d->{mail}            || "";
