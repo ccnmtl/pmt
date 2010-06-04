@@ -32,7 +32,7 @@ escape="url">;contact=<tmpl_var name="contact" escape="url">;offset=<tmpl_var
 name="next_offset" escape="url">;limit=<tmpl_var name="limit"
 escape="url">">more results &gt;&gt;</a></tmpl_if></p>
 
-<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1">
 <thead>
 <tr><th>client:</th><th>school:</th><th>department:</th><th>registered:</th><th>contact:</th><th>status:</th>
 <th width="120">latest
@@ -92,5 +92,10 @@ escape="url">">more results &gt;&gt;</a></tmpl_if></p>
 <!-- ===== END PAGE MAIN CONTENT ===== -->
 
 
+<script type="text/javascript"> 
+	$(function() {		
+		$("#table1").tablesorter();
+	});	
+	</script> 
 
 <tmpl_include name="footer.tmpl">

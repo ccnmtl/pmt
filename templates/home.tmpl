@@ -40,8 +40,7 @@
 <h2>outstanding items:</h2>
 
 <tmpl_if name="items">
-<table cellpadding="0" cellspacing="0" class="itemlisting" id="itemstable"
-onclick="sortColumn(event)">
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="itemstable">
 	<thead><tr>
 		<th nowrap="nowrap" class="firstcell">item:</th>
 		<th nowrap="nowrap">priority:</th>
@@ -81,5 +80,9 @@ onclick="sortColumn(event)">
 <!-- ===== END PAGE MAIN CONTENT ===== -->
 
 
-
+<script type="text/javascript"> 
+	$(function() {		
+		$("#itemstable").tablesorter();
+	});	
+	</script> 
 <tmpl_include name="footer.tmpl">

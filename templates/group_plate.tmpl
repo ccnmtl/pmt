@@ -84,7 +84,7 @@
 
 
 
-<table cellpadding="0" cellspacing="0" class="itemlisting" id="projectstable" onclick="sortColumn(event)">
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="projectstable">
 <thead><tr><th class="firstcell">project:</th><th class="Number">time: (hours)</th></tr></thead>
 <tbody>
 <tmpl_loop name="group_projects">
@@ -184,7 +184,7 @@
 </table>
 </td>
 <td style="border-bottom:0px;">
-<table cellpadding="0" cellspacing="0" class="itemlisting" id="projectstable" onclick="sortColumn(event)">
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="projectstable">
 <thead><tr><th class="firstcell">project:</th><th class="Number">time:</th></tr></thead>
 <tbody>
 <tmpl_loop name="projects">
@@ -199,7 +199,7 @@ name="project"></a></td>
 </tr>
 <tr>
 <td colspan="2">
-<table cellpadding="0" cellspacing="0" class="timescompleted" id="itemstable<tmpl_var name="username">" onclick="sortColumn(event)">
+<table cellpadding="0" cellspacing="0" class="timescompleted" id="itemstable<tmpl_var name="username">">
 <thead><tr><th class="firstcell">item:</th><th class="Number">priority:</th><th>status:</th><th>project:</th><th>target
 date:</th><th class="Number">estimated time:</th></tr></thead>
 <tbody><tmpl_loop name="items">
@@ -216,6 +216,12 @@ name="project"></a></td>
 </tr>
 </tmpl_loop></tbody>
 </table></td></tr>
+<script type="text/javascript"> 
+	$(function() {		
+		$("#itemstable<tmpl_var name="username">").tablesorter();
+	});	
+	</script> 
+
 </tmpl_loop>
 <tr>
 <!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
@@ -229,5 +235,6 @@ name="project"></a></td>
 <!-- ===== END PAGE MAIN CONTENT ===== -->
 
 
+<script type="text/javascript">$(function() {	$("#projectstable").tablesorter(); });</script> 
 
 <tmpl_include name="footer.tmpl">

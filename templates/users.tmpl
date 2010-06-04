@@ -7,7 +7,7 @@
 
 <h1>USERS/GROUPS: All Users</h1>
 
-<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1">
 <thead>
 <tr><th class="firstcell">staff:</th><th class="Number">assigned hours:</th><th class="Number"># open items:</th>
 <th class="Number">hours logged in the last week:</th></tr>
@@ -35,5 +35,10 @@
 <!-- ===== END PAGE MAIN CONTENT ===== -->
 
 
+<script type="text/javascript"> 
+	$(function() {		
+		$("#table1").tablesorter();
+	});	
+	</script> 
 
 <tmpl_include name="footer.tmpl">

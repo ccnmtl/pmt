@@ -1234,3 +1234,23 @@ table#progressbar .behind {
 textarea {width: 98%;}
 
 
+.pagecontent table.itemlisting thead th {
+	cursor: hand;
+	cursor: pointer;
+}
+
+th.headerSortUp { 
+    background-image: url(/images/up.gif); 
+    background-color: #3399FF; 
+} 
+
+th.headerSortDown { 
+    background-image: url(/images/down.gif); 
+    background-color: #3399FF; 
+} 
+
+th.header { 
+    cursor: pointer; 
+    background-repeat: no-repeat; 
+    background-position: center right; 
+} 

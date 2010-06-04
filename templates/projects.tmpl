@@ -7,7 +7,7 @@
 
 <h1>PROJECTS: All Projects</h1>
 
-<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1">
 <colgroup id="list" span="5">
 <col class="project"></col>
 <col class="status"></col>
@@ -52,5 +52,10 @@
 <!-- ===== END PAGE MAIN CONTENT ===== -->
 
 
+<script type="text/javascript"> 
+	$(function() {		
+		$("#table1").tablesorter();
+	});	
+	</script> 
 
 <tmpl_include name="footer.tmpl">

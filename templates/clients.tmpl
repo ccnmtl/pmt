@@ -15,7 +15,7 @@ escape="html"><tmpl_unless name="current"></a><tmpl_else></span></tmpl_unless> <
  
  
  
-<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1" onclick="sortColumn(event)">
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="table1">
 <thead>
 <tr>
 <th class="firstcell">name:</th>
@@ -65,5 +65,10 @@ escape="html"><tmpl_unless name="current"></a><tmpl_else></span></tmpl_unless> <
 <!-- ===== END PAGE MAIN CONTENT ===== -->
 
 
+<script type="text/javascript"> 
+	$(function() {		
+		$("#table1").tablesorter();
+	});	
+	</script> 
 
 <tmpl_include name="footer.tmpl">

@@ -16,8 +16,7 @@
 </tmpl_if>
 </h1>
 
-<table cellpadding="0" cellspacing="0" class="itemlisting"
-id="searchresults" onclick="sortColumn(event)">
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="searchresults">
 <thead><tr>
 <tmpl_if name="show_title"><th class="firstcell">item:</th></tmpl_if>
 <tmpl_if name="show_description"><th>description:</th></tmpl_if>
@@ -288,5 +287,10 @@ displayed when results are tab delimited)</td></tr>
 </div>
 <!-- ===== END PAGE MAIN CONTENT ===== -->
 
+<script type="text/javascript"> 
+	$(function() {		
+		$("#itemstable").tablesorter();
+	});	
+	</script> 
 
 <tmpl_include name="footer.tmpl">

@@ -57,8 +57,7 @@ escape="html"></a><tmpl_unless __LAST__>, </tmpl_unless>
 
 
 <tmpl_if name="items">
-<table cellpadding="0" cellspacing="0" class="itemlisting" id="itemstable"
-onclick="sortColumn(event)">
+<table cellpadding="0" cellspacing="0" class="itemlisting" id="itemstable">
   <thead>
     <tr>
       <th class="firstcell">item:</th>
@@ -96,5 +95,10 @@ name="r_status"><tmpl_else><tmpl_var name="status" escape="html"></tmpl_if></td>
 <!-- ===== END PAGE MAIN CONTENT ===== -->
 
 
+<script type="text/javascript"> 
+	$(function() {		
+		$("#itemstable").tablesorter();
+	});	
+	</script> 
 
 <tmpl_include name="footer.tmpl">
