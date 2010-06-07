@@ -334,7 +334,7 @@ sub update_item {
     # update what needs it
 
     # just make sure the owner/assignee are on the cc list no matter what
-    $item->setup_default_notification();
+    $i->setup_default_notification();
 
     if($item->{'resolve_time'} ne "") {
         $i->add_resolve_time($user,$item->{'resolve_time'});
