@@ -118,10 +118,10 @@ escape="url">"><tmpl_var name="fullname" escape="html"></a></td>
 <br />
 
 <h2>piegraph:</h2>
-<img
-src="http://www2.ccnmtl.columbia.edu/graph/piegraph.pl?pie_height=20;start_angle=270;<tmpl_loop name="active_users">l=<tmpl_var name="fullname" escape="url">;</tmpl_loop><tmpl_loop name="active_users">s1=<tmpl_var name="hours" escape="url">;</tmpl_loop>color=%23ffcccc"
-width="400" height="300" alt="" />
 
+<img src="http://chart.apis.google.com/chart?cht=p3&amp;chco=3366ff&amp;chp=1&amp;chs=800x300&amp;chds=0,<tmpl_var name="max_time">&amp;chd=t:<tmpl_loop name="active_users"><tmpl_var name="hours"
+																								      escape="url"><tmpl_unless __last__>,</tmpl_unless></tmpl_loop>&amp;chl=<tmpl_loop name="active_users"><tmpl_var name="fullname" escape="url">|</tmpl_loop>"
+width="800" height="300" alt="" />
 
 <tmpl_else>
 <p>No work was done on this project for the specified <tmpl_var name="time_period">.</p>
