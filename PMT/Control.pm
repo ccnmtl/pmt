@@ -2602,6 +2602,13 @@ sub staff_report {
     my ($pm_year,$pm_month,$pm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,-7);
     my ($nm_year,$nm_month,$nm_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,7);
 
+    my $previous_week = $cgi->param('previous_week') || 0;
+    if ($previous_week) {
+	$self->header_type('redirect');
+	$self->header_props(-url => "/home.pl?mode=staff_report;year=${pm_year};month=${pm_month};day=${pm_day}");
+	return;
+    }
+
     my $template = $self->template("staff_report.tmpl");
 
     $template->param(
