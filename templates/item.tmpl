@@ -20,30 +20,30 @@
 
 
 
-<script type="text/javascript" language="JavaScript">
-if ('<tmpl_var name="assigned_to">'=='<tmpl_var name="username">') {
-document.write('<p id="ie6special" style="width: 710px; text-align: right;">');
-document.write('<img src="/images/checked.gif" width="16" height="16" hspace="0" vspace="0" align="top"> <span style="color:#999;">Notify me of changes in this <tmpl_var name="type"></span>');
-document.write('</p>');
-}
-else {
-document.write('<form action="/home.pl" method="POST" class="pclayer">'); 
-document.write('<input type="hidden" name="mode" value="notify">');
-document.write('<input type="hidden" name="iid" value="<tmpl_var name="iid">" />');
-document.write('<tmpl_if name="cc">');
-document.write('<p id="ie6special" style="width: 710px; text-align: right;">');
-document.write('<span id="pleasewait"> (Changing notification... Please wait...)</span>');
-document.write('<input onclick="return submitForm(this.form)" type="checkbox" name="email_notification" value="yes" checked /> Notify me of changes in this <tmpl_var name="type"> ');
-document.write('</p>');
-document.write('<tmpl_else>');
-document.write('<p id="ie6special" style="width: 710px; text-align: right;">');
-document.write('<span id="pleasewait"> (Changing notification... Please wait...)</span>');
-document.write('<input onclick="return submitForm(this.form)" type="checkbox" name="email_notification" value="yes" /> Notify me of changes in this <tmpl_var name="type"> ');
-document.write('</p>');
-document.write('</tmpl_if>');
-document.write('</form>');
-}
-</script>
+
+<tmpl_if name="assignee">
+<!-- they must be on cc list. -->
+<p id="ie6special" style="width: 710px; text-align: right;">
+<img src="/images/checked.gif" width="16" height="16" hspace="0" vspace="0" align="top"> <span style="color:#999;">Notify me of changes in this <tmpl_var name="type"></span>
+</p>
+<tmpl_else>
+<form action="/home.pl" method="POST" class="pclayer">
+<input type="hidden" name="mode" value="notify">
+<input type="hidden" name="iid" value="<tmpl_var name="iid">" />
+<tmpl_if name="notify">
+<p id="ie6special" style="width: 710px; text-align: right;">
+<span id="pleasewait"> (Changing notification... Please wait...)</span>
+<input onclick="return submitForm(this.form)" type="checkbox" name="email_notification" value="yes" checked /> Notify me of changes in this <tmpl_var name="type">
+</p>
+<tmpl_else>
+<p id="ie6special" style="width: 710px; text-align: right;">
+<span id="pleasewait"> (Changing notification... Please wait...)</span>
+<input onclick="return submitForm(this.form)" type="checkbox" name="email_notification" value="yes" /> Notify me of changes in this <tmpl_var name="type">
+</p>
+</tmpl_if>
+</form>
+
+</tmpl_if>
 
 <tmpl_include name="item_view.tmpl">
 

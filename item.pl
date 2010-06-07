@@ -29,7 +29,7 @@ eval {
     my %data;
     eval {
         $item = PMT::Item->retrieve($iid);
-        %data = %{$item->data()};
+        %data = %{$item->data($username)};
     };
     if ($@) {
         print $cgi->header(), qq{there is no item in the system with this id.
@@ -60,8 +60,6 @@ eval {
         $data{resolve_times}       = $item->resolve_times();
         $data{history}             = $item->history();
         $data{comments}            = $item->get_comments();
-        #Min's addition to implement email opt in/out
-        $data{item_cc}             = $item->notify_item($username);
         $data{attachments}         = [map {$_->data()} $item->attachments()];
 
         my @full_history = ();

@@ -60,27 +60,26 @@ sub compare_items {
     my $old = shift;
     my $project = shift;
     my $changed = 0;
-    my $add_notification = 0;
     my $message = "";
     my $comment = "";
 
     # compare with new
-    ($item,$old,$changed,$add_notification,$comment,$message)
-        = $self->compare_assigned_to($item,$old,$changed,$add_notification,$comment,$message,$project);
-    ($item,$old,$changed,$add_notification,$comment,$message)
-        = $self->compare_owners($item,$old,$changed,$add_notification,$comment,$message,$project);
-    ($item,$old,$changed,$add_notification,$comment,$message)
-        = $self->compare_statuses($item,$old,$changed,$add_notification,$comment,$message,$project);
+    ($item,$old,$changed,$comment,$message)
+        = $self->compare_assigned_to($item,$old,$changed,$comment,$message,$project);
+    ($item,$old,$changed,$comment,$message)
+        = $self->compare_owners($item,$old,$changed,$comment,$message,$project);
+    ($item,$old,$changed,$comment,$message)
+        = $self->compare_statuses($item,$old,$changed,$comment,$message,$project);
     ($changed,$comment,$message) = $self->compare_milestones($item,$old,$changed,$comment,$message);
-    ($item,$old,$changed,$add_notification,$comment,$message)
-        = $self->compare_fields($item,$old,$changed,$add_notification,$comment,$message,$project);
+    ($item,$old,$changed,$comment,$message)
+        = $self->compare_fields($item,$old,$changed,$comment,$message,$project);
 
     ($changed,$comment,$message) = $self->compare_clients($item,$old,$changed,$comment,$message);
 
     ($item,$old,$changed,$comment,$message) = $self->check_assigned_to_active($item,$old,$project,$changed,$comment,$message);
     ($item,$old,$changed,$comment,$message) = $self->check_owner_active($item,$old,$project,$changed,$comment,$message);
 
-    return ($item,$old,$changed,$add_notification,$message,$comment);
+    return ($item,$old,$changed,$message,$comment);
 }
 
 sub compare_assigned_to {
@@ -88,14 +87,12 @@ sub compare_assigned_to {
     my $item = shift;
     my $old = shift;
     my $changed = shift;
-    my $add_notification = shift;
     my $comment = shift;
     my $message = shift;
     my $project = shift;
 
     if ($old->{assigned_to} ne $item->{assigned_to}){
         $changed = 1;
-        $add_notification = 1;
         if($old->{status} eq "UNASSIGNED") {
             $item->{status} = "OPEN";
             $comment .= "<b>assigned to " . $item->{assigned_to} . "</b><br />\n";
@@ -119,7 +116,7 @@ sub compare_assigned_to {
                 $old->{assigned_to});
         }
     }
-    return ($item,$old,$changed,$add_notification,$comment,$message);
+    return ($item,$old,$changed,$comment,$message);
 }
 
 sub compare_owners {
@@ -127,14 +124,12 @@ sub compare_owners {
     my $item = shift;
     my $old = shift;
     my $changed = shift;
-    my $add_notification = shift;
     my $comment = shift;
     my $message = shift;
     my $project = shift;
 
     if ($old->{owner} ne $item->{owner}) {
         $changed = 1;
-        $add_notification = 1;
         $comment .= "<b>changed ownership to " . $item->{owner} . "</b><br />\n";
         $message .= "changed ownership to " . $item->{owner} . ". ";
 
@@ -145,7 +140,7 @@ sub compare_owners {
             $project->add_user_from_group_to_project($item->{owner},$old->{owner});
         }
     }
-    return ($item,$old,$changed,$add_notification,$comment,$message);
+    return ($item,$old,$changed,$comment,$message);
 }
 
 sub compare_statuses {
@@ -153,7 +148,6 @@ sub compare_statuses {
     my $item = shift;
     my $old = shift;
     my $changed = shift;
-    my $add_notification = shift;
     my $comment = shift;
     my $message = shift;
     my $project = shift;
@@ -163,7 +157,6 @@ sub compare_statuses {
         if($item->{status} eq "OPEN" && $old->{status} eq "UNASSIGNED") {
             $comment .= "<b>assigned to " . $item->{assigned_to} . "</b><br />\n";
             $message .= "assigned to " . $item->{assigned_to} . ". ";
-            $add_notification = 1;
         } elsif ($item->{status} eq "OPEN" && $old->{status} ne "OPEN") {
             $comment .= "<b>reopened</b><br />\n";
             $message .= "reopened. ";
@@ -184,7 +177,7 @@ sub compare_statuses {
             $old->{r_status} = ""; # prevent double matching
         }
     }
-    return ($item,$old,$changed,$add_notification,$comment,$message);
+    return ($item,$old,$changed,$comment,$message);
 }
 
 sub compare_milestones {
@@ -209,7 +202,6 @@ sub compare_fields {
     my $item = shift;
     my $old = shift;
     my $changed = shift;
-    my $add_notification = shift;
     my $comment = shift;
     my $message = shift;
     my $project = shift;
@@ -238,7 +230,7 @@ sub compare_fields {
         $message .= "priority changed. ";
     }
 
-    return ($item,$old,$changed,$add_notification,$comment,$message);
+    return ($item,$old,$changed,$comment,$message);
 }
 
 sub compare_clients {
@@ -334,20 +326,16 @@ sub update_item {
 
     # changed if any fields have been changed
     my $changed = 0;
-    # changed if (re)assigned and we may need to add someone
-    # to the notification list
-    my $add_notification = 0;
     my $comment = "";
     my $message = "";
 
-    ($item,$old,$changed,$add_notification,$message,$comment)
+    ($item,$old,$changed,$message,$comment)
         = $self->compare_items($item,$old,$project);
     # update what needs it
 
-    if($add_notification) {
-        my $ass_to = $i->assigned_to;
-        $i->add_cc($ass_to);
-    }
+    # just make sure the owner/assignee are on the cc list no matter what
+    $item->setup_default_notification();
+
     if($item->{'resolve_time'} ne "") {
         $i->add_resolve_time($user,$item->{'resolve_time'});
     }

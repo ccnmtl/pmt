@@ -514,11 +514,6 @@ sub add_item {
                         estimated_time => $estimated_time);
 
             $iid = PMT::Item::add_item(\%item);
-
-            #By default, add the owner of an action item to its notify list.
-                                                my $add_cc_item = PMT::Item->retrieve($iid);
-                        $add_cc_item->add_cc(PMT::User->retrieve($owner));
-
         }
         $type =~ s/\s/%20/g;
     }
@@ -1396,7 +1391,6 @@ sub update_items {
                 $comment = "milestone changed";
             }
 
-            my $add_notification = 0;
             my $email = 0;
 
             if (($assigned_to eq $i->owner->username) &&
@@ -1408,7 +1402,6 @@ sub update_items {
 
             if ($assigned_to ne $i->assigned_to->username) {
                 $changed = 1;
-                $add_notification = 1;
                 if ($i->status eq "UNASSIGNED") {
                     $status = "OPEN";
                     $comment .= "<b>assigned to $assigned_to</b><br />\n";
@@ -1424,7 +1417,6 @@ sub update_items {
                 $changed = 1;
                 if($status eq "OPEN" && $i->status eq "UNASSIGNED") {
                     $comment .= "<b>assigned to $assigned_to</b><br />\n";
-                    $add_notification = 1;
                 } elsif ($status eq "OPEN" && $i->status ne "OPEN") {
                     $comment .= "<b>reopened</b><br />\n";
                 } elsif ($status eq "RESOLVED" && $i->status ne "RESOLVED") {
@@ -1458,9 +1450,9 @@ sub update_items {
                 $comment .= "<b>priority changed</b><br />\n";
             }
 
-            if ($add_notification) {
-                $i->add_cc($ass_to);
-            }
+	    # always make sure owner/assignee are cc'd
+	    $i->setup_default_notification();
+
             if ($resolve_time) {
                 $i->add_resolve_time($u,$resolve_time);
             }
@@ -1828,6 +1820,10 @@ sub notify {
     } else {
         $item->drop_cc($user);
     }
+    # owner/assignee are not allowed to remove themselves
+    # so here we will make SURE they didn't
+    $item->setup_default_notification();
+
     $self->header_type('redirect');
     $self->header_props(-url => "/item/$iid/");
     return "changed notification for an item";

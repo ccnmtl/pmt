@@ -86,10 +86,8 @@ sub data {
 sub unclosed_items {
     my $self = shift;
     my $sortby = shift || "priority";
-    #Min's addtion to implement notification opt in/out
     my $username = shift;
 
-    #Min's changes to implement notification opt in/out
     my @items = map {$_->data($username)} $self->all_unclosed_items();
     if ($sortby eq "item") {
         @items = sort {$a->{iid} <=> $b->{iid}} @items;

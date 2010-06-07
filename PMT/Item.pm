@@ -68,7 +68,8 @@ sub add_item {
     $item->update_tags($args{tags},$username);
     $item->add_clients(@{$args{clients}});
 
-    $item->add_notification();
+    $item->setup_default_notification();
+    $item->add_project_notification();
 
     $item->add_event($status,"<b>$args{'type'} added</b>",$user);
     $item->email("new $args{'type'}: $args{'title'}",$username);
@@ -230,6 +231,7 @@ sub data {
     if ($username ne "") {
         $notify = $self->is_notifying_user($username);
     }
+
     return {
         iid                  => $self->iid,
         type                 => $self->type,
@@ -257,6 +259,7 @@ sub data {
 	assigned_to_select   => $self->assigned_to_select(),
 	milestone_select     => $self->milestone_select(),
         notify               => $notify,
+	assignee             => $username eq $self->assigned_to->username,
     };
 }
 
@@ -479,60 +482,20 @@ sub cc {
 # sets up notification for an item
 # owner, assigned_to
 # are added by default (without duplication)
-sub add_notification {
+sub setup_default_notification {
     my $self = shift;
-
-    my $owner = $self->owner;
-    my $assigned_to = $self->assigned_to;
-    my %notified;
-
-    #check if the owner wants to be notified of anything about this item
-    if ($self->project_notification($owner) > 0) {
-        $notified{$owner->username} = 1;
-    }
-
-    #assignees will be notified of anything regarding this item
-    $notified{$assigned_to->username} = 1;
-
-    my @notify = keys %notified;
-    $self->notify(\@notify);
+    $self->add_cc($self->owner);
+    $self->add_cc($self->assigned_to);
 }
 
+# only called when item is first added
+# adds all users who are on the project's cc list
+# to the item's cc list
 
-# queries if the user's name and pid exists in notify_project table
-sub project_notification {
+sub add_project_notification {
     my $self = shift;
-    my $user = shift;
-
-    my @notifies = PMT::NotifyProject->search(pid => $self->mid->pid->pid,
-        username => $user->username);
-    return scalar @notifies;
-}
-
-# boolean test if a user gets notified about an item
-sub notify_item {
-    my $self     = shift;
-    my $username = shift;
-
-    my @notifies = PMT::Notify->search(iid => $self->iid,
-        username => $username);
-
-    if (scalar @notifies) {
-       return 1;
-    } else {
-       return 0;
-    }
-}
-
-
-# specifies a list of users to be notified when an
-# item is modified or updated
-sub notify {
-    my $self  = shift;
-    my $users = shift;
-    foreach my $u (@$users) {
-        my $n = PMT::Notify->find_or_create({username => $u, iid =>
-                $self->iid});
+    foreach my $n (PMT::NotifyProject->search(pid => $self->mid->pid->pid)) {
+	$self->add_cc(PMT::User->retrieve($n->username));
     }
 }
 

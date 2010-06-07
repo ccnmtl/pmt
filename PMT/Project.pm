@@ -843,9 +843,6 @@ sub interval_report {
 }
 
 
-# Min's additions to implement email notification opt in/out
-# {{{ add_cc
-
 sub add_cc {
     my $self   = shift;
     my $user = shift;
@@ -865,12 +862,6 @@ sub add_cc {
     }
 
 }
-
-# }}}
-
-
-# Min's additions to implement email notification opt in/out
-# {{{ drop_cc
 
 sub drop_cc {
     my $self     = shift;
@@ -896,12 +887,6 @@ sub drop_cc {
     }
 }
 
-# }}}
-
-
-# Min's additions to implement email notification opt in/out
-# {{{ cc
-# returns boolean on whether or not $username is on notify list for project $pid
 sub cc {
     my $self     = shift;
     my $user     = shift;
@@ -914,8 +899,6 @@ sub cc {
         return 0;
     }
 }
-
-# }}}
 
 sub estimate_graph {
     my $self = shift;
