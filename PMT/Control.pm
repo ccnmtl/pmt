@@ -2806,6 +2806,7 @@ sub edit_client {
     my $client_id         = $cgi->param('client_id') || "";
     my $client = PMT::Client->retrieve($client_id);
     my $client_email      = $cgi->param('client_email') || "";
+    my $email_secondary      = $cgi->param('email_secondary') || "";
     my $lastname      = $cgi->param('lastname') || "";
     my $firstname     = $cgi->param('firstname') || "";
     my $title                 = $cgi->param('title') || "";
@@ -2814,9 +2815,15 @@ sub edit_client {
     my $school                = $cgi->param('school') || '';
     my $add_affiliation   = $cgi->param('add_affiliation') || "";
     my $phone                 = $cgi->param('phone') || "";
+    my $phone_mobile                 = $cgi->param('phone_mobile') || "";
+    my $phone_other                 = $cgi->param('phone_other') || "";
     my $contact       = $cgi->param('contact') || "";
     my $comments      = $cgi->param('comments') || "";
     my $status            = $cgi->param('status') || "active";
+    my $website_url = $cgi->param('website_url') || "";
+    if ($website_url eq "http://") {
+        $website_url = '';
+    }
 
     my @projects = $cgi->param('projects');
 
@@ -2830,8 +2837,12 @@ sub edit_client {
                          school      => $school,
                          add_affiliation => $add_affiliation,
                          phone               => $phone,
+                         phone_mobile   => $phone_mobile,
+                         phone_other    => $phone_other,
                          email               => $client_email,
+                         email_secondary    => $email_secondary,
                          contact     => $contact,
+                         website_url => $website_url,
                          comments    => $comments,
                          registration_date => $registration_date,
                          projects    => \@projects,
