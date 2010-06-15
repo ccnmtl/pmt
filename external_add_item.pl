@@ -79,7 +79,8 @@ my %item = (type           => $type,
             estimated_time => $estimated_time);
 
 my $pmt = new PMT();
-my $iid = $pmt->add_item(\%item);
+#my $iid = $pmt->add_item(\%item);
+my $iid = PMT::Item::add_item(\%item);
 
 # since the PMT normally won't send an email to the assignee if the assignee and owner
 # are the same, we have to override that here to ensure that the assignee is notified
