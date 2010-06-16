@@ -447,8 +447,10 @@ sub add_resolve_time {
 sub add_cc {
     my $self     = shift;
     my $user     = shift;
-    my $n = PMT::Notify->find_or_create({iid => $self->iid,
-            username => $user->username});
+    if ($user->status eq "active") {
+	my $n = PMT::Notify->find_or_create({iid => $self->iid,
+					     username => $user->username});
+    }
 }
 
 sub drop_cc {
