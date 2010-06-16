@@ -5,8 +5,8 @@ use base 'CDBI::DBI';
 __PACKAGE__->table('clients');
 __PACKAGE__->sequence('clients_client_id_seq');
 __PACKAGE__->columns(All => qw/client_id lastname firstname title
-registration_date department school add_affiliation phone email contact
-comments status/);
+registration_date department school add_affiliation phone phone_mobile
+phone_other email email_secondary contact comments status website_url/);
 __PACKAGE__->has_a(contact => 'PMT::User');
 __PACKAGE__->has_many(items => 'PMT::ItemClients', 'client_id');
 __PACKAGE__->has_many(projects => 'PMT::ProjectClients', 'client_id');
@@ -27,9 +27,10 @@ close DEPS_FILE;
 
 __PACKAGE__->set_sql(all_clients_data => qq{
         SELECT c.client_id,c.lastname,c.firstname,c.title,c.department,
-               c.school,c.add_affiliation,c.phone,c.email,
-               c.contact,c.comments,c.registration_date,u.fullname as contact_fullname,
-               c.status, date_trunc('minute',max(i.last_mod)) as last_mod
+               c.school,c.add_affiliation,c.phone,c.phone_mobile,c.phone_other,c.email,
+               c.email_secondary,c.contact,c.comments,c.registration_date,
+               u.fullname as contact_fullname, c.status,c.website_url,
+               date_trunc('minute',max(i.last_mod)) as last_mod
         FROM clients c
         LEFT OUTER JOIN item_clients ic on c.client_id = ic.client_id
         LEFT OUTER JOIN items i on ic.iid = i.iid
@@ -37,9 +38,9 @@ __PACKAGE__->set_sql(all_clients_data => qq{
         WHERE
               upper(c.lastname) like upper(?)
         GROUP BY c.client_id,c.lastname,c.firstname,c.title,c.department,
-               c.school,c.add_affiliation,c.phone,c.email,
-               c.contact,c.comments,c.registration_date,u.fullname,
-               c.status
+               c.school,c.add_affiliation,c.phone,c.phone_mobile,c.phone_other,c.email,
+               c.email_secondary,c.contact,c.comments,c.registration_date,u.fullname,
+               c.status,c.website_url
                ORDER BY upper(c.lastname) ASC, upper(c.firstname);
     }, 'Main');
 
@@ -123,10 +124,14 @@ sub data {
         school => $self->school,
         add_affiliation => $self->add_affiliation,
         phone => $self->phone,
+        phone_mobile => $self->phone_mobile,
+        phone_other => $self->phone_other,
         email => $self->email,
+        email_secondary => $self->email_secondary,
         contact => $self->contact,
         comments => $self->comments,
-        status => $self->status
+        status => $self->status,
+        website_url => $self->website_url,
     };
 }
 
@@ -288,11 +293,15 @@ sub update_data {
     $self->school($args{school});
     $self->add_affiliation($args{add_affiliation});
     $self->phone($args{phone});
+    $self->phone_mobile($args{phone_mobile});
+    $self->phone_other($args{phone_other});
     $self->email($args{email});
+    $self->email_secondary($args{email_secondary});
     $self->contact($args{contact});
     $self->comments($args{comments});
     $self->registration_date($args{registration_date});
     $self->status($args{status});
+    $self->website_url($args{website_url});
 
     my %pids = map {$_ => 1} @{$args{projects}};
     my %existing = ();
