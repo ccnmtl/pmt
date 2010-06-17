@@ -7,14 +7,14 @@
 
 <h1>CLIENTS: Add New Client<br />
 
-<tmpl_unless name="client_email">
-<!-- form to enter email address -->
-
-<span class="hide">CLIENTS:</span> &#62; Client's E-mail</h1>
-
 <form action="/home.pl" method="GET">
 <input type="hidden" name="mode" value="add_client_form"/>
+
+<tmpl_unless name="client_email">
 <table cellpadding="0" cellspacing="0" class="pmtform" style="width: 500px;">
+<tr>
+<th colspan="2">Look up Client by UNI</th>
+</tr>
 <tr>
 <th class="firstcell"><label for="email">client email address:</label></th>
 <td>
@@ -31,12 +31,9 @@ Directory Search</a>.)</i>
 <!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
 </tr>
 </table>
-</form>
+</tmpl_unless>
 
 
-<tmpl_else>
-<span class="hide">CLIENTS:</span> &#62; Client's Information</h1>
-<!-- form filled in with data from LDAP -->
 <tmpl_if name="existing_clients">
 <p><b>WARNING!</b> the following client(s) were found that have a
 similar name or uni. please make sure that you are not entering a
@@ -73,8 +70,6 @@ name="lastname" escape="html"></a></td>
 <br />
 </tmpl_if>
 
-<form action="/home.pl" method="POST">
-<input type="hidden" name="mode" value="add_client" />
 
 <table cellpadding="0" cellspacing="0" class="pmtform" style="width: 650px;">
 
@@ -151,7 +146,7 @@ wrap="virtual"></textarea></td></tr>
 </tr>
 </table>
 </form>
-</tmpl_unless>
+
 
 
 </div>
