@@ -1249,6 +1249,19 @@ sub add_client_form {
                          ou                 => $ou,
                          status             => $status
         );
+    } else {
+	# still need those selects
+        my ($year,$mon,$mday) = todays_date();
+        my $users_select       = PMT::User::users_select($username);
+        my $departments_select = PMT::Client->all_departments_select("");
+        my $schools_select = PMT::Client->all_schools_select("Arts & Sciences"); 
+	$template->param(departments_select => $departments_select,
+			 schools_select => $schools_select,
+			 users_select => $users_select,
+			 year => $year,
+			 month => $mon,
+			 day => $mday,
+	    );
     }
     $template->param(clients_mode => 1);
     $template->param(page_title => 'add client');
