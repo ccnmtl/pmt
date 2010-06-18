@@ -729,13 +729,13 @@ Attacklab.wmdBase = function(){
 
 		var setEventHandlers = function(){
 
-			util.addEvent(wmd.panels.input, "keypress", function(event){
+/*			util.addEvent(wmd.panels.input, "keypress", function(event){
 				// keyCode 89: y
 				// keyCode 90: z
 				if ((event.ctrlKey || event.metaKey) && (event.keyCode == 89 || event.keyCode == 90)) {
 					event.preventDefault();
 				}
-			});
+			}); */
 
 			var handlePaste = function(){
 				if (global.isIE || (inputStateObj && inputStateObj.text != wmd.panels.input.value)) {
@@ -1169,6 +1169,7 @@ Attacklab.wmdBase = function(){
 				}
 			});
 
+/*
 			// Auto-continue lists, code blocks and block quotes when
 			// the enter key is pressed.
 			util.addEvent(inputBox, "keyup", function(key){
@@ -1192,7 +1193,7 @@ Attacklab.wmdBase = function(){
 						return false;
 					}
 				});
-			}
+			} */
 
 			if (inputBox.form) {
 				var submitCallback = inputBox.form.onsubmit;
@@ -1791,8 +1792,8 @@ Attacklab.wmdBase = function(){
 			inputElem.onpaste = listener;
 			inputElem.ondrop = listener;
 
-			util.addEvent(inputElem, "keypress", listener);
-			util.addEvent(inputElem, "keydown", listener);
+//			util.addEvent(inputElem, "keypress", listener);
+			//util.addEvent(inputElem, "keydown", listener);
 			// previewPollInterval is set at the top of this file.
 			poller = new wmd.inputPoller(listener, previewPollInterval);
 		};
