@@ -8,9 +8,10 @@
 <h1>CLIENTS: Add New Client<br />
 
 <form action="/home.pl" method="GET">
-<input type="hidden" name="mode" value="add_client_form"/>
+
 
 <tmpl_unless name="client_email">
+<input type="hidden" name="mode" value="add_client_form"/>
 <table cellpadding="0" cellspacing="0" class="pmtform" style="width: 500px;">
 <tr>
 <th colspan="2">Look up Client by UNI</th>
@@ -31,6 +32,8 @@ Directory Search</a>.)</i>
 <!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
 </tr>
 </table>
+<tmpl_else>
+<input type="hidden" name="mode" value="add_client"/>
 </tmpl_unless>
 
 
