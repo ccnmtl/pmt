@@ -12,7 +12,7 @@ use PMT::Attachment;
 use PMT::Group;
 use CGI;
 use HTML::Template;
-use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days Days_in_Month Add_Delta_YM Delta_Days/;
+use Date::Calc qw/Week_of_Year Monday_of_Week Add_Delta_Days Days_in_Month Add_Delta_YM Delta_Days Day_of_Week/;
 use Text::Tiki;
 use Forum;
 use HTML::CalendarMonth;
@@ -153,7 +153,34 @@ sub home {
     my $self = shift;
     my $template = $self->template("home.tmpl");
     my $user = $self->{user};
+
+
     $template->param($user->home());
+
+    # hours logged progress bar stuff
+    my ($year,$mon,$mday) = $self->get_date();
+    my ($mon_year,$mon_month,$mon_day) = Monday_of_Week(Week_of_Year($year,$mon,$mday));
+    my ($sun_year,$sun_month,$sun_day) = Add_Delta_Days($mon_year,$mon_month,$mon_day,6);
+    my $hours_logged = interval_to_hours($user->interval_time("$mon_year-$mon_month-$mon_day",
+							      "$sun_year-$sun_month-$sun_day"));
+
+    my $week_percentage = ($hours_logged / 35) * 100;
+    my $dow = Day_of_Week($year,$mon,$mday);
+    my $target_hours = min($dow,5) * 7;
+    my $target_percentage = ($target_hours / 35) * 100;
+
+    my $log_status = "ok";
+    if ($week_percentage < $target_percentage - 20) {
+	$log_status = "behind";
+    } 
+
+    $template->param(hours_logged => $hours_logged,
+		     week_percentage => int($week_percentage),
+		     hours_logged_progressbar => min(int($week_percentage * 5),600),
+		     target_hours => $target_hours,
+		     target_hours_progressbar => int($target_percentage * 5),
+		     log_status => $log_status,
+	);
     $template->param(clients => $user->clients_data());
     $template->param(page_title => "homepage for " . $user->username);
     my $cgi = $self->query();

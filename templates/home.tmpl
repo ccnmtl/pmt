@@ -8,6 +8,14 @@
 <h1>ITEMS: My Items</h1>
 <h1 class="print">Items for <tmpl_var name="username"></h1>
 
+
+<div id="hoursprogressbar">
+<div id="hoursprogressbarlogged" class="<tmpl_var name="log_status">"
+     style="width: <tmpl_var name="hours_logged_progressbar">px"><nobr><tmpl_var name="hours_logged">hrs</div>
+<div id="hoursprogressbartarget" style="width: <tmpl_var name="target_hours_progressbar">px"></div>
+<div id="hoursprogressbar100">35hrs</div>
+</div>
+
 <a href="/user_feed.pl?username=<tmpl_var name="username" escape="url">">
 <img class="rss" src="/images/rss.png" alt="RSS" border="0" /></a> Track changes (RSS)
 

@@ -1254,3 +1254,39 @@ th.header {
     background-repeat: no-repeat; 
     background-position: center right; 
 } 
+
+#hoursprogressbar {
+width: 600px;
+
+height: 20px;
+position: relative;
+border: #000 solid 1px;
+
+}
+
+#hoursprogressbarlogged {
+height: 20px;
+position: fixed;
+background-color: #00bb00;
+}
+#hoursprogressbar div.ok {
+background-color: #00bb00;
+}
+#hoursprogressbar div.behind {
+background-color: #f60;
+}
+
+#hoursprogressbartarget {
+height: 20px;
+position: fixed;
+border-right: #000 solid 2px;
+}
+
+#hoursprogressbar100 {
+height: 20px;
+width: 500px;
+position: fixed;
+border-right: #000 solid 1px;
+text-align: right;
+padding-right: 2px;
+}
