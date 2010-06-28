@@ -1266,7 +1266,7 @@ border: #000 solid 1px;
 
 #hoursprogressbarlogged {
 height: 20px;
-position: fixed;
+position: absolute;
 background-color: #00bb00;
 }
 #hoursprogressbar div.ok {
