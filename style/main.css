@@ -1278,14 +1278,14 @@ background-color: #f60;
 
 #hoursprogressbartarget {
 height: 20px;
-position: fixed;
+position: absolute;
 border-right: #000 solid 2px;
 }
 
 #hoursprogressbar100 {
 height: 20px;
 width: 500px;
-position: fixed;
+position: absolute;
 border-right: #000 solid 1px;
 text-align: right;
 padding-right: 2px;
