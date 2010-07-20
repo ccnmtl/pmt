@@ -3,6 +3,7 @@ use lib qw(..);
 package PMT::Item;
 use base 'CDBI::DBI';
 use PMT::Common;
+use Text::Wrap;
 
 __PACKAGE__->table("items");
 __PACKAGE__->sequence("items_s");
