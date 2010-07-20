@@ -20,7 +20,7 @@ if ($email !~ /\@/) {
 }
 
 my @users = PMT::User->search(email=>$email);
-my $user = $users[2];
+my $user = $users[0];
 my $item = PMT::Item->retrieve($iid);
 
 my $status = $cgi->param('status') || "";
