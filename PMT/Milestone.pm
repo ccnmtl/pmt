@@ -178,4 +178,25 @@ sub passed_open_milestones {
     return \@results;
 }
 
+__PACKAGE__->set_sql(upcoming_milestones => qq{
+select mid,name,target_date,pid
+from milestones
+where status = 'OPEN'
+and target_date > current_date
+and target_date < current_date + interval '1 month'
+order by target_date asc
+;},'Main');
+
+sub upcoming_milestones {
+    my $self = shift;
+    my $sth = $self->sql_upcoming_milestones;
+    $sth->execute();
+    my @results = ();
+    foreach my $r (@{$sth->fetchall_arrayref({})}) {
+	$r->{project} = PMT::Project->retrieve($r->{pid})->name;
+	push @results, $r;
+    }
+    return \@results;
+}
+
 1;
