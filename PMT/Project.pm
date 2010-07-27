@@ -1060,7 +1060,7 @@ sub someday_maybe_milestone {
         # no existing someday/maybe milestone. need to add one.
         my $m = $self->add_to_milestones({
             name        => 'Someday/Maybe',
-            target_date => '2010-01-01',
+            target_date => '2015-01-01',
             status      => 'OPEN',
             description => qq{A milestone for items that will not be immediately worked on. Items in this milestone
                                   will not appear on a homepage or in time estimates. },
