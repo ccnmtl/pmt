@@ -34,6 +34,7 @@ items i where i.mid = ?;}, 'Main');
 my %PRIORITIES = (4 => 'CRITICAL', 3 => 'HIGH', 2 => 'MEDIUM', 1 => 'LOW',
 0 => 'ICING');
 
+
 sub num_unclosed_items {
   my $self = shift;
   my $sth = $self->sql_num_unclosed_items;
@@ -157,6 +158,26 @@ sub delete_milestone {
     my $pid = $self->pid->pid;
     $self->delete();
     return $pid;
+}
+
+__PACKAGE__->set_sql(passed_open_milestones => qq{
+select mid,name,target_date,pid
+from milestones
+where status = 'OPEN'
+and target_date < current_date
+order by target_date asc
+;},'Main');
+
+sub passed_open_milestones {
+    my $self = shift;
+    my $sth = $self->sql_passed_open_milestones;
+    $sth->execute();
+    my @results = ();
+    foreach my $r (@{$sth->fetchall_arrayref({})}) {
+	$r->{project} = PMT::Project->retrieve($r->{pid})->name;
+	push @results, $r;
+    }
+    return \@results;
 }
 
 1;

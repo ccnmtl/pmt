@@ -38,6 +38,7 @@ sub setup {
         'add_item_form'          => 'add_item_form',
         'add_item'               => 'add_item',
         'global_reports'         => 'global_reports',
+	'passed_open_milestones' => 'passed_open_milestones',
         'add_trackers_form'      => 'add_trackers_form',
         'add_trackers'           => 'add_trackers',
         'group_activity_summary' => 'group_activity_summary',
@@ -386,6 +387,15 @@ sub global_reports {
     return $template->output();
 }
 
+sub passed_open_milestones {
+    my $self = shift;
+    my $user = $self->{user};
+    my $template = $self->template("passed_open_milestones.tmpl");
+    $template->param(reports_mode => 1);
+    $template->param(page_title => "passed open milestones");
+    $template->param(milestones => PMT::Milestone->passed_open_milestones());
+    return $template->output();
+}
 
 sub my_groups {
     my $self = shift;
