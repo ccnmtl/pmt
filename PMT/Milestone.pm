@@ -125,8 +125,7 @@ sub update_item_target_dates {
 
 sub update_milestone {
     my $self = shift;
-    my $user = shift;
-    my $unclosed = $self->num_unclosed_items;
+    my $unclosed = $self->num_unclosed_items();
     unless ($unclosed) {
         $self->close_milestone($user);
     } else {
@@ -137,7 +136,6 @@ sub update_milestone {
 
 sub close_milestone {
     my $self = shift;
-    my $user = shift;
     if ($self->status ne "CLOSED") {
         $self->status('CLOSED');
         $self->update();
@@ -174,6 +172,8 @@ sub passed_open_milestones {
     $sth->execute();
     my @results = ();
     foreach my $r (@{$sth->fetchall_arrayref({})}) {
+	my $m = PMT::Milestone->retrieve($r->{mid});
+	$m->update_milestone();
 	$r->{project} = PMT::Project->retrieve($r->{pid})->name;
 	push @results, $r;
     }
