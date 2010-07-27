@@ -172,8 +172,6 @@ sub passed_open_milestones {
     $sth->execute();
     my @results = ();
     foreach my $r (@{$sth->fetchall_arrayref({})}) {
-	my $m = PMT::Milestone->retrieve($r->{mid});
-	$m->update_milestone();
 	$r->{project} = PMT::Project->retrieve($r->{pid})->name;
 	push @results, $r;
     }
