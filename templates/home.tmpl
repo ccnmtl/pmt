@@ -4,11 +4,6 @@
 
 <!-- ===== PAGE MAIN CONTENT ===== -->
 <div class="pagecontent">
-
-<h1>ITEMS: My Items</h1>
-<h1 class="print">Items for <tmpl_var name="username"></h1>
-
-
 <div id="hoursprogressbar">
 <div id="hoursprogressbarlogged" class="<tmpl_var name="log_status">"
      style="width: <tmpl_var name="hours_logged_progressbar">px"><nobr><tmpl_var name="hours_logged">hrs</div>
@@ -16,8 +11,29 @@
 <div id="hoursprogressbar100">35hrs</div>
 </div>
 
-<a href="/user_feed.pl?username=<tmpl_var name="username" escape="url">">
-<img class="rss" src="/images/rss.png" alt="RSS" border="0" /></a> Track changes (RSS)
+<tmpl_if name="delinquent_milestones">
+<h1>Your Passed Open Milestones</h1>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr>
+  <th>target date</th>
+  <th>project</th>
+  <th>milestone</th>
+</tr>
+<tmpl_loop name="delinquent_milestones">
+<tr>
+<td><tmpl_var name="target_date"> </td>
+<td><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td> 
+<td><a href="/home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="name"></a></td>
+</tr>
+</tmpl_loop>
+</table>
+</tmpl_if>
+
+<h1>ITEMS: My Items</h1>
+<h1 class="print">Items for <tmpl_var name="username"></h1>
+
+
 
 <div id="ie6special">
 <form action="/home.pl" method="get" class="pclayer" onsubmit="return validate_pid(this)">

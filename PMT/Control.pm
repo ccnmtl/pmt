@@ -182,6 +182,7 @@ sub home {
 		     target_hours => $target_hours,
 		     target_hours_progressbar => int($target_percentage * 5),
 		     log_status => $log_status,
+		     delinquent_milestones => $user->passed_open_milestones(),
 	);
     $template->param(clients => $user->clients_data());
     $template->param(page_title => "homepage for " . $user->username);
