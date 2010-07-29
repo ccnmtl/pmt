@@ -2429,7 +2429,7 @@ sub milestone {
     my $milestone = PMT::Milestone->retrieve($mid);
     my %data = %{$milestone->data()};
 
-    $data{'items'} = [map {$_->data()} $milestone->items()];
+    $data{'items'} = [map {$_->simple_data()} $milestone->items()];
     $data{'total_estimated_time'} = $milestone->estimated_time();
     my $project = $milestone->pid;
     my $works_on = $project->project_role($self->{user}->username);

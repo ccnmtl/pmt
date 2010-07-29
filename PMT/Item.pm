@@ -227,6 +227,22 @@ sub data {
     my $self = shift;
     my $username = shift || "";
 
+    my $data = $self->simple_data($username);
+
+    $data->{priority_select} = $self->priority_select();
+    $data->{status_select} = $self->status_select();
+    $data->{assigned_to_select} = $self->assigned_to_select();
+    $data->{milestone_select} = $self->milestone_select();
+
+    return $data;
+}
+
+# more efficient version that doesn't do all the 
+# extra queries to create select boxes
+sub simple_data {
+    my $self = shift;
+    my $username = shift || "";
+
     my %type_classes = (bug => 'bug', 'action item' => 'actionitem');
     my $notify = "";
     if ($username ne "") {
@@ -255,10 +271,6 @@ sub data {
         target_date          => $self->target_date,
         estimated_time       => PMT::Common::interval_to_hours($self->estimated_time),
         type_class           => $type_classes{$self->type},
-        priority_select      => $self->priority_select(),
-        status_select        => $self->status_select(),
-	assigned_to_select   => $self->assigned_to_select(),
-	milestone_select     => $self->milestone_select(),
         notify               => $notify,
 	assignee             => $username eq $self->assigned_to->username,
     };
