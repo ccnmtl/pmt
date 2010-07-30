@@ -1617,7 +1617,7 @@ sub edit_milestone {
 
     $milestone->set(name => $name, target_date => $target_date,
         description => $description);
-    $milestone->update();
+    $milestone->update_milestone();
 
     $self->header_type("redirect");
     $self->header_props(-url => "/home.pl?mode=milestone;mid=$mid");

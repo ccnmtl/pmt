@@ -76,6 +76,7 @@ __PACKAGE__->has_many(items => 'PMT::Item', 'mid');
 
 sub data {
     my $self = shift;
+    $self->update_milestone();
     return {mid => $self->mid, name => $self->name, target_date =>
         $self->target_date, pid => $self->pid->pid, status =>
         $self->status, description => $self->description,
@@ -125,14 +126,43 @@ sub update_item_target_dates {
 
 sub update_milestone {
     my $self = shift;
-    my $unclosed = $self->num_unclosed_items();
-    unless ($unclosed) {
+    if ($self->should_be_closed()) {
         $self->close_milestone($user);
     } else {
         $self->open_milestone();
     }
 }
 
+sub should_be_closed {
+  my $self = shift;
+  my $passed = $self->target_date_passed();
+  if ($passed) {
+      my $unclosed = $self->num_unclosed_items();
+      if ($unclosed == 0) {
+	  # target date has passed but there are open items
+	  return 1;
+      } else {
+	  # target date passed but no open items
+	  return 0;
+      }
+  }
+  # target date hasn't passed yet
+  return 0;
+}
+
+__PACKAGE__->set_sql(target_date_passed,
+  qq{SELECT target_date < current_date as passed from milestones
+where mid = ?;},
+  'Main');
+
+sub target_date_passed {
+    my $self = shift;
+    my $sth = $self->sql_target_date_passed;
+    $sth->execute($self->mid);
+    my $r = $sth->fetchrow_hashref()->{passed};
+    $sth->finish();
+    return $r;
+}
 
 sub close_milestone {
     my $self = shift;
