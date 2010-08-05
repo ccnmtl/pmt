@@ -1,0 +1,66 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+<tmpl_if name="message">
+<div id="message"><tmpl_var name="message" escape="html"></div>
+</tmpl_if>
+
+<h1>
+    CHANGE PROJECT FOR ITEM <a href="/item/<tmpl_var name="iid">/">#<tmpl_var name="iid"> <tmpl_var name="title" escape="html"></a><br />
+</h1>
+
+<form action="/home.pl" method="POST">
+<input type="hidden" name="mode" value="change_item_project" />
+<input type="hidden" name="iid" value="<tmpl_var name="iid">" />
+<input type="hidden" name="new_pid" value="<tmpl_var name="new_pid">" />
+<tmpl_if name="new_mid">
+<input type="hidden" name="new_mid" value="<tmpl_var name="new_mid">" />
+<tmpl_else>
+<input type="hidden" name="new_milestone_name" value="<tmpl_var name="new_milestone_name">"  escape="html" />
+<input type="hidden" name="new_milestone_date" value="<tmpl_var name="new_milestone_date">" escape="html" />
+<input type="hidden" name="new_milestone_description" value="<tmpl_var name="new_milestone_description"> escape="html" />
+</tmpl_if>
+<tmpl_if name="add_owner"><input type="hidden" name="add_owner" value="1"  escape="html" /></tmpl_if>
+<tmpl_if name="add_assigned_to"><input type="hidden" name="add_assigned_to" value="1"  escape="html" /></tmpl_if>
+
+
+<h2>Step 3/3: Please review this action</h2> 
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 650px;">
+<tr>
+    <th class="firstcell">Project Change:</th>
+    <td><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a> &nbsp;&mdash;&gt;&nbsp;
+        <a href="/home.pl?mode=project;pid=<tmpl_var name="new_pid">"><tmpl_var name="new_project"></a></td>
+</tr>
+<tr>
+    <th class="firstcell">Milestone Change:</th>
+    <td><a href="/home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="milestone"></a> &nbsp;&mdash;&gt;&nbsp;
+        <tmpl_if name="new_mid">
+            <a href="/home.pl?mode=milestone;mid=<tmpl_var name="new_mid">"><tmpl_var name="new_milestone_name"></a>
+        <tmpl_else>
+            <tmpl_var name="new_milestone_name"> (New Milestone)        
+        </tmpl_if>
+    </td>
+</tr>
+<tr><th class="firstcell">Personnel Change:<br/><span style="font-size: 10px; color: #555599;">These personnel will be added to <tmpl_var name="new_project"></span></th>
+    <td>
+    <tmpl_if name="add_owner"><tmpl_var name="owner"> (Owner)</tmpl_if>
+    <tmpl_if name="add_assigned_to"><tmpl_var name="assigned_to"> (Assigned User)</tmpl_if>
+    </td>
+</tr>
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" value="ACCEPT" class="button" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+<tmpl_include name="footer.tmpl">

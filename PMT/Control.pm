@@ -118,7 +118,11 @@ sub setup {
         'active_clients_report' => 'active_clients_report',
         'someday_maybe'          => 'someday_maybe',
         'deactivate_user'        => 'deactivate_user',
-	'yearly_review'          => 'yearly_review',
+        'yearly_review'          => 'yearly_review',
+        'change_item_project_form'  =>  'change_item_project_form',
+        'change_item_project_milestone_form'    =>  'change_item_project_milestone_form',
+        'change_item_project_review'    =>  'change_item_project_review',
+        'change_item_project'    =>  'change_item_project',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -2314,6 +2318,117 @@ sub update_item {
     my $message = URI::Escape::uri_escape($pmt->update_item(\%item,$username));
     $self->header_type('redirect');
     $self->header_props(-url => "/item/$iid/?message=$message");
+    return $message;
+}
+
+sub change_item_project_form {
+    my $self = shift;
+    my $template = $self->template("change_item_project_form.tmpl");
+    my $cgi = $self->query();
+    my $user = $self->{user};
+    my $iid = $cgi->param('iid');
+    my $item = PMT::Item->retrieve($iid);
+    my $item_r = $item->full_data();
+    my %data = %$item_r;
+    my @projects_select = $user->workson_projects_select($data{'pid'});
+    $data{'projects_select'} = \@projects_select;
+    $template->param(\%data);
+    return $template->output();
+}
+
+sub change_item_project_milestone_form {
+use Data::Dumper;
+    my $self = shift;
+    my $template = $self->template("change_item_project_milestone_form.tmpl");
+    my $cgi = $self->query();
+    my $user = $self->{user};
+    my $iid = $cgi->param('iid');
+    my $item = PMT::Item->retrieve($iid);
+    my $item_r = $item->full_data();
+    my %data = %$item_r;
+
+    my $new_project = PMT::Project->retrieve($cgi->param('new_pid'));
+    $data{'new_pid'} = $new_project->pid;
+    $data{'new_project'} = $new_project->name;
+    $data{'new_milestone_select'} = $new_project->project_milestones_select();
+    
+    $template->param(\%data);
+    return $template->output();
+}
+
+sub change_item_project_review {
+    my $self = shift;
+    my $template = $self->template("change_item_project_review.tmpl");
+    my $cgi = $self->query();
+    my $user = $self->{user};
+    my $iid = $cgi->param('iid');
+    my $item = PMT::Item->retrieve($iid);
+    my $item_r = $item->full_data();
+    my %data = %$item_r;
+    my $new_project = PMT::Project->retrieve($cgi->param('new_pid'));    
+    $data{'new_pid'} = $new_project->pid;
+    $data{'new_project'} = $new_project->name;
+
+    # Get existing milestone from new project or ...
+    if (! $cgi->param('new_milestone_name')) {
+        my $new_milestone = PMT::Milestone->retrieve($cgi->param('new_mid'));
+        $data{'new_mid'} = $new_milestone->mid;
+        $data{'new_milestone_name'} = $new_milestone->name;
+    } else {
+        $data{'new_milestone_name'} = $cgi->param('new_milestone_name');
+        $data{'new_milestone_date'} = $cgi->param('new_milestone_date');
+        $data{'new_milestone_description'} = $cgi->param('new_milestone_description');
+    }
+    
+    # Check owner and assigned users against new workson_projects
+    if (! $item->owner->does_work_on($new_project->pid)) {
+        $data{'add_owner'} = 1;
+    }
+    if (! $item->assigned_to->does_work_on($new_project->pid)) {
+        $data{'add_assigned_to'} = 1;
+    }
+    $template->param(\%data);
+    return $template->output();
+}
+
+sub change_item_project {
+    my $self = shift;
+    my $template = $self->template("change_item_project_review.tmpl");
+    my $cgi = $self->query();
+    my $user = $self->{user};
+    my $iid = $cgi->param('iid');
+    my $item = PMT::Item->retrieve($iid);
+    my $item_r = $item->full_data();
+    my %data = %$item_r;
+    my $new_project = PMT::Project->retrieve($cgi->param('new_pid'));    
+
+    my $new_mid;
+    # Change item milestone
+    if (! $cgi->param('new_milestone_name')) {
+        $new_mid = $cgi->param('new_mid');
+    # Create a new milestone
+    } else {
+        $new_mid = $new_project->add_milestone($cgi->param('new_milestone_name'), $cgi->param('new_milestone_date'), $cgi->param('new_milestone_description'));
+    }
+
+    # Make sure owner and assigned users work on new project
+    if (! $item->owner->does_work_on($new_project->pid)) {
+        PMT::WorksOn->create({username => $item->owner->username, pid => $new_project->pid,  auth => 'manager'});
+    }
+    if (! $item->assigned_to->does_work_on($new_project->pid)) {
+        PMT::WorksOn->create({username => $item->assigned_to->username, pid => $new_project->pid, auth => 'developer'});
+    }
+
+    # Update the item with the new milestone
+    $item->mid($new_mid);
+    $item->update();
+
+    my $message = 'Moved Item from ' . $item_r->{'project'} . ' to ' . $new_project->name;
+    $item->add_comment($user, $message);
+
+    use URI::Escape;
+    $self->header_type('redirect');
+    $self->header_props(-url => "/item/$iid/?message=" . URI::Escape::uri_escape($message));
     return $message;
 }
 
