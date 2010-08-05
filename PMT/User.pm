@@ -271,7 +271,7 @@ sub workson_projects_select {
     return @projects_select;
 }
 
-# returns true if user works on specified pid
+# returns true if user works on specified project
 sub does_work_on {
 use Data::Dumper;
     my $self = shift;
