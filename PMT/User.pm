@@ -273,7 +273,6 @@ sub workson_projects_select {
 
 # returns true if user works on specified project
 sub does_work_on {
-use Data::Dumper;
     my $self = shift;
     my $pid = shift;
     my $projects = $self->workson_projects();

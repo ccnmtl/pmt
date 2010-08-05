@@ -2337,7 +2337,6 @@ sub change_item_project_form {
 }
 
 sub change_item_project_milestone_form {
-use Data::Dumper;
     my $self = shift;
     my $template = $self->template("change_item_project_milestone_form.tmpl");
     my $cgi = $self->query();
