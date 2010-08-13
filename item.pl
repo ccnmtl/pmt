@@ -22,6 +22,10 @@ eval {
     my $username = $cgi->cookie('pmtusername') || "";
     my $password = $cgi->cookie('pmtpassword') || "";
 
+    if ($username eq "") {
+	throw Error::NO_USERNAME;
+    }
+
     my $user = PMT::User->retrieve($username);
     $user->validate($username,$password);
 
@@ -115,7 +119,7 @@ if($@) {
         if ($E->isa('Error::NO_USERNAME') ||
             $E->isa('Error::NO_PASSWORD') ||
             $E->isa('Error::AUTHENTICATION_FAILURE')) {
-            print $cgi->redirect('login.pl');
+            print $cgi->redirect('/login.pl');
         } elsif ($E->isa('Error::NO_IID')) {
             print $cgi->redirect('/home.pl');
         } else {
