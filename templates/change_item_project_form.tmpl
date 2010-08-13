@@ -1,0 +1,33 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+<tmpl_if name="message">
+<div id="message"><tmpl_var name="message" escape="html"></div>
+</tmpl_if>
+
+<h1>
+    CHANGE PROJECT FOR ITEM <a href="/item/<tmpl_var name="iid">/">#<tmpl_var name="iid"> <tmpl_var name="title" escape="html"></a><br />
+</h1>
+
+<p>Current project is <a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a>.</p>
+
+<form action="/home.pl" method="POST">
+<h2>Step 1/3: Select a new project:</h2>
+<input type="hidden" name="mode" value="change_item_project_milestone_form" />
+<input type="hidden" name="iid" value="<tmpl_var name="iid">" />
+
+<select class="big" name="new_pid">
+<tmpl_loop name="projects_select">
+    <option value="<tmpl_var name="value" escape="html">"<tmpl_if name="selected"> selected="selected"</tmpl_if>><tmpl_var name="label" escape="html"></option>
+</tmpl_loop>
+</select>
+
+<input type="submit" class="button" value="NEXT" />
+</form>
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+<tmpl_include name="footer.tmpl">

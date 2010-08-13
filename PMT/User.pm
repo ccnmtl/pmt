@@ -260,6 +260,27 @@ sub workson_projects {
 
 }
 
+sub workson_projects_select {
+    my $self = shift;
+    my $selected_pid = shift;
+    my $workson_projects = $self->workson_projects();
+    my @projects_select;
+    while (($pid, $pdata) = each(%$workson_projects)) {
+        push(@projects_select, {'value' => $pid, 'label' => $pdata->{'name'}, 'selected' => ($pid == $selected_pid)});
+    }
+    return @projects_select;
+}
+
+# returns true if user works on specified project
+sub does_work_on {
+    my $self = shift;
+    my $pid = shift;
+    my $projects = $self->workson_projects();
+    if ($projects->{$pid}) {
+        return 1;
+    }
+}
+
 # returns a reference to a hashtable of projects that
 # the user is attached to. searches recursively through
 # groups that the user is in. key is pid, value is project name.
