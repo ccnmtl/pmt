@@ -627,17 +627,13 @@ sub tasty_get {
     my $r = get $full;
     my $json = new JSON;
     eval {
-	my $obj = $json->jsonToObj($r);
-#    my $obj = $json->decode($r);
-	if (!$obj) {
-	    $obj = {};
-	}
-	return $obj;
+        my $obj = $json->jsonToObj($r);
+        #    my $obj = $json->decode($r);
+        if (!$obj) {
+            $obj = {};
+        }
+        return $obj;
     };
-    if ($@) {
-	# tasty didn't return JSON for some reason
-	return {};
-    }
 }
 
 use LWP::UserAgent;
