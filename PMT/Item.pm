@@ -762,7 +762,7 @@ tags:\t$tags
 description:
 $item{'description'}
 
-view $item{'type'}: http://$ENV{'SERVER_NAME'}/item.pl?iid=$item{'iid'}
+view $item{'type'}: http://$ENV{'SERVER_NAME'}/item/$item{'iid'}/
 
 please do not reply to this message.
 };
@@ -847,7 +847,7 @@ title:\t\t$item{'title'}
 
 $body
 
-$item{'type'} URL: http://$ENV{'SERVER_NAME'}/item.pl?iid=$item{'iid'}
+$item{'type'} URL: http://$ENV{'SERVER_NAME'}/item/$item{'iid'}/
 
 Please do not reply to this message.
 

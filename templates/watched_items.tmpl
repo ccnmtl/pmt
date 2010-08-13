@@ -24,8 +24,8 @@ id="itemstable">
 <tmpl_loop name="items">        
 <tr>                            
 <td class="firstcell">
-<img src="/images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="/item.pl?iid=<tmpl_var
-name="iid" escape="url">">#<tmpl_var name="iid" escape="html">: <tmpl_var name="title" escape="html"></a>
+<img src="/images/tinybug.gif" alt="" width="14" height="14" class="<tmpl_var name="type_class" escape="html">" /><a href="/item/<tmpl_var
+name="iid" escape="url">/">#<tmpl_var name="iid" escape="html">: <tmpl_var name="title" escape="html"></a>
 </td>
 <td class="pr<tmpl_var name="priority" escape="html">">
 <tmpl_var name="priority_label" escape="html">
