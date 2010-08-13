@@ -38,6 +38,8 @@ sub setup {
         'add_item_form'          => 'add_item_form',
         'add_item'               => 'add_item',
         'global_reports'         => 'global_reports',
+	'passed_open_milestones' => 'passed_open_milestones',
+	'upcoming_milestones'    => 'upcoming_milestones',
         'add_trackers_form'      => 'add_trackers_form',
         'add_trackers'           => 'add_trackers',
         'group_activity_summary' => 'group_activity_summary',
@@ -184,6 +186,7 @@ sub home {
 		     target_hours => $target_hours,
 		     target_hours_progressbar => int($target_percentage * 5),
 		     log_status => $log_status,
+		     delinquent_milestones => $user->passed_open_milestones(),
 	);
     $template->param(clients => $user->clients_data());
     $template->param(page_title => "homepage for " . $user->username);
@@ -390,6 +393,25 @@ sub global_reports {
     return $template->output();
 }
 
+sub passed_open_milestones {
+    my $self = shift;
+    my $user = $self->{user};
+    my $template = $self->template("passed_open_milestones.tmpl");
+    $template->param(reports_mode => 1);
+    $template->param(page_title => "passed open milestones");
+    $template->param(milestones => PMT::Milestone->passed_open_milestones());
+    return $template->output();
+}
+
+sub upcoming_milestones {
+    my $self = shift;
+    my $user = $self->{user};
+    my $template = $self->template("upcoming_milestones.tmpl");
+    $template->param(reports_mode => 1);
+    $template->param(page_title => "upcoming milestones");
+    $template->param(milestones => PMT::Milestone->upcoming_milestones());
+    return $template->output();
+}
 
 sub my_groups {
     my $self = shift;
@@ -1599,7 +1621,7 @@ sub edit_milestone {
 
     $milestone->set(name => $name, target_date => $target_date,
         description => $description);
-    $milestone->update();
+    $milestone->update_milestone();
 
     $self->header_type("redirect");
     $self->header_props(-url => "/home.pl?mode=milestone;mid=$mid");
@@ -2521,7 +2543,7 @@ sub milestone {
     my $milestone = PMT::Milestone->retrieve($mid);
     my %data = %{$milestone->data()};
 
-    $data{'items'} = [map {$_->data()} $milestone->items()];
+    $data{'items'} = [map {$_->simple_data()} $milestone->items()];
     $data{'total_estimated_time'} = $milestone->estimated_time();
     my $project = $milestone->pid;
     my $works_on = $project->project_role($self->{user}->username);

@@ -1,0 +1,22 @@
+<tmpl_include name="header_reports.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_reports.tmpl">
+
+<h1>REPORTS: Upcoming Milestones</h1>
+
+<table cellpadding="0" cellspacing="0" class="itemlisting">
+<tr>
+  <th>target date</th>
+  <th>project</th>
+  <th>milestone</th>
+</tr>
+<tmpl_loop name="milestones">
+<tr>
+<td><tmpl_var name="target_date"> </td>
+<td><a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="project"></a></td> 
+<td><a href="/home.pl?mode=milestone;mid=<tmpl_var name="mid">"><tmpl_var name="name"></a></td>
+</tr>
+</tmpl_loop>
+</table>
+
+<tmpl_include name="footer.tmpl">

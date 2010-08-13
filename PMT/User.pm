@@ -798,6 +798,28 @@ sub someday_maybe_items {
         } @{$sth->fetchall_arrayref({})}]);
 }
 
+__PACKAGE__->set_sql(passed_open_milestones => qq{
+select m.mid,m.name,m.target_date,m.pid
+from milestones m, projects p
+where m.status = 'OPEN'
+and m.target_date < current_date
+and m.pid = p.pid
+and p.caretaker = ?
+order by m.target_date asc
+;},'Main');
+
+sub passed_open_milestones {
+    my $self = shift;
+    my $sth = $self->sql_passed_open_milestones;
+    $sth->execute($self->username);
+    my @results = ();
+    foreach my $r (@{$sth->fetchall_arrayref({})}) {
+	$r->{project} = PMT::Project->retrieve($r->{pid})->name;
+	push @results, $r;
+    }
+    return \@results;
+}
+
 
 
 sub quick_edit_data {

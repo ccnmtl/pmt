@@ -34,6 +34,7 @@ items i where i.mid = ?;}, 'Main');
 my %PRIORITIES = (4 => 'CRITICAL', 3 => 'HIGH', 2 => 'MEDIUM', 1 => 'LOW',
 0 => 'ICING');
 
+
 sub num_unclosed_items {
   my $self = shift;
   my $sth = $self->sql_num_unclosed_items;
@@ -75,6 +76,7 @@ __PACKAGE__->has_many(items => 'PMT::Item', 'mid');
 
 sub data {
     my $self = shift;
+    $self->update_milestone();
     return {mid => $self->mid, name => $self->name, target_date =>
         $self->target_date, pid => $self->pid->pid, status =>
         $self->status, description => $self->description,
@@ -124,19 +126,46 @@ sub update_item_target_dates {
 
 sub update_milestone {
     my $self = shift;
-    my $user = shift;
-    my $unclosed = $self->num_unclosed_items;
-    unless ($unclosed) {
+    if ($self->should_be_closed()) {
         $self->close_milestone($user);
     } else {
         $self->open_milestone();
     }
 }
 
+sub should_be_closed {
+  my $self = shift;
+  my $passed = $self->target_date_passed();
+  if ($passed) {
+      my $unclosed = $self->num_unclosed_items();
+      if ($unclosed == 0) {
+	  # target date has passed but there are open items
+	  return 1;
+      } else {
+	  # target date passed but no open items
+	  return 0;
+      }
+  }
+  # target date hasn't passed yet
+  return 0;
+}
+
+__PACKAGE__->set_sql(target_date_passed,
+  qq{SELECT target_date < current_date as passed from milestones
+where mid = ?;},
+  'Main');
+
+sub target_date_passed {
+    my $self = shift;
+    my $sth = $self->sql_target_date_passed;
+    $sth->execute($self->mid);
+    my $r = $sth->fetchrow_hashref()->{passed};
+    $sth->finish();
+    return $r;
+}
 
 sub close_milestone {
     my $self = shift;
-    my $user = shift;
     if ($self->status ne "CLOSED") {
         $self->status('CLOSED');
         $self->update();
@@ -157,6 +186,47 @@ sub delete_milestone {
     my $pid = $self->pid->pid;
     $self->delete();
     return $pid;
+}
+
+__PACKAGE__->set_sql(passed_open_milestones => qq{
+select mid,name,target_date,pid
+from milestones
+where status = 'OPEN'
+and target_date < current_date
+order by target_date asc
+;},'Main');
+
+sub passed_open_milestones {
+    my $self = shift;
+    my $sth = $self->sql_passed_open_milestones;
+    $sth->execute();
+    my @results = ();
+    foreach my $r (@{$sth->fetchall_arrayref({})}) {
+	$r->{project} = PMT::Project->retrieve($r->{pid})->name;
+	push @results, $r;
+    }
+    return \@results;
+}
+
+__PACKAGE__->set_sql(upcoming_milestones => qq{
+select mid,name,target_date,pid
+from milestones
+where status = 'OPEN'
+and target_date > current_date
+and target_date < current_date + interval '1 month'
+order by target_date asc
+;},'Main');
+
+sub upcoming_milestones {
+    my $self = shift;
+    my $sth = $self->sql_upcoming_milestones;
+    $sth->execute();
+    my @results = ();
+    foreach my $r (@{$sth->fetchall_arrayref({})}) {
+	$r->{project} = PMT::Project->retrieve($r->{pid})->name;
+	push @results, $r;
+    }
+    return \@results;
 }
 
 1;
