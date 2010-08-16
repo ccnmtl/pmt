@@ -41,13 +41,12 @@ function setCookie(name, value, expires, path, domain, secure) {
         	((secure) ? "; secure" : "");
 }
 
-
 function hs_addControlCallback() {
-    //log("adding callback to " + a);
-    jQuery(this)
-     .click(hs_toggle)
-     .addClass('hs-control-show');
-    hs_controls[hs_getTarget(this).id] = this;
+  //log("adding callback to " + a);
+  jQuery(this)
+   .click(hs_toggle)
+   .addClass('hs-control-show');
+  hs_controls[hs_getTarget(this).attr("id")] = this;
 }
 
 function hs_lookForCookie() {
@@ -62,7 +61,7 @@ function hs_lookForCookie() {
 }
 
 function hs_getTarget(a) {
-	return $(a.href.split("#")[1]);
+  return jQuery("#" + a.href.split("#")[1]);
 }
 
 function hs_toggle() {

@@ -26,7 +26,7 @@ function updateTags(data) {
 
 	 var newtags = DIV({'id' : 'viewtags'},
 	 map(function (t) {
-	     return SPAN({},A({'href' : "home.pl?mode=tag;tag=" +
+	     return SPAN({},A({'href' : "/home.pl?mode=tag;tag=" +
 	 urlEncode(t.tag)}, t.tag)," ");
 	 }, data));
 
@@ -41,7 +41,7 @@ function saveTags() {
 	 var tags = $("usertags").value;
 	 var id = getId();
 	 var idname = item_type == "item" ? "iid" : "nid";
-	 var url = "home.pl?mode=set_tags;" + idname + "=" + id + ";tags=" + urlEncode(tags);
+	 var url = "/home.pl?mode=set_tags;" + idname + "=" + id + ";tags=" + urlEncode(tags);
 	 var d = loadJSONDoc(url);
 	 var submit = $("tagsave");
 	 submit.value = "saving...";
