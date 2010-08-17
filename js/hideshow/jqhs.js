@@ -46,7 +46,7 @@ function hs_addControlCallback() {
   jQuery(this)
    .click(hs_toggle)
    .addClass('hs-control-show');
-  hs_controls[hs_getTarget(this).attr("id")] = this;
+  hs_controls[hs_getTarget(this).id] = this;
 }
 
 function hs_lookForCookie() {
@@ -61,7 +61,7 @@ function hs_lookForCookie() {
 }
 
 function hs_getTarget(a) {
-  return jQuery("#" + a.href.split("#")[1]);
+  return jQuery("#" + a.href.split("#")[1]).get(0);
 }
 
 function hs_toggle() {
