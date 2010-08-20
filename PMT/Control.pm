@@ -2812,37 +2812,36 @@ sub staff_report {
 sub staff_report_data {
     my $start = shift;
     my $end = shift;
-    my @GROUPS = qw/programmers video webmasters educationaltechnologists management/;
+    my @GROUPS = qw/programmers video webmasters educationaltechnologists management devgrp SCPSWebSiteTeam DistanceLearningOffice EducationalTechnologists/;
     my @group_reports = ();
-
     my $group_max_time = 0;
     foreach my $grp (@GROUPS) {
         my $group_user = PMT::User->retrieve("grp_$grp");
-	my $group_total_time = interval_to_hours($group_user->total_group_time($start,$end));
-        my %data = (group => $grp,
-                    total_time => $group_total_time,
-                    );
-	if ($group_total_time > $group_max_time) {
-	    $group_max_time = $group_total_time;
-	}
-        my $g = PMT::User->retrieve("grp_$grp");
-        my @users = ();
-	my $max_time = 0;
-        foreach my $u (map {$_->data()} $g->users_in_group()) {
-            my $user = PMT::User->retrieve($u->{username});
-            $u->{user_time} = interval_to_hours($user->interval_time($start,$end)) || 0;
-            push @users, $u;
-	    if ($u->{user_time} > $max_time) {
-		$max_time = $u->{user_time};
-	    }
+        if ($group_user) {
+            my $group_total_time = interval_to_hours($group_user->total_group_time($start,$end));
+            my %data = (group => $grp,
+                        total_time => $group_total_time,
+                        );
+            if ($group_total_time > $group_max_time) {
+    	       $group_max_time = $group_total_time;
+            }
+            my $g = PMT::User->retrieve("grp_$grp");
+            my @users = ();
+            my $max_time = 0;
+            foreach my $u (map {$_->data()} $g->users_in_group()) {
+                my $user = PMT::User->retrieve($u->{username});
+                $u->{user_time} = interval_to_hours($user->interval_time($start,$end)) || 0;
+                push @users, $u;
+                if ($u->{user_time} > $max_time) {
+                    $max_time = $u->{user_time};
+                }
+            }
+            $data{user_times} = \@users;
+            $data{max_time} = $max_time;
+            push @group_reports, \%data;
         }
-        $data{user_times} = \@users;
-	$data{max_time} = $max_time;
-        push @group_reports, \%data;
     }
-
-    return {groups => \@group_reports,
-	    group_max_time => $group_max_time};
+    return { groups => \@group_reports, group_max_time => $group_max_time};
 }
 
 
