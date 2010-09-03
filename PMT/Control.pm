@@ -1398,7 +1398,7 @@ sub post {
     if ($preview eq "preview") {
         my $tiki = new Text::Tiki;
         $body =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
-	$body =~ s/(\w+)\+(\w+)\@/$1&plus;$2@/g; # workaround for second awful Text::Tiki bug
+        $body =~ s/(\w+)\+(\w+)\@/$1&plus;$2@/g; # workaround for second awful Text::Tiki bug
         my $formatted_body = $tiki->format($body);
         my $template = $self->template("preview.tmpl");
         $template->param(pid => $pid,

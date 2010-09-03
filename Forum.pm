@@ -158,7 +158,6 @@ sub post {
     
     $self->reply_to_node($args{reply_to});
     
-
     if($args{type} eq "post") {
         $self->email_post($p->nid,\%args);
     } elsif($args{type} eq "comment") {
@@ -218,7 +217,7 @@ sub email_reply {
     my $body = Text::Wrap::wrap("","",$args->{body});
 
     my $reply_to_node = PMT::Node->retrieve($args->{reply_to});
-
+    my $root_node = $reply_to_node->get_root_node();
     # don't bother sending a copy to the author
     # if they're just replying to their own node.
     return if $self->user() eq $reply_to_node->author->username;
@@ -239,8 +238,7 @@ sub email_reply {
     }
 
     $body .= "\n\n-- \nthis message sent automatically by the PMT forum.
-to reply, please visit <http://$ENV{'SERVER_NAME'}/home.pl?mode=node;nid=$nid>\n";
-
+to reply, please visit <http://$ENV{'SERVER_NAME'}/home.pl?mode=node;nid=$root_node#c$nid>\n";
 
     my %mail = (To => $user_info->{user_email},
                 From => "$current_user->{user_fullname} <$current_user->{user_email}>",
