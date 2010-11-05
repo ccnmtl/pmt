@@ -121,10 +121,11 @@ sub setup {
         'someday_maybe'          => 'someday_maybe',
         'deactivate_user'        => 'deactivate_user',
         'yearly_review'          => 'yearly_review',
-        'change_item_project_form'  =>  'change_item_project_form',
-        'change_item_project_milestone_form'    =>  'change_item_project_milestone_form',
-        'change_item_project_review'    =>  'change_item_project_review',
-        'change_item_project'    =>  'change_item_project',
+        'change_item_project_form'              => 'change_item_project_form',
+        'change_item_project_milestone_form'    => 'change_item_project_milestone_form',
+        'change_item_project_review'            => 'change_item_project_review',
+        'change_item_project'    => 'change_item_project',
+        'send_custom_email'      => 'send_custom_email',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -3908,6 +3909,79 @@ sub deactivate_user {
         $template->param(users_select => PMT::User::users_select());
         return $template->output();
     }
+}
+
+#
+# Send a custom user email to an arbitrary recipient from the item view,
+# referencing the item specified
+#
+sub send_custom_email {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $iid = $cgi->param('iid');
+    my $user = $self->{user};
+    my $view_message;
+
+    my $config = new PMT::Config;
+    if ($config->{enable_custom_emails}) {
+        my $item = PMT::Item->retrieve($iid);
+        my $item_r = $item->full_data();
+        my $to = $cgi->param('send_email_to');
+        my $from = $user->{email};
+        my $subject = "[pmt:$iid] $item_r->{title}";
+        my $reply_to = '';
+        my $reply_to_inline = '';
+        if ($config->{importer_pop3_replyto}) {
+            $reply_to = $config->{'importer_pop3_replyto'};
+            $reply_to_inline = "Reply-To: $config->{'importer_pop3_replyto'}\n";
+        }
+        my $message = $cgi->param('send_email_body');
+
+        my $item_history = '';
+        if ($cgi->param('send_email_history')) {
+            $item_history = "----\nItem History\n----\n";
+            foreach my $hitem (@{$item_r->{full_history}}) {
+                my $comment = $hitem->{'comment'};
+                $comment =~ s/<(?:[^>'"]*|(['"]).*?\1)*>/ /gs;
+                my $status = $hitem->{'status'} ? $hitem->{'status'} : '';
+                $item_history .= "on $hitem->{'timestamp'} by $hitem->{'fullname'}:\n";
+                $item_history .= "status: $status\n";
+                $item_history .= "comment: $comment\n\n";
+            }
+        }
+
+        $ENV{PATH} = "/usr/sbin";
+        open(MAIL,"|/usr/sbin/sendmail -t");
+        print MAIL <<END_MESSAGE;
+From: $from
+To: $to
+Subject: $subject
+$reply_to_inline
+$message
+
+to respond to this message, reply to $reply_to (usually, clicking the 'Reply' button on your email client will do this)
+
+$item_history
+END_MESSAGE
+        CORE::close MAIL;
+        print STDERR "sent custom email out";
+
+        my $log = "<p><b>sent email to: $to.";
+        if ($cgi->param('send_email_history')) {
+            $log .= " item history was appended.";
+        }
+        $log .= "</b></p>";
+        $log .= "<p>$message</p>";
+        $item->add_comment($user,$log);
+
+        $view_message = 'Email sent.';
+    } else {
+        $view_message = 'Custom emails are not enabled.';        
+    }
+    use URI::Escape;
+    $self->header_type('redirect');
+    $self->header_props(-url => "/item/$iid/?message=" . URI::Escape::uri_escape($view_message));
+    return $view_message;
 }
 
 1;

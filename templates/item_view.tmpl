@@ -194,7 +194,37 @@ cols="40" rows="5" id="wmd-input" ></textarea>
 </ul>
 </tmpl_if>
 
-
+<tmpl_if name="enable_custom_emails">
+<div style="margin-bottom:20px;">
+<form action="/home.pl" method="post" id="emailform">
+<input type="hidden" name="mode" value="send_custom_email" />
+<input type="hidden" name="iid" value="<tmpl_var name="iid">" />
+<input type="button" onclick="$('#send_email_form').toggle()" class="button" value="SEND AN EMAIL ABOUT THIS ITEM" />
+<div id="send_email_form" style="display:none;">
+<table cellpadding="0" cellspacing="0" class="pmtform2" style="width: 710px;">
+    <tr>
+        <th class="firstcell">To</th>
+        <td><input type="text" name="send_email_to" size="60" /></td>
+    </tr>
+    <tr>
+        <th class="firstcell">Message</th>
+        <td>
+            <p><textarea id="send_email_body" name="send_email_body" rows="5" cols="5"></textarea></p>
+            <p><input type="checkbox" name="send_email_history" /> append <tmpl_var name="type"> history</p>
+            
+        </td>
+    </tr>
+    <tr><td class="firstcell" colspan="2" align="center">
+        <input type="submit" class="button" value="SEND" />
+    </td></tr>
+    <tr>
+        <!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+    </tr>
+</table>
+</div>
+</form>
+</div>
+</tmpl_if>
 
 <h2>History</h2>
 <table cellpadding="0" cellspacing="0" class="itemlisting" style="width: 710px;">
