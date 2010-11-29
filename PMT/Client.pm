@@ -239,7 +239,7 @@ sub total_clients_by_school {
 __PACKAGE__->set_sql(total_clients_by_school_for_date => qq{
 select school, count(*) as cnt from clients
 where (status = 'active' or status = 'inactive')
-and registration_date like ?
+and to_char(registration_date, 'YYYY-MM-DD') like ?
 group by school;}, 'Main');
 
 sub total_clients_by_school_for_month {

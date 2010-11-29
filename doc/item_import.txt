@@ -1,0 +1,99 @@
+The item import feature is intended to allow automated
+importing from various sources to the PMT as items.
+
+/item_import.pl is the script that performs this, typically 
+run as a scheduled task. 
+
+===========================================================
+Basic Configuration
+===========================================================
+The following settings need to be added to PMT config:
+
+<importer_user> 
+The username under which items will be created 
+
+<importer_pid>
+The pid of the project that items will be associated with 
+by default. 
+
+Items will be associated with the next upcoming milestone 
+for this project (i.e. the milestone returned by 
+Project::upcoming_milestone).
+
+
+===========================================================
+POP3ItemImporter
+===========================================================
+At time of writing, only importing from one type of source
+(POP3 mail accounts) has been implemented. This lets PMT
+connect to a POP3 mail account and 'receive items via 
+email'.
+
+-----------------------------------------------------------
+Features:
+* If an email's 'From' address matches an existing client 
+  in the PMT, the generated item will associate the client
+  with the item.
+
+-----------------------------------------------------------
+Requirements/Dependencies:
+The Mail::POP3Client module is included under /Mail. If you 
+are connecting to POP3 via SSL, you will also need to 
+add the following modules:
+
+IO::Socket::SSL
+Net::SSLeay
+
+-----------------------------------------------------------
+Configuration:
+The following settings need to be added to PMT config:
+
+<importer_pop3_host>
+The POP3 mail host
+
+<importer_pop3_user>
+The POP3 user
+
+<importer_pop3_password>
+The POP3 user's password
+
+<importer_pop3_usessl>
+This is optional. Add a value for this item if the 
+connection to the mail host is over SSL.
+
+===========================================================
+EXTENDING WITH NEW SOURCES
+===========================================================
+To allow importing from other sources, the following needs 
+to be done: 
+
+* item_importer.pl needs to be updated to dynamically
+  load and use multiple importers
+
+* Some way to specify which importers to enable is required
+
+* An importer package needs to be created that implements
+  the methods required by item_import.pl. This should be
+  fairly straightforward, and you can use POP3ItemImporter
+  as a reference. 
+  
+The following methods should be implemented:
+  
+connect()
+  Connects to/opens/etc the import source. Returns 1 on 
+  success, 0 on failure.
+  
+next()
+  An iterating method. Returns a hashref on the next 'item' 
+  to be imported with the following properties:
+
+  {from => 'Who this message is from (e.g. an email address)',
+   subject => 'This value becomes the item title',
+   body => 'This value becomes the item description',
+   delivery_method => 'Informs item_importer about the import source'}
+   
+reset()
+  Reset importer's internal cursor
+  
+close()
+  Close the import source.

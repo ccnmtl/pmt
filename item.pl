@@ -110,6 +110,10 @@ eval {
         $template->param($user->menu());
         $template->param(cc => $item->cc($user));
         $template->param(wiki_base_url => PMT::Common::get_wiki_url());
+
+        my $config = new PMT::Config;
+        $template->param(enable_custom_emails => $config->{enable_custom_emails});
+
         print $cgi->header(-charset => 'utf-8'), $template->output();
     }
 };

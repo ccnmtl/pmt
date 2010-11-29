@@ -13,24 +13,21 @@ function setItemType() {
 
 function getId() {
 	 if (item_type == "item") {
-	 	 return $("submitform")['iid'].value;
-         } else {
-                 // get the nid from the reply form
-	         return $("replyform")['reply_to'].value;
+	     return $("#submitform input[name=iid]").val();
+	 } else {
+	     // get the nid from the reply form
+	     return $("#replyform input[name=reply_to]").val();
 	 }
 }
 
 function updateTags(data) {
 	 log("updating tags");
-	 $("tagsave").value = "save tags";
+	 $("#tagsave").val("save tags");
 
-	 var newtags = DIV({'id' : 'viewtags'},
-	 map(function (t) {
-	     return SPAN({},A({'href' : "/home.pl?mode=tag;tag=" +
-	 urlEncode(t.tag)}, t.tag)," ");
-	 }, data));
-
-	 swapDOM($("viewtags"),newtags);
+	 var newtags = map(function (t) {
+		 return SPAN({},A({'href' : "/home.pl?mode=tag;tag=" + urlEncode(t.tag)}, t.tag)," ");
+	 }, data);
+	 $("#viewtags").html(newtags);
 }
 
 function saveFailed(err) {
@@ -38,22 +35,20 @@ function saveFailed(err) {
 }
 
 function saveTags() {
-	 var tags = $("usertags").value;
+	 var tags = $("#usertags").val();
 	 var id = getId();
 	 var idname = item_type == "item" ? "iid" : "nid";
 	 var url = "/home.pl?mode=set_tags;" + idname + "=" + id + ";tags=" + urlEncode(tags);
 	 var d = loadJSONDoc(url);
-	 var submit = $("tagsave");
-	 submit.value = "saving...";
+	 $("#tagsave").val('saving...');
 	 d.addCallbacks(updateTags,saveFailed);
 }
 
 
 function initTagsForm() {
 	 setItemType();
-	 var submit = $("tagsave");
-	 if (!submit) return;
-	 submit.onclick = function () { saveTags(); return false; }
+	 if (! $("#tagsave").length) return;
+	 $("#tagsave").click(function () { saveTags(); return false; });
 	 log("initialized tag form");
 }
 

@@ -121,10 +121,11 @@ sub setup {
         'someday_maybe'          => 'someday_maybe',
         'deactivate_user'        => 'deactivate_user',
         'yearly_review'          => 'yearly_review',
-        'change_item_project_form'  =>  'change_item_project_form',
-        'change_item_project_milestone_form'    =>  'change_item_project_milestone_form',
-        'change_item_project_review'    =>  'change_item_project_review',
-        'change_item_project'    =>  'change_item_project',
+        'change_item_project_form'              => 'change_item_project_form',
+        'change_item_project_milestone_form'    => 'change_item_project_milestone_form',
+        'change_item_project_review'            => 'change_item_project_review',
+        'change_item_project'    => 'change_item_project',
+        'send_custom_email'      => 'send_custom_email',
     );
     my $pmt = new PMT();
     my $q = $self->query();
@@ -1398,7 +1399,7 @@ sub post {
     if ($preview eq "preview") {
         my $tiki = new Text::Tiki;
         $body =~ s/\(([^\)\(]+\@[^\)\(]+)\)/( $1 )/g; # workaround horrible bug in Text::Tiki
-	$body =~ s/(\w+)\+(\w+)\@/$1&plus;$2@/g; # workaround for second awful Text::Tiki bug
+        $body =~ s/(\w+)\+(\w+)\@/$1&plus;$2@/g; # workaround for second awful Text::Tiki bug
         my $formatted_body = $tiki->format($body);
         my $template = $self->template("preview.tmpl");
         $template->param(pid => $pid,
@@ -2812,37 +2813,36 @@ sub staff_report {
 sub staff_report_data {
     my $start = shift;
     my $end = shift;
-    my @GROUPS = qw/programmers video webmasters educationaltechnologists management/;
+    my @GROUPS = qw/programmers video webmasters educationaltechnologists management devgrp SCPSWebSiteTeam DistanceLearningOffice EducationalTechnologists/;
     my @group_reports = ();
-
     my $group_max_time = 0;
     foreach my $grp (@GROUPS) {
         my $group_user = PMT::User->retrieve("grp_$grp");
-	my $group_total_time = interval_to_hours($group_user->total_group_time($start,$end));
-        my %data = (group => $grp,
-                    total_time => $group_total_time,
-                    );
-	if ($group_total_time > $group_max_time) {
-	    $group_max_time = $group_total_time;
-	}
-        my $g = PMT::User->retrieve("grp_$grp");
-        my @users = ();
-	my $max_time = 0;
-        foreach my $u (map {$_->data()} $g->users_in_group()) {
-            my $user = PMT::User->retrieve($u->{username});
-            $u->{user_time} = interval_to_hours($user->interval_time($start,$end)) || 0;
-            push @users, $u;
-	    if ($u->{user_time} > $max_time) {
-		$max_time = $u->{user_time};
-	    }
+        if ($group_user) {
+            my $group_total_time = interval_to_hours($group_user->total_group_time($start,$end));
+            my %data = (group => $grp,
+                        total_time => $group_total_time,
+                        );
+            if ($group_total_time > $group_max_time) {
+    	       $group_max_time = $group_total_time;
+            }
+            my $g = PMT::User->retrieve("grp_$grp");
+            my @users = ();
+            my $max_time = 0;
+            foreach my $u (map {$_->data()} $g->users_in_group()) {
+                my $user = PMT::User->retrieve($u->{username});
+                $u->{user_time} = interval_to_hours($user->interval_time($start,$end)) || 0;
+                push @users, $u;
+                if ($u->{user_time} > $max_time) {
+                    $max_time = $u->{user_time};
+                }
+            }
+            $data{user_times} = \@users;
+            $data{max_time} = $max_time;
+            push @group_reports, \%data;
         }
-        $data{user_times} = \@users;
-	$data{max_time} = $max_time;
-        push @group_reports, \%data;
     }
-
-    return {groups => \@group_reports,
-	    group_max_time => $group_max_time};
+    return { groups => \@group_reports, group_max_time => $group_max_time};
 }
 
 
@@ -3909,6 +3909,79 @@ sub deactivate_user {
         $template->param(users_select => PMT::User::users_select());
         return $template->output();
     }
+}
+
+#
+# Send a custom user email to an arbitrary recipient from the item view,
+# referencing the item specified
+#
+sub send_custom_email {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $iid = $cgi->param('iid');
+    my $user = $self->{user};
+    my $view_message;
+
+    my $config = new PMT::Config;
+    if ($config->{enable_custom_emails}) {
+        my $item = PMT::Item->retrieve($iid);
+        my $item_r = $item->full_data();
+        my $to = $cgi->param('send_email_to');
+        my $from = $user->{email};
+        my $subject = "[pmt:$iid] $item_r->{title}";
+        my $reply_to = '';
+        my $reply_to_inline = '';
+        if ($config->{importer_pop3_replyto}) {
+            $reply_to = $config->{'importer_pop3_replyto'};
+            $reply_to_inline = "Reply-To: $config->{'importer_pop3_replyto'}\n";
+        }
+        my $message = $cgi->param('send_email_body');
+
+        my $item_history = '';
+        if ($cgi->param('send_email_history')) {
+            $item_history = "----\nItem History\n----\n";
+            foreach my $hitem (@{$item_r->{full_history}}) {
+                my $comment = $hitem->{'comment'};
+                $comment =~ s/<(?:[^>'"]*|(['"]).*?\1)*>/ /gs;
+                my $status = $hitem->{'status'} ? $hitem->{'status'} : '';
+                $item_history .= "on $hitem->{'timestamp'} by $hitem->{'fullname'}:\n";
+                $item_history .= "status: $status\n";
+                $item_history .= "comment: $comment\n\n";
+            }
+        }
+
+        $ENV{PATH} = "/usr/sbin";
+        open(MAIL,"|/usr/sbin/sendmail -t");
+        print MAIL <<END_MESSAGE;
+From: $from
+To: $to
+Subject: $subject
+$reply_to_inline
+$message
+
+to respond to this message, reply to $reply_to (usually, clicking the 'Reply' button on your email client will do this)
+
+$item_history
+END_MESSAGE
+        CORE::close MAIL;
+        print STDERR "sent custom email out";
+
+        my $log = "<p><b>sent email to: $to.";
+        if ($cgi->param('send_email_history')) {
+            $log .= " item history was appended.";
+        }
+        $log .= "</b></p>";
+        $log .= "<p>$message</p>";
+        $item->add_comment($user,$log);
+
+        $view_message = 'Email sent.';
+    } else {
+        $view_message = 'Custom emails are not enabled.';        
+    }
+    use URI::Escape;
+    $self->header_type('redirect');
+    $self->header_props(-url => "/item/$iid/?message=" . URI::Escape::uri_escape($view_message));
+    return $view_message;
 }
 
 1;

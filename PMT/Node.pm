@@ -304,6 +304,17 @@ sub num_project_posts {
     return $r;
 }
 
+#
+# Recursively go through reply_to nodes to get the top-level node
+#
+sub get_root_node {
+    my $self = shift;
+    if (! $self->reply_to) {
+        return $self->nid;
+    } else {
+        my $reply_to_node = PMT::Node->retrieve($self->reply_to);
+        return $reply_to_node->get_root_node();
+    }
+}
 
 1;
-
