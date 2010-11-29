@@ -2002,7 +2002,6 @@ sub update_project_form {
     $data{restricteds}          = $project->restricteds_select();
     $data{types}                = $project->types_select();
     $data{clients}              = $project->clients_data();
-    $data{clients_select}       = $project->clients_select();
     $data{all_non_clients}      = $project->all_non_clients_select();
     $data{total_remaining_time} = interval_to_hours($project->estimated_time);
     $data{total_completed_time} = interval_to_hours($project->completed_time);
