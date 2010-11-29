@@ -173,7 +173,6 @@ sub edit_project {
     my $description = escape($args{description});
     my $caretaker   = untaint_username($args{caretaker});
     my $pr          = $args{personnel};
-    my $cr          = $args{clients};
     my $pub_view    = $args{pub_view};
     my $status      = $args{status};
     my $projnum     = $args{projnum} || 0;
@@ -226,11 +225,6 @@ sub edit_project {
     if(!$got_caretaker) {
         my $w = PMT::WorksOn->create({username => $caretaker, pid => $self->pid});
         $seen{$caretaker} = 1;
-    }
-    $self->clients()->delete_all;
-    foreach my $client (@$cr) {
-        next if $client eq "";
-        my $p = PMT::ProjectClients->create({pid => $self->pid, client_id => $client});
     }
     $self->update();
 

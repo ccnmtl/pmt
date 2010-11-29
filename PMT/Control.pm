@@ -1934,7 +1934,6 @@ sub update_project {
     my $caretaker   = escape($cgi->param('caretaker')) || "";
     my $pub_view    = ($cgi->param('pub_view') eq "public") ? 't' : 'f';
     my @personnel    = $cgi->param('personnel');
-    my @clients     = $cgi->param('clients');
     my $status      = $cgi->param('status');
     my $projnum     = $cgi->param('projnum')    || "";
     my $type        = $cgi->param('type')       || "";
@@ -1956,7 +1955,6 @@ sub update_project {
 			   description => $description,
 			   caretaker   => $caretaker,
 			   personnel    => \@personnel,
-			   clients     => \@clients,
 			   pub_view    => $pub_view,
 			   status      => $status,
 			   projnum     => $projnum,
@@ -2001,8 +1999,8 @@ sub update_project_form {
     $data{areas}                = $project->areas_select();
     $data{restricteds}          = $project->restricteds_select();
     $data{types}                = $project->types_select();
-    $data{clients}              = $project->clients_data();
-    $data{all_non_clients}      = $project->all_non_clients_select();
+#    $data{clients}              = $project->clients_data();
+#    $data{all_non_clients}      = $project->all_non_clients_select();
     $data{total_remaining_time} = interval_to_hours($project->estimated_time);
     $data{total_completed_time} = interval_to_hours($project->completed_time);
     $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);

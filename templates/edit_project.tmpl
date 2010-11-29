@@ -14,7 +14,7 @@
 
 
 <form action="/home.pl" method="post"
-onsubmit="select_all(this.personnel);select_all(this.clients)">
+onsubmit="select_all(this.personnel)">
 <input type="hidden" name="mode" value="update_project" />
 <input type="hidden" name="pid" value="<tmpl_var name="pid">" />
 
@@ -252,48 +252,6 @@ name="label" escape="html"></option></tmpl_loop>
 <br />
 
 
-<table cellpadding="0" cellspacing="0" class="pmtform">
-<tr>
-<th colspan="3" class="formcategory">Client Information</th>
-</tr>
-
-<tr>
-<th class="firstcell" width="35%">Client list:</th>
-<th width="15%">&#160;</th>
-<th width="50%">Project's Client:</th>
-</tr>
-
-<tr>
-<td class="firstcell" nowrap="nowrap"><!-- list of available clients -->
-<select class="available" name="clients_select" size="5" multiple="multiple">
-<tmpl_loop name="all_non_clients">
-<tmpl_include name="options_loop.tmpl">
-</tmpl_loop>
-</select></td>
-<td align="center" valign="middle"><!-- arrow for clients -->
-<input onclick="move(this.form.clients_select, this.form.clients)" type="button" value="&gt;&gt;"/>
-<br />
-<br />
-<input onclick="move(this.form.clients, this.form.clients_select)" type="button" value="&lt;&lt;"/>
-</td>
-<td><!-- list of current clients -->
-<select class="activated" name="clients" size="5" multiple="multiple">
-<tmpl_loop name="clients">
-<option value="<tmpl_var name="client_id" escape="html">"><tmpl_var name="lastname" escape="html">, <tmpl_var name="firstname" escape="html"></option>
-</tmpl_loop>
-</select>
-
-<p>
-<a href="/home.pl?mode=add_client_form">Add new client &#62;</a>
-</p>
-</td>
-</tr>
-
-<tr>
-<!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
-</tr>
-
-</table>
 
 
 <div style="width:710px; text-align:center;">
