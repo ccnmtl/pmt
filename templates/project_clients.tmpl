@@ -1,0 +1,72 @@
+<tmpl_include name="header_project.tmpl">
+<tmpl_include name="menu_global.tmpl">
+<tmpl_include name="menu_local_project.tmpl">
+
+<!-- ===== PAGE MAIN CONTENT ===== -->
+<div class="pagecontent">
+
+<h1>PROJECT: <a href="/home.pl?mode=project;pid=<tmpl_var name="pid">"><tmpl_var name="name" escape="html"></a><br />
+<span class="hide">PROJECT:</span> &#62; Project Clients
+</h1>
+
+<br />
+
+
+<tmpl_if name="clients">
+<form action="/home.pl" method="post">
+<input type="hidden" name="mode" value="delete_clients_from_project" />
+<input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
+
+<table cellpadding="0" cellspacing="0" class="itemlisting" style="width: 650px;">
+<tr><th class="firstcell">&#160;</th>
+<th>client:</th>
+</tr>
+<tmpl_loop name="clients">
+<tr><td class="firstcell"><input type="checkbox" name="del_<tmpl_var name="client_id" escape="html">" /></td>
+<td><a href="/home.pl?mode=client;client_id=<tmpl_var name="client_id" escape="url">"><tmpl_var
+name="firstname" escape="html"> <tmpl_var
+name="lastname" escape="html"></a> 
+</td>
+</tr>
+</tmpl_loop>
+<tr><td colspan="3" class="firstcell" align="center"><input type="submit" value="DELETE SELECTED CLIENTS" /></td></tr>
+<tr>
+<!-- ## Closing row --><td colspan="3" class="end">&nbsp;</td>
+</tr>
+</table>
+</form>
+</tmpl_if>
+
+
+<br />
+
+<h2>add client:</h2>
+
+<form action="/home.pl" method="post" enctype="multipart/form-data">
+<input type="hidden" name="pid" value="<tmpl_var name="pid" escape="html">" />
+<input type="hidden" name="mode" value="add_clients_to_project" />
+
+<table cellpadding="0" cellspacing="0" class="pmtform" style="width: 650px;">
+<tr><th class="firstcell">select client:</th><td><select class="available" name="clients" size="5" multiple="multiple">
+<tmpl_loop name="all_non_clients">
+<tmpl_include name="options_loop.tmpl">
+</tmpl_loop>
+</select></td></tr>
+
+<tr>
+<!-- ## Submit button --><td colspan="2" class="firstcell" align="center"><input type="submit" value="ADD CLIENT" class="button" /></td>
+</tr>
+
+<tr>
+<!-- ## Closing row --><td colspan="2" class="end">&nbsp;</td>
+</tr>
+
+</table>
+</form>
+
+</div>
+<!-- ===== END PAGE MAIN CONTENT ===== -->
+
+
+
+<tmpl_include name="footer.tmpl">

@@ -73,6 +73,9 @@ sub setup {
         'edit_project_items_form' => 'edit_project_items_form',
         'project_info'           => 'project_info',
         'project_documents'      => 'project_documents',
+        'project_clients'      => 'project_clients',
+	'delete_clients_from_project' => 'delete_clients_from_project',
+	'add_clients_to_project' => 'add_clients_to_project',
         'project_milestones'     => 'project_milestones',
 	'project_milestones_json' => 'project_milestones_json',
 	'project_timeline'       => 'project_timeline',
@@ -1749,6 +1752,54 @@ sub project_documents {
     $template->param(documents => [map {$_->data()} $project->documents()]);
     $template->param(page_title => "project documents");
     return $template->output();
+}
+
+sub project_clients {
+    my $self = shift;
+    my $cgi = $self->query();
+    my $pid = $cgi->param('pid');
+    my $project = PMT::Project->retrieve($pid);
+    my $template = $self->template("project_clients.tmpl");
+    my %data = %{$project->data()};
+    $data{total_remaining_time} = interval_to_hours($project->estimated_time);
+    $data{total_completed_time} = interval_to_hours($project->completed_time);
+    $data{total_estimated_time} = interval_to_hours($project->all_estimated_time);
+
+    $template->param(\%data);
+    $template->param(projects_mode => 1);
+    $template->param(clients => $project->clients_data());
+    $template->param(all_non_clients => $project->all_non_clients_select());
+    $template->param(page_title => "project clients");
+    return $template->output();
+}
+
+sub delete_clients_from_project {
+    my $self = shift;
+    my $q = $self->query();
+    my %vars = $q->Vars();
+    my @del = map {/^del_(\d+)$/; $1;} grep {/^del_\d+/} keys %vars;
+    my $pid = $q->param('pid');
+    foreach my $client_id (@del) {
+	my $pc = PMT::ProjectClients->retrieve(pid => $pid, client_id => $client_id);
+        $pc->delete();
+    }
+    $self->header_type('redirect');
+    $self->header_props(-url => "/home.pl?mode=project_clients;pid=$pid");
+    return "clients deleted";
+}
+
+sub add_clients_to_project {
+    my $self = shift;
+    my $q = $self->query();
+    my $pid = $q->param('pid');
+    my $project = PMT::Project->retrieve($pid);
+    my @clients     = $q->param('clients');    
+    foreach my $client_id (@clients) {
+	my $pc = PMT::ProjectClients->create({pid => $pid, client_id => $client_id});
+    }
+    $self->header_type('redirect');
+    $self->header_props(-url => "/home.pl?mode=project_clients;pid=$pid");
+    return "clients added";
 }
 
 sub project_milestones {
