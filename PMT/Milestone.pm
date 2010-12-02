@@ -229,4 +229,19 @@ sub upcoming_milestones {
     return \@results;
 }
 
+__PACKAGE__->set_sql(recent_events => qq{
+SELECT e.status,i.iid,i.title,c.comment,c.username,e.event_date_time,i.assigned_to,i.owner
+FROM   events e, items i, comments c
+WHERE  e.item = i.iid AND c.event = e.eid AND i.mid = ?
+ORDER BY e.event_date_time DESC limit 10;
+}, 'Main');
+
+sub recent_events {
+    my $self = shift;
+    my $sth = $self->sql_recent_events;
+    $sth->execute($self->mid);
+    return $sth->fetchall_arrayref({});
+}
+
+
 1;
