@@ -622,7 +622,7 @@ sub tasty_get {
     my $config = new PMT::Config;
     my $base = $config->{tasty_base};
     my $service = $config->{tasty_service};
-    my $url = shift;
+    my $url = lc(shift);
     my $full = "http://$base/service/$service/$url";
     my $r = get $full;
     my $json = new JSON;
@@ -641,7 +641,7 @@ use HTTP::Request;
 use HTTP::Request::Common qw(POST);
 
 sub tasty_put {
-    my $url = shift;
+    my $url = lc(shift);
     my $ua = LWP::UserAgent->new;
     my $config = new PMT::Config;
     my $base = $config->{tasty_base};
@@ -651,7 +651,7 @@ sub tasty_put {
 }
 
 sub tasty_delete {
-    my $url = shift;
+    my $url = lc(shift);
     my $ua = LWP::UserAgent->new;
     my $config = new PMT::Config;
     my $base = $config->{tasty_base};

@@ -87,7 +87,9 @@ sub tags {
     my $url = "item/item_$iid/";
     my $r = tasty_get($url);
     if ($r->{tags}) {
-        return [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
+	return [sort {$a->{tag} cmp $b->{tag}} 
+		map {$_->{tag} = lc($_->{tag});$_;} 
+		@{$r->{tags}}];
     } else {
         return [];
     }
@@ -101,7 +103,9 @@ sub user_tags {
     my $url = "item/item_$iid/user/user_$username/";
     my $r = tasty_get($url);
     if ($r->{tags}) {
-        return [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
+	return [sort {$a->{tag} cmp $b->{tag}} 
+		map {$_->{tag} = lc($_->{tag});$_;} 
+		@{$r->{tags}}];
     } else {
         return [];
     }

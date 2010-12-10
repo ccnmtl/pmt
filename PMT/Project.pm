@@ -396,7 +396,9 @@ sub tags {
     my $pid = $self->pid;
     my $r = tasty_get("user/project_$pid/");
     if ($r->{tags}) {
-        return [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
+	return [sort {$a->{tag} cmp $b->{tag}} 
+		map {$_->{tag} = lc($_->{tag});$_;} 
+		@{$r->{tags}}];
     } else {
         return [];
     }

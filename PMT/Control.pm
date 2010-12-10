@@ -2227,7 +2227,9 @@ sub my_tags {
     my $r = tasty_get($url);
     my $tags = [];
     if ($r->{tags}) {
-        $tags = [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
+	$tags = [sort {$a->{tag} cmp $b->{tag}} 
+		map {$_->{tag} = lc($_->{tag});$_;} 
+		@{$r->{tags}}];
     }
     $tags = cloud($tags);
     $template->param(tags => $tags,
@@ -2242,7 +2244,9 @@ sub all_tags {
     my $r = tasty_get($url);
     my $tags = [];
     if ($r->{tags}) {
-        $tags = [sort {lc($a->{tag}) cmp lc($b->{tag})} @{$r->{tags}}];
+	$tags = [sort {$a->{tag} cmp $b->{tag}} 
+		map {$_->{tag} = lc($_->{tag});$_;} 
+		@{$r->{tags}}];
     }
 
     $tags = cloud($tags);
