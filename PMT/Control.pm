@@ -2146,9 +2146,12 @@ sub tag {
             push @nodes, $n->data($user);
         }
     }
+    
+    my $items = [sort {$b->{last_mod} cmp $a->{last_mod}} @items];
+    my $nodes = [sort {$b->{added} cmp $a->{added}} @nodes];
 
-    $template->param(items => \@items,
-                     nodes => \@nodes,
+    $template->param(items => $items,
+                     nodes => $nodes,
 		     pid => $pid,
                      tag => uri_unescape($tag));
 
