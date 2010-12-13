@@ -91,7 +91,11 @@ if ($assignee eq $owner) {
     my $to      = $u->email;
     my $subject = $item->email_subject("new external item added");
     my $from    = $u->email;
-    $item->send_email($body,$subject,$from,$to)
+    # if the submitted email matches a client's uni,
+    # we associate them with the item automatically.
+    $item->add_client_by_uni($email);
+
+    $item->send_email($body,$subject,$from,$to);
 }
 
 if ($redirect_url) {
