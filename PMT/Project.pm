@@ -527,8 +527,8 @@ sub milestone_select {
             value => $_->mid,
             label => $_->name . " (" . $_->target_date . ")",
             selected => ($_->mid == $milestone->mid),
-        }
-    } $self->milestones()];
+        } 
+    } grep {$_->status ne "CLOSED"} $self->milestones()];
 }
 
 sub milestones_on {
