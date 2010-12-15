@@ -251,7 +251,7 @@ sub project_milestones_select {
     my $self = shift;
     my @milestones = map {$_->data()} $self->milestones();
     my $upcoming = $self->upcoming_milestone();
-    my @values = map {$_->{mid}} @milestones;
+    my @values = map {$_->{mid}} grep {$_->{status} ne "CLOSED"} @milestones;
     my @labels = map {$_->{name} . " (" . $_->{target_date} . ")" } @milestones;
     return selectify(\@values,\@labels,[$upcoming]);
 }
