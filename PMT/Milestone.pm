@@ -90,7 +90,7 @@ sub unclosed_items {
     my $sortby = shift || "priority";
     my $username = shift;
 
-    my @items = map {$_->data($username)} $self->all_unclosed_items();
+    my @items = map {$_->simple_data($username)} $self->all_unclosed_items();
     if ($sortby eq "item") {
         @items = sort {$a->{iid} <=> $b->{iid}} @items;
     } elsif ($sortby eq "status" || $sortby eq "target_date" || $sortby eq

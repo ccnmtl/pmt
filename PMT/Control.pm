@@ -2689,8 +2689,7 @@ sub project {
                      month      => $mon,
                      year       => $year);
 
-    my $proj = PMT::Project->retrieve($pid);
-    $template->param(documents => [map {$_->data()} $proj->documents()]);
+    $template->param(documents => [map {$_->data()} $project->documents()]);
     $template->param(projects_mode => 1);
     $self->header_add(-cookie => [$cgi->cookie(-name => "pmtsort",
                                                -value => $sortby,
