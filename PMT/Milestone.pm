@@ -106,6 +106,27 @@ sub unclosed_items {
     return \@items;
 }
 
+sub unclosed_items_form {
+    my $self = shift;
+    my $sortby = shift || "priority";
+    my $username = shift;
+
+    my @items = map {$_->data($username)} $self->all_unclosed_items();
+    if ($sortby eq "item") {
+        @items = sort {$a->{iid} <=> $b->{iid}} @items;
+    } elsif ($sortby eq "status" || $sortby eq "target_date" || $sortby eq
+        "last_mod") {
+        @items = sort {$a->{$sortby} cmp $b->{$sortby}} @items;
+    } elsif ($sortby eq "owner" || $sortby eq "assigned_to") {
+        @items = sort {$a->{"${sortby}_fullname"} cmp
+            $b->{"${sortby}_fullname"}} @items;
+    } else {
+        @items = sort {$b->{priority} <=> $a->{priority}} @items;
+    }
+
+    return \@items;
+}
+
 sub all_unclosed_items {
     my $self = shift;
     return PMT::Item->unclosed_items_in_milestone($self->mid);

@@ -2713,7 +2713,7 @@ sub edit_project_items_form {
 
     $data{caretaker_fullname}   = $caretaker->fullname;
     $data{caretaker_username}   = $caretaker->username;
-    $data{milestones}           = $project->project_milestones($sortby, $username);
+    $data{milestones}           = $project->project_milestones_form($sortby, $username);
     $data{personnel}             = [map {$_->data()} $project->personnel()];
     $data{total_remaining_time} = interval_to_hours($project->estimated_time);
     $data{total_completed_time} = interval_to_hours($project->completed_time);

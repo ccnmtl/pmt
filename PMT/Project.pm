@@ -312,6 +312,40 @@ sub project_milestones {
     return \@milestones;
 }
 
+# like milestones() but shows unclosed items only,
+# and includes select forms (slower. used for bulk edit page)
+sub project_milestones_form {
+    my $self   = shift;
+    my $sortby = shift || "priority";
+    my $username = shift;
+
+    my $sth = $self->sql_project_milestones;
+    $sth->execute($self->pid);
+
+    my @milestones = @{$sth->fetchall_arrayref({})};
+
+    my $set = 0;
+    my $has_open = 0;
+    foreach my $m (@milestones) {
+        my $milestone = PMT::Milestone->retrieve($m->{mid});
+        $m->{items} = $milestone->unclosed_items_form($sortby, $username);
+        $m->{total_estimated_time} = interval_to_hours($milestone->estimated_time) || "0";
+        $m->{total_completed_time} = interval_to_hours($milestone->completed_time) || "0";
+        if(!$set) {
+            if($m->{status} eq 'OPEN') {
+                $m->{next} = 1;
+                $set = 1;
+                $has_open = 1;
+            }
+        }
+    }
+    if(!$has_open) {
+        $milestones[0]->{next} = 1;
+    }
+    return \@milestones;
+}
+
+
 __PACKAGE__->set_sql(events_on => qq{
 SELECT e.status,e.event_date_time as date_time,e.item,i.iid,i.title,c.comment,c.username
 FROM events e, items i, milestones m, comments c
