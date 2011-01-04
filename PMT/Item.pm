@@ -1006,14 +1006,9 @@ sub search_items {
             push @args, ($q,$q);
         }
         $query_string .= qq{
-                AND (p.pid IN (select w.pid
-                               from works_on w
-                               where username = ?)
-                     OR p.pub_view = 'true')
                 ORDER BY $order_string
                 LIMIT $limit OFFSET $offset;
         };
-        push @args, $username;
         $self->set_sql(items_search => $query_string, 'Main');
         my $sth = $self->sql_items_search;
         $sth->execute(@args);
