@@ -25,7 +25,7 @@ if ($autoconfig ne "") {
     print "yes";
 } elsif ($config ne ""){
     my $r = $dispatch->{$metric}();
-    print $r->{config};
+    print $r->{config}, "\n";
     my @results = @{$r->{rows}};
     foreach my $row (@results) {
 	print $row->[0] . ".label " . $row->[0] . "\n";
@@ -43,7 +43,8 @@ if ($autoconfig ne "") {
 sub items_stats {
     my $config = qq{graph_title PMT Items
 graph_vlabel items
-graph_category PMT};
+graph_category PMT
+};
     my @counts = @{PMT::Item->items_by_status()};
     my @rows = map {[$_->{status}, $_->{count}]} @counts;
     return {config => $config, rows => \@rows};
@@ -52,7 +53,8 @@ graph_category PMT};
 sub clients_count {
     my $config = qq{graph_title PMT Clients
 graph_vlabel clients
-graph_category PMT};
+graph_category PMT
+};
     my @counts = @{PMT::Client->clients_by_status()};
     my @rows = map {[$_->{status}, $_->{count}]} @counts;
     return {config => $config, rows => \@rows};
