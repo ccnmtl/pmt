@@ -1032,5 +1032,23 @@ sub recent_items {
     return $sth->fetchall_arrayref({});
 }
 
+sub items_by_status {
+    my $self       = shift;
+    my @statuses = ("OPEN","INPROGRESS","RESOLVED");
+    my @results = ();
+    my $sql = qq{ select count(*) from items where status = ?;};
+    $self->set_sql(item_count => $sql, 'Main');
+    foreach my $status (@statuses) {
+	my $sth = $self->sql_item_count;
+	$sth->execute($status);
+	my @res = $sth->fetchall_arrayref({});
+	$sth->finish;
+	my $r = {status => $status,
+		 count => $res[0][0]{'count'},
+	};
+	push @results, $r;
+    }
+    return \@results;
+}
 
 1;

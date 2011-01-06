@@ -607,4 +607,25 @@ sub active_clients {
 
     }
 }
+
+sub clients_by_status {
+    my $self       = shift;
+    my @statuses = ("active","inactive");
+    my @results = ();
+    my $sql = qq{ select count(*) from clients where status = ?;};
+    $self->set_sql(client_count => $sql, 'Main');
+    foreach my $status (@statuses) {
+	my $sth = $self->sql_client_count;
+	$sth->execute($status);
+	my @res = $sth->fetchall_arrayref({});
+	$sth->finish;
+	my $r = {status => $status,
+		 count => $res[0][0]{'count'},
+	};
+	push @results, $r;
+    }
+    return \@results;
+}
+
+
 1;
