@@ -23,21 +23,20 @@ my $dispatch = {
 print $cgi->header();
 if ($autoconfig ne "") {
     print "yes";
-} elsif ($config ne ""){
-    my $r = $dispatch->{$metric}();
-    print $r->{config}, "\n";
-    my @results = @{$r->{rows}};
-    foreach my $row (@results) {
-	print $row->[0] . ".label " . $row->[0] . "\n";
-    }
-    
 } else {
     my $r = $dispatch->{$metric}();
     my @results = @{$r->{rows}};
-    foreach my $row (@results) {
-	print $row->[0] . " " . $row->[1] . "\n";
+    if ($config ne "") {
+	print $r->{config}, "\n";
+	my @results = @{$r->{rows}};
+	foreach my $row (@results) {
+	    print $row->[0] . ".label " . $row->[0] . "\n";
+	}
+    } else {
+	foreach my $row (@results) {
+	    print $row->[0] . " " . $row->[1] . "\n";
+	}
     }
-
 }
 
 sub items_stats {
