@@ -1051,4 +1051,14 @@ sub items_by_status {
     return \@results;
 }
 
+sub total_hours_logged {
+    my $self = shift;
+    my $sql = qq{ select sum(actual_time) as total from actual_times;};
+    $self->set_sql(total_hours_logged => $sql, 'Main');
+    my $sth = $self->sql_total_hours_logged;
+    $sth->execute();
+    my @res = $sth->fetchall_arrayref({});
+    $sth->finish;
+    return interval_to_hours($res[0][0]{'total'});
+}
 1;

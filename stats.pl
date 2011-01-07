@@ -18,6 +18,7 @@ my $metric = $cgi->param('metric') || "clients";
 my $dispatch = {
     items => \&items_stats,
     clients => \&clients_count,
+    hours => \&hours_count,
 };
 
 print $cgi->header();
@@ -58,4 +59,15 @@ graph_category PMT
     my @rows = map {[$_->{status}, $_->{count}]} @counts;
     return {config => $config, rows => \@rows};
 
+}
+
+sub hours_count {
+    my $config = qq{graph_title PMT Hours
+graph_vlabel hours
+graph_category PMT
+graph_info total hours logged
+};
+    my $hours = PMT::Item->total_hours_logged();
+    my @rows = (["hours",$hours]);
+    return {config => $config, rows => \@rows};
 }
