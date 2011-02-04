@@ -45,6 +45,7 @@ eval {
         $template = get_template("search.tmpl");
         $template->param($user->menu());
         $template->param(items_mode => 1);
+	$template->param(wiki_base_url => PMT::Common::get_wiki_url());
     } else {
         $template = get_template("search_tab.tmpl");
     }
