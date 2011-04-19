@@ -2140,11 +2140,15 @@ sub tag {
         my $id = $parts[1];
         if ($parts[0] eq "item") {
             my $i = PMT::Item->retrieve($id);
-            push @items, $i->data();
+	    if ($i) {
+		push @items, $i->data();
+	    }
         }
         if ($parts[0] eq "node") {
             my $n = PMT::Node->retrieve($id);
-            push @nodes, $n->data($user);
+	    if ($n) {
+		push @nodes, $n->data($user);
+	    }
         }
     }
     
