@@ -39,25 +39,29 @@ eval {
         if ($parts[0] eq "item") {
 	    if ($only_posts eq "") {
 		my $i = PMT::Item->retrieve($id);
-		my ($type,$title,$project,
-		    $status,$target_date,$description) = ($i->type,$i->title,$i->mid->pid->name,
-							  $i->status,$i->target_date,$i->description);
-		$rss->add_item(
-		    title => "$type: $title [$project]",
-		    link => "http://$ENV{'SERVER_NAME'}/item/$id/",
-		    description => "<b>status:</b> $status, <b>target date:</b> $target_date<br />$description",
-		    );
+		if ($i) {
+		    my ($type,$title,$project,
+			$status,$target_date,$description) = ($i->type,$i->title,$i->mid->pid->name,
+							      $i->status,$i->target_date,$i->description);
+		    $rss->add_item(
+			title => "$type: $title [$project]",
+			link => "http://$ENV{'SERVER_NAME'}/item/$id/",
+			description => "<b>status:</b> $status, <b>target date:</b> $target_date<br />$description",
+			);
+		}
 	    }
         }
         if ($parts[0] eq "node") {
 	    if ($only_items eq "") {
 		my $n = PMT::Node->retrieve($id);
-		my ($subject,$author,$body) = ($n->subject,$n->author->fullname,$n->body);
-		$rss->add_item(
-		    title => "$subject",
-		    link => "http://$ENV{'SERVER_NAME'}/home.pl?mode=node;nid=$id",
-		    description => "<b>$author</b><br />$body"
-		    );
+		if ($n) {
+		    my ($subject,$author,$body) = ($n->subject,$n->author->fullname,$n->body);
+		    $rss->add_item(
+			title => "$subject",
+			link => "http://$ENV{'SERVER_NAME'}/home.pl?mode=node;nid=$id",
+			description => "<b>$author</b><br />$body"
+			);
+		}
 	    }
         }
     }
