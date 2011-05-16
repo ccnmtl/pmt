@@ -1855,7 +1855,7 @@ sub project_milestones_json {
     } @{$project->project_milestones("priority")};
     my $json = new JSON(pretty => 1);
     $self->header_props(-type => 'application/json');
-    return $json->objToJson({'events' => \@milestones});
+    return $json->encode({'events' => \@milestones});
 }
 
 sub project_timeline {
@@ -2105,12 +2105,12 @@ sub set_tags {
     if ($iid) {
         my $item = PMT::Item->retrieve($iid);
         $item->update_tags(\@tags,$username);
-        return objToJson($item->tags());
+        return encode($item->tags());
     }
     if ($nid) {
         my $node = PMT::Node->retrieve($nid);
         $node->update_tags(\@tags,$username);
-        return objToJson($node->tags());
+        return encode($node->tags());
     }
 }
 
