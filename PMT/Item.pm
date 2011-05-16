@@ -791,7 +791,6 @@ Subject: $subject
 $message;
 END_MESSAGE
     CORE::close MAIL;
-    print STDERR "sent email out";
 }
 
 
