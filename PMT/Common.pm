@@ -51,8 +51,10 @@ sub interval_to_hours {
     }
     $hours = ($days * 24) + $hours + ($minutes/60);
 
-    $hours =~ s/\.(\d\d)(\d)\d*/.$1/g;
-    if($2) { if($2 > 4) { $hours += 0.01; }}   # round
+    if ($hours =~ /\.(\d\d)(\d)\d*/) {
+	$hours =~ s/\.(\d\d)(\d)\d*/.$1/g;
+	if($2) { if($2 > 4) { $hours += 0.01; }}   # round
+    }
     return $hours;
 }
 # }}}
