@@ -283,7 +283,7 @@ sub check_owner_active {
     if ($owner->status ne "active") {
         $changed = 1;
         my $old_user = $item->{'owner'};
-        $item->{'owner'} = $project->caretaker;
+        $item->{'owner'} = $project->caretaker->username;
         $comment .= "<b>changed ownership to caretaker ($old_user is inactive)</b><br />\n";
         $message .= "changed ownership to caretaker ($old_user is inactive). ";
     }
