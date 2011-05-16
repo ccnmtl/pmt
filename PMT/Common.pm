@@ -611,7 +611,7 @@ sub ldap_lookup {
         my $uni = shift;
         my $json = new JSON;
 	my $url = $config->{ldap_url} . $uni;
-       return $json->jsonToObj(get $url);
+       return $json->decode(get $url);
     }
 }
 
@@ -627,8 +627,7 @@ sub tasty_get {
     my $r = get $full;
     my $json = new JSON;
     eval {
-        my $obj = $json->jsonToObj($r);
-        #    my $obj = $json->decode($r);
+        my $obj = $json->decode($r);
         if (!$obj) {
             $obj = {};
         }
