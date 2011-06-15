@@ -2093,7 +2093,12 @@ use JSON;
 
 sub set_tags {
     # meant to be called via AJAX
+    
+    #test this fix by doing an http GET of:
+    #/home.pl?mode=set_tags;nid=3999;tags=learning
+    
     my $self = shift;
+    my $json = new JSON(pretty => 1);
     my $cgi = $self->query();
     my $user = $self->{user};
     my $username = $user->username;
@@ -2105,12 +2110,12 @@ sub set_tags {
     if ($iid) {
         my $item = PMT::Item->retrieve($iid);
         $item->update_tags(\@tags,$username);
-        return encode($item->tags());
+        return $json->encode($item->tags());
     }
     if ($nid) {
         my $node = PMT::Node->retrieve($nid);
         $node->update_tags(\@tags,$username);
-        return encode($node->tags());
+        return $json->encode($node->tags());
     }
 }
 
