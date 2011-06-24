@@ -1,11 +1,12 @@
 #!/usr/bin/perl -w
 use lib qw(.);
 use strict;
-
+use Digest::SHA1  qw(sha1_hex);
 use PMT;
 
 my $pmt = PMT->new();
 my $cgi = CGI->new();
+
 
 
 
@@ -18,8 +19,14 @@ eval {
 
     if ($username && $password && $pass_ver && $fullname && $email) {
         throw Error::PASSWORD_MISMATCH "passwords do not match" unless $password eq $pass_ver;
+
+	my @letters = ('a' .. 'z', '0' .. '9');
+	my $salt = "";
+	$salt.= $letters[rand(36)] foreach(1..5);	
+	my $hash = sha1_hex($salt . $password);
+	
         my $u = PMT::User->create({username => $username, fullname => $fullname, email => $email,
-                                   password => $password});
+                                   password => 'sha1$' . $salt . '$' . $hash});
         print $cgi->redirect("login.pl");
     } else {
         print_form($cgi);
