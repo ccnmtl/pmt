@@ -144,7 +144,6 @@ sub setup {
     $self->{pmt} = $pmt;
     $self->{sortby} = $q->param('sortby') || $q->cookie('pmtsort') || "";
 
-    $self->{password} = $password;
     $self->{username} = $username;
     $self->{message} = $q->param('message');
     $self->header_props(-charset => 'utf-8');
@@ -262,7 +261,7 @@ sub update_user {
         return "redirecting back to form";
     }
 
-    $self->{pmt}->update_user($user->username,$self->{password},$new_pass,$new_pass2,$fullname,$email,
+    $self->{pmt}->update_user($user->username,$new_pass,$new_pass2,$fullname,$email,
 	$type,$title,$phone,$bio,$campus,$building,$room,$photo_url,$photo_width,$photo_height);
 
     my $lcookie = $cgi->cookie(-name =>  'pmtusername',

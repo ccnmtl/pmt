@@ -12,7 +12,7 @@ use PMT::Project;
 use PMT::Group;
 use PMT::Notify;
 use PMT::NotifyProject;
-
+use Digest::SHA1  qw(sha1_hex);
 package PMT;
 
 # use PMT::Common inside the package so functions are exported to
@@ -384,7 +384,6 @@ sub update_item {
 sub update_user {
     my $self      = shift;
     my $username  = untaint_username(shift);
-    my $password  = shift || throw Error::NO_PASSWORD "no password specified in update_user()";
     my $new_pass  = shift;
     my $new_pass2 = shift;
     my $fullname  = escape(shift);
@@ -403,25 +402,33 @@ sub update_user {
     throw Error::NO_EMAIL "email address is necessary."
         unless $email;
 
-    if ($new_pass eq "") { $new_pass = $password; $new_pass2 = $password; }
 
-    if ($new_pass eq $new_pass2) {
-        my $u = PMT::User->retrieve($username);
-        $u->fullname($fullname);
-        $u->email($email);
-        $u->password($new_pass);
-	$u->type($type);
-	$u->title($title);
-	$u->phone($phone);
-	$u->bio($bio);
-	$u->campus($campus);
-	$u->building($building);
-	$u->room($room);
-	$u->photo_url($photo_url);
-	$u->photo_width($photo_width);
-	$u->photo_height($photo_height);
-        $u->update();
+    my $u = PMT::User->retrieve($username);
+
+    if ($new_pass ne "") { 
+	if ($new_pass eq $new_pass2) {
+	    my @letters = ('a' .. 'z', '0' .. '9');
+	    my $salt = "";
+	    $salt.= $letters[rand(36)] foreach(1..5);	
+	    my $hash = sha1_hex($salt . $new_pass);
+	    $u->password('sha1$' . $salt . '$' . $hash);
+	}
     }
+
+    $u->fullname($fullname);
+    $u->email($email);
+    $u->type($type);
+    $u->title($title);
+    $u->phone($phone);
+    $u->bio($bio);
+    $u->campus($campus);
+    $u->building($building);
+    $u->room($room);
+    $u->photo_url($photo_url);
+    $u->photo_width($photo_width);
+    $u->photo_height($photo_height);
+    $u->update();
+
     return;
 }
 
