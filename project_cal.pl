@@ -13,7 +13,7 @@ eval {
     my $password = $cgi->cookie('pmtpassword') || "";
 
     my $user = PMT::User->retrieve($username);
-    $user->validate($username,$password);
+    $user->check_pass($username,$password);
 
     my $pid   = $cgi->param('pid')   || "";
     my $project = PMT::Project->retrieve($pid);

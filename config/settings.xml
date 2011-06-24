@@ -9,4 +9,5 @@
   <wiki_base_url>http://wiki.ccnmtl.columbia.edu</wiki_base_url>
   <uni_domain>columbia.edu</uni_domain>
   <ldap_url>http://cdap.ccnmtl.columbia.edu/?uni=</ldap_url>
+  <site_secret>dummysecret</site_secret>
 </settings>

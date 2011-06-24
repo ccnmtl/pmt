@@ -138,7 +138,7 @@ sub setup {
     if ($username eq "") { throw Error::NO_USERNAME; }
 
     $self->{user} = PMT::User->retrieve($username);
-    $self->{user}->validate($username,$password);
+    $self->{user}->check_pass($username,$password);
 
 
     $self->{pmt} = $pmt;

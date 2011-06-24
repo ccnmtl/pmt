@@ -13,7 +13,7 @@ eval {
     my $password = $cgi->cookie('pmtpassword') || "";
 
     my $user = PMT::User->retrieve($username);
-    $user->validate($username,$password);
+    $user->check_pass($username,$password);
 
     # the default to "" here so we can do a conditional test below
     # to see if any were set or not.

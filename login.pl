@@ -13,7 +13,8 @@ eval {
         my $user = PMT::User->retrieve($username);
         if ($user) {
             $user->validate($username,$password);
-            redirect_with_cookie($cgi,"home.pl",$username,$password);
+	    my $hashed_password = $user->hashed_password();
+            redirect_with_cookie($cgi,"home.pl",$username,$hashed_password);
         } else {
             print $cgi->header(), "user $username does not exist. are you sure you've entered it correctly (the PMT is case sensitive)?";
         }

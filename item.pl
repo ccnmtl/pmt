@@ -27,7 +27,7 @@ eval {
     }
 
     my $user = PMT::User->retrieve($username);
-    $user->validate($username,$password);
+    $user->check_pass($username,$password);
 
     my $item;
     my %data;

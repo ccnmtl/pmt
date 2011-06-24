@@ -2,6 +2,7 @@ use lib qw(..);
 package PMT::User;
 use base 'CDBI::DBI';
 use PMT::Common;
+use Digest::SHA1  qw(sha1_hex);
 
 my %PRIORITIES = (4 => 'CRITICAL', 3 => 'HIGH', 2 => 'MEDIUM', 1 => 'LOW',
 0 => 'ICING');
@@ -68,19 +69,60 @@ sub validate {
     my $username = untaint_username(shift);
     my $password = untaint_password(shift);
 
+    if($self->status ne "active") {
+	# don't even bother checking their password
+	throw Error::InactiveUser "user is inactive and may not login";
+    }
 
-    if($self->password eq $password) {
-        if($self->status ne "active") {
-            throw Error::InactiveUser "user is inactive and may not login";
-        } else {
-            return;
-        }
+    my $salt = $self->password_salt();
+    my $hash = $self->password_hash();
+
+    my $hashed = sha1_hex($salt . $password);
+
+    if($hash eq $hashed) {
+	return;
     } else {
         throw Error::INCORRECT_PASSWORD "incorrect password";
     }
 }
 
 # }}}
+
+sub check_pass {
+    my $self = shift;
+    my $username = untaint_username(shift);
+    my $password = untaint_password(shift); # from cookie
+
+    if($self->status ne "active") {
+	# don't even bother checking their password
+	throw Error::InactiveUser "user is inactive and may not login";
+    }
+
+    if($self->hashed_password() eq $password) {
+	return;
+    } else {
+        throw Error::INCORRECT_PASSWORD "incorrect password";
+    }
+}
+
+sub hashed_password {
+    my $self = shift;
+    my $config = new PMT::Config;
+    my $site_secret = $config->{site_secret};
+    return sha1_hex($site_secret . $self->password);
+}
+
+sub password_hash {
+    my $self = shift;
+    my @parts = split /\$/, $self->password;
+    return $parts[2];
+}
+
+sub password_salt {
+    my $self = shift;
+    my @parts = split /\$/, $self->password;
+    return $parts[1];
+}
 
 sub firstname {
     my $self = shift;
