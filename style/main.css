@@ -1159,50 +1159,46 @@ tr.footer td {
 	 font-weight: bold;
 }
 
-table#progressbar {
-		  width: 150px;
-		  height: 10px;
-		  border: #666 solid 1px;
-		  padding: 0px;
-}
 table.progressbar {
+		  padding: 0px;
+		  border-collapse: collapse;
+		  border-spacing: 0px;
 		  width: 150px;
 		  height: 10px;
 		  border: #666 solid 1px;
-		  padding: 0px;
 }
 
-table#progressbar .done {
+table.progressbar .done {
 		  background-color: #090;
 }
-table#progressbar .todo {
+table.progressbar .todo {
 		  background-color: #ff0;
 }
-table#progressbar .free {
+table.progressbar .free {
 		  background-color: #ddd;
 }
 
-table#progressbar .completedbehind {
+table.progressbar .completedbehind {
 		  background-color: #f60;
 }
 
-table#progressbar .behind {
+table.progressbar .behind {
 		  background-color: #f00;
 }
 
-#progressbar .ok {
+.progressbar .ok {
 	     background-color: #99c;
 }
-#progressbar .upcoming {
+.progressbar .upcoming {
 	     background-color: #069;
 }
-#progressbar .due {
+.progressbar .due {
 	     background-color: #090;
 }
-#progressbar .late {
+.progressbar .late {
 	     background-color: #f60;
 }
-#progressbar .overdue {
+.progressbar .overdue {
 	     background-color: #f00;
 }
 
@@ -1222,6 +1218,10 @@ table#progressbar .behind {
 	     background-color: #f00;
 }
 
+.progressbar img {
+padding: 0px;
+border: 0px;
+}
 .hs-hide {display: none;}
 .hs-show {display: block;}
 
