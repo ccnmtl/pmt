@@ -2417,7 +2417,7 @@ sub change_item_project_form {
     my $item = PMT::Item->retrieve($iid);
     my $item_r = $item->full_data();
     my %data = %$item_r;
-    my @projects_select = $user->workson_projects_select($data{'pid'});
+    my @projects_select = sort {lc($a->{'label'}) cmp lc($b->{'label'}) } $user->workson_projects_select($data{'pid'});
     $data{'projects_select'} = \@projects_select;
     $template->param(\%data);
     return $template->output();
