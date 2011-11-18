@@ -1,0 +1,383 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+    <!-- Disable IE6 image toolbar -->
+    <meta http-equiv="imagetoolbar" content="no" />    
+
+    <title>
+        VITAL NSF &mdash; Request for Borrowing Lecture Recording Equipment
+    </title>
+
+    <style type="text/css" media="all"><!-- @import url('http://kang.ccnmtl.columbia.edu/sb/jasleen/css/tacky_portlet.css'); --></style>
+
+	<style type="text/css" media="all"><!-- @import url('http://kang.ccnmtl.columbia.edu/sb/jasleen/css/general.css'); --></style>
+	<style type="text/css" media="all"><!-- @import url('http://kang.ccnmtl.columbia.edu/sb/jasleen/css/datePicker.css'); --></style>
+	
+	
+	<!-- Below is IE css adjustments, don't delete! --> 
+	<!--[if IE]><style type="text/css" title="text/css">@import url('style/IEfixes.css');</style><![endif]-->
+    
+<script language="JavaScript" type="text/javascript">
+    
+    /// Who fixes what?
+    // these refer to PMT users (see http://pmt.ccnmtl.columbia.edu/home.pl?mode=users)
+    /*var who_gets_what_bugs = {
+            'login':             'markp'
+        ,   'video':             'aggamel'
+        ,   'composition_space': 'markp' 
+        ,   'feedback':          'markp'   
+        ,   'course_mgmt':       'markp'
+        ,   'browser':           'eddie'
+        ,   'http_500':          'eddie'
+        ,   'other':             'markp'
+        ,
+    }*/
+    
+    
+    /*function getSelectedItem(selObj) {
+        return selObj.options[selObj.selectedIndex].value;
+    }*/
+
+    
+ function validateRequired(Form1,Form2,Form3) {
+        var errorstring = "";
+        if (Form1.name.value == "") {
+            errorstring += " Your name \n";
+        }
+        if (Form1.email.value == "") {
+            errorstring += " Your email address \n";
+        }
+        if (Form1.UNI.value == "") {
+            errorstring += " Your UNI \n";
+        }
+        if (Form1.Phone.value == "") {
+            errorstring += " Your Phone number \n";
+        }
+         if (Form1.course.value == "") {
+            errorstring += " Course Title, Number and Semester: \n";
+        }
+        if (Form3.checkoutdate.value == "") {
+            errorstring += " Check Out date \n";
+        }
+        if (Form3.returndate.value == "") {
+            errorstring += " Return date \n";
+        }
+        if (GetSelectedItem(Form2) == undefined) {
+            errorstring += " Selection- Will the video/audio be used? \n";
+        }
+        if (Form2.needprotection.value == "") {
+            errorstring += " Private or protected? \n";
+        }
+        if (Form2.haveimages.value == "") {
+            errorstring += " Have images? \n";
+        }
+        if (Form2.recorded.value == "") {
+            errorstring += " Have you ever recorded before?\n";
+        }
+        
+        if (errorstring != ""){
+            alert("Please enter all required fields:\n"+errorstring);
+            if (Form1.name.value == "") {Form1.name.focus(); }
+            else if  (Form1.email.value == "") {Form1.email.focus(); }
+            else if  (Form1.UNI.value == "") {Form1.UNI.focus(); }
+            else if  (Form1.Phone.value == "") {Form1.Phone.focus(); }
+            else if  (Form1.course.value == "") {Form1.course.focus(); }
+            else if  (Form3.checkoutdate.value == "") {Form3.checkoutdate.focus(); }
+            else if  (Form3.returndate.value == "") {Form3.checkoutdate.focus(); }
+            else if  (Form2.needprotection.value == "") {Form2.needprotection.focus(); }
+            else if  (Form2.haveimages.value == "") {Form2.haveimages.focus(); }
+            else if  (Form2.recorded.value == "") {Form2.recorded.focus(); }            
+            
+            return false;
+        }
+        return true;
+    }
+ 
+   
+    /*function fillAutoFields() {
+        if (document.getElementById){
+            var uaString = navigator.userAgent;
+            if (uaString) document.requestForm.auto_UserAgent.value = uaString;
+        }
+    }*/
+    function GetSelectedItem(theFrom)
+    {
+        
+        var len=theFrom.yn.length;
+        var chosen;
+        for( var i=0;i<len;i++)
+        {
+                if (theFrom.yn[i].checked==true)
+                {
+                  chosen = theFrom.yn[i].value;
+                }
+        }
+        return chosen;
+     }
+    
+    function submitRequestForm() 
+    {
+        var ef1 = document.requestFormp1;
+        var ef2 = document.requestFormp2;
+        
+        var pf = document.pmtForm;
+        var cf = document.chooseDateForm;
+        // Validate the required fields:
+       if ( !validateRequired(ef1,ef2,cf) ) return false;
+        //var role_string = "";
+        //if (ef.role != undefined) {
+         //   role_string = ef.role.value;
+        //}
+        
+       // type_string = getSelectedItem(ef.error_type);
+        //assigned_to_string = who_gets_what_bugs[type_string];
+        
+        //pf.assigned_to.value = assigned_to_string; 
+        
+        // Move the data from the error form fields into the pmt form fields:
+               
+        
+         
+        pf.title.value = ef1.name.value + "  (" + ef1.email.value + ") wants to borrow lecture Recording equipment for the course \t" + ef1.course.value;
+        
+        
+        pf.name.value = ef1.name.value;
+        var description_string = "Request for Borrowing Lecture Recording Equipment:\n\n From \t" + cf.checkoutdate.value + " \t to \t "+ cf.returndate.value+ "\n\n Will the video/audio be used in Courseworks, Wikispaces, Youtube, iTunes U or Other? \t"+ GetSelectedItem(ef2) +"\n\n Is the video private or protected \t"+ ef2.needprotection.value+"\n\n If the Lecture have Images, i.e. Power Point or Video, how will you be capturing? \t"+ ef2.haveimages.value+"\n\nHave you ever recorded a lecture before and feel comfortable using the equipment? \t"+ ef2.recorded.value +"\n\n Additional instructions \t" + ef2.instructions.value;
+        pf.description.value = description_string;
+        //pf.debug_info.value = "User Agent = (" + ef.auto_UserAgent.value + ")\n";
+        pf.email.value = ef1.email.value;
+        pf.redirect_url.value = "http://kang.ccnmtl.columbia.edu/sb/jasleen/request_acknowledged.html?";
+        pf.redirect_url.value += "c="+ef1.course.value+"&chd="+cf.checkoutdate.value+"&rtd="+cf.returndate.value;
+        
+       /* if (ef.worksite_id != undefined) {
+            pf.url.value = "http://vital.ccnmtl.columbia.edu/ccnmtl/vital3/courseHome.smvc?worksiteId=" + ef.worksite_id.value
+        }*/
+        pf.submit();
+        
+    }
+    
+	</script>
+	
+	<!-- jQuery -->
+   <script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/jquery.min.js"></script>
+
+<!-- required plugins -->
+<script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/date.js"></script>
+<!--[if IE]><script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/jquery.bgiframe.js"></script><![endif]-->
+
+<!-- jquery.datePicker.js -->
+<script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/jquery.datePicker.js"></script>
+<script type="text/javascript" charset="utf-8">
+$(function()
+            {
+				$('.date-pick').datePicker({autoFocusNextInput: true});
+            });
+		</script>
+	
+	
+</head>
+
+<body >
+
+<div class="visual-portal-wrapper"><!-- Page wrapper -->
+
+
+<div class="help-portal-top"><!-- Begin div for top navigation -->
+
+	<div class="help-portal-top-shadeL"><!-- Begin div for logo and personal tools  class="portal-header-caseleft" -->
+	<div class="help-portal-top-shadeR"><!-- Begin div for logo and personal tools  class="portal-header-caseright" -->
+	
+
+ 		<hr class="hiddenStructure" />
+	
+		<h1 class="portal-logo">VITAL</h1>
+		<h1 class="print_only">Video Interactions for Teaching and Learning</h1>
+		<hr class="print_only" />
+	
+	
+	</div><!-- End div for logo and personal tools  class="portal-header-caseright" -->
+	</div><!-- End div for logo and personal tools  class="portal-header-caseleft" -->
+	
+</div><!-- End div for top navigation, class="help-portal-top" -->
+
+<div class="documentContentMain"><!-- Begin content area, class="documentContentMain" -->
+
+
+<h1>Request Form for Borrowing Lecture Recording Equipment</h1>
+
+ <!--<font size="5" face="arial"><b>Request Form for Borrowing Lecture Recording Equipment</b></font><br/><br/>-->
+      
+      <font size="2" face="arial">Statement of Responsibility, Criteria and Directions<br/></font>
+      
+      <font size=".5" face="arial" color="red">* Required</font><br/><br/><br/>
+      
+<form name="pmtForm" action="http://pmt.ccnmtl.columbia.edu/external_add_item.pl" method="post">
+    <input type="hidden" name="pid" value="260" />
+    <input type="hidden" name="mid" value="2947" />
+    <input type="hidden" name="owner" value="jonah" />
+    <input type="hidden" name="assigned_to" value="jasleen" />
+    <input type="hidden" name="type" value="action item" />
+    <input type="hidden" name="title" value="Request for Borrowing Lecture Recording Equipment" />
+    <input type="hidden" name="redirect_url" value="" />
+    <input type="hidden" name="keyword" value="borrow-recording-equipemnt" />
+    <input type="hidden" name="url" value="" />
+    <input type="hidden" name="description" value="" />
+    <input type="hidden" name="name" value="" />
+    <input type="hidden" name="email" value="" />
+    <input type="hidden" name="debug_info" value="true" />
+    
+</form>
+
+      <table border="0" cellspacing="0" cellpadding="0">
+      
+
+
+      <form name="requestFormp1" onsubmit="return false" action="#">
+    
+        <tr>
+              <td align="left" bgcolor="#CCCCCC"><font size="3"><b>Contact Information </b></font></td>
+              
+        </tr>
+        
+        <tr valign="left">
+            <td align="left" nowrap="nowrap">Name*:<br /></td>
+        </tr>
+        
+        <tr>
+            <td align="left"><input class="reporttxt" type="text" name="name" /></td>
+        </tr>
+               
+    
+        <tr valign="left">
+            <td align="left" nowrap="nowrap">Email*:<br /></td>
+        </tr>
+        
+        <tr>
+           <td align="left"><input class="reporttxt" type="text" name="email" /></td>
+        </tr>
+
+        <tr valign="left">
+            <td align="left" nowrap="nowrap">UNI*:<br /></td>
+        </tr>
+        
+        <tr>
+             <td align="left"><input class="reporttxt" type="text" name="UNI" /></td>
+        </tr>
+
+        <tr valign="left">
+            <td align="left" nowrap="nowrap">Phone*:<br /></td>
+        </tr>
+        
+        <tr>
+            <td align="left"><input class="reporttxt" type="text" name="Phone" /></td>
+        </tr>
+       
+        
+        <td bgcolor="#CCCCCC"><font size="3"> <b>Course Information</b><font></td></tr>
+        <tr valign="left">
+        
+            
+            <td align="left" nowrap="nowrap">Course Title, Number and Semester*:<br /></td>
+        </tr>
+        
+        <tr>
+            <td align="left"><input class="reporttxt" type="text" name="course" /></td>
+        </tr>
+        
+        
+        <tr valign="left"><td bgcolor="#CCCCCC"><font size="3"> <b>Equipment Checkout</b><font></td></tr>
+        </form>
+        <form name="chooseDateForm" id="chooseDateForm" action="#">
+        <tr> 
+        <td>
+            <label for="date1">CheckOut Date*:</label>
+        
+		    <input name="date1" id="checkoutdate" class="date-pick" />
+		</td>
+		<tr>
+		<td>
+                            <label for="date2">Return Date*:</label>
+                            <input name="date2" id="returndate" class="date-pick" /></td>
+					
+		</tr>	
+		</form>
+		
+        
+        <form name="requestFormp2" onsubmit="return false" >
+        <tr valign="left"><td bgcolor="#CCCCCC"><font size="3" > <b>How Will The Video /Audio Be Distributed?</b><font></td></tr>
+        <tr valign="left">
+            <td align="left" nowrap="nowrap">Will the video/audio be used in Courseworks, Wikispaces, Youtube, iTunes U or Other? *:<br /></td>
+        </tr>
+                
+        <tr>
+          <td>
+            <input type="radio" name="yn" value="yes" /> Yes <br />
+          </td> 
+        </tr>
+		<tr>
+		  <td>
+		    <input type="radio" name="yn" value="no" /> No 
+		  </td>
+		</tr>
+        
+		
+		
+		<tr valign="left">
+            <td align="left" nowrap="nowrap">Private or Public *<br/>
+Does the video need to be protected, only accessible by registered students or can it be open to the world?:<br /></td>
+        </tr>
+        <tr>
+            <td align="left"><input class="reporttxt" type="text" name="needprotection" /></td>
+        </tr>
+        <tr valign="left">
+            <td align="left" nowrap="nowrap">If the Lecture have Images, i.e. Power Point or Video, how will you be capturing? *<br/>
+Videotaping lecturer with projection in background, adding the images to the audio or video file in post-production, providing the image or video file as a resource...
+:<br /></td>
+        </tr>
+        <tr>
+            <td align="left"><input class="reporttxt" type="text" name="haveimages" /></td>
+        </tr>
+		<tr valign="left">
+            <td align="left" nowrap="nowrap">Have you ever recorded a lecture before and feel comfortable using the equipment? *<br/>
+Provide On-line Tutorial: "Kodak Best Practices" and "Zoom Best Practices" : http://youtu.be/TiqTEvSQdvI
+:<br /></td>
+        </tr>
+       
+       <tr>
+            <td align="left"><input class="reporttxt" type="text" name="recorded" /></td>
+        </tr>
+        
+        <tr valign="left">
+            <td align="left" nowrap="nowrap">Additional Instructions:</td>
+
+        </tr>
+        
+        <tr>
+            <td align="left"><textarea name="instructions" cols="30" rows="10"></textarea></td>
+        </tr>
+        
+        
+       
+            </form>
+    
+	<tr valign="middle">
+        <td colspan="2" align="center">
+            <form>
+            <input type="button" name="submit" value="Submit" class="regButton" onclick="submitRequestForm()" />
+            </form>
+        </td>
+	</tr>
+</table>
+
+</div>
+</div>
+
+
+
+</body>
+
+</html>
