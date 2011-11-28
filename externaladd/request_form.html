@@ -12,10 +12,10 @@
         Request for Borrowing Lecture Recording Equipment
     </title>
 
-    <style type="text/css" media="all"><!-- @import url('http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/css/tacky_portlet.css'); --></style>
+    <style type="text/css" media="all"><!-- @import url('css/tacky_portlet.css'); --></style>
 
-	<style type="text/css" media="all"><!-- @import url('http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/css/general.css'); --></style>
-	<style type="text/css" media="all"><!-- @import url('http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/css/datePicker.css'); --></style>
+	<style type="text/css" media="all"><!-- @import url('css/general.css'); --></style>
+	<style type="text/css" media="all"><!-- @import url('css/datePicker.css'); --></style>
 	
 	
 	<!-- Below is IE css adjustments, don't delete! --> 
@@ -150,7 +150,7 @@
         pf.description.value = description_string;
         //pf.debug_info.value = "User Agent = (" + ef.auto_UserAgent.value + ")\n";
         pf.email.value = ef1.email.value;
-        pf.redirect_url.value = "http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/request_acknowledged.html?";
+        pf.redirect_url.value = "request_acknowledged.html?";
         pf.redirect_url.value += "c="+ef1.course.value+"&chd="+cf.checkoutdate.value+"&rtd="+cf.returndate.value;
         
        /* if (ef.worksite_id != undefined) {
@@ -163,14 +163,14 @@
 	</script>
 	
 	<!-- jQuery -->
-   <script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/jquery.min.js"></script>
+   <script type="text/javascript" src="jquery.min.js"></script>
 
 <!-- required plugins -->
-<script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/date.js"></script>
-<!--[if IE]><script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/jquery.bgiframe.js"></script><![endif]-->
+<script type="text/javascript" src="date.js"></script>
+<!--[if IE]><script type="text/javascript" src="jquery.bgiframe.js"></script><![endif]-->
 
 <!-- jquery.datePicker.js -->
-<script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/jquery.datePicker.js"></script>
+<script type="text/javascript" src="jquery.datePicker.js"></script>
 <script type="text/javascript" charset="utf-8">
 $(function()
             {

@@ -136,7 +136,7 @@ a.dp-choose-date {
 	display: block;
 	text-indent: -2000px;
 	overflow: hidden;
-	background: url(http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/images/calendar.png) no-repeat; 
+	background: url(../images/calendar.png) no-repeat; 
 }
 a.dp-choose-date.dp-disabled {
 	background-position: 0 -20px;
