@@ -745,13 +745,13 @@ input.regButton,
 a.regButton
 {
 	margin: 0;
-	padding: 1px;
+	padding: 2px;
 	background-color: #e0e0e0;
-	border-top: 2px solid #fff;
-	border-left: 2px solid #fff;
-	border-right: 2px solid #666;
-	border-bottom: 2px solid #666;
-	font: normal 11px Arial, Helvetica, Verdana, "Lucida Grande", Lucida, sans-serif;
+	border-top: 3px solid #fff;
+	border-left: 3px solid #fff;
+	border-right: 3px solid #666;
+	border-bottom: 3px solid #666;
+	font: normal 14px Arial, Helvetica, Verdana, "Lucida Grande", Lucida, sans-serif;
 	cursor: pointer;
 }
 

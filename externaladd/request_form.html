@@ -2,20 +2,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <!-- a test comment -->
+
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 
     <!-- Disable IE6 image toolbar -->
     <meta http-equiv="imagetoolbar" content="no" />    
 
     <title>
-        VITAL NSF &mdash; Request for Borrowing Lecture Recording Equipment
+        Request for Borrowing Lecture Recording Equipment
     </title>
 
-    <style type="text/css" media="all"><!-- @import url('http://kang.ccnmtl.columbia.edu/sb/jasleen/css/tacky_portlet.css'); --></style>
+    <style type="text/css" media="all"><!-- @import url('http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/css/tacky_portlet.css'); --></style>
 
-	<style type="text/css" media="all"><!-- @import url('http://kang.ccnmtl.columbia.edu/sb/jasleen/css/general.css'); --></style>
-	<style type="text/css" media="all"><!-- @import url('http://kang.ccnmtl.columbia.edu/sb/jasleen/css/datePicker.css'); --></style>
+	<style type="text/css" media="all"><!-- @import url('http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/css/general.css'); --></style>
+	<style type="text/css" media="all"><!-- @import url('http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/css/datePicker.css'); --></style>
 	
 	
 	<!-- Below is IE css adjustments, don't delete! --> 
@@ -142,15 +142,15 @@
                
         
          
-        pf.title.value = ef1.name.value + "  (" + ef1.email.value + ") wants to borrow lecture Recording equipment for the course \t" + ef1.course.value;
+        pf.title.value = ef1.name.value + "  (" + ef1.email.value + ") wants to borrow lecture Recording equipment for the course  " + ef1.course.value;
         
         
         pf.name.value = ef1.name.value;
-        var description_string = "Request for Borrowing Lecture Recording Equipment:\n\n From \t" + cf.checkoutdate.value + " \t to \t "+ cf.returndate.value+ "\n\n Will the video/audio be used in Courseworks, Wikispaces, Youtube, iTunes U or Other? \t"+ GetSelectedItem(ef2) +"\n\n Is the video private or protected \t"+ ef2.needprotection.value+"\n\n If the Lecture have Images, i.e. Power Point or Video, how will you be capturing? \t"+ ef2.haveimages.value+"\n\nHave you ever recorded a lecture before and feel comfortable using the equipment? \t"+ ef2.recorded.value +"\n\n Additional instructions \t" + ef2.instructions.value;
+        var description_string = "Request for Borrowing Lecture Recording Equipment:\n\n From  " + cf.checkoutdate.value + "  to   "+ cf.returndate.value+ "\n\n Will the video/audio be used in Courseworks, Wikispaces, Youtube, iTunes U or Other?    "+ GetSelectedItem(ef2) +"\n\n Is the video private or protected   "+ ef2.needprotection.value+"\n\n If the Lecture have Images, i.e. Power Point or Video, how will you be capturing?  "+ ef2.haveimages.value+"\n\n Have you ever recorded a lecture before and feel comfortable using the equipment?   "+ ef2.recorded.value +"\n\n Additional instructions  " + ef2.instructions.value;
         pf.description.value = description_string;
         //pf.debug_info.value = "User Agent = (" + ef.auto_UserAgent.value + ")\n";
         pf.email.value = ef1.email.value;
-        pf.redirect_url.value = "http://kang.ccnmtl.columbia.edu/sb/jasleen/request_acknowledged.html?";
+        pf.redirect_url.value = "http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/request_acknowledged.html?";
         pf.redirect_url.value += "c="+ef1.course.value+"&chd="+cf.checkoutdate.value+"&rtd="+cf.returndate.value;
         
        /* if (ef.worksite_id != undefined) {
@@ -163,19 +163,20 @@
 	</script>
 	
 	<!-- jQuery -->
-   <script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/jquery.min.js"></script>
+   <script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/jquery.min.js"></script>
 
 <!-- required plugins -->
-<script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/date.js"></script>
+<script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/date.js"></script>
 <!--[if IE]><script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/jquery.bgiframe.js"></script><![endif]-->
 
 <!-- jquery.datePicker.js -->
-<script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/jquery.datePicker.js"></script>
+<script type="text/javascript" src="http://kang.ccnmtl.columbia.edu/sb/jasleen/pmt/externaladd/jquery.datePicker.js"></script>
 <script type="text/javascript" charset="utf-8">
 $(function()
             {
-				$('.date-pick').datePicker({autoFocusNextInput: true});
-            });
+				$('.date-pick').datePicker({
+				autoFocusNextInput: true}).formatDate('mm-dd-yyyy');
+				});
 		</script>
 	
 	
@@ -185,25 +186,6 @@ $(function()
 
 <div class="visual-portal-wrapper"><!-- Page wrapper -->
 
-
-<div class="help-portal-top"><!-- Begin div for top navigation -->
-
-	<div class="help-portal-top-shadeL"><!-- Begin div for logo and personal tools  class="portal-header-caseleft" -->
-	<div class="help-portal-top-shadeR"><!-- Begin div for logo and personal tools  class="portal-header-caseright" -->
-	
-
- 		<hr class="hiddenStructure" />
-	
-		<h1 class="portal-logo">VITAL</h1>
-		<h1 class="print_only">Video Interactions for Teaching and Learning</h1>
-		<hr class="print_only" />
-	
-	
-	</div><!-- End div for logo and personal tools  class="portal-header-caseright" -->
-	</div><!-- End div for logo and personal tools  class="portal-header-caseleft" -->
-	
-</div><!-- End div for top navigation, class="help-portal-top" -->
-
 <div class="documentContentMain"><!-- Begin content area, class="documentContentMain" -->
 
 
@@ -211,9 +193,9 @@ $(function()
 
  <!--<font size="5" face="arial"><b>Request Form for Borrowing Lecture Recording Equipment</b></font><br/><br/>-->
       
-      <font size="2" face="arial">Statement of Responsibility, Criteria and Directions<br/></font>
+      <font size="3" face="arial">Statement of Responsibility, Criteria and Directions<br/></font>
       
-      <font size=".5" face="arial" color="red">* Required</font><br/><br/><br/>
+      <font size="2" face="arial" color="red">* Required</font><br/><br/><br/>
       
 <form name="pmtForm" action="http://pmt.ccnmtl.columbia.edu/external_add_item.pl" method="post">
     <input type="hidden" name="pid" value="260" />
@@ -242,6 +224,9 @@ $(function()
               <td align="left" bgcolor="#CCCCCC"><font size="3"><b>Contact Information </b></font></td>
               
         </tr>
+        <tr>
+        <td> <br /></td>
+        </tr>
         
         <tr valign="left">
             <td align="left" nowrap="nowrap">Name*:<br /></td>
@@ -250,7 +235,9 @@ $(function()
         <tr>
             <td align="left"><input class="reporttxt" type="text" name="name" /></td>
         </tr>
-               
+         <tr>
+        <td> <br /></td>
+        </tr>      
     
         <tr valign="left">
             <td align="left" nowrap="nowrap">Email*:<br /></td>
@@ -258,6 +245,9 @@ $(function()
         
         <tr>
            <td align="left"><input class="reporttxt" type="text" name="email" /></td>
+        </tr>
+        <tr>
+        <td> <br /></td>
         </tr>
 
         <tr valign="left">
@@ -267,6 +257,9 @@ $(function()
         <tr>
              <td align="left"><input class="reporttxt" type="text" name="UNI" /></td>
         </tr>
+        <tr>
+        <td> <br /></td>
+        </tr>
 
         <tr valign="left">
             <td align="left" nowrap="nowrap">Phone*:<br /></td>
@@ -275,10 +268,16 @@ $(function()
         <tr>
             <td align="left"><input class="reporttxt" type="text" name="Phone" /></td>
         </tr>
+        <tr>
+        <td> <br /></td>
+        </tr>
        
         
         <td bgcolor="#CCCCCC"><font size="3"> <b>Course Information</b><font></td></tr>
         <tr valign="left">
+        <tr>
+        <td> <br /></td>
+        </tr>
         
             
             <td align="left" nowrap="nowrap">Course Title, Number and Semester*:<br /></td>
@@ -288,27 +287,45 @@ $(function()
             <td align="left"><input class="reporttxt" type="text" name="course" /></td>
         </tr>
         
+        <tr>
+        <td> <br /></td>
+        </tr>
         
         <tr valign="left"><td bgcolor="#CCCCCC"><font size="3"> <b>Equipment Checkout</b><font></td></tr>
         </form>
         <form name="chooseDateForm" id="chooseDateForm" action="#">
+        <tr>
+        <td> <br /></td>
+        </tr>
         <tr> 
         <td>
             <label for="date1">CheckOut Date*:</label>
+            <br />
         
 		    <input name="date1" id="checkoutdate" class="date-pick" />
+		    
 		</td>
 		<tr>
+        <td> <br /></td>
+        </tr>
+		<tr>
 		<td>
-                            <label for="date2">Return Date*:</label>
-                            <input name="date2" id="returndate" class="date-pick" /></td>
+                            <label for="date2">Return Date*:</label><br />
+                            <input name="date2" id="returndate" class="date-pick" />
+                            </td>
 					
 		</tr>	
 		</form>
 		
         
         <form name="requestFormp2" onsubmit="return false" >
+        <tr>
+        <td> <br /></td>
+        </tr>
         <tr valign="left"><td bgcolor="#CCCCCC"><font size="3" > <b>How Will The Video /Audio Be Distributed?</b><font></td></tr>
+        <tr>
+        <td> <br /></td>
+        </tr>
         <tr valign="left">
             <td align="left" nowrap="nowrap">Will the video/audio be used in Courseworks, Wikispaces, Youtube, iTunes U or Other? *:<br /></td>
         </tr>
@@ -323,7 +340,9 @@ $(function()
 		    <input type="radio" name="yn" value="no" /> No 
 		  </td>
 		</tr>
-        
+        <tr>
+        <td> <br /></td>
+        </tr>
 		
 		
 		<tr valign="left">
@@ -333,6 +352,9 @@ Does the video need to be protected, only accessible by registered students or c
         <tr>
             <td align="left"><input class="reporttxt" type="text" name="needprotection" /></td>
         </tr>
+        <tr>
+        <td> <br /></td>
+        </tr>
         <tr valign="left">
             <td align="left" nowrap="nowrap">If the Lecture have Images, i.e. Power Point or Video, how will you be capturing? *<br/>
 Videotaping lecturer with projection in background, adding the images to the audio or video file in post-production, providing the image or video file as a resource...
@@ -341,14 +363,20 @@ Videotaping lecturer with projection in background, adding the images to the aud
         <tr>
             <td align="left"><input class="reporttxt" type="text" name="haveimages" /></td>
         </tr>
+        <tr>
+        <td> <br /></td>
+        </tr>
 		<tr valign="left">
             <td align="left" nowrap="nowrap">Have you ever recorded a lecture before and feel comfortable using the equipment? *<br/>
-Provide On-line Tutorial: "Kodak Best Practices" and "Zoom Best Practices" : http://youtu.be/TiqTEvSQdvI
-:<br /></td>
+<a href="http://youtu.be/TiqTEvSQdvI">On-line Tutorial</a>  
+<br /></td>
         </tr>
        
        <tr>
             <td align="left"><input class="reporttxt" type="text" name="recorded" /></td>
+        </tr>
+        <tr>
+        <td> <br /></td>
         </tr>
         
         <tr valign="left">
@@ -363,11 +391,14 @@ Provide On-line Tutorial: "Kodak Best Practices" and "Zoom Best Practices" : htt
         
        
             </form>
+            <tr>
+        <td> <br /></td>
+        </tr>
     
 	<tr valign="middle">
         <td colspan="2" align="center">
             <form>
-            <input type="button" name="submit" value="Submit" class="regButton" onclick="submitRequestForm()" />
+            <input type="button" size="5" name="submit" value="Submit" class="regButton" onclick="submitRequestForm()" />
             </form>
         </td>
 	</tr>
