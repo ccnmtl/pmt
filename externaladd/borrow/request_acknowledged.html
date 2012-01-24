@@ -1,0 +1,44 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" id="sixapart-standard">
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <style type="text/css" media="all"><!-- @import url('css/tacky_portlet.css'); --></style>
+
+	<style type="text/css" media="all"><!-- @import url('css/general.css'); --></style>
+	
+  
+
+   <title>PMT Action Item Submitted</title>
+</head>
+<body>
+<div  class="documentContentMain" style="text-align:left; margin: 10px">
+
+<h1>Action Item Submitted</h1>
+
+<br>
+<p font="5" align="left" > There's a request for borrowing lecture recorging equipment. A PMT action item has been generated for the  <a href="http://pmt.ccnmtl.columbia.edu/home.pl?mode=project;pid=260">Project</a>.</p>
+<br>
+
+<script language="JavaScript">
+   delim = location.search.indexOf("&");
+   pattern = /%20/g;
+   document.write("  <b>Course: ");
+   document.write(location.search.substring(3,delim).replace(pattern," "));
+ 
+   document.write("<br /> Check out date: ");
+   document.write(location.search.substring(delim+5,delim+15).replace(pattern," "));
+   
+   document.write("<br /> Return date: ");
+   document.write(location.search.substring(delim+20).replace(pattern," "));
+   
+   document.write("</b><br /> ");
+</script>
+<br>
+<p><a href="request_form.html">Return</a>  to form to create additional requests.
+</p>
+
+</div>
+</body>
+</html>
