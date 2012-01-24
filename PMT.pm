@@ -410,7 +410,7 @@ sub update_user {
 	    my @letters = ('a' .. 'z', '0' .. '9');
 	    my $salt = "";
 	    $salt.= $letters[rand(36)] foreach(1..5);	
-	    my $hash = sha1_hex($salt . $new_pass);
+	    my $hash = Digest::SHA1::sha1_hex($salt . $new_pass);
 	    $u->password('sha1$' . $salt . '$' . $hash);
 	}
     }
