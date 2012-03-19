@@ -563,7 +563,7 @@ sub prev_client {
 
 
 __PACKAGE__->set_sql(active_clients_all_employees =>
-  qq{ select c.firstname, c.lastname, tempalias.client_id, date(tempalias.date), c.registration_date,
+  qq{ select c.firstname, c.lastname, c.email, tempalias.client_id, date(tempalias.date), c.registration_date,
              c.school, c.department, c.contact, u.fullname as contact_fullname
         from ( select ic.client_id, max(i.last_mod) as date
            from clients c, items i, item_clients ic
@@ -576,7 +576,7 @@ __PACKAGE__->set_sql(active_clients_all_employees =>
        },'Main');
 
 __PACKAGE__->set_sql(active_clients_one_employee =>
-  qq{ select c.firstname, c.lastname, tempalias.client_id, date(tempalias.date), c.registration_date,
+  qq{ select c.firstname, c.lastname, c.email, tempalias.client_id, date(tempalias.date), c.registration_date,
              c.school, c.department, c.contact, u.fullname as contact_fullname
         from ( select ic.client_id, max(i.last_mod) as date
            from clients c, items i, item_clients ic
