@@ -17,13 +17,14 @@ eval {
     # make a new password
     my @letters = ('a' .. 'z', '0' .. '9');
     my $password = "";
-    $password .= $letters[rand(36) foreach(1..10)];
+    $password .= $letters[rand(36)] foreach(1..10);
 
     # hash it and set it
     my $salt = "";
     $salt.= $letters[rand(36)] foreach(1..5);	
     my $hash = sha1_hex($salt . $password);
     $user->password('sha1$' . $salt . '$' . $hash);
+    $user->update();
 
     # email the user
     my %data = %$r;
